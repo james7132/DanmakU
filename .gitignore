@@ -15,3 +15,18 @@
 
 #Unity3D Generated File On Crash Reports
 sysinfo.txt
+
+#This repository is for code that is portable between projects
+#No meta files
+*.meta files
+#No binaries are to be added
+*.prefab
+*.unity
+#No images
+*.png
+*.psd
+*.svg
+#No music/SFX
+*.ogg
+*.mp3
+*.wav
