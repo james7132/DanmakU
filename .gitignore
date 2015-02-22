@@ -18,7 +18,7 @@ sysinfo.txt
 
 #This repository is for code that is portable between projects
 #No meta files
-*.meta files
+*.meta
 #No binaries are to be added
 *.prefab
 *.unity
