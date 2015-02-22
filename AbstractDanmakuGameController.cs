@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityUtilLib;
 
 [RequireComponent(typeof(ProjectilePool))]
 [RequireComponent(typeof(EnemyManager))]
-public abstract class AbstractDanmakuGameController : MonoBehaviour {
+public abstract class AbstractDanmakuGameController : AbstractGameController {
 
 	[SerializeField]
 	private ProjectilePool bulletPool;
