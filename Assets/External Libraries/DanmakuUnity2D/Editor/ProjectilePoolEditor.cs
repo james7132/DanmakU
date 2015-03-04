@@ -3,11 +3,11 @@ using System.Collections;
 using UnityEditor;
 using Danmaku2D;
 
-[CustomEditor(typeof(ProjectilePool))]
+[CustomEditor(typeof(ProjectileManager))]
 public class ProjectilePoolEditor : Editor {
 
 	void OnSceneGUI() {
-		ProjectilePool pool = target as ProjectilePool;
+		ProjectileManager pool = target as ProjectileManager;
 		GUISkin skin = GUI.skin;
 		Handles.BeginGUI ();
 		GUILayout.BeginArea (new Rect(0,0,150,60), skin.box);

@@ -6,7 +6,7 @@ namespace Danmaku2D {
 	[RequireComponent(typeof(SpriteRenderer))]
 	[RequireComponent(typeof(ProjectileBoundary))]
 	[RequireComponent(typeof(Collider2D))]
-	public class BulletCancelArea : CachedObject {
+	public class BulletCancelArea : PausableGameObject {
 		
 		public void Run(float duration, float maxScale) {
 			StartCoroutine (Execute (duration, maxScale));
@@ -22,12 +22,13 @@ namespace Danmaku2D {
 			Color spriteColor = rend.color;
 			Color targetColor = spriteColor;
 			targetColor.a = 0f;
-			float t = 0;
+			float t = 0f;
+			float dt = Util.TargetDeltaTime;
 			while (t < 1f) {
 				Transform.localScale = Vector3.Lerp(startScale, maxScaleV, t);
 				rend.color = Color.Lerp(spriteColor, targetColor, t);
-				yield return new WaitForFixedUpdate();
-				t += Time.fixedDeltaTime / duration;
+				yield return UtilCoroutines.WaitForUnpause(this);
+				t += dt / duration;
 			}
 			Destroy (GameObject);
 		}

@@ -4,10 +4,10 @@ using System.Collections;
 using UnityUtilLib;
 
 namespace Danmaku2D {
-	public class FieldMovementPattern : AbstractMovementPattern {
+	public class FieldMovementPattern : MovementPattern {
 
 		[SerializeField]
-		private AbstractDanmakuField field;
+		private DanmakuField field;
 
 		[Serializable]
 		public class AtomicMovement {
@@ -29,21 +29,21 @@ namespace Danmaku2D {
 			[SerializeField]
 			private Vector2 curveControlPoint2;
 
-			public Vector3 NextLocation(AbstractDanmakuField field, Vector3 startLocation) {
+			public Vector3 NextLocation(DanmakuField field, Vector3 startLocation) {
 				return Interpret (targetLocation, field, startLocation);
 			}
 
-			public Vector3 NextControlPoint1(AbstractDanmakuField field, Vector3 startLocation) {
+			public Vector3 NextControlPoint1(DanmakuField field, Vector3 startLocation) {
 				return Interpret (curveControlPoint1, field, startLocation);
 			}
 
-			public Vector3 NextControlPoint2(AbstractDanmakuField field, Vector3 startLocation) {
+			public Vector3 NextControlPoint2(DanmakuField field, Vector3 startLocation) {
 				return Interpret (curveControlPoint2, field, startLocation);
 			}
 
-			private Vector3 Interpret(Vector2 loc, AbstractDanmakuField field, Vector3 startLocation) {	
+			private Vector3 Interpret(Vector2 loc, DanmakuField field, Vector3 startLocation) {	
 				Vector3 nextLocation = Util.To3D(loc);
-				return startLocation + field.Relative2Absolute(nextLocation);
+				return startLocation + field.WorldPoint(nextLocation, DanmakuField.CoordinateSystem.Relative);
 			}
 		}
 
@@ -55,7 +55,7 @@ namespace Danmaku2D {
 		public override void Awake () {
 			base.Awake ();
 			if (field == null) {
-				field = Util.FindClosest<AbstractDanmakuField>(Transform.position);
+				field = Util.FindClosest<DanmakuField>(Transform.position);
 			}
 		}
 
@@ -72,12 +72,13 @@ namespace Danmaku2D {
 					Vector3 control1 = movements[i].NextControlPoint1(field, startLocation);
 					Vector3 control2 = movements[i].NextControlPoint2(field, startLocation);
 					Vector3 oldPosition;
+					float dt = Util.TargetDeltaTime;
 					while(t < 1f) {
 						oldPosition = Transform.position;
 						Transform.position = Util.BerzierCurveVectorLerp(startLocation, targetLocation, control1, control2, t);
 						Transform.rotation = Util.RotationBetween2D(oldPosition, Transform.position);
-						yield return new WaitForFixedUpdate();
-						t += Time.deltaTime / totalTime;
+						yield return UtilCoroutines.WaitForUnpause(this);
+						t += dt / totalTime;
 					}
 				}
 			}

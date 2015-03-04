@@ -1,4 +1,4 @@
-﻿Shader "Custom/Bullet"
+﻿Shader "Danmaku/Touhou Sprite"
 {
 	Properties
 	{

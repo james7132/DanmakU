@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections;
+using UnityUtilLib;
 
 namespace Danmaku2D.Phantasmagoria {
-	public class PhantasmagoriaGameController : AbstractDanmakuGameController {
+	public class PhantasmagoriaGameController : DanmakuGameController {
 
 		[Serializable]
 		public class PlayerData {
@@ -56,6 +57,8 @@ namespace Danmaku2D.Phantasmagoria {
 		[SerializeField]
 		private Transform closureBottom;
 
+		private bool reseting = false;
+
 		public override void Awake() {
 			base.Awake ();
 			Physics2D.raycastsHitTriggers = true;
@@ -68,28 +71,11 @@ namespace Danmaku2D.Phantasmagoria {
 			}
 		}
 
-		void FixedUpdate() {
-			bool reset = false;
-			if (player1.Field.LivesRemaining <= 0) {
-				player2.score++;
-				reset = true;
-			}
-			if (player2.Field.LivesRemaining <= 0) {
-				player1.score++;
-				reset = true;
-			}
-			if(player1.score >= winningScore && player2.score >= winningScore) {
-				//Signal Sudden Death
-				player1.score = player2.score = 0;
-				winningScore = 0;
-			} else if(player1.score >= winningScore) {
-				//Declare Player 1 the winner
-			} else if(player1.score >= winningScore) {
-				//Declare Player 2 the winner
-			} else if(reset) {
+		void Update() {
+			if (!reseting && (player1.Field.Player.LivesRemaining <= 0 || player2.Field.Player.LivesRemaining <= 0)) {
 				StartCoroutine(RoundReset ());
 			}
-			roundTimeRemaining -= Time.fixedDeltaTime;
+			roundTimeRemaining -= Util.TargetDeltaTime;
 			if (roundTimeRemaining < 0f && !guardianSummoned) {
 				if(guardian != null) {
 					SpawnEnemy(guardian, guardianSpawnLocation);
@@ -106,27 +92,46 @@ namespace Danmaku2D.Phantasmagoria {
 		}
 
 		public IEnumerator RoundReset() {
-			float oldTimeScale = Time.timeScale;
+			if(reseting)
+				yield break;
+			reseting = true;
+			WaitForEndOfFrame wfeof = new WaitForEndOfFrame ();
 			float duration = closureDuration / 2f;
 			Vector3 scale = closureTop.localScale;
 			Vector3 oldScale = scale;
-			Time.timeScale = 0;
+			float dt = Util.TargetDeltaTime;
 			float t = 0;
 			scale.y = t;
+			PauseGame ();
 			while (t <= 1f) {
 				scale.y = t;
 				closureTop.localScale = scale;
 				closureBottom.localScale = scale;
-				yield return new WaitForEndOfFrame ();
-				t += Time.unscaledDeltaTime / duration;
+				yield return wfeof;
+				t += dt / duration;
 			}
 			scale.y = 1f;
 			closureTop.localScale = scale;
 			closureBottom.localScale = scale;
+			bool p1dead = player1.Field.Player.LivesRemaining <= 0;
+			bool p2dead = player2.Field.Player.LivesRemaining <= 0;
+			player1.score += (p2dead && !p1dead) ? 1 : 0;
+			player2.score += (p1dead && !p2dead) ? 1 : 0;
+			bool p1win = player1.score >= winningScore;
+			bool p2win = player2.score >= winningScore;
+			if(p1win && p2win) {
+				//Signal Sudden Death
+				player1.score = player2.score = 0;
+				winningScore = 1;
+			} else if(p1win) {
+				//Declare Player 1 the winner
+			} else if(p2win) {
+				//Declare Player 2 the winner
+			}
 			player1.Field.RoundReset ();
 			player2.Field.RoundReset ();
-			BulletPool.DeactivateAll ();
-			AbstractEnemy[] allEnemies = FindObjectsOfType<AbstractEnemy> ();
+			ProjectileManager.DeactivateAll ();
+			Enemy[] allEnemies = FindObjectsOfType<Enemy> ();
 			for(int i = 0; i < allEnemies.Length; i++) {
 				Destroy (allEnemies[i].GameObject);
 			}
@@ -134,19 +139,24 @@ namespace Danmaku2D.Phantasmagoria {
 			for(int i = 0; i < bcas.Length; i++) {
 				Destroy (bcas[i].GameObject);
 			}
+			AttackPattern[] attackPatterns = FindObjectsOfType<AttackPattern> ();
+			for (int i = 0; i < attackPatterns.Length; i++) {
+				attackPatterns[i].Active = false;
+			}
 			while (t > 0f) {
 				scale.y = t;
 				closureTop.localScale = scale;
 				closureBottom.localScale = scale;
-				yield return new WaitForEndOfFrame ();
-				t -= Time.unscaledDeltaTime / duration;
+				yield return wfeof;
+				t -= dt / duration;
 			}
 			closureTop.localScale = oldScale;
 			closureBottom.localScale = oldScale;
-			Time.timeScale = oldTimeScale;
+			UnpauseGame ();
+			reseting = false;
 		}
 
-		public override void SpawnEnemy(AbstractEnemy prefab, Vector2 relativeLocations) {
+		public override void SpawnEnemy(Enemy prefab, Vector2 relativeLocations) {
 			if(player1.Field != null && player2.Field != null) {
 				player1.Field.SpawnEnemy(prefab, relativeLocations);
 				player2.Field.SpawnEnemy(prefab, relativeLocations);

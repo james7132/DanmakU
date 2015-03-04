@@ -1,40 +1,23 @@
 using UnityEngine;
 using System.Collections;
 using Danmaku2D.Phantasmagoria;
+using UnityUtilLib;
 
-/// <summary>
-/// Charge bar GU.
-/// </summary>
-public class ChargeBarGUI : MonoBehaviour {
+public class ChargeBarGUI : PausableGameObject {
 
-	/// <summary>
-	/// The field controller.
-	/// </summary>
 	[SerializeField]
 	private PhantasmagoriaField field;
 	private PhantasmagoriaPlayableCharacter player;
 
-	/// <summary>
-	/// The charge capacity.
-	/// </summary>
 	[SerializeField]
 	private Transform chargeCapacity;
 
-	/// <summary>
-	/// The charge level.
-	/// </summary>
 	[SerializeField]
 	private Transform chargeLevel;
 
-	/// <summary>
-	/// The indicator.
-	/// </summary>
 	[SerializeField]
 	private GameObject indicator;
 
-	/// <summary>
-	/// Start this instance.
-	/// </summary>
 	void Start() {
 		player = (PhantasmagoriaPlayableCharacter)field.Player;
 		int maxIndicatorLevel = player.MaxChargeLevel - 1;
@@ -50,10 +33,7 @@ public class ChargeBarGUI : MonoBehaviour {
 		}
 	}
 
-	/// <summary>
-	/// Update this instance.
-	/// </summary>
-	void Update() {
+	public override void NormalUpdate () {
 		Vector3 capacityScale = chargeCapacity.localScale;
 		Vector3 levelScale = chargeCapacity.localScale;
 		capacityScale.x = player.CurrentChargeCapacity / (float)player.MaxChargeLevel;

@@ -10,8 +10,7 @@ public class ProjectilePrefabEditor : Editor {
 		base.OnInspectorGUI ();
 		ProjectilePrefab pp = (ProjectilePrefab)target;
 		if(GUILayout.Button("Reinitialize")) {
-			pp.CircleCollider = pp.GetComponent<CircleCollider2D>();
-			pp.SpriteRenderer = pp.GetComponent<SpriteRenderer>();
+			pp.Reinit();
 		}
 	}
 }

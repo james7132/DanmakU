@@ -13,7 +13,7 @@ namespace UnityUtilLib.GUI {
 
 		void Awake()
 		{
-			cachedGUIText = guiText;
+			cachedGUIText = GetComponent<GUIText>();
 			originalFontSize = cachedGUIText.fontSize;
 		}
 		

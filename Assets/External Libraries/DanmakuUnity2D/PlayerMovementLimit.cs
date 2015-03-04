@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace Danmaku2D {
@@ -13,7 +13,7 @@ namespace Danmaku2D {
 
 		void OnTriggerEnter2D(Collider2D other) {
 			if(other.CompareTag(tagCheck)) {
-				AbstractPlayableCharacter player = other.gameObject.GetComponent<AbstractPlayableCharacter> ();
+				DanmakuPlayerCharacter player = other.gameObject.GetComponent<DanmakuPlayerCharacter> ();
 				if(player != null) {
 					player.ForbidMovement(lockedMovementVector);
 				}
@@ -22,7 +22,7 @@ namespace Danmaku2D {
 
 		void OnTriggerExit2D(Collider2D other) {
 			if(other.CompareTag(tagCheck)) {
-				AbstractPlayableCharacter player = other.gameObject.GetComponent<AbstractPlayableCharacter> ();
+				DanmakuPlayerCharacter player = other.gameObject.GetComponent<DanmakuPlayerCharacter> ();
 				if(player != null) {
 					player.AllowMovement(lockedMovementVector);
 				}

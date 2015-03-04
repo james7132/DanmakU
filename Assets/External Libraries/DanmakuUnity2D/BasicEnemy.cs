@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace Danmaku2D {
-	[RequireComponent(typeof(AbstractMovementPattern))]
-	public class BasicEnemy : AbstractEnemy {
+	[RequireComponent(typeof(MovementPattern))]
+	public class BasicEnemy : Enemy {
 
 		[SerializeField]
 		private float maxHealth;
@@ -14,14 +14,14 @@ namespace Danmaku2D {
 			}
 		}
 
-		private AbstractMovementPattern movementPattern;
+		private MovementPattern movementPattern;
 
-		private AbstractAttackPattern attackPattern;
+		private AttackPattern attackPattern;
 		/// <summary>
 		/// Gets the current attack pattern.
 		/// </summary>
 		/// <value>The current attack pattern.</value>
-		public override AbstractAttackPattern CurrentAttackPattern {
+		public override AttackPattern CurrentAttackPattern {
 			get {
 				return attackPattern;
 			}
@@ -30,9 +30,9 @@ namespace Danmaku2D {
 		public override void Awake() {
 			base.Awake ();
 			currentHealth = maxHealth;
-			movementPattern = GetComponent<AbstractMovementPattern> ();
+			movementPattern = GetComponent<MovementPattern> ();
 			movementPattern.DestroyOnEnd = true;
-			attackPattern = GetComponent<AbstractAttackPattern> ();
+			attackPattern = GetComponent<AttackPattern> ();
 			if (attackPattern != null) {
 				attackPattern.TargetField = Field.TargetField;
 				attackPattern.Fire();
