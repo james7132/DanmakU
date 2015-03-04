@@ -6,6 +6,26 @@ namespace UnityUtilLib {
 
 		public const float Degree2Rad = Mathf.PI / 180f;
 		public const float Rad2Degree = 180f / Mathf.PI;
+		public static float NormalTargetFPS = 60f;
+
+		public static float TargetFPS {
+			get {
+				if(Time.timeScale != 0)
+					return (Application.targetFrameRate > 0f) ? Application.targetFrameRate : NormalTargetFPS;
+				else
+					return float.PositiveInfinity;
+			}
+		}
+
+		public static float TargetDeltaTime {
+			get {
+				return 1f / TargetFPS;
+			}
+		}
+
+		public static int TimeToFrames(float time) {
+			return Mathf.CeilToInt (time * TargetFPS);
+		}
 
 		public static int[] CollisionLayers2D() {
 			int[] collisionMask = new int[32];

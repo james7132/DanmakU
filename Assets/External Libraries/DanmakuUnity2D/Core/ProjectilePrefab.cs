@@ -1,45 +1,65 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
+using System.Collections.Generic;
 
 namespace Danmaku2D {
+
 	[RequireComponent(typeof(CircleCollider2D))]
 	[RequireComponent(typeof(SpriteRenderer))]
-	public class ProjectilePrefab : CachedObject {
+	public sealed class ProjectilePrefab : MonoBehaviour {
+
+		private static Dictionary<ProjectilePrefab, ProjectilePrefab> runtimeInstances;
 
 		[SerializeField]
 		private CircleCollider2D circleCollider;
 		public CircleCollider2D CircleCollider {
 			get {
+				if(circleCollider == null)
+					circleCollider = GetComponent<CircleCollider2D> ();
 				return circleCollider;
-			}
-			set {
-				circleCollider = value;
 			}
 		}
 
 		[SerializeField]
 		private SpriteRenderer spriteRenderer;
-
 		public SpriteRenderer SpriteRenderer {
 			get {
+				if(spriteRenderer == null)
+					spriteRenderer = GetComponent<SpriteRenderer> ();
 				return spriteRenderer;
-			}
-			set {
-				spriteRenderer = value;
 			}
 		}
 
-		public override void Awake() {
-			base.Awake ();
-			if(circleCollider == null)
-				circleCollider = GetComponent<CircleCollider2D> ();
-			if(spriteRenderer == null)
-				spriteRenderer = GetComponent<SpriteRenderer> ();
-	#if UNITY_EDITOR
-			if(circleCollider == null)
-				Debug.Log("Need circle collider on projectile prefab");
-	#endif
+		[SerializeField]
+		private ProjectileControlBehavior[] extraControllers;
+		public ProjectileControlBehavior[] ExtraControllers {
+			get {
+				if(extraControllers == null)
+					extraControllers = GetComponents<ProjectileControlBehavior>();
+				return extraControllers;
+			}
+		}
+
+		public ProjectilePrefab GetRuntime() {
+			if(runtimeInstances == null)
+				runtimeInstances = new Dictionary<ProjectilePrefab, ProjectilePrefab>();
+			if(!runtimeInstances.ContainsKey (this))
+				runtimeInstances[this] = CreateRuntimeInstance(this);
+			return runtimeInstances [this];
+		}
+
+		private static ProjectilePrefab CreateRuntimeInstance(ProjectilePrefab prefab) {
+			ProjectilePrefab runtime = (ProjectilePrefab)Instantiate (prefab);
+			runtime.gameObject.hideFlags = HideFlags.HideInHierarchy;
+			runtime.gameObject.SetActive (false);
+			return runtime;
+		}
+
+		public void Reinit() {
+			circleCollider = GetComponent<CircleCollider2D>();
+			spriteRenderer = GetComponent<SpriteRenderer>();
+			extraControllers = GetComponents<ProjectileControlBehavior> ();
 		}
 	}
 }

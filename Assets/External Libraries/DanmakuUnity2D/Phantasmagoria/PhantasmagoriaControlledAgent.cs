@@ -23,7 +23,7 @@ namespace Danmaku2D.Phantasmagoria {
 		/// Update the specified dt.
 		/// </summary>
 		/// <param name="dt">Dt.</param>
-		public override void Update (float dt) {
+		public override void Update () {
 			PhantasmagoriaPlayableCharacter player = (PhantasmagoriaPlayableCharacter)Player;
 			Vector2 movementVector = Vector2.zero;
 			movementVector.x = Util.Sign(Input.GetAxis (horizontalMoveAxis));
@@ -37,7 +37,7 @@ namespace Danmaku2D.Phantasmagoria {
 			player.IsFiring = fire;
 			player.IsCharging = charge;
 
-			Player.Move (movementVector.x, movementVector.y, focus, dt);
+			Player.Move (movementVector.x, movementVector.y, focus);
 		}
 	}
 }

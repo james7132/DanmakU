@@ -61,7 +61,7 @@ public class ScreenBoundary : UnityUtilLib.CachedObject {
 	/// <summary>
 	/// Update this instance.
 	/// </summary>
-	void FixedUpdate () {
+	void Update () {
 		if(constantlyUpdate) {
 			UpdatePosition();
 		}

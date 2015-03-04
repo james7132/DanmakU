@@ -16,6 +16,6 @@ public class PlayerLifeIndicator : MultiObjectValueIndicator {
 	}
 
 	protected override int GetValue () {
-		return ((player) ? gameControl.player1 : gameControl.player2).Field.LivesRemaining;
+		return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
 	}
 }

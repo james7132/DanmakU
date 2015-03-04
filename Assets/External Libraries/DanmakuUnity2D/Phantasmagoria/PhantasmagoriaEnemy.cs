@@ -8,9 +8,6 @@ namespace Danmaku2D.Phantasmagoria {
 		[SerializeField]
 		private float deathReflectDuration;
 
-		/// <summary>
-		/// The death reflect radius.
-		/// </summary>
 		[SerializeField]
 		private float deathReflectRadius;
 

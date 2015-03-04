@@ -13,7 +13,7 @@ public class RoundTimer : MonoBehaviour {
 	private Color flashColor;
 
 	[SerializeField]
-	private CountdownDelay flashInterval;
+	private FrameCounter flashInterval;
 
 	[SerializeField]
 	private float flashThreshold;
@@ -23,7 +23,7 @@ public class RoundTimer : MonoBehaviour {
 	private GUIText label;
 
 	void Start() {
-		label = guiText;
+		label = GetComponent<GUIText>();
 		normalColor = label.color;
 		flashState = false;
 	}
@@ -34,7 +34,7 @@ public class RoundTimer : MonoBehaviour {
 		int minutes = timeSec / 60;
 		label.text = minutes.ToString ("D2") + ":" + seconds.ToString ("D2");;
 		if (timeSec < flashThreshold) {
-			if(flashInterval.Tick(Time.deltaTime)) {
+			if(flashInterval.Tick()) {
 				label.color = (flashState) ? flashColor : normalColor;
 				flashState = !flashState;
 			}

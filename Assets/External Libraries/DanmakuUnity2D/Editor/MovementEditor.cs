@@ -13,9 +13,8 @@ public class MovementEditor : Editor {
 		curveTex.SetPixel (0, 0, Color.white);
 		FieldMovementPattern fmp = (FieldMovementPattern)target;
 		FieldMovementPattern.AtomicMovement[] movements = fmp.movements;
-		AbstractDanmakuField testField = Util.FindClosest<AbstractDanmakuField> (fmp.Transform.position);
+		DanmakuField testField = Util.FindClosest<DanmakuField> (fmp.Transform.position);
 		if(testField != null) {
-			testField.RecomputeWorldPoints();
 			Vector3 currentLocation = fmp.Transform.position;
 			for(int i = 0; i < movements.Length; i++) {
 				if(movements[i] != null) {

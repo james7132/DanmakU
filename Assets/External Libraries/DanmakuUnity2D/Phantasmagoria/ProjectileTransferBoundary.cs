@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace Danmaku2D.Phantasmagoria {
 	public class ProjectileTransferBoundary : ProjectileBoundary {
 
 		[SerializeField]
-		private AbstractDanmakuField field;
-		public AbstractDanmakuField Field {
+		private DanmakuField field;
+		public DanmakuField Field {
 			get {
 				return field;
 			}
@@ -16,8 +16,8 @@ namespace Danmaku2D.Phantasmagoria {
 		}
 
 		[SerializeField]
-		private AbstractDanmakuField targetField;
-		public AbstractDanmakuField TargetField {
+		private DanmakuField targetField;
+		public DanmakuField TargetField {
 			get {
 				return targetField;
 			}
@@ -28,8 +28,8 @@ namespace Danmaku2D.Phantasmagoria {
 
 		protected override void ProcessProjectile (Projectile proj) {
 			if (field != null && targetField != null) {
-				Vector2 relativePos = field.FieldPoint(proj.Transform.position);
-				proj.Transform.position = targetField.WorldPoint(relativePos);
+				Vector2 relativePos = field.ViewPoint(proj.Position);
+				proj.Position = targetField.WorldPoint(relativePos);
 			}
 		}
 	}

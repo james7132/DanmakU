@@ -4,27 +4,27 @@ using System.Collections.Generic;
 using UnityUtilLib;
 
 namespace Danmaku2D {
-	public class EnemyManager : SingletonBehavior<EnemyManager> {
+	public class EnemyManager : SingletonBehavior<EnemyManager>, IPausable {
 
-		private List<AbstractEnemy> registeredEnemies;
+		private List<Enemy> registeredEnemies;
 
-		public static void RegisterEnemy(AbstractEnemy enemy) {
+		public static void RegisterEnemy(Enemy enemy) {
 			Instance.registeredEnemies.Add (enemy);
 		}
 
-		public static void UnregisterEnemy(AbstractEnemy enemy) {
+		public static void UnregisterEnemy(Enemy enemy) {
 			Instance.registeredEnemies.Remove (enemy);
 		}
 
-		private AbstractDanmakuGameController controller;
+		private DanmakuGameController controller;
 
 		[SerializeField]
-		private float roundStartSafeZone;
-		private float chainSpawnCountdown;
+		private FrameCounter roundStartSafeZone;
+		private FrameCounter chainSpawnCountdown;
 
 		[System.Serializable]
 		public class EnemySpawnData {
-			public AbstractEnemy EnemyPrefab;
+			public Enemy EnemyPrefab;
 			public Rect spawnArea;
 			public float timeUntilNext;
 		}
@@ -42,31 +42,33 @@ namespace Danmaku2D {
 
 		public override void Awake () {
 			base.Awake ();
-			registeredEnemies = new List<AbstractEnemy> ();
-			controller = GetComponent<AbstractDanmakuGameController> ();
+			registeredEnemies = new List<Enemy> ();
+			controller = GetComponent<DanmakuGameController> ();
 			if (controller == null) {
 				Debug.Log("Error: Enemy Manager without Game Controller");
 			}
 		}
 
 		void Start() {
-			chainSpawnCountdown = roundStartSafeZone;
 			weightSum = 0f;
 			for (int i = 0; i < chains.Length; i++) {
 				weightSum += chains[i].weight;
 			}
 		}
 
-		void FixedUpdate() {
-			chainSpawnCountdown -= Time.fixedDeltaTime;
-			//Debug.Log (chainSpawnCountdown);
-			if (chainSpawnCountdown <= 0f) {
+		public void Update() {
+			if (!Paused)
+				NormalUpdate ();
+		}
+
+		public void NormalUpdate () {
+			if (chainSpawnCountdown.Tick()) {
 				float randSelect = Random.value * weightSum;
 				for(int i = 0; i < chains.Length; i++) {
 					randSelect -= chains[i].weight;
 					if(randSelect <= 0f) {
 						StartCoroutine(SpawnEnemyChain(chains[i]));
-						chainSpawnCountdown = chains[i].delay;
+						chainSpawnCountdown = new FrameCounter(chains[i].delay);
 						break;
 					}
 				}
@@ -74,7 +76,7 @@ namespace Danmaku2D {
 		}
 
 		public void RoundReset() {
-			AbstractEnemy[] allEnemies = registeredEnemies.ToArray ();
+			Enemy[] allEnemies = registeredEnemies.ToArray ();
 			for (int i = 0; i < allEnemies.Length; i++) {
 				Destroy (allEnemies[i].gameObject);
 			}
@@ -90,11 +92,21 @@ namespace Danmaku2D {
 					controller.SpawnEnemy(chainData[i].EnemyPrefab, new Vector2(rx, ry));
 					float time = 0f;
 					while(time < chainData[i].timeUntilNext) {
-						yield return new WaitForFixedUpdate();
-						time += Time.fixedDeltaTime;
+						yield return UtilCoroutines.WaitForUnpause(this);
+						time += Util.TargetDeltaTime;
 					}
 				}
 			}
 		}
+
+		#region IPausable implementation
+
+		public bool Paused {
+			get;
+			set;
+		}
+
+		#endregion
+
 	}
 }

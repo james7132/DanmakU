@@ -38,7 +38,7 @@ namespace UnityUtilLib.GUI {
 		/// Start this instance.
 		/// </summary>
 		void Start () {
-			display = guiText;
+			display = GetComponent<GUIText>();
 		}
 
 		/// <summary>

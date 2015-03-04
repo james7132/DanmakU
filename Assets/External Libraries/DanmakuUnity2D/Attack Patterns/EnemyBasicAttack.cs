@@ -2,11 +2,11 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 
-namespace Danmaku2D.AttackPattern {
-	public class EnemyBasicAttack : AbstractAttackPattern {
+namespace Danmaku2D.AttackPatterns {
+	public class EnemyBasicAttack : AttackPattern {
 		
 		[SerializeField]
-		private CountdownDelay fireDelay;
+		private FrameCounter fireDelay;
 
 		[SerializeField]
 		private float velocity;
@@ -29,14 +29,10 @@ namespace Danmaku2D.AttackPattern {
 			}
 		}
 		
-		protected override void MainLoop (float dt) {
-			if (fireDelay.Tick(dt)) {
+		protected override void MainLoop () {
+			if (fireDelay.Tick()) {
 				float angle = TargetField.AngleTowardPlayer(transform.position) + Random.Range(-generalRange, generalRange);
-				Projectile proj = TargetField.SpawnProjectile(basicPrefab, Transform.position,
-				                            angle, 
-				                            FieldCoordinateSystem.AbsoluteWorld);
-				proj.Velocity = velocity;
-				proj.AngularVelocity = angV;
+				FireCurvedBullet(basicPrefab, Transform.position, angle, velocity, angV, DanmakuField.CoordinateSystem.World);
 			}
 		}
 	}
