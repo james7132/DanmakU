@@ -13,13 +13,16 @@ namespace UnityUtilLib
     /// </summary>
     public class UtilCoroutines {
 
+		private class NullBehavior : MonoBehaviour {
+		}
+
 		private static WaitForEndOfFrame wfeof = new WaitForEndOfFrame();
 		private static MonoBehaviour utilBehavior;
 		private static MonoBehaviour UtilityBehaviour {
 			get {
 				if(utilBehavior == null) {
 					GameObject temp = new GameObject();
-					utilBehavior = temp.AddComponent<MonoBehaviour>();
+					utilBehavior = temp.AddComponent<NullBehavior>();
 					temp.hideFlags = HideFlags.HideInHierarchy;
 				}
 				return utilBehavior;
@@ -54,30 +57,30 @@ namespace UnityUtilLib
 		/// <summary>
 		/// A useful utility function for Coroutines in subclasses of PausableObject
 		/// If the instance is not paused, it will wait return a WaitForEndOfFrame instance.
-		/// If the instance is paused, it will wait until the object becomes unpaused before continuing.
+		/// If the instance is paused, it will wait until the object becomes AbstractProjectileControllerd before continuing.
 		/// 
 		/// <example>
 		/// This is standard usage for this function:
 		/// <code>
-		/// yield return WaitForUnpause()
+		/// yield return AbstractProjectileController()
 		/// </code>
 		/// </example>
 		/// <see href="http://docs.unity3d.com/Manual/Coroutines.html">Unity Manual: Coroutines</see>
 		/// </summary>
 		/// <returns> The approriate YieldInstruction for the situation.</returns>
-		public static YieldInstruction WaitForUnpause(IPausable pausableObject) {
+		public static YieldInstruction AbstractProjectileController(IPausable pausableObject) {
 			if(pausableObject.Paused)
-				return UtilityBehaviour.StartCoroutine (UnpauseWait (pausableObject));
+				return UtilityBehaviour.StartCoroutine (AbstractProjectileControllerWait (pausableObject));
 			else
 				return wfeof;
 		}
 
 		/// <summary>
-		/// Coroutine to wait for the object to become unpaused
+		/// Coroutine to wait for the object to become AbstractProjectileControllerd
 		/// <see href="http://docs.unity3d.com/Manual/Coroutines.html">Unity Manual: Coroutines</see>
 		/// </summary>
 		/// <returns> The Coroutine IEnumerator </returns>
-		private static IEnumerator UnpauseWait(IPausable pausable) {
+		private static IEnumerator AbstractProjectileControllerWait(IPausable pausable) {
 			while(pausable.Paused)
 				yield return wfeof;
 		}

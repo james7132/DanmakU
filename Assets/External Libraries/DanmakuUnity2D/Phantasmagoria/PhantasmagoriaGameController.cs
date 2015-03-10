@@ -152,7 +152,7 @@ namespace Danmaku2D.Phantasmagoria {
 			}
 			closureTop.localScale = oldScale;
 			closureBottom.localScale = oldScale;
-			UnpauseGame ();
+			AbstractProjectileControllerGame ();
 			reseting = false;
 		}
 

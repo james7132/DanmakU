@@ -20,13 +20,13 @@ namespace Danmaku2D {
 
 		public int TotalCount {
 			get {
-				return projectilePool.TotalCount;
+				return (projectilePool != null) ? projectilePool.TotalCount : 0;
 			}
 		}
 
 		public int ActiveCount {
 			get {
-				return projectilePool.ActiveCount;
+				return (projectilePool != null) ? projectilePool.ActiveCount : 0;
 			}
 		}
 

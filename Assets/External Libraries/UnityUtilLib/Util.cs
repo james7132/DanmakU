@@ -4,10 +4,30 @@ using System.Collections;
 namespace UnityUtilLib {
 	public static class Util {
 
+		/// <summary>
+		/// A constant used to convert degrees to radians
+		/// Multiply a degree measure by this to convert.
+		/// </summary>
 		public const float Degree2Rad = Mathf.PI / 180f;
+
+		/// <summary>
+		/// A constant used to convert radians to degrees
+		/// Multiply a radian measure by this to convert.
+		/// </summary>
 		public const float Rad2Degree = 180f / Mathf.PI;
+
+		/// <summary>
+		/// The normal target frames per second
+		/// This is the value used by <see cref="TargetFPS"/> if Time.timeScale is not 0 but Application.targetFrameRate is 0. 
+		/// </summary>
 		public static float NormalTargetFPS = 60f;
 
+		/// <summary>
+		/// Gets the expected frames per second of the current Application.
+		/// Normally this is set to Application.targetFrameRate if it is not 0.
+		/// If the game is paused via setting Time.timeScale to 0, this evaluates to Infinity
+		/// </summary>
+		/// <value>The expected frames per second.</value>
 		public static float TargetFPS {
 			get {
 				if(Time.timeScale != 0)
@@ -17,16 +37,43 @@ namespace UnityUtilLib {
 			}
 		}
 
+		/// <summary>
+		/// Gets the expected time between each frame for the current Application.
+		/// It is equal to the inverse of <see cref="TargetFPS"/>
+		/// TargetDeltaTime = 1/TargetFPS
+		/// </summary>
+		/// <value>The expected delta time.</value>
 		public static float TargetDeltaTime {
 			get {
 				return 1f / TargetFPS;
 			}
 		}
 
+		/// <summary>
+		/// Converts floating point time to an integer number of frames based on TargetDeltaTime/TargetFPS.
+		/// Useful in converting a fixed time to a count for frames.
+		/// </summary>
+		/// <returns>the time elapsed in the given frames</returns>
+		/// <param name="time">the elapsed time to convert to frames</param>
 		public static int TimeToFrames(float time) {
 			return Mathf.CeilToInt (time * TargetFPS);
 		}
 
+		/// <summary>
+		/// Converts floating point time to an integer number of frames based on TargetDeltaTime/TargetFPS.
+		/// Useful in converting a fixed time to a count for frames.
+		/// </summary>
+		/// <returns>the time elapsed in the given frames</returns>
+		/// <param name="time">the elapsed time to convert to frames</param>
+		public static float FramesToTime(int frames) {
+			return (float)frames * TargetDeltaTime;
+		}
+
+		/// <summary>
+		/// Creates an array of masks for collisions/raycasts in 2D physics
+		/// Useful for mirroring collision behavior.
+		/// </summary>
+		/// <returns>the masks for each layer</returns>
 		public static int[] CollisionLayers2D() {
 			int[] collisionMask = new int[32];
 			for(int i = 0; i < 32; i++) {
@@ -37,7 +84,12 @@ namespace UnityUtilLib {
 			}
 			return collisionMask;
 		}
-
+		
+		/// <summary>
+		/// Creates an array of masks for collisions/raycasts in 3D physics
+		/// Useful for mirroring collision behavior.
+		/// </summary>
+		/// <returns>the masks for each layer</returns>
 		public static int[] CollisionLayers3D() {
 			int[] collisionMask = new int[32];
 			for(int i = 0; i < 32; i++) {
@@ -55,7 +107,7 @@ namespace UnityUtilLib {
 		public static Vector2 SpriteScale(Sprite sprite, Vector2 scale) {
 			float width = sprite.textureRect.width;
 			float height = sprite.textureRect.height;
-			Vector2 scaled = Util.ComponentProduct2(scale, new Vector2(width, height) / sprite.pixelsPerUnit);
+			Vector2 scaled = Util.HadamardProduct2(scale, new Vector2(width, height) / sprite.pixelsPerUnit);
 			return scaled;
 		}
 
@@ -145,16 +197,15 @@ namespace UnityUtilLib {
 			return mesh;
 		}
 
+		/// <summary>
+		/// Actually computes the sign of a floating point number
+		/// If it is less than 0: returns -1
+		/// If it is equal to 0: returns 0
+		/// If it is more than 0: returns 1
+		/// </summary>
+		/// <param name="e">the sign of the given floating point value</param>
 		public static float Sign(float e) {
 			return (e == 0f) ? 0f : Mathf.Sign (e);
-		}
-
-		public static Vector2 To2D(Vector3 v) {
-			return new Vector2(v.x, v.y);
-		}
-
-		public static Vector3 To3D(Vector2 v, float z = 0f) {
-			return new Vector3 (v.x, v.y, z);
 		}
 
 		public static Vector2 RandomVect2(Vector2 v) {
@@ -165,29 +216,75 @@ namespace UnityUtilLib {
 			return new Vector3 (Random.value * v.x, Random.value * v.y, Random.value * v.z);
 		}
 
-		public static Vector2 ComponentProduct2(Vector2 v1, Vector2 v2) {
+		public static Vector4 RandomVect4(Vector4 v) {
+			return new Vector4 (Random.value * v.x, Random.value * v.y, Random.value * v.z, Random.value * v.y);
+		}
+
+		/// <summary>
+		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector2s
+		/// </summary>
+		/// <returns>The Hadamard product between the two vectors.</returns>
+		/// <param name="v1">the first vector</param>
+		/// <param name="v2">the second vector</param>
+		public static Vector2 HadamardProduct2(Vector2 v1, Vector2 v2) {
 			return new Vector2(v1.x * v2.x, v1.y * v2.y);
 		}
 
-		public static Vector3 ComponentProduct3(Vector3 v1, Vector3 v2) {
+		/// <summary>
+		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector3s
+		/// </summary>
+		/// <returns>The Hadamard product between the two vectors.</returns>
+		/// <param name="v1">the first vector</param>
+		/// <param name="v2">the second vector</param>
+		public static Vector3 HadamardProduct3(Vector3 v1, Vector3 v2) {
 			return new Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
 		}
 
+		/// <summary>
+		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector4s
+		/// </summary>
+		/// <returns>The Hadamard product between the two vectors.</returns>
+		/// <param name="v1">the first vector</param>
+		/// <param name="v2">the second vector</param>
+		public static Vector4 HadamardProduct4(Vector4 v1, Vector4 v2) {
+			return new Vector4(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z, v1.w * v2.w);
+		}
+		
+		/// <summary>
+		/// Finds the largest component in the given Vector2
+		/// </summary>
+		/// <returns> the value of the smallest component</returns>
+		/// <param name="v">the vector to evaluate</param>
 		public static float MaxComponent2(Vector2 v) {
 			return (v.x > v.y) ? v.x : v.y;
 		}
-
+		
+		/// <summary>
+		/// Finds the largest component in the given Vector3
+		/// </summary>
+		/// <returns> the value of the smallest component</returns>
+		/// <param name="v">the vector to evaluate</param>
 		public static float MaxComponent3(Vector3 v) {
 			if(v.x > v.y)
 				return (v.z > v.y) ? v.z : v.y;
 			else
 				return (v.z > v.x) ? v.z : v.x;
 		}
-
+		
+		/// <summary>
+		/// Finds the smallest component in the given Vector2
+		/// </summary>
+		/// <returns> the value of the smallest component</returns>
+		/// <param name="v">the vector to evaluate</param>
 		public static float MinComponent2(Vector2 v) {
 			return (v.x < v.y) ? v.x : v.y;
 		}
 
+		/// <summary>
+		/// Finds the smallest component in the given Vector3
+		/// </summary>
+		/// <returns> the value of the smallest component</returns>
+		/// <param name="v">the vector to evaluate</param>
 		public static float MinComponent3(Vector3 v) {
 			if(v.x < v.y)
 				return (v.z < v.y) ? v.z : v.y;
@@ -212,9 +309,15 @@ namespace UnityUtilLib {
 			return p;
 		}
 
+		/// <summary>
+		/// Finds the closest described component to the given point
+		/// </summary>
+		/// <returns>The closest instance of the given Component type</returns>
+		/// <param name="position">The closest instance of T to the given point</param>
+		/// <typeparam name="T">The Component Type to search for</typeparam>
 		public static T FindClosest<T>(Vector3 position) where T : Component {
 			T returnValue = default(T);
-			T[] objects = GameObject.FindObjectsOfType<T> ();
+			T[] objects = Object.FindObjectsOfType<T> ();
 			float minDist = float.MaxValue;
 			for (int i = 0; i < objects.Length; i++) {
 				float dist = (objects[i].transform.position - position).magnitude;

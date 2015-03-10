@@ -5,8 +5,8 @@ using System.Collections.Generic;
 namespace Danmaku2D {
 	public abstract class AbstractAgentCharacter : DanmakuPlayerCharacter {
 
-		private AbstractPlayerAgent agent;
-		public AbstractPlayerAgent Agent {
+		private PlayerAgent agent;
+		public PlayerAgent Agent {
 			get {
 				return agent;
 			}
@@ -15,7 +15,7 @@ namespace Danmaku2D {
 			}
 		}
 
-		public virtual void Initialize(AbstractPlayerAgent agent) {
+		public virtual void Initialize(PlayerAgent agent) {
 			this.agent = agent;
 			agent.Player = this;
 		}

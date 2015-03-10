@@ -3,6 +3,8 @@ using System.Collections;
 using UnityUtilLib;
 
 namespace Danmaku2D.AttackPatterns {
+
+	[AddComponentMenu("Danmaku 2D/Attack Patterns/Enemy Basic Attack")]
 	public class EnemyBasicAttack : AttackPattern {
 		
 		[SerializeField]

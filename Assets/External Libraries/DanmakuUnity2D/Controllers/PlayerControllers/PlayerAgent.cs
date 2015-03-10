@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Danmaku2D {
 	[Serializable]
-	public abstract class AbstractPlayerAgent {
+	public abstract class PlayerAgent {
 
 		private DanmakuPlayerCharacter player;
 		public DanmakuPlayerCharacter Player {
