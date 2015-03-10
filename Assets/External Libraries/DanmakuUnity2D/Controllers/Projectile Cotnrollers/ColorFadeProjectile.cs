@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Danmaku2D;
 
-public class TestProjectileControlBehavior : ProjectileControlBehavior {
+public class ColorFadeProjectile : ProjectileControlBehavior {
 
 	[SerializeField]
 	private Color endColor;

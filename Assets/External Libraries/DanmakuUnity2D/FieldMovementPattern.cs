@@ -42,7 +42,7 @@ namespace Danmaku2D {
 			}
 
 			private Vector3 Interpret(Vector2 loc, DanmakuField field, Vector3 startLocation) {	
-				Vector3 nextLocation = Util.To3D(loc);
+				Vector3 nextLocation = loc;
 				return startLocation + field.WorldPoint(nextLocation, DanmakuField.CoordinateSystem.Relative);
 			}
 		}
@@ -77,7 +77,7 @@ namespace Danmaku2D {
 						oldPosition = Transform.position;
 						Transform.position = Util.BerzierCurveVectorLerp(startLocation, targetLocation, control1, control2, t);
 						Transform.rotation = Util.RotationBetween2D(oldPosition, Transform.position);
-						yield return UtilCoroutines.WaitForUnpause(this);
+						yield return UtilCoroutines.AbstractProjectileController(this);
 						t += dt / totalTime;
 					}
 				}

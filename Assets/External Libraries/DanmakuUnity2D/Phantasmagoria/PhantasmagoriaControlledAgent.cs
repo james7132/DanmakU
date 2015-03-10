@@ -3,7 +3,7 @@ using UnityUtilLib;
 using System.Collections;
 
 namespace Danmaku2D.Phantasmagoria {
-	public class PhantasmagoriaControlledAgent : AbstractPlayerAgent  {
+	public class PhantasmagoriaControlledAgent : PlayerAgent  {
 		private string horizontalMoveAxis;
 		private string verticalMoveAxis;
 		private string fireButton;

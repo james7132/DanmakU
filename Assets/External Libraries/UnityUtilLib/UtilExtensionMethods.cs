@@ -38,11 +38,9 @@ namespace UnityUtilLib
         /// </summary>
         /// <param name="go">GameObject</param>
         /// <returns>The object's children.</returns>
-        public static List<GameObject> GetChildrenList(this GameObject go)
-        {
+        public static List<GameObject> GetChildrenList(this GameObject go) {
             List<GameObject> children = new List<GameObject>();
-            foreach (Transform tran in go.transform)
-            {
+            foreach (Transform tran in go.transform) {
                 children.Add(tran.gameObject);
             }
             return children;
@@ -55,11 +53,11 @@ namespace UnityUtilLib
         /// <typeparam name="T">The component type.</typeparam>
         /// <param name="obj">Game Object</param>
         /// <returns>Returns the component or null.</returns>
-        public static T SafeGetComponent<T>(this GameObject obj) where T : MonoBehaviour
-        {
+        public static T SafeGetComponent<T>(this GameObject obj) where T : MonoBehaviour {
             T component = obj.GetComponent<T>();
-            if (component == null)
-                Debug.LogError("ExtensionMethods.SafeGetComponent Expected to find component of type " + typeof(T) + " but found none!", obj);
+            if (component == null) {
+				Debug.LogError ("ExtensionMethods.SafeGetComponent Expected to find component of type " + typeof(T) + " but found none!", obj);
+			}
             return component;
         }
 

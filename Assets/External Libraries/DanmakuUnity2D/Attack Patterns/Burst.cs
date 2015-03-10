@@ -1,27 +1,26 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
+using Danmaku2D;
 
 namespace Danmaku2D.AttackPatterns {
-	public class BasicCircularBurst : AttackPattern {
+
+	public abstract class Burst : AttackPattern {
 		[SerializeField]
 		private ProjectilePrefab prefab;
-
+		
 		[SerializeField]
 		private Vector2 spawnLocation;
-
+		
 		[SerializeField]
 		private Vector2 spawnArea;
 		
 		[SerializeField]
 		private int bulletCount;
-		
-		[SerializeField]
-		private float velocity;
-		
-		[SerializeField]
-		[Range(-360f, 360f)]
-		private float angV;
+
+		protected abstract IProjectileGroupController BurstController {
+			get;
+		}
 		
 		[SerializeField]
 		private Counter burstCount;
@@ -36,22 +35,22 @@ namespace Danmaku2D.AttackPatterns {
 		[SerializeField]
 		[Range(-360f, 360f)]
 		private float burstRotationDelta;
-
+		
 		private Vector2 currentBurstSource;
 		private ProjectileGroup burstGroup;
-
+		
 		public override void Awake () {
 			base.Awake ();
 			burstGroup = new ProjectileGroup ();
-			burstGroup.Controller = new CurvedProjectile (velocity, angV);
+			burstGroup.Controller = BurstController;
 		}
-
+		
 		protected override bool IsFinished {
 			get {
 				return burstCount.Ready();
 			}
 		}
-
+		
 		protected override void OnExecutionStart () {
 			burstCount.Reset ();
 			currentBurstSource = spawnLocation - 0.5f * spawnArea + Util.RandomVect2 (spawnArea);

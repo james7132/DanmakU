@@ -1,15 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// Screen boundary.
-/// </summary>
 [RequireComponent(typeof(BoxCollider2D))]
 public class ScreenBoundary : UnityUtilLib.CachedObject {
 
-	/// <summary>
-	/// The fixed points.
-	/// </summary>
 	public enum Edge { Top = 0, Bottom = 1, Left = 2, Right = 3}
 
 	private static Vector2[] fixedPoints = new Vector2[] {
@@ -19,57 +13,35 @@ public class ScreenBoundary : UnityUtilLib.CachedObject {
 				new Vector2 (1f, 0.5f)
 		};
 
-	/// <summary>
-	/// The reference camera.
-	/// </summary>
-	public Camera referenceCamera;
+	[SerializeField]
+	private Camera referenceCamera;
 
-	/// <summary>
-	/// The location.
-	/// </summary>
-	public Edge location;
+	[SerializeField]
+	private Edge location;
 
-	/// <summary>
-	/// The camera size buffer ratio.
-	/// </summary>
-	public float cameraSizeBufferRatio;
+	[SerializeField]
+	private float cameraSizeBufferRatio;
 
-	/// <summary>
-	/// The camera size space ratio.
-	/// </summary>
-	public float cameraSizeSpaceRatio;
+	[SerializeField]
+	private float cameraSizeSpaceRatio;
 
-	/// <summary>
-	/// The constantly update.
-	/// </summary>
-	public bool constantlyUpdate = true;
+	[SerializeField]
+	private bool constantlyUpdate = true;
 
-	/// <summary>
-	/// The boundary.
-	/// </summary>
 	private BoxCollider2D boundary;
 
-	/// <summary>
-	/// Awake this instance.
-	/// </summary>
 	public override void Awake () {
 		base.Awake ();
 		boundary = GetComponent<BoxCollider2D> ();
 		UpdatePosition ();
 	}
 
-	/// <summary>
-	/// Update this instance.
-	/// </summary>
 	void Update () {
 		if(constantlyUpdate) {
 			UpdatePosition();
 		}
 	}
 
-	/// <summary>
-	/// Updates the position.
-	/// </summary>
 	private void UpdatePosition() {
 		float cameraSize = referenceCamera.orthographicSize;
 		Vector2 fixedPoint = fixedPoints [(int)location];

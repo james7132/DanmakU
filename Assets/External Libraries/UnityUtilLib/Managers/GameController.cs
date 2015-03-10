@@ -25,7 +25,7 @@ namespace UnityUtilLib {
 			Time.timeScale = 0f;
 		}
 
-		public static void UnpauseGame() {
+		public static void AbstractProjectileControllerGame() {
 			MonoBehaviour[] behaviors = FindObjectsOfType<MonoBehaviour> ();
 			for (int i = 0; i < behaviors.Length; i++) {
 				if(behaviors[i] is IPausable) {

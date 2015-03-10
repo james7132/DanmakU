@@ -3,19 +3,29 @@ using UnityEngine;
 using UnityUtilLib;
 
 namespace Danmaku2D {
+
+	[Serializable]
 	public class CurvedProjectile : LinearProjectile {
 
+		[SerializeField]
+		[Range(-360f, 360f)]
+		private float angularVelocity;
+
 		public float AngularVelocity {
-			get;
-			set;
+			get {
+				return angularVelocity;
+			}
+			set {
+				angularVelocity = value;
+			}
 		}
 		
 		public float AngularVelocityRadians {
 			get {
-				return AngularVelocity * Util.Degree2Rad;
+				return angularVelocity * Util.Degree2Rad;
 			}
 			set {
-				AngularVelocity = value * Util.Rad2Degree;
+				angularVelocity = value * Util.Rad2Degree;
 			}
 		}
 

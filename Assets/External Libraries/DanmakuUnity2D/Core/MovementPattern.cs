@@ -46,7 +46,7 @@ namespace Danmaku2D {
 			float dt = Util.TargetDeltaTime;
 			while (t <= 1f) {
 				Transform.position = Vector3.Lerp(start, end, t);
-				yield return UtilCoroutines.WaitForUnpause(this);
+				yield return UtilCoroutines.AbstractProjectileController(this);
 				t += time / dt;
 			}
 		}
@@ -57,7 +57,7 @@ namespace Danmaku2D {
 			float dt = Util.TargetDeltaTime;
 			while (t <= 1f) {
 				Transform.position = Vector3.Lerp(start, end, t);
-				yield return UtilCoroutines.WaitForUnpause(this);
+				yield return UtilCoroutines.AbstractProjectileController(this);
 				t += time / dt;
 			}
 		}

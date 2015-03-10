@@ -135,7 +135,7 @@ namespace Danmaku2D {
 
 		/// <summary>
 		/// The amount of time, in seconds,that has passed since this bullet has been fired.
-		/// This is calculated based on the number of unpaused frames that has passed since the bullet has fired
+		/// This is calculated based on the number of AbstractProjectileControllerd frames that has passed since the bullet has fired
 		/// Pausing will cause this value to stop increasing
 		/// </summary>
 		/// <value>The time since the projectile has been fired.</value>
@@ -212,7 +212,7 @@ namespace Danmaku2D {
 				}
 			}
 
-			int count = Physics2D.CircleCastNonAlloc(transform.position + Util.To3D(circleCenter), 
+			int count = Physics2D.CircleCastNonAlloc(transform.position + (Vector3)circleCenter, 
 			                                         circleRaidus,
 			                                         movementVector,
 			                                         hits,
@@ -272,8 +272,8 @@ namespace Danmaku2D {
 				Debug.LogError("The provided prefab should have a SpriteRenderer!");
 			
 			if(cc != null) {
-				circleCenter = Util.ComponentProduct2(transform.lossyScale, cc.offset);
-				circleRaidus = cc.radius * Util.MaxComponent2(Util.To2D(transform.lossyScale));
+				circleCenter = Util.HadamardProduct2(transform.lossyScale, cc.offset);
+				circleRaidus = cc.radius * Util.MaxComponent2(transform.lossyScale);
 			}
 			else
 				Debug.LogError("The provided prefab should a CircleCollider2D!");

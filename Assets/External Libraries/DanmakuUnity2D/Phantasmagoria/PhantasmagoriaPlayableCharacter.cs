@@ -127,7 +127,7 @@ namespace Danmaku2D.Phantasmagoria {
 			currentChargeCapacity -= level;
 		}
 
-		public override void Initialize (AbstractPlayerAgent agent) {
+		public override void Initialize (PlayerAgent agent) {
 			base.Initialize (agent);
 			for(int i = 0; i < attackPatterns.Length; i++)
 				if(attackPatterns[i] != null)
@@ -152,7 +152,7 @@ namespace Danmaku2D.Phantasmagoria {
 
 		public override void Fire () {
 			Vector2 location;
-			location = Util.To2D(Transform.position);
+			location = Transform.position;
 			Projectile proj1 = ProjectileManager.FireLinearProjectile (shotType, location + shotOffset, 0f, shotVelocity).Projectile;
 			Projectile proj2 = ProjectileManager.FireLinearProjectile (shotType, location - shotOffset, 0f, shotVelocity).Projectile;
 			proj1.Damage = proj2.Damage = shotDamage;

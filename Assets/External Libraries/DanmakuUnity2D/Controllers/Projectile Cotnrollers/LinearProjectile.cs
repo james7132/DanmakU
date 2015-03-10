@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Danmaku2D {
+
+	[Serializable]
 	public class LinearProjectile : ProjectileController, IProjectileGroupController {
 
+		[SerializeField]
+		private float velocity;
 
 		public float Velocity {
-			get;
-			set;
+			get {
+				return velocity;
+			}
+			set {
+				velocity = value;
+			}
 		}
 
 		public LinearProjectile (float velocity) : base() {
