@@ -3,29 +3,6 @@ using UnityUtilLib;
 using System.Collections.Generic;
 
 namespace Danmaku2D {
-	public abstract class AbstractAgentCharacter : DanmakuPlayerCharacter {
-
-		private PlayerAgent agent;
-		public PlayerAgent Agent {
-			get {
-				return agent;
-			}
-			set {
-				agent = value;
-			}
-		}
-
-		public virtual void Initialize(PlayerAgent agent) {
-			this.agent = agent;
-			agent.Player = this;
-		}
-
-		public override void NormalUpdate () {
-			base.NormalUpdate ();
-			if(agent != null)
-				agent.Update();
-		}
-	}
 
 	[RequireComponent(typeof(Collider2D))]
 	public abstract class DanmakuPlayerCharacter : PausableGameObject {
@@ -38,6 +15,27 @@ namespace Danmaku2D {
 			set {
 				field = value;
 			}
+		}
+		
+		private PlayerAgent agent;
+		public PlayerAgent Agent {
+			get {
+				return agent;
+			}
+			set {
+				agent = value;
+			}
+		}
+		
+		public virtual void Initialize(PlayerAgent agent) {
+			this.agent = agent;
+			agent.Player = this;
+		}
+		
+		public override void NormalUpdate () {
+			base.NormalUpdate ();
+			if(agent != null)
+				agent.Update();
 		}
 
 		[SerializeField]

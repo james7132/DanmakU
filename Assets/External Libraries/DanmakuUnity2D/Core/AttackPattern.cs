@@ -14,8 +14,8 @@ namespace Danmaku2D {
 
 		private DanmakuField targetField;
 		/// <summary>
-		/// The DanmakuField that all bullets fired by this pattern will end up within.
-		/// This MUST be set before firing any bullets.
+		/// The DanmakuField that all bullets fired by this pattern will end up within. <br>
+		/// This MUST be set to a non-null value before firing any bullets.
 		/// <see cref="DanmakuField"/>
 		/// </summary>
 		/// <value>The AttackPattern's target danmaku field</value>

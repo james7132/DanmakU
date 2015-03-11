@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 using Danmaku2D;
 
 namespace Danmaku2D.AttackPatterns {
 
+	/// <summary>
+	/// A abstract class for consecutive basic bursts of bullets
+	/// </summary>
 	public abstract class Burst : AttackPattern {
+
 		[SerializeField]
 		private ProjectilePrefab prefab;
 		
@@ -18,6 +22,10 @@ namespace Danmaku2D.AttackPatterns {
 		[SerializeField]
 		private int bulletCount;
 
+		/// <summary>
+		/// An overridable factory method for subclasses to control the various 
+		/// </summary>
+		/// <value>The controller to be used with the bullets fired with this attack pattern</value>
 		protected abstract IProjectileGroupController BurstController {
 			get;
 		}

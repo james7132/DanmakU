@@ -2,12 +2,22 @@ using UnityEngine;
 using System.Collections;
 
 namespace Danmaku2D {
+
+	/// <summary>
+	/// A basic enemy. <br>
+	/// Usually used as cannon fodder in Danmaku games.
+	/// </summary>
 	[RequireComponent(typeof(MovementPattern))]
 	public class BasicEnemy : Enemy {
 
 		[SerializeField]
 		private float maxHealth;
 		private float currentHealth;
+
+		/// <summary>
+		/// Gets the current health. 
+		/// </summary>
+		/// <value>The current health.</value>
 		public float CurrentHealth {
 			get {
 				return currentHealth;
