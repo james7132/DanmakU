@@ -34,8 +34,8 @@ namespace UnityUtilLib {
 		}
 
 		/// <summary>
-		/// Called upon Component instantiation
-		/// <see href="http://docs.unity3d.com/ScriptReference/MonoBehaviour.Awake.html">Unity Script Reference: MonoBehavior.Awake()</see>
+		/// Called upon Component instantiation <br>
+		/// See <a href="http://docs.unity3d.com/ScriptReference/MonoBehaviour.Awake.html">Unity Script Reference: MonoBehavior.Awake()</see>
 		/// </summary>
 		public virtual void Awake() {
 			trans = transform;

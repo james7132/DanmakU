@@ -175,6 +175,12 @@ namespace Danmaku2D {
 			}
 		}
 
+		/// <summary>
+		/// Compares the tag of the Projectile instance to the given string.
+		/// Mirrors <a href="http://docs.unity3d.com/ScriptReference/GameObject.CompareTag.html>GameObject.CompareTag</a>.
+		/// </summary>
+		/// <returns><c>true</c>, if tag is an exact match to the string, <c>false</c> otherwise.</returns>
+		/// <param name="tag">Tag.</param>
 		public bool CompareTag(string tag) {
 			return gameObject.CompareTag (tag);
 		}
@@ -254,29 +260,19 @@ namespace Danmaku2D {
 		public void MatchPrefab(ProjectilePrefab prefab) {
 			this.prefab = prefab;
 			ProjectilePrefab runtime = prefab.GetRuntime ();
-			CircleCollider2D cc = runtime.CircleCollider;
-			SpriteRenderer sr = runtime.SpriteRenderer;
 			ProjectileControlBehavior[] pcbs = runtime.ExtraControllers;
 			
 			transform.localScale = runtime.transform.localScale;
 			gameObject.tag = runtime.gameObject.tag;
 			gameObject.layer = runtime.gameObject.layer;
-			
-			if(sr != null) {
-				renderer.sprite = sr.sprite;
-				renderer.color = sr.color;
-				renderer.sharedMaterial = sr.sharedMaterial;
-				renderer.sortingLayerID = renderer.sortingLayerID;
-			}
-			else
-				Debug.LogError("The provided prefab should have a SpriteRenderer!");
-			
-			if(cc != null) {
-				circleCenter = Util.HadamardProduct2(transform.lossyScale, cc.offset);
-				circleRaidus = cc.radius * Util.MaxComponent2(transform.lossyScale);
-			}
-			else
-				Debug.LogError("The provided prefab should a CircleCollider2D!");
+
+			renderer.sprite = runtime.Sprite;
+			renderer.color = runtime.Color;
+			renderer.sharedMaterial = runtime.Material;
+			renderer.sortingLayerID = renderer.sortingLayerID;
+
+			circleCenter = Util.HadamardProduct2(transform.lossyScale, runtime.ColliderOffset);
+			circleRaidus = runtime.ColliderRadius * Util.MaxComponent2(transform.lossyScale);
 
 			for(int i = 0; i < pcbs.Length; i++) {
 				pcbs[i].ProjectileGroup.Add(this);
