@@ -1,9 +1,7 @@
 git push origin master
 doxygen Docs/Doxyfile
-cd Docs/html
+mkdir ../~temp
+mv Docs/html ../~temp
 git checkout gh-pages
-git add --all
-git commit
-git push gh-pages
-git checkout master
-cd ../..
+rm -r --force Docs/html
+mv ../~temp/html Docs
