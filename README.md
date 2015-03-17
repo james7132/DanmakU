@@ -4,7 +4,7 @@ An open source development kit for Unity intended to create 2D Danmaku, or bulle
 Largely inspired by Touhou and Touhou Danmakufu. Many of the functions mirror that of many available in Danmakufu.
 
 # Getting Started
-See the [wiki](https://github.com/james7132/DanmakuUnity2D/wiki) on a number of tutorials on how to get started.
+See the [wiki](https://github.com/james7132/DanmakuUnity2D/wiki) on a number of tutorials on how to get started.  
 See the [script documentation](http://james7132.github.io/DanmakuUnity2D/Docs/html/annotated.html) to see a scripting reference.
 
 # Requirements
