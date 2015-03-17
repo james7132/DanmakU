@@ -1,5 +1,5 @@
 # DanmakuUnity2D
-An open source development kit for Unity intended to create 2D Danmaku, or bullet hell, games.
+DanmakuUnity2D is a lightweight open source development kit for Unity intended to create 2D Danmaku, or bullet hell, games.
 
 Largely inspired by Touhou and Touhou Danmakufu. Many of the functions mirror that of many available in Danmakufu.
 
