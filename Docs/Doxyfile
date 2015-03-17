@@ -32,13 +32,13 @@ PROJECT_NAME           = "DanmakuUnity2D"
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = Alpha 0.1.0 
+PROJECT_NUMBER         = Alpha 0.1.1 
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description 
 # for a project that appears at the top of each page and should give viewer 
 # a quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "A Unity Dev Kit for 2D Danmaku Games" 
+PROJECT_BRIEF          = "A development kit for 2D Danmaku games in Unity" 
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is 
 # included in the documentation. The maximum height of the logo should not 
@@ -52,7 +52,7 @@ PROJECT_LOGO           =
 # If a relative path is entered, it will be relative to the location 
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = "C:/Users/James/Documents/Github/DanmakuUnity2D/Docs" 
+OUTPUT_DIRECTORY       = "D:/Documents/GitHub/DanmakuUnity2D/Docs" 
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 
 # 4096 sub-directories (in 2 levels) under the output directory of each output 
@@ -419,7 +419,7 @@ CASE_SENSE_NAMES       = NO
 # will show members with their full class and namespace scopes in the 
 # documentation. If set to YES the scope will be hidden.
 
-HIDE_SCOPE_NAMES       = NO
+HIDE_SCOPE_NAMES       = YES
 
 # If the SHOW_INCLUDE_FILES tag is set to YES (the default) then Doxygen 
 # will put a list of the files that are included by a file in the documentation 
@@ -638,7 +638,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = "C:/Users/James/Documents/Github/DanmakuUnity2D/Assets/External Libraries" 
+INPUT                  = "D:/Documents/GitHub/DanmakuUnity2D/Assets" 
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
