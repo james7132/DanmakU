@@ -1,32 +1,112 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityUtilLib;
+using UnityUtilLib.Pooling;
 
 namespace Danmaku2D {
-	public class ProjectileManager : SingletonBehavior<ProjectileManager>, IPausable {
 
-		private static BasicPool<Projectile> projectilePool;
+	[DisallowMultipleComponent]
+	public sealed class ProjectileManager : Singleton<ProjectileManager>, IPausable {
+
+		private static ProjectilePool projectilePool;
+
+		private class ProjectilePool : IPool<Projectile> {
+
+			internal Queue<int> pool;
+			internal Projectile[] all;
+			internal int totalCount;
+			internal int inactiveCount;
+			internal int spawnCount;
+
+			public ProjectilePool(int initial, int spawn) {
+				this.spawnCount = spawn;
+				pool = new Queue<int>();
+				totalCount = 0;
+				inactiveCount = 0;
+				Spawn (initial);
+			}
+			
+			protected void Spawn(int count) {
+				if(all == null) {
+					all = new Projectile[1024];
+				}
+				int endCount = totalCount + spawnCount;
+				if(all.Length <= endCount) {
+					int arraySize = all.Length;
+					while (arraySize <= endCount) {
+						arraySize = Mathf.NextPowerOfTwo(arraySize + 1);
+					}
+					Projectile[] temp = new Projectile[arraySize];
+					System.Array.Copy(all, temp, all.Length);
+					all = temp;
+				}
+				for(int i = totalCount; i < endCount; i++) {
+					all[i] = new Projectile();
+					all[i].index = i;
+					all[i].Pool = this;
+					pool.Enqueue(i);
+				}
+				totalCount = endCount;
+				inactiveCount += spawnCount;
+			}
+
+			#region IPool implementation
+
+			public Projectile Get () {
+				if(inactiveCount <= 0) {
+					Spawn (spawnCount);
+				}
+				inactiveCount--;
+				return all [pool.Dequeue ()];
+			}
+
+			public void Return (Projectile obj) {
+				pool.Enqueue (obj.index);
+				inactiveCount++;
+			}
+
+			#endregion
+
+			#region IPool implementation
+
+			object IPool.Get () {
+				return Get ();
+			}
+
+			public void Return (object obj) {
+				Return (obj as Projectile);
+			}
+
+			#endregion
+		}
 
 		[SerializeField]
 		private int initialCount = 1000;
 
 		[SerializeField]
-		private int spawnOnEmpty = 1000;
+		private int spawnOnEmpty = 100;
 
 		public override void Awake () {
 			base.Awake ();
-			projectilePool = new BasicPool<Projectile> (initialCount, spawnOnEmpty);
+			Projectile.SetupCollisions ();
+		}
+
+		public void Start () {
+			if(projectilePool == null) {
+				projectilePool = new ProjectilePool (initialCount, spawnOnEmpty);
+			}
 		}
 
 		public int TotalCount {
 			get {
-				return (projectilePool != null) ? projectilePool.TotalCount : 0;
+				return (projectilePool != null) ? projectilePool.totalCount : 0;
 			}
 		}
 
 		public int ActiveCount {
 			get {
-				return (projectilePool != null) ? projectilePool.ActiveCount : 0;
+				return (projectilePool != null) ? projectilePool.totalCount : 0;
 			}
 		}
 
@@ -35,59 +115,30 @@ namespace Danmaku2D {
 				NormalUpdate ();
 		}
 
-		public virtual void NormalUpdate () {
-			Projectile[] active = projectilePool.Active;
-			for(int i = 0; i < active.Length; i++) {
-				active[i].Update();
+		public void NormalUpdate () {
+			float dt = Util.TargetDeltaTime;
+			int totalCount = projectilePool.totalCount;
+			for (int i = 0; i < totalCount; i++) {
+				Projectile proj = projectilePool.all[i];
+				if(proj.is_active) {
+					proj.Update(dt);
+				}
 			}
 		}
 
 		public static void DeactivateAll() {
-			Projectile[] active = projectilePool.Active;
-			for(int i = 0; i < active.Length; i++) {
-				active[i].DeactivateImmediate();
+			Projectile[] all = projectilePool.all;
+			int totalCount = projectilePool.totalCount;
+			for (int i = 0; i < totalCount; i++) {
+				if(all[i].is_active)
+					all[i].DeactivateImmediate();
 			}
 		}
 
-		public static Projectile Get (ProjectilePrefab projectileType) {
+		internal static Projectile Get (ProjectilePrefab projectileType) {
 			Projectile proj = projectilePool.Get ();
 			proj.MatchPrefab (projectileType);
 			return proj;
-		}
-
-		public static Projectile Spawn(ProjectilePrefab bulletType, Vector2 location, float rotation) {
-			Projectile bullet = Get (bulletType);
-			bullet.Position = location;
-			bullet.Rotation = rotation;
-			bullet.Activate ();
-			return bullet;
-		}
-
-		public static LinearProjectile FireLinearProjectile(ProjectilePrefab bulletType, 
-		                                            Vector2 location, 
-		                                            float rotation, 
-		                                            float velocity) {
-			LinearProjectile linearProjectile = new LinearProjectile (velocity);
-			FireControlledProjectile (bulletType, location, rotation, linearProjectile);
-			return linearProjectile;
-		}
-		
-		public static CurvedProjectile FireCurvedProjectile(ProjectilePrefab bulletType,
-		                                            Vector2 location,
-		                                            float rotation,
-		                                            float velocity,
-		                                            float angularVelocity) {
-			CurvedProjectile curvedProjectile = new CurvedProjectile (velocity, angularVelocity);
-			FireControlledProjectile (bulletType, location, rotation, curvedProjectile);
-			return curvedProjectile;
-		}
-		
-		public static void FireControlledProjectile(ProjectilePrefab bulletType, 
-				                                    Vector2 location, 
-				                                    float rotation, 
-				                                    IProjectileController controller) {
-			Projectile bullet = Spawn (bulletType, location, rotation);
-			bullet.Controller = controller;
 		}
 
 		#region IPausable implementation

@@ -2,55 +2,59 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace UnityUtilLib {
-	public abstract class Pool<T> : IPool<T> where T : IPooledObject {
+namespace UnityUtilLib.Pooling {
+	public abstract class Pool<T> : IPool<T>, IEnumerable<T> where T : IPooledObject {
 		private Queue<T> inactiveObjs;
 		private HashSet<T> activeObjs;
 		private HashSet<T> all;
 
 		private int spawnCount;
+		private int totalCount = 0;
+		private int inactiveCount = 0;
+
+		private T[] activeArray;
+		private T[] inactiveArray;
+		private T[] allArray;
 
 		public T[] Active {
 			get {
-				T[] array = new T[activeObjs.Count];
-				activeObjs.CopyTo(array);
-				return array;
+				if(activeArray == null || activeArray.Length < ActiveCount)
+					activeArray = new T[Mathf.NextPowerOfTwo(ActiveCount)];
+				activeObjs.CopyTo(activeArray);
+				return activeArray;
 			}
 		}
-
+		
 		public T[] Inactive {
 			get {
-				return inactiveObjs.ToArray();
+				if(inactiveArray == null || inactiveArray.Length < inactiveCount)
+					inactiveArray = new T[Mathf.NextPowerOfTwo(inactiveCount)];
+				activeObjs.CopyTo(activeArray);
+				return activeArray;
 			}
 		}
-
+		
 		public T[] All {
 			get {
-				T[] array = new T[all.Count];
-				all.CopyTo(array);
-				return array;
+				if(allArray == null || allArray.Length < totalCount)
+					allArray = new T[Mathf.NextPowerOfTwo(totalCount)];
+				all.CopyTo(allArray);
+				return allArray;
 			}
 		}
 
 		public int ActiveCount {
 			get {
-				#pragma warning disable 0168
-				try {
-					return totalCount - inactiveObjs.Count;
-				} catch (System.NullReferenceException nre) {
-					return totalCount;
-				}
-				#pragma warning restore 0168
+				return totalCount - inactiveCount;
 			}
 		}
 
 		private int InactiveCount {
 			get {
-				return inactiveObjs.Count;
+				return inactiveCount;
 			}
 		}
-		
-		private int totalCount = 0;
+
 		public int TotalCount {
 			get {
 				return totalCount;
@@ -68,16 +72,17 @@ namespace UnityUtilLib {
 		public void Return(T po) {
 			inactiveObjs.Enqueue (po);
 			activeObjs.Remove (po);
+			inactiveCount++;
 			//Debug.Log(activeCount);
 		}
 
 		public T Get() {
-			if(InactiveCount <= 0) {
+			if(inactiveCount <= 0) {
 				Spawn (spawnCount);
 			}
 			T po = inactiveObjs.Dequeue();
+			inactiveCount--;
 			activeObjs.Add (po);
-			OnGet (po);
 			//Debug.Log(active);
 			return po;
 		}
@@ -88,14 +93,12 @@ namespace UnityUtilLib {
 				newPO.Pool = this;
 				inactiveObjs.Enqueue(newPO);
 				all.Add(newPO);
-				totalCount++;
 			}
+			totalCount += count;
+			inactiveCount += count;
 		}
 
 		protected abstract T CreateNew ();
-		protected virtual void OnGet(T obj) {
-		}
-
 
 		#region IPool implementation
 		object IPool.Get () {
@@ -104,6 +107,22 @@ namespace UnityUtilLib {
 		void IPool.Return (object obj) {
 			Return ((T)obj);
 		}
+		#endregion
+
+		#region IEnumerable implementation
+
+		public IEnumerator<T> GetEnumerator () {
+			return activeObjs.GetEnumerator ();
+		}
+
+		#endregion
+
+		#region IEnumerable implementation
+
+		IEnumerator IEnumerable.GetEnumerator () {
+			return Active.GetEnumerator ();
+		}
+
 		#endregion
 	}
 }

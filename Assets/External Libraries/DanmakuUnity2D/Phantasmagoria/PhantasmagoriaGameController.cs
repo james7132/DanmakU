@@ -133,11 +133,11 @@ namespace Danmaku2D.Phantasmagoria {
 			ProjectileManager.DeactivateAll ();
 			Enemy[] allEnemies = FindObjectsOfType<Enemy> ();
 			for(int i = 0; i < allEnemies.Length; i++) {
-				Destroy (allEnemies[i].GameObject);
+				Destroy (allEnemies[i].gameObject);
 			}
 			BulletCancelArea[] bcas = FindObjectsOfType<BulletCancelArea> ();
 			for(int i = 0; i < bcas.Length; i++) {
-				Destroy (bcas[i].GameObject);
+				Destroy (bcas[i].gameObject);
 			}
 			AttackPattern[] attackPatterns = FindObjectsOfType<AttackPattern> ();
 			for (int i = 0; i < attackPatterns.Length; i++) {
@@ -152,7 +152,7 @@ namespace Danmaku2D.Phantasmagoria {
 			}
 			closureTop.localScale = oldScale;
 			closureBottom.localScale = oldScale;
-			AbstractProjectileControllerGame ();
+			UnpauseGame ();
 			reseting = false;
 		}
 

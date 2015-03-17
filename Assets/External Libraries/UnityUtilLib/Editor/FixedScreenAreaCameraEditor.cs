@@ -10,7 +10,7 @@ namespace UnityUtilLib.Editor {
 	/// Adds a button for easy initialization
 	/// </summary>
 	[CustomEditor(typeof(FixedScreenAreaCamera))]
-	public class FixedScreenAreaCameraEditor : UnityEditor.Editor {
+	internal class FixedScreenAreaCameraEditor : UnityEditor.Editor {
 
 		public override void OnInspectorGUI () {
 			base.OnInspectorGUI ();

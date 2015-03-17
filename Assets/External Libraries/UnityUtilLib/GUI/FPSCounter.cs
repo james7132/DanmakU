@@ -1,8 +1,14 @@
 using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// A set of small utility GUI scripts that can be easily ported from one game to another
+/// </summary>
 namespace UnityUtilLib.GUI {
 
+	/// <summary>
+	/// An FPS counter displayed using a <a href="http://docs.unity3d.com/ScriptReference/GUIText.html">GUIText</a>.
+	/// This is identical in functionality to the script provided in Unity's Standard Assets
+	/// </summary>
 	[RequireComponent(typeof(GUIText))]
 	public class FPSCounter : MonoBehaviour {
 

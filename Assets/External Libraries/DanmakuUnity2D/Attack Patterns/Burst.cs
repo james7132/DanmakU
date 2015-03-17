@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
-using Danmaku2D;
 
+/// <summary>
+/// A set of scripts for commonly created Attack Patterns
+/// </summary>
 namespace Danmaku2D.AttackPatterns {
 
 	/// <summary>
-	/// A abstract class for consecutive basic bursts of bullets
+	/// An abstract class for consecutive basic bursts of bullets
 	/// </summary>
 	public abstract class Burst : AttackPattern {
 

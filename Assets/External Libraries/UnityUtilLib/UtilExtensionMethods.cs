@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityUtilLib.Interface;
 
-namespace UnityUtilLib
-{
+namespace UnityUtilLib {
     /// <summary>
     /// Class with util extension methods.
     /// The class is organized for easy reading.
     /// #region alphabetic order
     /// inside the region, method alphabetic order
     /// </summary>
-    public static class UtilExtensionMethods
-    {
+    public static class UtilExtensionMethods {
         #region Array
 
         /// <summary>
@@ -62,5 +59,59 @@ namespace UnityUtilLib
         }
 
         #endregion
+
+		#region Vector2
+
+		public static float ManhattanMagnitude(this Vector2 v) {
+			float dist = 0f;
+			if (v.x > 0)
+				dist += v.x;
+			else
+				dist += -v.x;
+
+			if (v.y > 0)
+				dist += v.y;
+			else
+				dist += -v.y;
+			return dist;
+		}
+
+		public static float FastApproximateMagnitude(this Vector2 v) {
+			float dx, dy, min, max;
+			dx = v.x;
+			dy = v.y;
+			
+			if ( dx < 0 ) dx = -dx;
+			if ( dy < 0 ) dy = -dy;
+			
+			if ( dx < dy ) {
+				min = dx;
+				max = dy;
+			} else {
+				min = dy;
+				max = dx;
+			}
+			
+			float approx = ( max * 1007 ) + ( min * 441 );
+			if ( max < ( min * 16 ))
+				approx -= ( max * 40 );
+			
+			// add 512 for proper rounding
+			return (( approx + 512 ) / 1024 );
+		}
+
+		#endregion
+
+		#region HashSet
+
+		public static T[] ToArray<T>(this HashSet<T> hashSet, int size = -1) {
+			if (size < 0)
+				size = hashSet.Count;
+			T[] temp = new T[size];
+			hashSet.CopyTo (temp);
+			return temp;
+		}
+
+		#endregion
     }
 }

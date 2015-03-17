@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityUtilLib;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
+/// <summary>
+/// A development kit for quick development of 2D Danmaku games
+/// </summary>
 namespace Danmaku2D {
 
 	/// <summary>
@@ -12,21 +13,13 @@ namespace Danmaku2D {
 	/// </summary>
 	public abstract class AttackPattern : PausableGameObject {
 
-		private DanmakuField targetField;
 		/// <summary>
 		/// The DanmakuField that all bullets fired by this pattern will end up within. <br>
 		/// This MUST be set to a non-null value before firing any bullets.
 		/// <see cref="DanmakuField"/>
 		/// </summary>
 		/// <value>The AttackPattern's target danmaku field</value>
-		public DanmakuField TargetField {
-			get {
-				return targetField;
-			}
-			set {
-				targetField = value;
-			}
-		}
+		public DanmakuField TargetField;
 
 		/// <summary>
 		/// Helper method to quickly get the angle needed to directly fire at the player in the AttacKPattern's target field
@@ -35,7 +28,7 @@ namespace Danmaku2D {
 		/// <param name="position">The position to evaluate the angle to the player from.</param>
 		/// <param name="coordSys">The cordinate system used to evaluate the true location of the source location</param>
 		protected float AngleToPlayer(Vector2 position, DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.World) {
-			return targetField.AngleTowardPlayer(Transform.position, coordSys);
+			return TargetField.AngleTowardPlayer(transform.position, coordSys);
 		}
 
 		/// <summary>
@@ -88,7 +81,7 @@ namespace Danmaku2D {
 			OnExecutionStart ();
 			while(!IsFinished && Active) {
 				MainLoop();
-				yield return UtilCoroutines.AbstractProjectileController(this);
+				yield return UtilCoroutines.WaitForUnpause(this);
 			}
 			OnExecutionFinish ();
 			Active = false;
@@ -106,7 +99,7 @@ namespace Danmaku2D {
 		                                     Vector2 location,
 		                                     float rotation,
 		                                     DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.View) {
-			return targetField.SpawnProjectile (bulletType, location, rotation, coordSys);
+			return TargetField.SpawnProjectile (bulletType, location, rotation, coordSys);
 		}
 
 		/// <summary>
@@ -122,7 +115,14 @@ namespace Danmaku2D {
 		                                      float rotation, 
 		                                      float velocity,
 		                                      DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.View) {
-			return targetField.FireLinearBullet (bulletType, location, rotation, velocity, coordSys);
+			LinearProjectile linearProjectile = new LinearProjectile (velocity);
+			Projectile bullet = ProjectileManager.Get (bulletType);
+			bullet.PositionImmediate = TargetField.WorldPoint(location, coordSys);
+			bullet.Rotation = rotation;
+			bullet.Field = TargetField;
+			bullet.Activate ();
+			bullet.Controller = linearProjectile;
+			return linearProjectile;
 		}
 
 		/// <summary>
@@ -139,7 +139,14 @@ namespace Danmaku2D {
 		                                      float velocity,
 		                                      float angularVelocity,
 		                                      DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.View) {
-			return targetField.FireCurvedBullet (bulletType, location, rotation, velocity, angularVelocity, coordSys);
+			CurvedProjectile curvedProjectile = new CurvedProjectile (velocity, angularVelocity);
+			Projectile bullet = ProjectileManager.Get (bulletType);
+			bullet.PositionImmediate = TargetField.WorldPoint(location, coordSys);
+			bullet.Rotation = rotation;
+			bullet.Field = TargetField;
+			bullet.Activate ();
+			bullet.Controller = curvedProjectile;
+			return curvedProjectile;
 		}
 
 		/// <summary>
@@ -155,7 +162,12 @@ namespace Danmaku2D {
 		                                    float rotation, 
 		                                    IProjectileController controller,
 		                                    DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.View) {
-			targetField.FireControlledBullet (bulletType, location, rotation, controller, coordSys);
+			Projectile bullet = ProjectileManager.Get (bulletType);
+			bullet.PositionImmediate = TargetField.WorldPoint(location, coordSys);
+			bullet.Rotation = rotation;
+			bullet.Field = TargetField;
+			bullet.Activate ();
+			bullet.Controller = controller;
 		}
 	}
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityUtilLib;
 
 namespace Danmaku2D {
-	public class EnemyManager : SingletonBehavior<EnemyManager>, IPausable {
+	public class EnemyManager : Singleton<EnemyManager>, IPausable {
 
 		private List<Enemy> registeredEnemies;
 
@@ -92,7 +92,7 @@ namespace Danmaku2D {
 					controller.SpawnEnemy(chainData[i].EnemyPrefab, new Vector2(rx, ry));
 					float time = 0f;
 					while(time < chainData[i].timeUntilNext) {
-						yield return UtilCoroutines.AbstractProjectileController(this);
+						yield return UtilCoroutines.WaitForUnpause(this);
 						time += Util.TargetDeltaTime;
 					}
 				}

@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 
+/// <summary>
+/// A development kit for quick development of 2D Danmaku games
+/// </summary>
 namespace Danmaku2D {
 	/// <summary>
 	/// A abstract class meant for time-limited AttackPatterns
