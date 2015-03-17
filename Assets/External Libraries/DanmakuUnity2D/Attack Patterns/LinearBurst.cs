@@ -2,10 +2,13 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 
+/// <summary>
+/// A set of scripts for commonly created Attack Patterns
+/// </summary>
 namespace Danmaku2D.AttackPatterns {
 
 	/// <summary>
-	/// Circular linear burst.
+	/// A Burst implementation that uses LinearProjectile as a projectile controller.
 	/// </summary>
 	[AddComponentMenu("Danmaku 2D/Attack Patterns/Linear Burst")]
 	public class LinearBurst : Burst {

@@ -10,9 +10,7 @@ namespace Danmaku2D {
 	/// </summary>
 	[RequireComponent(typeof(CircleCollider2D))]
 	[RequireComponent(typeof(SpriteRenderer))]
-	public sealed class ProjectilePrefab : MonoBehaviour {
-
-		private static Dictionary<ProjectilePrefab, ProjectilePrefab> runtimeInstances;
+	public sealed class ProjectilePrefab : CachedObject {
 
 		[SerializeField]
 		private CircleCollider2D circleCollider;
@@ -21,15 +19,37 @@ namespace Danmaku2D {
 		[SerializeField]
 		private ProjectileControlBehavior[] extraControllers;
 
-		private bool initialized;
+		private ProjectilePrefab runtime;
 
-		private float colliderRadius;
-		private Vector2 colliderOffset;
+		private Vector3 cachedScale;
+		private string cachedTag;
+		private int cachedLayer;
 
-		private Sprite sprite;
-		private Color color;
-		private Material material;
-		private int sortingLayerID;
+		private float cachedColliderRadius;
+		private Vector2 cachedColliderOffset;
+
+		private Sprite cachedSprite;
+		private Color cachedColor;
+		private Material cachedMaterial;
+		private int cachedSortingLayer;
+
+		public Vector3 Scale {
+			get {
+				return cachedScale;
+			}
+		}
+
+		public string Tag {
+			get {
+				return cachedTag;
+			}
+		}
+
+		public int Layer {
+			get {
+				return cachedLayer;
+			}
+		}
 
 		/// <summary>
 		/// Gets the radius of the ProjectilePrefab instance's collider
@@ -37,9 +57,7 @@ namespace Danmaku2D {
 		/// <value>the radius of the collider.</value>
 		public float ColliderRadius {
 			get {
-				if(!initialized)
-					Init ();
-				return colliderRadius;
+				return cachedColliderRadius;
 			}
 		}
 		
@@ -49,9 +67,7 @@ namespace Danmaku2D {
 		/// <value>the offset of the collider.</value>
 		public Vector2 ColliderOffset {
 			get {
-				if(!initialized)
-					Init ();
-				return colliderOffset;
+				return cachedColliderOffset;
 			}
 		}
 
@@ -61,9 +77,7 @@ namespace Danmaku2D {
 		/// <value>The sprite to be rendered.</value>
 		public Sprite Sprite {
 			get {
-				if(!initialized)
-					Init ();
-				return sprite;
+				return cachedSprite;
 			}
 		}
 		
@@ -73,9 +87,7 @@ namespace Danmaku2D {
 		/// <value>The color to be rendered with.</value>
 		public Color Color {
 			get {
-				if(!initialized)
-					Init ();
-				return color;
+				return cachedColor;
 			}
 		}
 		
@@ -85,9 +97,7 @@ namespace Danmaku2D {
 		/// <value>The material to be rendered with.</value>
 		public Material Material {
 			get {
-				if(!initialized)
-					Init ();
-				return material;
+				return cachedMaterial;
 			}
 		}
 
@@ -97,21 +107,18 @@ namespace Danmaku2D {
 		/// <value>The sorting layer to be used when rendering.</value>
 		public int SortingLayerID {
 			get {
-				if(!initialized)
-					Init ();
-				return sortingLayerID;
+				return cachedSortingLayer;
 			}
 		}
 
 		public ProjectileControlBehavior[] ExtraControllers {
 			get {
-				if(!initialized)
-					Init ();
 				return extraControllers;
 			}
 		}
 
-		private void Init() {
+		public override void Awake() {
+			base.Awake ();
 			if (circleCollider == null) {
 				circleCollider = GetComponent<CircleCollider2D>();
 				if(circleCollider == null) {
@@ -126,21 +133,21 @@ namespace Danmaku2D {
 			}
 			if(extraControllers == null)
 				extraControllers = GetComponents<ProjectileControlBehavior>();
-			colliderRadius = circleCollider.radius;
-			colliderOffset = circleCollider.offset;
-			sprite = spriteRenderer.sprite;
-			color = spriteRenderer.color;
-			material = spriteRenderer.sharedMaterial;
-			sortingLayerID = spriteRenderer.sortingLayerID;
-			initialized = true;
+			cachedScale = transform.localScale;
+			cachedTag = gameObject.tag;
+			cachedLayer = gameObject.layer;
+			cachedColliderRadius = circleCollider.radius;
+			cachedColliderOffset = circleCollider.offset;
+			cachedSprite = spriteRenderer.sprite;
+			cachedColor = spriteRenderer.color;
+			cachedMaterial = spriteRenderer.sharedMaterial;
+			cachedSortingLayer = spriteRenderer.sortingLayerID;
 		}
 
 		internal ProjectilePrefab GetRuntime() {
-			if(runtimeInstances == null)
-				runtimeInstances = new Dictionary<ProjectilePrefab, ProjectilePrefab>();
-			if(!runtimeInstances.ContainsKey (this))
-				runtimeInstances[this] = CreateRuntimeInstance(this);
-			return runtimeInstances [this];
+			if(runtime == null)
+				runtime = CreateRuntimeInstance(this);
+			return runtime;
 		}
 
 		private static ProjectilePrefab CreateRuntimeInstance(ProjectilePrefab prefab) {

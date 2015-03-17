@@ -1,8 +1,16 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// A set of small utility GUI scripts that can be easily ported from one game to another
+/// </summary>
 namespace UnityUtilLib.GUI {
 
+	//TODO: Make GUITextShadow work in the editor
+
+	/// <summary>
+	/// A way to create a shadow behind a <a href="http://docs.unity3d.com/ScriptReference/GUIText.html">GUIText</a> that mirrors any displayed text at a given color and offset
+	/// </summary>
 	[RequireComponent(typeof(GUIText))]
 	public class GUITextShadow : MonoBehaviour  {
 
@@ -16,7 +24,7 @@ namespace UnityUtilLib.GUI {
 		[SerializeField]
 		private Color shadowColor;
 
-		void Start() {
+		private void Start() {
 			shadow = new GameObject();
 			shadow.transform.parent = transform;
 			shadow.name = "Shadow";
@@ -24,7 +32,7 @@ namespace UnityUtilLib.GUI {
 			text = GetComponent<GUIText> ();
 		}
 
-		void Update () {
+		private void Update () {
 			shadowText.alignment = text.alignment;
 			shadowText.anchor = text.anchor;
 			shadowText.color = shadowColor;

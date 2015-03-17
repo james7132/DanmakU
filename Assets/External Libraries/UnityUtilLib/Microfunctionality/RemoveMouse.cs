@@ -11,7 +11,8 @@ namespace UnityUtilLib.GUI {
 			#if UNITY_EDITOR
 			Destroy (this);
 			#else
-			Screen.lockCursor = true;
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
 			Destroy (this);
 			#endif
 		}

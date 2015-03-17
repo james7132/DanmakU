@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-namespace UnityUtilLib {
+namespace UnityUtilLib.Pooling {
 
 	public abstract class PooledObject : IPooledObject {
 		public IPool Pool {
@@ -14,6 +14,9 @@ namespace UnityUtilLib {
 		public bool IsActive {
 			get { 
 				return is_active; 
+			}
+			protected set {
+				is_active = value;
 			}
 		}
 

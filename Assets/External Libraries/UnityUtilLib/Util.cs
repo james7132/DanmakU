@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
+/// <summary>
+/// A utilty library of random useful and portable scripts for Unity
+/// </summary>
 namespace UnityUtilLib {
 
 	/// <summary>
@@ -232,6 +235,65 @@ namespace UnityUtilLib {
 			return p;
 		}
 
+		public static T[] GetComponents<T> (GameObject gameObject) where T : class {
+			Component[] components = gameObject.GetComponents (typeof(T));
+			int num = components.Length;
+			T[] temp = new T[num];
+			for(int i = 0; i < num; i++) {
+				temp[i] = components[i] as T;
+			}
+			return temp;
+		}
+
+		public static T[] GetComponentsPrealloc<T>(GameObject gameObject, T[] prealloc, out int count) where T : class {
+			Component[] components = gameObject.GetComponents (typeof(T));
+			count = components.Length;
+			if (prealloc.Length < count) {
+				Debug.Log(count);
+				prealloc = new T[count];
+			}
+			for(int i = 0; i < count; i++) {
+				prealloc[i] = components[i] as T;
+			}
+			return prealloc;
+		}
+
+		/// <summary>
+		/// Finds the <a href="http://docs.unity3d.com/ScriptReference/Object.html">UnityEngine.Object</a> that derive from a certain type.
+		/// Unlike <a href="http://docs.unity3d.com/ScriptReference/Object.FindObjectsOfType.html">UnityEngine.Object.FindObjectsOfType</a>, this method works on interface types as well.
+		/// This method is for general search. For a more efficent search that only works on classes derived from <a href="http://docs.unity3d.com/ScriptReference/MonoBehaviour.html">MonoBehavior</a> 
+		/// use FindBehaviorsOfType instead.
+		/// </summary>
+		/// <returns>The objects of type T.</returns>
+		/// <typeparam name="T">the type to search for</typeparam>
+		public static T[] FindObjectsOfType<T>() where T : class  {
+			return FindObjectByType<T, Object> ();
+		}
+
+		/// <summary>
+		/// Finds the <a href="http://docs.unity3d.com/ScriptReference/Object.html">UnityEngine.Object</a> that derive from a certain type.
+		/// Unlike <a href="http://docs.unity3d.com/ScriptReference/Object.FindObjectsOfType.html">UnityEngine.Object.FindObjectsOfType</a>, this method works on interface types as well.
+		/// This method is for specific search on classes derived from <a href="http://docs.unity3d.com/ScriptReference/MonoBehaviour.html">MonoBehavior</a>.
+		/// For a more general search over all objects, use FindObjectsOfType instead.
+		/// </summary>
+		/// <returns>The objects of type T.</returns>
+		/// <typeparam name="T">the type to search for</typeparam>
+		public static T[] FindBehaviorsOfType<T> () where T : class  {
+			return FindObjectByType<T, MonoBehaviour> ();
+		}
+
+		private static T[] FindObjectByType<T, V> () where T : class where V : Object {
+			Object[] objects = Object.FindObjectsOfType<V> ();
+			List<T> matches = new List<T> ();
+			for(int i = 0; i < objects.Length; i++) {
+				if(objects[i] is T) {
+					matches.Add (objects[i] as T);
+				}
+			}
+			return matches.ToArray ();
+		}
+
+
 		/// <summary>
 		/// Finds the closest described component to the given point
 		/// </summary>
@@ -251,12 +313,12 @@ namespace UnityUtilLib {
 			}
 			return returnValue;
 		}
-
+		
 		public static float AngleBetween2D(Vector2 v1, Vector2 v2) {
 			Vector2 diff = v2 - v1;
 			return Mathf.Atan2 (diff.y, diff.x) * 180f / Mathf.PI - 90f; 
 		}
-
+		
 		public static Quaternion RotationBetween2D(Vector2 v1, Vector2 v2) {
 			return Quaternion.Euler (0f, 0f, AngleBetween2D (v1, v2));
 		}

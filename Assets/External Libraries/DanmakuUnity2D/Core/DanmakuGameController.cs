@@ -2,8 +2,14 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 
+/// <summary>
+/// A development kit for quick development of 2D Danmaku games
+/// </summary>
 namespace Danmaku2D {
 
+	/// <summary>
+	/// A GameController implementation for 2D Danmaku games.
+	/// </summary>
 	[RequireComponent(typeof(ProjectileManager))]
 	[RequireComponent(typeof(EnemyManager))]
 	public abstract class DanmakuGameController : GameController {
@@ -12,12 +18,12 @@ namespace Danmaku2D {
 		private int maximumLives;
 
 		/// <summary>
-		/// Gets the maximum lives.
+		/// The maximum number of lives a player can reach.
 		/// </summary>
 		/// <value>The maximum lives.</value>
-		public int MaximumLives {
+		public static int MaximumLives {
 			get {
-				return maximumLives;
+				return (Instance as DanmakuGameController).maximumLives;
 			}
 		}
 

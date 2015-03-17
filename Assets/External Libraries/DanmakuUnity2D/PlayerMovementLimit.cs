@@ -1,6 +1,9 @@
 using UnityEngine;
-using System.Collections;
+using UnityUtilLib;
 
+/// <summary>
+/// A development kit for quick development of 2D Danmaku games
+/// </summary>
 namespace Danmaku2D {
 	[RequireComponent(typeof(ScreenBoundary))]
 	public class PlayerMovementLimit : MonoBehaviour {
@@ -13,7 +16,7 @@ namespace Danmaku2D {
 
 		void OnTriggerEnter2D(Collider2D other) {
 			if(other.CompareTag(tagCheck)) {
-				DanmakuPlayerCharacter player = other.gameObject.GetComponent<DanmakuPlayerCharacter> ();
+				DanmakuPlayer player = other.gameObject.GetComponent<DanmakuPlayer> ();
 				if(player != null) {
 					player.ForbidMovement(lockedMovementVector);
 				}
@@ -22,7 +25,7 @@ namespace Danmaku2D {
 
 		void OnTriggerExit2D(Collider2D other) {
 			if(other.CompareTag(tagCheck)) {
-				DanmakuPlayerCharacter player = other.gameObject.GetComponent<DanmakuPlayerCharacter> ();
+				DanmakuPlayer player = other.gameObject.GetComponent<DanmakuPlayer> ();
 				if(player != null) {
 					player.AllowMovement(lockedMovementVector);
 				}

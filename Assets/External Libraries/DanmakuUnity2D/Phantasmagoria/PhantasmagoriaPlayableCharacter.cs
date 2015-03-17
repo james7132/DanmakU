@@ -3,7 +3,7 @@ using System.Collections;
 using UnityUtilLib;
 
 namespace Danmaku2D.Phantasmagoria {
-	public class PhantasmagoriaPlayableCharacter : DanmakuPlayerCharacter {
+	public class PhantasmagoriaPlayableCharacter : DanmakuPlayer {
 
 		[SerializeField]
 		private AttackPattern[] attackPatterns;
@@ -87,14 +87,14 @@ namespace Danmaku2D.Phantasmagoria {
 		public override void Hit(Projectile proj) {
 			if(!invincible) {
 				base.Hit (proj);
-				BulletCancelArea cancelArea = (BulletCancelArea)Instantiate (cancelPrefab, Transform.position, Quaternion.identity);
+				BulletCancelArea cancelArea = (BulletCancelArea)Instantiate (cancelPrefab, transform.position, Quaternion.identity);
 				cancelArea.Run(deathCancelDuration, deathCancelRadius);
+				invincible = true;
 				StartCoroutine(DeathInvincibiilty());
 			}
 		}
 
 		private IEnumerator DeathInvincibiilty() {
-			invincible = true;
 			deathInvincibiiltyPeriod.Reset ();
 			invincibiltyFlash.Reset ();
 			WaitForEndOfFrame wfeof = new WaitForEndOfFrame();
@@ -152,9 +152,9 @@ namespace Danmaku2D.Phantasmagoria {
 
 		public override void Fire () {
 			Vector2 location;
-			location = Transform.position;
-			Projectile proj1 = ProjectileManager.FireLinearProjectile (shotType, location + shotOffset, 0f, shotVelocity).Projectile;
-			Projectile proj2 = ProjectileManager.FireLinearProjectile (shotType, location - shotOffset, 0f, shotVelocity).Projectile;
+			location = transform.position;
+			Projectile proj1 = Field.FireLinearProjectile (shotType, location + shotOffset, 0f, shotVelocity, DanmakuField.CoordinateSystem.World).Projectile;
+			Projectile proj2 = Field.FireLinearProjectile (shotType, location - shotOffset, 0f, shotVelocity, DanmakuField.CoordinateSystem.World).Projectile;
 			proj1.Damage = proj2.Damage = shotDamage;
 		}
 	}

@@ -3,17 +3,22 @@ using UnityUtilLib;
 using System.Collections;
 
 namespace Danmaku2D {
-	public class PlayerGrazeHitbox : MonoBehaviour {
+	public class PlayerGrazeHitbox : MonoBehaviour, IProjectileCollider{
 
-		private DanmakuPlayerCharacter player;
+		private DanmakuPlayer player;
 
 		void Start() {
-			player = GetComponentInParent<DanmakuPlayerCharacter> ();
+			player = GetComponentInParent<DanmakuPlayer> ();
 			if (player == null) {
 				Debug.LogError("PlayerGrazeHitbox should be on a child object of a GameObject with an Avatar sublcass script");
 			}
 		}
 
+		#region IProjectileCollider implementation
+		public void OnProjectileCollision (Projectile proj) {
+			//throw new System.NotImplementedException ();
+		}
+		#endregion
 
 		//TODO: FIX
 
