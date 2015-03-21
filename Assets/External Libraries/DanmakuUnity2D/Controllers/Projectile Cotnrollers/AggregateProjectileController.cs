@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Danmaku2D.ProjectileControllers {
 
-	public class AggregateProjectileController : ProjectileController, ICollection<IProjectileController> {
+	public class AggregateProjectileController : IProjectileController, ICollection<IProjectileController> {
 
 		private List<IProjectileController> children;
 
@@ -11,13 +11,14 @@ namespace Danmaku2D.ProjectileControllers {
 			this.children = new List<IProjectileController> (children);
 		}
 
-		#region implemented abstract members of ProjectileController
-		public override void UpdateProjectile (float dt) {
+		#region IProjectileController implementation
+
+		public void UpdateProjectile (Projectile projectile, float dt) {
 			for(int i = 0; i < children.Count; i++) {
-				children[i].Projectile = Projectile;
-				children[i].UpdateProjectile(dt);
+				children[i].UpdateProjectile(projectile, dt);
 			}
 		}
+
 		#endregion
 
 		#region ICollection implementation

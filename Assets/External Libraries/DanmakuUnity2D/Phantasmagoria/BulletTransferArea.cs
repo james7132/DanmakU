@@ -9,7 +9,7 @@ namespace Danmaku2D.Phantasmagoria {
 	[RequireComponent(typeof(Collider2D))]
 	public class BulletTransferArea : PausableGameObject {
 
-		public void Run(float duration, float maxScale, PhantasmagoriaField origin) {
+		public void Run(float duration, float maxScale, DanmakuField origin) {
 			ProjectileTransferBoundary ptb = GetComponent<ProjectileTransferBoundary> ();
 			ptb.Field = origin;
 			StartCoroutine (Execute (duration, maxScale));

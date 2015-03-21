@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityUtilLib;
+using Danmaku2D;
 
 /// <summary>
 /// Custom editor scripts for various components of the Danmaku2D development kit

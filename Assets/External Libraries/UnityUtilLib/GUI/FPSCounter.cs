@@ -12,6 +12,7 @@ namespace UnityUtilLib.GUI {
 	[RequireComponent(typeof(GUIText))]
 	public class FPSCounter : MonoBehaviour {
 
+		[SerializeField]
 		private float updateInterval = 0.5f;
 
 		private float accum = 0.0f; // FPS accumulated over the interval
@@ -22,25 +23,35 @@ namespace UnityUtilLib.GUI {
 
 		private GUIText display;
 
+		private bool controllerCheck;
+
 		void Start () {
 			display = GetComponent<GUIText>();
+			controllerCheck = GameController.Instance != null;
 		}
 
 		void Update () {
-			float dt = Time.deltaTime;
-			timeleft -= dt ;
-			accum += Time.timeScale / dt;
-			++frames;
-			
-			// Interval ended - update GUI text and start new interval
-			if( timeleft <= 0.0 )
-			{
-				// display two fractional digits (f2 format)
-				display.text = (accum/frames).ToString("f2") + " fps";
-				timeleft = updateInterval;
-				accum = 0.0f;
-				frames = 0f;
+			if (controllerCheck) {
+				DisplayFPS(GameController.FPS);
+			} else {
+				float dt = Time.unscaledDeltaTime;
+				timeleft -= dt ;
+				accum += dt;
+				++frames;
+				
+				// Interval ended - update GUI text and start new interval
+				if( timeleft <= 0.0 ) {
+					// display two fractional digits (f2 format)
+					DisplayFPS(frames / accum);
+					timeleft = updateInterval;
+					accum = 0.0f;
+					frames = 0f;
+				}
 			}
+		}
+
+		private void DisplayFPS(float fps) {
+			display.text = fps.ToString("f2") + " fps";
 		}
 	}
 }

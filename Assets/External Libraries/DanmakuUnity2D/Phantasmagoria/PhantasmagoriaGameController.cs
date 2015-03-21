@@ -10,8 +10,8 @@ namespace Danmaku2D.Phantasmagoria {
 		public class PlayerData {
 
 			[SerializeField]
-			private PhantasmagoriaField field;
-			public PhantasmagoriaField Field {
+			private DanmakuField field;
+			public DanmakuField Field {
 				get {
 					return field;
 				}
@@ -63,15 +63,14 @@ namespace Danmaku2D.Phantasmagoria {
 			base.Awake ();
 			Physics2D.raycastsHitTriggers = true;
 			if(player1.Field != null && player2.Field != null) {
-				player1.Field.SetTargetField(player2.Field);
-				player2.Field.SetTargetField(player1.Field);
-				player1.Field.PlayerNumber = 1;
-				player2.Field.PlayerNumber = 2;
+				player1.Field.TargetField = player2.Field;
+				player2.Field.TargetField = player1.Field;
 				StartRound();
 			}
 		}
 
-		void Update() {
+		public override void Update() {
+			base.Update ();
 			if (!reseting && (player1.Field.Player.LivesRemaining <= 0 || player2.Field.Player.LivesRemaining <= 0)) {
 				StartCoroutine(RoundReset ());
 			}
@@ -89,6 +88,22 @@ namespace Danmaku2D.Phantasmagoria {
 		public void StartRound() {
 			roundTimeRemaining = roundTime;
 			guardianSummoned = false;
+		}
+
+		private int playerNumber = 1;
+		public int PlayerNumber {
+			get {
+				return playerNumber; 
+			}
+			set { 
+				playerNumber = value; 
+			}
+		}
+		
+		public static void Transfer(Projectile projectile) {
+			DanmakuField field = projectile.Field;
+			Vector2 relativePos = field.ViewPoint (projectile.Position);
+			projectile.Position = field.TargetField.WorldPoint (relativePos);
 		}
 
 		public IEnumerator RoundReset() {
@@ -128,8 +143,10 @@ namespace Danmaku2D.Phantasmagoria {
 			} else if(p2win) {
 				//Declare Player 2 the winner
 			}
-			player1.Field.RoundReset ();
-			player2.Field.RoundReset ();
+			player1.Field.Player.Reset (MaximumLives);
+			player2.Field.Player.Reset (MaximumLives);
+			player1.Field.Camera2DRotation = 0f;
+			player2.Field.Camera2DRotation = 0f;
 			ProjectileManager.DeactivateAll ();
 			Enemy[] allEnemies = FindObjectsOfType<Enemy> ();
 			for(int i = 0; i < allEnemies.Length; i++) {

@@ -10,9 +10,9 @@ namespace Danmaku2D.ProjectileControllers {
 	/// An abstract generic superclass to mirror the functionality of any implementor of IPorjectileGroupController in a ProjectileControlBehavior.
 	/// It can be used with other ProjectileControlBehavior implementations; however it is best used with IProjectileGroupController implementations that don't derive from ProjectileControlBehavior.
 	/// </summary>
-	public abstract class ControllerWrapperBehavior<T> : ProjectileControlBehavior where T : IProjectileGroupController {
+	public abstract class ControllerWrapperBehavior<T> : ProjectileControlBehavior where T : IProjectileController {
 
-		private T controller;
+		private T projectileController;
 	
 		/// <summary>
 		/// Gets the underlying IProjectileGroupController.
@@ -20,15 +20,15 @@ namespace Danmaku2D.ProjectileControllers {
 		/// <value>The underlying controller.</value>
 		public T Controller {
 			get {
-				return controller;
+				return projectileController;
 			}
 		}
 
 		public override void Awake () {
 			base.Awake ();
-			if (controller == null) {
-				controller = CreateController ();
-				if (controller == null) {
+			if (projectileController == null) {
+				projectileController = CreateController ();
+				if (projectileController == null) {
 					throw new System.NotImplementedException(GetType().ToString() + " does not implement CreateController() properly");
 				}
 			}
@@ -43,7 +43,7 @@ namespace Danmaku2D.ProjectileControllers {
 
 		#region implemented abstract members of ProjectileControlBehavior
 		public sealed override void UpdateProjectile (Projectile projectile, float dt) {
-			controller.UpdateProjectile(projectile, dt);
+			projectileController.UpdateProjectile(projectile, dt);
 		}
 		#endregion
 		

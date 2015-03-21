@@ -8,7 +8,7 @@ namespace UnityUtilLib {
 	/// </summary>
 	[RequireComponent(typeof(Camera))]
 	public class FixedScreenAreaCamera : MonoBehaviour {
-
+		
 		private Camera fixedCamera;
 		private float currentAspectRatio;
 		private float offset;

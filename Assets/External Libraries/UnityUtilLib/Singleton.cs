@@ -19,6 +19,7 @@ namespace UnityUtilLib {
 		public static T Instance {
 			get { 
 				if(instance == null) {
+					Debug.Log("hi");
 					instance = FindObjectOfType<T>();
 				}
 				return instance; 

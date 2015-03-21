@@ -5,8 +5,8 @@ namespace Danmaku2D.Phantasmagoria {
 	public class ProjectileTransferBoundary : ProjectileBoundary {
 
 		[SerializeField]
-		private PhantasmagoriaField field;
-		public PhantasmagoriaField Field {
+		private DanmakuField field;
+		public DanmakuField Field {
 			get {
 				return field;
 			}
@@ -17,7 +17,7 @@ namespace Danmaku2D.Phantasmagoria {
 
 		protected override void ProcessProjectile (Projectile proj) {
 			if (field != null) {
-				field.Transfer(proj);
+				PhantasmagoriaGameController.Transfer(proj);
 			}
 		}
 	}

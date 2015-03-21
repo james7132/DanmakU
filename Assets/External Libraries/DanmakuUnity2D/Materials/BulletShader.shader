@@ -67,7 +67,7 @@
 			{
 				fixed4 texColor = tex2D(_MainTex, IN.texcoord);
 				fixed greyScale = (texColor.r + texColor.g + texColor.b) / 3;
-				fixed4 a = (1, 1, 1, texColor.a), b;
+				fixed4 a = (1, 1, 1, texColor.a * IN.color.a), b;
 				if(greyScale >= 0.5)
 				{
 					b = lerp(IN.color, _UpperColor, (greyScale - 0.5) * 2);

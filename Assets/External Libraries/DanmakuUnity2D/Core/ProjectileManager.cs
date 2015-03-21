@@ -86,6 +86,9 @@ namespace Danmaku2D {
 
 		[SerializeField]
 		private int spawnOnEmpty = 100;
+	
+		[SerializeField]
+		private LayerMask defaultCollisionMask = ((LayerMask)~0);
 
 		public override void Awake () {
 			base.Awake ();
@@ -93,6 +96,7 @@ namespace Danmaku2D {
 		}
 
 		public void Start () {
+			Debug.Log (((int)defaultCollisionMask).ToString ("X8"));
 			if(projectilePool == null) {
 				projectilePool = new ProjectilePool (initialCount, spawnOnEmpty);
 			}
@@ -118,10 +122,22 @@ namespace Danmaku2D {
 		public void NormalUpdate () {
 			float dt = Util.TargetDeltaTime;
 			int totalCount = projectilePool.totalCount;
+			DanmakuField[] fields = DanmakuField.fields.ToArray ();
+			int fieldCount = fields.Length;
 			for (int i = 0; i < totalCount; i++) {
 				Projectile proj = projectilePool.all[i];
 				if(proj.is_active) {
 					proj.Update(dt);
+					bool check = true;
+					for(int j = 0; j < fieldCount; j++) {
+						if(fields[j].Bounds.Contains(proj.Position)) {
+							check = false;
+							break;
+						}
+					}
+					if(check) {
+						proj.DeactivateImmediate();
+					}
 				}
 			}
 		}

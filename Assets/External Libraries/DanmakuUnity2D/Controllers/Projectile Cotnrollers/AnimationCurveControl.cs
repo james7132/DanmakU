@@ -15,25 +15,12 @@ namespace Danmaku2D {
 	}
 
 	[System.Serializable]
-	public class AnimationCurveController : ProjectileController, IProjectileGroupController {
+	public class AnimationCurveController : IProjectileController {
 
 		[SerializeField]
 		private AnimationCurve velocityCurve;
 
-		#region implemented abstract members of ProjectileController
-
-		public sealed override void UpdateProjectile (float dt) {
-			UpdateProjectile (Projectile, dt);
-		}
-
-		#endregion
-
-		#region IProjectileGroupController implementation
-		
-		public ProjectileGroup ProjectileGroup {
-			get;
-			set;
-		}
+		#region IProjectileController implementation
 		
 		public virtual void UpdateProjectile (Projectile projectile, float dt) {
 			//			if(acceleration != 0) {

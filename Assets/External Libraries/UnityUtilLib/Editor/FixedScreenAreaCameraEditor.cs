@@ -1,7 +1,5 @@
 using UnityEditor;
 using UnityEngine;
-using UnityUtilLib;
-using UnityUtilLib.Editor;
 
 namespace UnityUtilLib.Editor {
 

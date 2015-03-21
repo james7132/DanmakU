@@ -45,7 +45,7 @@ namespace Danmaku2D {
 
 			private Vector3 Interpret(Vector2 loc, DanmakuField field, Vector3 startLocation) {	
 				Vector3 nextLocation = loc;
-				return startLocation + field.WorldPoint(nextLocation, DanmakuField.CoordinateSystem.Relative);
+				return startLocation + (Vector3)field.WorldPoint(nextLocation, DanmakuField.CoordinateSystem.Relative);
 			}
 		}
 

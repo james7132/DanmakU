@@ -8,7 +8,7 @@ namespace Danmaku2D.Phantasmagoria.GUI {
 	public class ChargeBarGUI : MonoBehaviour {
 
 		[SerializeField]
-		private PhantasmagoriaField field;
+		private DanmakuField field;
 		private PhantasmagoriaPlayableCharacter player;
 
 		[SerializeField]

@@ -28,7 +28,7 @@ namespace Danmaku2D.AttackPatterns {
 		/// An overridable factory method for subclasses to control the various 
 		/// </summary>
 		/// <value>The controller to be used with the bullets fired with this attack pattern</value>
-		protected abstract IProjectileGroupController BurstController {
+		protected abstract IProjectileController BurstController {
 			get;
 		}
 		
