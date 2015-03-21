@@ -12,11 +12,14 @@ namespace Danmaku2D {
 	[RequireComponent(typeof(SpriteRenderer))]
 	public sealed class ProjectilePrefab : CachedObject {
 
+		[HideInInspector]
 		[SerializeField]
 		private CircleCollider2D circleCollider;
+
+		[HideInInspector]
 		[SerializeField]
 		private SpriteRenderer spriteRenderer;
-		[SerializeField]
+
 		private ProjectileControlBehavior[] extraControllers;
 
 		private ProjectilePrefab runtime;
@@ -33,19 +36,19 @@ namespace Danmaku2D {
 		private Material cachedMaterial;
 		private int cachedSortingLayer;
 
-		public Vector3 Scale {
+		internal Vector3 Scale {
 			get {
 				return cachedScale;
 			}
 		}
 
-		public string Tag {
+		internal string Tag {
 			get {
 				return cachedTag;
 			}
 		}
 
-		public int Layer {
+		internal int Layer {
 			get {
 				return cachedLayer;
 			}
@@ -55,7 +58,7 @@ namespace Danmaku2D {
 		/// Gets the radius of the ProjectilePrefab instance's collider
 		/// </summary>
 		/// <value>the radius of the collider.</value>
-		public float ColliderRadius {
+		internal float ColliderRadius {
 			get {
 				return cachedColliderRadius;
 			}
@@ -65,7 +68,7 @@ namespace Danmaku2D {
 		/// Gets the offset of the ProjectilePrefab instance's collider from it's position
 		/// </summary>
 		/// <value>the offset of the collider.</value>
-		public Vector2 ColliderOffset {
+		internal Vector2 ColliderOffset {
 			get {
 				return cachedColliderOffset;
 			}
@@ -75,7 +78,7 @@ namespace Danmaku2D {
 		/// Gets the sprite of the ProjectilePrefab instance to be rendered
 		/// </summary>
 		/// <value>The sprite to be rendered.</value>
-		public Sprite Sprite {
+		internal Sprite Sprite {
 			get {
 				return cachedSprite;
 			}
@@ -85,7 +88,7 @@ namespace Danmaku2D {
 		/// Gets the color of the ProjectilePrefab instance to be rendered
 		/// </summary>
 		/// <value>The color to be rendered with.</value>
-		public Color Color {
+		internal Color Color {
 			get {
 				return cachedColor;
 			}
@@ -95,7 +98,7 @@ namespace Danmaku2D {
 		/// Gets the material of the ProjectilePrefab instance to be rendered
 		/// </summary>
 		/// <value>The material to be rendered with.</value>
-		public Material Material {
+		internal Material Material {
 			get {
 				return cachedMaterial;
 			}
@@ -105,13 +108,13 @@ namespace Danmaku2D {
 		/// Gets the sorting layer to be used when rendering these bullets
 		/// </summary>
 		/// <value>The sorting layer to be used when rendering.</value>
-		public int SortingLayerID {
+		internal int SortingLayerID {
 			get {
 				return cachedSortingLayer;
 			}
 		}
 
-		public ProjectileControlBehavior[] ExtraControllers {
+		internal ProjectileControlBehavior[] ExtraControllers {
 			get {
 				return extraControllers;
 			}
@@ -122,17 +125,16 @@ namespace Danmaku2D {
 			if (circleCollider == null) {
 				circleCollider = GetComponent<CircleCollider2D>();
 				if(circleCollider == null) {
-					throw new System.InvalidOperationException("ProjectilePrefab without a Collider");
+					throw new System.InvalidOperationException("ProjectilePrefab without a Collider! (" + name + ")");
 				}
 			}
 			if (spriteRenderer == null) {
 				spriteRenderer = GetComponent<SpriteRenderer>();
 				if(spriteRenderer == null) {
-					throw new System.InvalidOperationException("ProjectilePrefab without a SpriteRenderer");
+					throw new System.InvalidOperationException("ProjectilePrefab without a SpriteRenderer (" + name + ")");
 				}
 			}
-			if(extraControllers == null)
-				extraControllers = GetComponents<ProjectileControlBehavior>();
+			extraControllers = GetComponents<ProjectileControlBehavior>();
 			cachedScale = transform.localScale;
 			cachedTag = gameObject.tag;
 			cachedLayer = gameObject.layer;

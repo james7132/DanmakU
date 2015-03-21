@@ -4,20 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Danmaku2D {
-	public class ProjectileGroup : ICollection<Projectile> {
+
+	public sealed class ProjectileGroup : ICollection<Projectile> {
 
 		internal HashSet<Projectile> group;
 
-		internal IProjectileGroupController controller;
-		public IProjectileGroupController Controller {
-			get {
-				return controller;
-			}
-			set {
-				controller = value;
-				controller.ProjectileGroup = this;
-			}
-		}
+		public IProjectileController Controller;
 
 		public ProjectileGroup() {
 			group = new HashSet<Projectile> ();

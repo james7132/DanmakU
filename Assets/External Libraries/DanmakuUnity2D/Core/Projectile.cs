@@ -76,9 +76,6 @@ namespace Danmaku2D {
 			set {
 				controller = value;
 				controllerCheck = controller != null;
-				if(controllerCheck) {
-					controller.Projectile = this;
-				}
 			}
 		}
 
@@ -240,12 +237,12 @@ namespace Danmaku2D {
 			originalPosition = Position;
 
 			if (controllerCheck) {
-				controller.UpdateProjectile (dt);
+				controller.UpdateProjectile (this, dt);
 			}
 
 			if(groupCheck) {
 				for(int i = 0; i < groupCountCache; i++) {
-					IProjectileGroupController groupController = groups[i].controller;
+					IProjectileController groupController = groups[i].Controller;
 					if(groupController != null)
 						groupController.UpdateProjectile(this, dt);
 				}

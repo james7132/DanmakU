@@ -18,7 +18,7 @@ namespace Danmaku2D.AttackPatterns {
 
 		#region implemented abstract members of Burst
 
-		protected override IProjectileGroupController BurstController {
+		protected override IProjectileController BurstController {
 			get {
 				return LinearController;
 			}

@@ -43,6 +43,20 @@ namespace UnityUtilLib {
             return children;
         }
 
+		public static GameObject[] GetChildren(this GameObject go) {
+			return go.GetChildrenList ().ToArray ();
+		}
+
+		public static GameObject FindChild(this GameObject go, string childName) {
+			GameObject[] children = go.GetChildren ();
+			for(int i = 0; i < children.Length; i++) {
+				if(children[i].name == childName) {
+					return children[i];
+				}
+			}
+			return null;
+		}
+
         /// <summary>
         /// Safe get component method. Is a defensive alternative to the GetComponent method.
         /// This will tell you when it does not find the component.

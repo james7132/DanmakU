@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.Collections;
 
+[assembly: AssemblyIsEditorAssembly]
 namespace UnityUtilib.Editor {
 	public static class UnhideAllObjects {
 

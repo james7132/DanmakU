@@ -13,17 +13,11 @@ namespace Danmaku2D {
 	public interface IProjectileController {
 
 		/// <summary>
-		/// Gets or sets the projectile controlled by this controller.
-		/// </summary>
-		/// <value>The projectile controlled by this controller</value>
-		Projectile Projectile { get; set; }
-
-		/// <summary>
 		/// Updates the Projectile controlled by the controller instance.
 		/// </summary>
 		/// <returns>the displacement from the Projectile's original position after udpating</returns>
 		/// <param name="dt">the change in time since the last update</param>
-		void UpdateProjectile (float dt);
+		void UpdateProjectile (Projectile projectile, float dt);
 
 	}
 }

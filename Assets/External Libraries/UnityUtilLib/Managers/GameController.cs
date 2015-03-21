@@ -12,6 +12,17 @@ namespace UnityUtilLib {
 	/// </summary>
 	public abstract class GameController : Singleton<GameController> {
 
+		[SerializeField]
+		private float fpsUpdateInterval = 0.5f;
+		
+		private float accum = 0.0f; // FPS accumulated over the interval
+		
+		private float frames = 0f; // Frames drawn over the interval
+		
+		private float timeleft; // Left time for current interval
+
+		private static float fps = float.NaN;
+
 		private static float oldTimeScale;
 		private static bool gamePaused;
 
@@ -22,6 +33,33 @@ namespace UnityUtilLib {
 		public static bool IsGamePaused {
 			get {
 				return gamePaused;
+			}
+		}
+
+		/// <summary>
+		/// Gets the game's FPS.
+		/// Will return float.NaN if no GameController Instance does not exist.
+		/// </summary>
+		/// <value>The FPS.</value>
+		public static float FPS {
+			get {
+				return fps;
+			}
+		}
+
+		public virtual void Update() {
+			float dt = Time.unscaledDeltaTime;
+			timeleft -= dt ;
+			accum += dt;
+			++frames;
+			
+			// Interval ended - update GUI text and start new interval
+			if( timeleft <= 0.0 ) {
+				// display two fractional digits (f2 format)
+				fps = (frames/accum);
+				timeleft = fpsUpdateInterval;
+				accum = 0.0f;
+				frames = 0f;
 			}
 		}
 
