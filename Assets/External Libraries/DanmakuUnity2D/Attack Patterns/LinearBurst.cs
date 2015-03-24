@@ -16,11 +16,16 @@ namespace Danmaku2D.AttackPatterns {
 		[SerializeField]
 		private LinearProjectile LinearController;
 
+		[SerializeField]
+		private float deltaDepthVelocity;
+
 		#region implemented abstract members of Burst
 
-		protected override IProjectileController BurstController {
-			get {
+		protected override IProjectileController GetBurstController(int depth) {
+			if (deltaDepthVelocity == 0) {
 				return LinearController;
+			} else {
+				return new LinearProjectile(LinearController.Velocity + depth * deltaDepthVelocity);
 			}
 		}
 

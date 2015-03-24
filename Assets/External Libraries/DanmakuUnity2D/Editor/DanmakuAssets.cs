@@ -21,8 +21,8 @@ internal static class DanmakuAssets {
 			if (Directory.Exists (path)) {
 				return path; // path is a folder
 			} else {
-				Debug.Log(path);
-				Debug.Log(Directory.GetParent(path).FullName);
+//				Debug.Log(path);
+//				Debug.Log(Directory.GetParent(path).FullName);
 				return Directory.GetParent(path).FullName;
 			}
 		}

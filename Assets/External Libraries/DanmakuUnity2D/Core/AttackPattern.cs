@@ -72,7 +72,7 @@ namespace Danmaku2D {
 			if (!Active) {
 				StartCoroutine (Execute ());
 			} else {
-				Debug.Log("Tried Executing Already Running Attack Pattern");
+				print("Tried Executing Already Running Attack Pattern");
 			}
 		}
 		

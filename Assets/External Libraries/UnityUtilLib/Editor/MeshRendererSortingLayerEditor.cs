@@ -39,7 +39,7 @@ namespace UnityUtilLib.Editor {
 			//What is selected?
 			int sID = sortingLayerID.intValue;
 			for(int i = 0 ; i < layerID.Length ; i++) {
-				//Debug.Log(sID + " " + layerID[i]);
+				//print(sID + " " + layerID[i]);
 				if(sID == layerID[i]) {
 					selected = i;
 				}

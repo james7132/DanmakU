@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityUtilLib {
@@ -81,37 +80,244 @@ namespace UnityUtilLib {
 			if (v.x > 0)
 				dist += v.x;
 			else
-				dist += -v.x;
+				dist -= +v.x;
 
 			if (v.y > 0)
 				dist += v.y;
 			else
-				dist += -v.y;
+				dist -= v.y;
 			return dist;
 		}
 
-		public static float FastApproximateMagnitude(this Vector2 v) {
-			float dx, dy, min, max;
-			dx = v.x;
-			dy = v.y;
+		public static float Cross(this Vector2 v1, Vector2 v2) {
+			return v1.x * v2.y - v1.y * v2.x;
+		}
+
+		/// <summary>
+		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector2s
+		/// </summary>
+		/// <returns>The Hadamard product between the two vectors.</returns>
+		/// <param name="v1">the first vector</param>
+		/// <param name="v2">the second vector</param>
+		public static Vector2 Hadamard2(this Vector2 v1, Vector2 v2) {
+			return new Vector2(v1.x * v2.x, v1.y * v2.y);
+		}
+		
+		/// <summary>
+		/// Finds the largest component in the given Vector2
+		/// </summary>
+		/// <returns> the value of the smallest component</returns>
+		/// <param name="v">the vector to evaluate</param>
+		public static float Max(this Vector2 v) {
+			return (v.x > v.y) ? v.x : v.y;
+		}
+		
+		/// <summary>
+		/// Finds the smallest component in the given Vector2
+		/// </summary>
+		/// <returns> the value of the smallest component</returns>
+		/// <param name="v">the vector to evaluate</param>
+		public static float Min(this Vector2 v) {
+			return (v.x < v.y) ? v.x : v.y;
+		}
+
+		/// <summary>
+		/// Creates a random Vector2 between (0,0) and the given vector's components.
+		/// </summary>
+		/// <returns>the random vector</returns>
+		/// <param name="v">the maximum component values</param>
+		public static Vector2 Random(this Vector2 v) {
+			return new Vector2 (UnityEngine.Random.value * v.x, UnityEngine.Random.value * v.y);
+		}
+
+//		public static float FastApproximateMagnitude(this Vector2 v) {
+//			float dx, dy, min, max;
+//			dx = v.x;
+//			dy = v.y;
+//			
+//			if ( dx < 0 ) dx = -dx;
+//			if ( dy < 0 ) dy = -dy;
+//			
+//			if ( dx < dy ) {
+//				min = dx;
+//				max = dy;
+//			} else {
+//				min = dy;
+//				max = dx;
+//			}
+//			
+//			float approx = ( max * 1007 ) + ( min * 441 );
+//			if ( max < ( min * 16 ))
+//				approx -= ( max * 40 );
+//			
+//			// add 512 for proper rounding
+//			return (( approx + 512 ) / 1024 );
+//		}
+
+		#endregion
+
+		#region Vector3
+
+		public static float ManhattanMagnitude(this Vector3 v) {
+			float dist = 0f;
+			if (v.x > 0)
+				dist += v.x;
+			else
+				dist -= v.x;
 			
-			if ( dx < 0 ) dx = -dx;
-			if ( dy < 0 ) dy = -dy;
+			if (v.y > 0)
+				dist += v.y;
+			else
+				dist -= v.y;
+
+			if (v.z > 0)
+				dist += v.z;
+			else 
+				dist -= v.z;
+
+			return dist;
+		}
+
+		/// <summary>
+		/// Creates a random Vector3 between (0,0) and the given vector's components.
+		/// </summary>
+		/// <returns>the random vector</returns>
+		/// <param name="v">the maximum component values</param>
+		public static Vector3 Random(this Vector3 v) {
+			return new Vector3 (UnityEngine.Random.value * v.x, UnityEngine.Random.value * v.y, UnityEngine.Random.value * v.z);
+		}
+
+		/// <summary>
+		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector3s
+		/// </summary>
+		/// <returns>The Hadamard product between the two vectors.</returns>
+		/// <param name="v1">the first vector</param>
+		/// <param name="v2">the second vector</param>
+		public static Vector3 Hadamard3(this Vector3 v1, Vector3 v2) {
+			return new Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+		}
+
+		/// <summary>
+		/// Finds the largest component in the given Vector3
+		/// </summary>
+		/// <returns> the value of the smallest component</returns>
+		/// <param name="v">the vector to evaluate</param>
+		public static float Max(this Vector3 v) {
+			if(v.x > v.y)
+				return (v.z > v.y) ? v.z : v.y;
+			else
+				return (v.z > v.x) ? v.z : v.x;
+		}
+		
+		/// <summary>
+		/// Finds the smallest component in the given Vector3
+		/// </summary>
+		/// <returns> the value of the smallest component</returns>
+		/// <param name="v">the vector to evaluate</param>
+		public static float Min(this Vector3 v) {
+			if(v.x < v.y)
+				return (v.z < v.y) ? v.z : v.y;
+			else
+				return (v.z < v.x) ? v.z : v.x;
+		}
+
+		#endregion
+
+		#region Vector4
+
+		public static float ManhattanMagnitude(this Vector4 v) {
+			float dist = 0f;
+			if (v.x > 0)
+				dist += v.x;
+			else
+				dist -= v.x;
 			
-			if ( dx < dy ) {
-				min = dx;
-				max = dy;
+			if (v.y > 0)
+				dist += v.y;
+			else
+				dist -= v.y;
+			
+			if (v.z > 0)
+				dist += v.z;
+			else 
+				dist -= v.z;
+
+			if (v.w > 0)
+				dist += v.w;
+			else
+				dist -= v.w;
+			return dist;
+		}
+
+		/// <summary>
+		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector4s
+		/// </summary>
+		/// <returns>The Hadamard product between the two vectors.</returns>
+		/// <param name="v1">the first vector</param>
+		/// <param name="v2">the second vector</param>
+		public static Vector4 Hadamard4(this Vector4 v1, Vector4 v2) {
+			return new Vector4(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z, v1.w * v2.w);
+		}
+		
+		/// <summary>
+		/// Creates a random Vector4 between (0,0) and the given vector's components.
+		/// </summary>
+		/// <returns>the random vector</returns>
+		/// <param name="v">the maximum component values</param>
+		public static Vector4 Random(this Vector4 v) {
+			return new Vector4 (UnityEngine.Random.value * v.x, UnityEngine.Random.value * v.y, UnityEngine.Random.value * v.z, UnityEngine.Random.value * v.y);
+		}
+
+		public static float Max(this Vector4 v) {
+			if (v.x > v.y) {
+				if (v.z > v.w) {
+					return (v.x > v.z) ? v.x : v.z;
+				} else {
+					return (v.x > v.w) ? v.x : v.w;
+				}
 			} else {
-				min = dy;
-				max = dx;
+				if (v.z > v.w) {
+					return (v.y > v.z) ? v.y : v.z;
+				} else {
+					return (v.y > v.w) ? v.y : v.w;
+				}
 			}
-			
-			float approx = ( max * 1007 ) + ( min * 441 );
-			if ( max < ( min * 16 ))
-				approx -= ( max * 40 );
-			
-			// add 512 for proper rounding
-			return (( approx + 512 ) / 1024 );
+		}
+
+		public static float Min(this Vector4 v) {
+			if (v.x < v.y) {
+				if (v.z < v.w) {
+					return (v.x < v.z) ? v.x : v.z;
+				} else {
+					return (v.x < v.w) ? v.x : v.w;
+				}
+			} else {
+				if (v.z < v.w) {
+					return (v.y < v.z) ? v.y : v.z;
+				} else {
+					return (v.y < v.w) ? v.y : v.w;
+				}
+			}
+		}
+
+		#endregion
+
+		#region Rect
+
+		public static Vector2 RandomPoint(this Rect rect) {
+			return new Vector2 (rect.x + UnityEngine.Random.value * rect.width, rect.y +  UnityEngine.Random.value * rect.height);
+		}
+
+		#endregion
+
+		#region Bounds 
+
+		public static Vector3 RandomPoint(this Bounds bounds) {
+			Vector3 min = bounds.min;
+			Vector3 size = bounds.size;
+			return new Vector3 (min.x + UnityEngine.Random.value * size.x,
+			                   min.y + UnityEngine.Random.value * size.y,
+			                   min.z + UnityEngine.Random.value * size.z);
 		}
 
 		#endregion

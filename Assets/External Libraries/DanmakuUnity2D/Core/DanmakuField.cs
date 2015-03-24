@@ -225,7 +225,7 @@ namespace Danmaku2D {
 
 		private void CameraSetup() {			
 			if (camera2D == null) {
-				Debug.Log("Camera is null");
+				print("Camera is null");
 				GameObject camObj = gameObject.FindChild("Field Camera");
 				if(camObj == null) {
 					camObj = new GameObject ("Field Camera");
@@ -264,7 +264,7 @@ namespace Danmaku2D {
 			movementBounds.center = bounds.center = (Vector2)transform.position;
 			float size = camera2D.orthographicSize;
 			movementBounds.extents = new Vector2 (camera2D.aspect * size, size);
-			bounds.extents = movementBounds.extents + (Vector3)(Vector2.one * ClipBoundary * Util.MaxComponent2 (movementBounds.extents));
+			bounds.extents = movementBounds.extents + (Vector3)(Vector2.one * ClipBoundary * movementBounds.extents.Max());
 			#if UNITY_EDITOR
 			if(Application.isPlaying) {
 			#endif

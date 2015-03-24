@@ -39,7 +39,7 @@ namespace Danmaku2D {
 			base.Awake ();
 			boundary = GetComponent<BoxCollider2D> ();
 			if (field == null) {
-				Debug.Log("No field provided, searching in ancestor GameObjects...");
+				print("No field provided, searching in ancestor GameObjects...");
 				field = GetComponentInParent<DanmakuField>();
 			}
 			if (field == null) {
@@ -63,8 +63,8 @@ namespace Danmaku2D {
 		private void UpdatePosition() {
 			oldBounds = field.MovementBounds;
 
-			float size = Util.MaxComponent2 (oldBounds.size);
-			Vector2 newPosition = (Vector2)oldBounds.center + Util.HadamardProduct2(fixedPoints [(int)location], oldBounds.extents);
+			float size = oldBounds.size.Max();
+			Vector2 newPosition = (Vector2)oldBounds.center + fixedPoints [(int)location].Hadamard2(oldBounds.extents);
 			float buffer = bufferRatio * size;
 			float space = spaceRatio * size;
 			float hangover = hangoverRatio * size;

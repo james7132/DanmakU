@@ -23,6 +23,8 @@ namespace UnityUtilLib {
 		/// </summary>
 		public const float Rad2Degree = 180f / Mathf.PI;
 
+		public const float TwoPI = 2 * Mathf.PI;
+
 		/// <summary>
 		/// The normal target frames per second
 		/// This is the value used by <see cref="TargetFPS"/> if Time.timeScale is not 0 but Application.targetFrameRate is 0. 
@@ -119,105 +121,6 @@ namespace UnityUtilLib {
 			return (e == 0f) ? 0f : Mathf.Sign (e);
 		}
 
-		/// <summary>
-		/// Creates a random Vector2 between (0,0) and the given vector's components.
-		/// </summary>
-		/// <returns>the random vector</returns>
-		/// <param name="v">the maximum component values</param>
-		public static Vector2 RandomVect2(Vector2 v) {
-			return new Vector2 (Random.value * v.x, Random.value * v.y);
-		}
-
-		/// <summary>
-		/// Creates a random Vector3 between (0,0) and the given vector's components.
-		/// </summary>
-		/// <returns>the random vector</returns>
-		/// <param name="v">the maximum component values</param>
-		public static Vector3 RandomVect3(Vector3 v) {
-			return new Vector3 (Random.value * v.x, Random.value * v.y, Random.value * v.z);
-		}
-
-		/// <summary>
-		/// Creates a random Vector4 between (0,0) and the given vector's components.
-		/// </summary>
-		/// <returns>the random vector</returns>
-		/// <param name="v">the maximum component values</param>
-		public static Vector4 RandomVect4(Vector4 v) {
-			return new Vector4 (Random.value * v.x, Random.value * v.y, Random.value * v.z, Random.value * v.y);
-		}
-
-		/// <summary>
-		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector2s
-		/// </summary>
-		/// <returns>The Hadamard product between the two vectors.</returns>
-		/// <param name="v1">the first vector</param>
-		/// <param name="v2">the second vector</param>
-		public static Vector2 HadamardProduct2(Vector2 v1, Vector2 v2) {
-			return new Vector2(v1.x * v2.x, v1.y * v2.y);
-		}
-
-		/// <summary>
-		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector3s
-		/// </summary>
-		/// <returns>The Hadamard product between the two vectors.</returns>
-		/// <param name="v1">the first vector</param>
-		/// <param name="v2">the second vector</param>
-		public static Vector3 HadamardProduct3(Vector3 v1, Vector3 v2) {
-			return new Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
-		}
-
-		/// <summary>
-		/// Computes the <see href="http://en.wikipedia.org/wiki/Hadamard_product_%28matrices%29">Hadamard Product</see> between two Vector4s
-		/// </summary>
-		/// <returns>The Hadamard product between the two vectors.</returns>
-		/// <param name="v1">the first vector</param>
-		/// <param name="v2">the second vector</param>
-		public static Vector4 HadamardProduct4(Vector4 v1, Vector4 v2) {
-			return new Vector4(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z, v1.w * v2.w);
-		}
-		
-		/// <summary>
-		/// Finds the largest component in the given Vector2
-		/// </summary>
-		/// <returns> the value of the smallest component</returns>
-		/// <param name="v">the vector to evaluate</param>
-		public static float MaxComponent2(Vector2 v) {
-			return (v.x > v.y) ? v.x : v.y;
-		}
-		
-		/// <summary>
-		/// Finds the largest component in the given Vector3
-		/// </summary>
-		/// <returns> the value of the smallest component</returns>
-		/// <param name="v">the vector to evaluate</param>
-		public static float MaxComponent3(Vector3 v) {
-			if(v.x > v.y)
-				return (v.z > v.y) ? v.z : v.y;
-			else
-				return (v.z > v.x) ? v.z : v.x;
-		}
-		
-		/// <summary>
-		/// Finds the smallest component in the given Vector2
-		/// </summary>
-		/// <returns> the value of the smallest component</returns>
-		/// <param name="v">the vector to evaluate</param>
-		public static float MinComponent2(Vector2 v) {
-			return (v.x < v.y) ? v.x : v.y;
-		}
-
-		/// <summary>
-		/// Finds the smallest component in the given Vector3
-		/// </summary>
-		/// <returns> the value of the smallest component</returns>
-		/// <param name="v">the vector to evaluate</param>
-		public static float MinComponent3(Vector3 v) {
-			if(v.x < v.y)
-				return (v.z < v.y) ? v.z : v.y;
-			else
-				return (v.z < v.x) ? v.z : v.x;
-		}
-
 		public static Vector3 BerzierCurveVectorLerp(Vector3 start, Vector3 end, Vector3 c1, Vector3 c2, float t) {
 			float u, uu, uuu, tt, ttt;
 			Vector3 p, p0 = start, p1 = c1, p2 = c2, p3 = end;
@@ -312,6 +215,15 @@ namespace UnityUtilLib {
 				}
 			}
 			return returnValue;
+		}
+
+		public static Vector2 OnUnitCircle(float degrees) {
+			float radians = Degree2Rad * degrees;
+			return new Vector2 (Mathf.Cos (radians), Mathf.Sin (radians));
+		}
+
+		public static Vector2 OnUnitCircleRadians(float radians) {
+			return new Vector2 (Mathf.Cos (radians), Mathf.Sin (radians));
 		}
 		
 		public static float AngleBetween2D(Vector2 v1, Vector2 v2) {

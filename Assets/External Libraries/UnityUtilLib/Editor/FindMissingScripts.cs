@@ -46,7 +46,7 @@ namespace UnityUtilLib.Editor {
 			}
 			// Now recurse through each child GO (if there are any):
 			foreach (Transform childT in g.transform) {
-				//Debug.Log("Searching " + childT.name  + " " );
+				//print("Searching " + childT.name  + " " );
 				FindInGO(childT.gameObject);
 			}
 		}

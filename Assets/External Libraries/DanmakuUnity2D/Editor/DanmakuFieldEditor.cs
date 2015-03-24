@@ -161,8 +161,8 @@ namespace Danmaku2D.Editor {
 
 				size.floatValue = c_size.floatValue;
 //				cullingMask.intValue = c_cullingMask.intValue;
-//				Debug.Log(cullingMask.intValue);
-//				Debug.Log(c_cullingMask.intValue);
+//				print(cullingMask.intValue);
+//				print(c_cullingMask.intValue);
 				viewportRect.rectValue = c_viewportRect.rectValue;
 				depth.floatValue = c_depth.floatValue;
 				renderingPath.enumValueIndex = c_renderingPath.enumValueIndex;

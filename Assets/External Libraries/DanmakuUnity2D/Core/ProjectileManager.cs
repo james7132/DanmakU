@@ -96,7 +96,7 @@ namespace Danmaku2D {
 		}
 
 		public void Start () {
-			Debug.Log (((int)defaultCollisionMask).ToString ("X8"));
+			print (((int)defaultCollisionMask).ToString ("X8"));
 			if(projectilePool == null) {
 				projectilePool = new ProjectilePool (initialCount, spawnOnEmpty);
 			}

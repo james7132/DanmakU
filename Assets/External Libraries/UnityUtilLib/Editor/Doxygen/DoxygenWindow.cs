@@ -207,7 +207,7 @@ namespace UnityUtilLib.Editor {
 
 		void GenerateGUI() {
 			if(DoxyFileExists) {
-				//UnityEngine.Debug.Log(DoxyoutputProgress);
+				//UnityEngine.print(DoxyoutputProgress);
 				GUILayout.Space (10);
 				if(!DocsGenerated) {
 					UnityEngine.GUI.enabled = false;

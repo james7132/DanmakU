@@ -28,8 +28,8 @@ namespace Danmaku2D.Phantasmagoria {
 			Vector2 movementVector = Vector2.zero;
 			movementVector.x = Util.Sign(Input.GetAxis (horizontalMoveAxis));
 			movementVector.y = Util.Sign(Input.GetAxis (verticalMoveAxis));
-			//Debug.Log (horizontalMoveAxis + " : " + Input.GetAxis (horizontalMoveAxis));
-			//Debug.Log ("movement vector: " + movementVector.ToString ());
+			//print (horizontalMoveAxis + " : " + Input.GetAxis (horizontalMoveAxis));
+			//print ("movement vector: " + movementVector.ToString ());
 			bool focus = Input.GetButton (focusButton);
 			bool fire = Input.GetButton (fireButton);
 			bool charge = Input.GetButton (chargeButton);
