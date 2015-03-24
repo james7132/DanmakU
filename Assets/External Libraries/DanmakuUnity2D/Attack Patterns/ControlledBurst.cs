@@ -18,13 +18,8 @@ namespace Danmaku2D.AttackPatterns {
 		
 		#region implemented abstract members of Burst
 		
-		protected override IProjectileController BurstController {
-			get {
-//				if(controller is ControllerWrapperBehavior<ProjectileControlBehavior>) {
-//					return (controller as ControllerWrapperBehavior<ProjectileControlBehavior>).Controller;
-//				}
-				return controller;
-			}
+		protected override IProjectileController GetBurstController(int depth) {
+			return controller;
 		}
 		
 		#endregion

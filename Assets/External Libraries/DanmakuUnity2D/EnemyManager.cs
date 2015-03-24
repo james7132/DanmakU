@@ -45,7 +45,7 @@ namespace Danmaku2D {
 			registeredEnemies = new List<Enemy> ();
 			controller = GetComponent<DanmakuGameController> ();
 			if (controller == null) {
-				Debug.Log("Error: Enemy Manager without Game Controller");
+				print("Error: Enemy Manager without Game Controller");
 			}
 		}
 

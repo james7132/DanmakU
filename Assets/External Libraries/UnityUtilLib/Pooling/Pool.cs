@@ -73,7 +73,7 @@ namespace UnityUtilLib.Pooling {
 			inactiveObjs.Enqueue (po);
 			activeObjs.Remove (po);
 			inactiveCount++;
-			//Debug.Log(activeCount);
+			//print(activeCount);
 		}
 
 		public T Get() {
@@ -83,7 +83,7 @@ namespace UnityUtilLib.Pooling {
 			T po = inactiveObjs.Dequeue();
 			inactiveCount--;
 			activeObjs.Add (po);
-			//Debug.Log(active);
+			//print(active);
 			return po;
 		}
 

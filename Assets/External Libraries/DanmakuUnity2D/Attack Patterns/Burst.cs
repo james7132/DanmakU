@@ -24,13 +24,11 @@ namespace Danmaku2D.AttackPatterns {
 		[SerializeField]
 		private int bulletCount;
 
-		/// <summary>
-		/// An overridable factory method for subclasses to control the various 
-		/// </summary>
-		/// <value>The controller to be used with the bullets fired with this attack pattern</value>
-		protected abstract IProjectileController BurstController {
-			get;
-		}
+		[SerializeField]
+		private int burstDepth = 1;
+
+		[SerializeField]
+		private float burstRange = 360f;
 		
 		[SerializeField]
 		private Counter burstCount;
@@ -47,13 +45,6 @@ namespace Danmaku2D.AttackPatterns {
 		private float burstRotationDelta;
 		
 		private Vector2 currentBurstSource;
-		private ProjectileGroup burstGroup;
-		
-		public override void Awake () {
-			base.Awake ();
-			burstGroup = new ProjectileGroup ();
-			burstGroup.Controller = BurstController;
-		}
 		
 		protected override bool IsFinished {
 			get {
@@ -63,16 +54,26 @@ namespace Danmaku2D.AttackPatterns {
 		
 		protected override void OnExecutionStart () {
 			burstCount.Reset ();
-			currentBurstSource = spawnLocation - 0.5f * spawnArea + Util.RandomVect2 (spawnArea);
+			currentBurstSource = spawnLocation - 0.5f * spawnArea + spawnArea.Random();
 		}
-		
+
+		/// <summary>
+		/// An overridable factory method for subclasses to control the various 
+		/// </summary>
+		/// <value>The controller to be used with the bullets fired with this attack pattern</value>
+		protected abstract IProjectileController GetBurstController(int depth);
+
 		protected override void MainLoop () {
 			if(burstDelay.Tick()) {
 				float offset = (burstCount.MaxCount - burstCount.Count) * burstRotationDelta;
-				for(int i = 0; i < bulletCount; i++) {
-					Projectile temp = SpawnProjectile (prefab, currentBurstSource, offset + 360f / (float) bulletCount * (float)i);
-					burstGroup.Add(temp);
-				}
+				TargetField.SpawnBurst(prefab, 
+				                       currentBurstSource,
+				                       burstInitialRotation + offset,
+				                       burstRange,
+				                       bulletCount,
+				                       null,
+				                       burstDepth,
+				                       GetBurstController);
 				burstCount.Tick();
 			}
 		}

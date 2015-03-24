@@ -120,7 +120,7 @@ namespace Danmaku2D.Phantasmagoria {
 				if(attackPatterns[index] != null) {
 					attackPatterns[index].Fire();
 				} else {
-					Debug.Log("Null AttackPattern triggered. Make Sure all AttackPatterns are fully implemented");
+					print("Null AttackPattern triggered. Make Sure all AttackPatterns are fully implemented");
 				}
 			}
 			chargeLevel -= level;

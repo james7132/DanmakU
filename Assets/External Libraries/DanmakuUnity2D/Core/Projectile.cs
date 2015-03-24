@@ -319,8 +319,8 @@ namespace Danmaku2D {
 				sprite = renderer.sprite = runtime.Sprite;
 				renderer.sharedMaterial = runtime.Material;
 				renderer.sortingLayerID = renderer.sortingLayerID;
-				circleCenter = Util.HadamardProduct2(transform.lossyScale, runtime.ColliderOffset);
-				circleRaidus = runtime.ColliderRadius * Util.MaxComponent2(transform.lossyScale);
+				circleCenter = transform.lossyScale.Hadamard2(runtime.ColliderOffset);
+				circleRaidus = runtime.ColliderRadius * transform.lossyScale.Max();
 				tag = gameObject.tag = runtime.Tag;
 				layer = runtime.Layer;
 			}
