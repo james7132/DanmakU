@@ -61,11 +61,11 @@ namespace UnityUtilLib {
 		/// <see href="http://docs.unity3d.com/Manual/Coroutines.html">Unity Manual: Coroutines</see>
 		/// </summary>
 		/// <returns> The approriate YieldInstruction for the situation.</returns>
-		public static YieldInstruction WaitForUnpause(IPausable pausableObject) {
+		public static YieldInstruction WaitForUnpause(IPausable pausableObject, YieldInstruction value = null) {
 			if (pausableObject.Paused) {
 				return UtilityBehaviour.StartCoroutine (PauseWait (pausableObject));
 			} else {
-				return wfeof;
+				return value;
 			}
 		}
 

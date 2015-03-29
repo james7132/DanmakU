@@ -34,9 +34,9 @@ namespace UnityUtilLib.Editor {
 			editMode = serializedObject.FindProperty ("editMode");
 		}
 
-//		public override bool RequiresConstantRepaint () {
-//			return true;
-//		}
+		public override bool RequiresConstantRepaint () {
+			return Application.isPlaying;
+		}
 
 		public override void OnInspectorGUI () {
 			while(ComponentUtility.MoveComponentUp(transform2D)) {
