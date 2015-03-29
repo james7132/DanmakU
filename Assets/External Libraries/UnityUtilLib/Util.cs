@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -170,7 +171,7 @@ namespace UnityUtilLib {
 		/// <returns>The objects of type T.</returns>
 		/// <typeparam name="T">the type to search for</typeparam>
 		public static T[] FindObjectsOfType<T>() where T : class  {
-			return FindObjectByType<T, Object> ();
+			return FindObjectByType<T, UnityEngine.Object> ();
 		}
 
 		/// <summary>
@@ -185,8 +186,8 @@ namespace UnityUtilLib {
 			return FindObjectByType<T, MonoBehaviour> ();
 		}
 
-		private static T[] FindObjectByType<T, V> () where T : class where V : Object {
-			Object[] objects = Object.FindObjectsOfType<V> ();
+		private static T[] FindObjectByType<T, V> () where T : class where V : UnityEngine.Object {
+			UnityEngine.Object[] objects = UnityEngine.Object.FindObjectsOfType<V> ();
 			List<T> matches = new List<T> ();
 			for(int i = 0; i < objects.Length; i++) {
 				if(objects[i] is T) {
@@ -196,6 +197,9 @@ namespace UnityUtilLib {
 			return matches.ToArray ();
 		}
 
+		public static Vector2 Abs(Vector2 v) {
+			return new Vector2 ((float)Math.Abs (v.x), (float)Math.Abs (v.y));
+		}
 
 		/// <summary>
 		/// Finds the closest described component to the given point
@@ -205,7 +209,7 @@ namespace UnityUtilLib {
 		/// <typeparam name="T">The Component Type to search for</typeparam>
 		public static T FindClosest<T>(Vector3 position) where T : Component {
 			T returnValue = default(T);
-			T[] objects = Object.FindObjectsOfType<T> ();
+			T[] objects = UnityEngine.Object.FindObjectsOfType<T> ();
 			float minDist = float.MaxValue;
 			for (int i = 0; i < objects.Length; i++) {
 				float dist = (objects[i].transform.position - position).magnitude;
@@ -219,11 +223,11 @@ namespace UnityUtilLib {
 
 		public static Vector2 OnUnitCircle(float degrees) {
 			float radians = Degree2Rad * degrees;
-			return new Vector2 (Mathf.Cos (radians), Mathf.Sin (radians));
+			return new Vector2 ((float)System.Math.Cos(radians), (float)System.Math.Sin(radians));
 		}
 
 		public static Vector2 OnUnitCircleRadians(float radians) {
-			return new Vector2 (Mathf.Cos (radians), Mathf.Sin (radians));
+			return new Vector2 ((float)Math.Cos(radians), (float)System.Math.Sin(radians));
 		}
 		
 		public static float AngleBetween2D(Vector2 v1, Vector2 v2) {
