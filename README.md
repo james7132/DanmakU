@@ -7,12 +7,15 @@ Largely inspired by Touhou and Touhou Danmakufu. Many of the functions mirror th
 See the [wiki](https://github.com/james7132/DanmakuUnity2D/wiki) on a number of tutorials on how to get started.  
 See the [script documentation](http://james7132.github.io/DanmakuUnity2D/Docs/html/annotated.html) to see a scripting reference.
 
-# Requirements
+# Dependencies
 This development kit relies heavily on [UnityUtilLib](https://github.com/james7132/UnityUtilLib), a utility library.
 
-ALl releases of DanmakuUnity2D, including the source code releases, come packaged with the version of UnityUtilLib that is used.
+All releases of DanmakuUnity2D, including the source code releases, come packaged with the version of UnityUtilLib that is used.
 
 #Installation
+
+To get DanmakuUnity2D running in your Unity project, follow these instructions:
+
 1. Go to the releases page for this repository ([link](https://github.com/james7132/DanmakuUnity2D/releases)) and find the appropriate release version (usually this is the latest release that is for your version of Unity).
 2. Download the attached .unitypackage binary.
 3. In Unity, open the project you wish to use the development kit with.
@@ -20,3 +23,17 @@ ALl releases of DanmakuUnity2D, including the source code releases, come package
 5. Navigate to where you downloaded the unitypackage to and open it.
 6. It will then prompt you which assets to add. Select all of them, and click Import.
 7. Restart Unity. (this refreshes Unity, and pulls up all of the Unity Editor extensions created for this dev kit).
+
+#Source Code Installation/Setup
+
+To get the source code up and running, execute the following command in your command line:
+
+    git clone --recursive https://github.com/james7132/DanmakuUnity2D.git
+    
+Note: the "--recursive" parameter is required to successfully clone the right UnityUtilLib version. 
+
+For older clones or git versions older than 1.6.5, use the following commands.
+
+    git clone https://github.com/james7132/DanmakuUnity2D.git
+    cd DanmakuUnity2D
+    git submodule update --init --recursive
