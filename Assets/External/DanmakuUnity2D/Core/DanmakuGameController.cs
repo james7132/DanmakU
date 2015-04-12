@@ -12,6 +12,7 @@ namespace Danmaku2D {
 	/// A GameController implementation for 2D Danmaku games.
 	/// </summary>
 //	[RequireComponent(typeof(EnemyManager))]
+	[AddComponentMenu("Danmaku 2D/Danmaku Game Controller")]
 	public class DanmakuGameController : GameController {
 
 		[SerializeField]

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityUtilLib;
 
 namespace Danmaku2D {
@@ -21,7 +21,8 @@ namespace Danmaku2D {
 
 	namespace Wrapper {
 
-		internal class RandomizeAngleModifier : ModifierWrapper<Danmaku2D.RandomizeAngleModifier> {
+		[AddComponentMenu("Danmaku 2D/Modifiers/Randomize Angle Modifier")]
+		internal class RandomizeAngleModifier : Modifier<Danmaku2D.RandomizeAngleModifier> {
 		}
 
 	}

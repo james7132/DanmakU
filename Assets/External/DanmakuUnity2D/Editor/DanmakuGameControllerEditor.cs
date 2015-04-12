@@ -20,7 +20,7 @@ internal class DanmakuGameControllerEditor : UnityEditor.Editor {
 //		GUILayout.BeginVertical ();
 //		GUILayout.BeginHorizontal ();
 //		GUILayout.FlexibleSpace ();
-//		GUILayout.Label ("Projectile Pool");
+//		GUILayout.Label ("Danmaku Pool");
 //		GUILayout.FlexibleSpace ();
 //		GUILayout.EndHorizontal();
 //		GUILayout.Label ("Total Count: " + pool.TotalCount);

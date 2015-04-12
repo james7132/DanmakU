@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityUtilLib;
 using System.Collections;
 using Danmaku2D.NoScript;
 
 namespace Danmaku2D {
 
+	[AddComponentMenu("Danmaku 2D/Danmaku Emitter")]
 	public sealed class DanmakuEmitter : DanmakuTriggerReciever {
 
 		[SerializeField]
@@ -17,7 +18,13 @@ namespace Danmaku2D {
 		private Modifier modifier;
 
 		[SerializeField]
-		private ProjectileControlBehavior[] controllers;
+		private DanmakuControlBehavior[] controllers;
+
+		[SerializeField]
+		private AudioClip fireSFX;
+
+		[SerializeField]
+		private float fireVolume = 1f;
 
 		public FireModifier Modifier {
 			get {
@@ -27,17 +34,15 @@ namespace Danmaku2D {
 			}
 		}
 
-		public override void Trigger () {
-			Fire ();
-		}
-
 		public void Fire() {
 			fireData.Controller = null;
 			for(int i = 0; i < controllers.Length; i++)
-				fireData.Controller += controllers[i].UpdateProjectile;
+				fireData.Controller += controllers[i].UpdateDanmaku;
 			fireData.Modifier = Modifier;
 			for(int i = 0; i < sources.Length; i++)
 				sources[i].Fire (fireData);
+			if (fireSFX != null)
+				AudioManager.PlaySFX (fireSFX, fireVolume);
 		}
 
 		public void FireAtDanmaku(Danmaku danmaku) {
@@ -55,5 +60,19 @@ namespace Danmaku2D {
 			copy.Rotation = rotation;
 			field.Fire (copy);
 		}
+
+		#region implemented abstract members of DanmakuTriggerReciever
+
+		public override void Trigger () {
+			Fire ();
+		}
+
+		public override Color NodeColor {
+			get {
+				return Color.red;
+			}
+		}
+
+		#endregion
 	}
 }

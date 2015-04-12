@@ -7,7 +7,7 @@ using UnityUtilLib;
 /// </summary>
 namespace Danmaku2D {
 	[RequireComponent(typeof(SpriteRenderer))]
-	[RequireComponent(typeof(ProjectileBoundary))]
+	[RequireComponent(typeof(DanmakuBoundary))]
 	[RequireComponent(typeof(Collider2D))]
 	public class BulletCancelArea : PausableGameObject {
 		
