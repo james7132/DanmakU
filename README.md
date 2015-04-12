@@ -12,6 +12,8 @@ This development kit relies heavily on [UnityUtilLib](https://github.com/james71
 
 All releases of DanmakuUnity2D, including the source code releases, come packaged with the version of UnityUtilLib that is used.
 
+It is also being tested with [Vexe Framework](http://forum.unity3d.com/threads/free-vfw-full-set-of-drawers-savesystem-serialize-interfaces-generics-auto-props-delegates.266165/) as a way to serialize a number of objects that are not currently easily serialized by Unity.
+
 #Installation
 
 To get DanmakuUnity2D running in your Unity project, follow these instructions:
