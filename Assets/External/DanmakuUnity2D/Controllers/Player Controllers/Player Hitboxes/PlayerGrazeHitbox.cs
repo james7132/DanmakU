@@ -14,27 +14,12 @@ namespace Danmaku2D {
 			}
 		}
 
-		#region IProjectileCollider implementation
-		public void OnProjectileCollision (Danmaku proj) {
+		#region IDanmakuCollider implementation
+		public void OnDanmakuCollision (Danmaku proj) {
 			//throw new System.NotImplementedException ();
 		}
 		#endregion
 
 		//TODO: FIX
-
-		void OnTriggerExit2D(Collider2D other) {
-	//		if (player != null) {
-	//			Projectile proj = other.GetComponent<Projectile>();
-	//			if(proj != null) {
-	//				player.Graze(proj);
-	//			}
-	//		}
-		}
-
-	//	void OnBulletCollision(ProjectileData other) {
-	//		if (player != null) {
-	//			player.Graze();
-	//		}
-	//	}
 	}
 }

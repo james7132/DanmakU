@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Danmaku2D.NoScript {
 
+	[AddComponentMenu("Danmaku 2D/Sources/Point Source")]
 	internal class PointSource : DanmakuSource {
 
 		#region implemented abstract members of ProjectileSource
@@ -11,7 +12,6 @@ namespace Danmaku2D.NoScript {
 			if (sourcePoints.Count <= 0 || sourcePoints.Count > 1) {
 				sourcePoints.Clear();
 				sourcePoints.Add(new SourcePoint(position, rotation));
-				Debug.Log(sourcePoints.Count);
 			}
 			if(sourcePoints[0] == null) {
 				sourcePoints[0] = new SourcePoint(position, rotation);

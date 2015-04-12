@@ -31,14 +31,14 @@ internal static class DanmakuAssets {
 
 	/// <summary>
 	/// Creates a blank ProjectilePrefab asset
-	/// Found under Assets/Create/Danmaku 2D/Projectile Prefab
+	/// Found under Assets/Create/Danmaku 2D/Danmaku Prefab
 	/// </summary>
-	[MenuItem("Assets/Create/Danmaku 2D/Projectile Prefab", false, 51)]
+	[MenuItem("Assets/Create/Danmaku 2D/Danmaku Prefab", false, 51)]
 	public static void AddProjectilePrefab() {
-		GameObject temp = new GameObject ("Projectile Prefab");
+		GameObject temp = new GameObject ("Danmaku Prefab");
 		temp.AddComponent<DanmakuPrefab> ();
 		string pathName = GetProjectWindowFolder ();
-		GameObject prefab = PrefabUtility.CreatePrefab (pathName + "/Projectile Prefab.prefab", temp);
+		GameObject prefab = PrefabUtility.CreatePrefab (pathName + "/Danmaku Prefab.prefab", temp);
 		Object.DestroyImmediate (temp);
 		SerializedObject so = new SerializedObject (prefab.GetComponent<DanmakuPrefab> ());
 		so.FindProperty ("circleCollider").objectReferenceValue = prefab.GetComponent<CircleCollider2D> ();
@@ -68,7 +68,7 @@ internal static class DanmakuAssets {
 		temp.AddComponent<TestSpawnPlayer> ();
 		temp.AddComponent<AudioListener> ();
 		temp.AddComponent<AudioSource>();
-		temp.AddComponent<MusicManager> ();
+		temp.AddComponent<AudioManager> ();
 	}
 
 	/// <summary>

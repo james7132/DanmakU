@@ -127,16 +127,16 @@ namespace Danmaku2D {
 		}
 
 		public void AddController(IDanmakuController controller) {
-			groupControllers -= controller.UpdateProjectile;
+			groupControllers -= controller.UpdateDanmaku;
 			foreach(Danmaku proj in group) {
-				proj.AddController(controller.UpdateProjectile);
+				proj.AddController(controller.UpdateDanmaku);
 			}
 		}
 
 		public void RemoveController(IDanmakuController controller) {
-			groupControllers -= controller.UpdateProjectile;
+			groupControllers -= controller.UpdateDanmaku;
 			foreach(Danmaku proj in group) {
-				proj.RemoveController(controller.UpdateProjectile);
+				proj.RemoveController(controller.UpdateDanmaku);
 			}
 		}
 
@@ -151,6 +151,14 @@ namespace Danmaku2D {
 				danmaku.RemoveController(groupControllers);
 			}
 			groupControllers = null;
+		}
+
+		public Dictionary<Danmaku, T> AddComponent<T>() where T : Component {
+			var pairs = new Dictionary<Danmaku, T> ();
+			foreach (Danmaku danmaku in group) {
+				pairs[danmaku] = danmaku.AddComponent<T>();
+			}
+			return pairs;
 		}
 
 		#region ICollection implementation

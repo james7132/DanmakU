@@ -13,9 +13,10 @@ namespace Danmaku2D {
 	/// The bullets fired by these also can easily kill the player.
 	/// </summary>
 	[DisallowMultipleComponent]
+	[RequireComponent(typeof(Renderer))]
 	[RequireComponent(typeof(Rigidbody2D))]
 	[RequireComponent(typeof(Collider2D))]
-	public abstract class Enemy : PausableGameObject {
+	public abstract class Enemy : FieldDependentBehaviour, IPausable, IDanmakuCollider {
 
 		public virtual AttackPattern CurrentAttackPattern { 
 			get {
@@ -23,20 +24,17 @@ namespace Danmaku2D {
 			}
 		}
 
+		private Renderer enemyRenderer;
 		private DanmakuField field;
 
-		/// <summary>
-		/// Gets or sets the DanmakuField that all Projectiles fired by this instance will use.
-		/// </summary>
-		/// <value>The field.</value>
-		public DanmakuField Field {
-			get {
-				return field;
-			}
-			set {
-				field = value;
-			}
+		#region IPausable implementation
+
+		public bool Paused {
+			get;
+			set;
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Gets a value indicating whether this instance is dead.
@@ -48,6 +46,7 @@ namespace Danmaku2D {
 
 		public virtual void Start() {
 			EnemyManager.RegisterEnemy (this);
+			enemyRenderer = GetComponent<Renderer> ();
 		}
 
 		public void Hit(float damage) {
@@ -82,12 +81,14 @@ namespace Danmaku2D {
 		}
 
 		/// <summary>
-		/// A message handler for handling collisions with Projectile(s)
+		/// A message handler for handling collisions with Danmaku(s)
 		/// </summary>
-		/// <param name="proj">the projectile that hit the enemy</param>
-		void OnProjectileCollision(Danmaku proj) {
-			Hit (proj.Damage);
-			proj.Deactivate();
+		/// <param name="proj">the danmaku that hit the enemy</param>
+		public void OnDanmakuCollision(Danmaku danmaku) {
+			if (enemyRenderer.isVisible) {
+				Hit (danmaku.Damage);
+			}
+			danmaku.Deactivate();
 		}
 	}
 }

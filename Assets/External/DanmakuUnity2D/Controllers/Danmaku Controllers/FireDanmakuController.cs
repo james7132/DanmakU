@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-namespace Danmaku2D {
+namespace Danmaku2D.DanmakuControllers {
 
 	[System.Serializable]
 	public class FireDanmakuController : IDanmakuController {
@@ -19,10 +19,18 @@ namespace Danmaku2D {
 		private DanmakuEmitter emitter;
 
 		#region IDanmakuController implementation
-		public void UpdateProjectile (Danmaku projectile, float dt) {
+		public void UpdateDanmaku (Danmaku danmaku, float dt) {
+			//TODO: IMPLEMENT
 		}
 		#endregion
 		
 	}
 
+	namespace Wrapper {
+
+		[AddComponentMenu("Danmaku 2D/Controllers/Fire Danmaku Controller")]
+		public class FireDanmakuController : ControllerWrapperBehavior<Danmaku2D.DanmakuControllers.FireDanmakuController> {
+		}
+
+	}
 }

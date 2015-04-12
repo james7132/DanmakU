@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityUtilLib;
 
 namespace Danmaku2D {
@@ -22,8 +22,9 @@ namespace Danmaku2D {
 	}
 
 	namespace Wrapper {
-
-		internal class RandomizeVelocityModifier : ModifierWrapper<Danmaku2D.RandomizeVelocityModifier> {
+		
+		[AddComponentMenu("Danmaku 2D/Modifiers/Randomize Velocity Modifier")]
+		internal class RandomizeVelocityModifier : Modifier<Danmaku2D.RandomizeVelocityModifier> {
 		}
 
 	}

@@ -19,7 +19,7 @@ namespace Danmaku2D {
 		private DanmakuGameController controller;
 
 		[SerializeField]
-		private FrameCounter roundStartSafeZone;
+		private float roundStartSafeZone;
 		private FrameCounter chainSpawnCountdown;
 
 		[System.Serializable]
@@ -54,6 +54,7 @@ namespace Danmaku2D {
 			for (int i = 0; i < chains.Length; i++) {
 				weightSum += chains[i].weight;
 			}
+			chainSpawnCountdown = new FrameCounter (roundStartSafeZone);
 		}
 
 		public void Update() {
@@ -86,10 +87,13 @@ namespace Danmaku2D {
 			if (chain != null && chain.chain != null) {
 				EnemySpawnData[] chainData = chain.chain;
 				for(int i = 0; i < chainData.Length; i++) {
-//					Rect area = chainData[i].spawnArea;
-//					float rx = Random.Range(area.xMin, area.xMax);
-//					float ry = Random.Range(area.yMin, area.yMax);
-//					controller.SpawnEnemy(chainData[i].EnemyPrefab, new Vector2(rx, ry));
+					List<DanmakuField> fields = DanmakuField.fields;
+					Rect area = chainData[i].spawnArea;
+					float rx = Random.Range(area.xMin, area.xMax);
+					float ry = Random.Range(area.yMin, area.yMax);
+					for(int j = 0; j < fields.Count; j++) {
+						fields[j].SpawnEnemy(chainData[i].EnemyPrefab, new Vector2(rx, ry));
+					}
 					float time = 0f;
 					while(time < chainData[i].timeUntilNext) {
 						yield return UtilCoroutines.WaitForUnpause(this);

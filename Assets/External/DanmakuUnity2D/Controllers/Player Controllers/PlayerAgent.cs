@@ -6,25 +6,17 @@ namespace Danmaku2D {
 	[Serializable]
 	public abstract class PlayerAgent {
 
-		private DanmakuPlayer player;
 		public DanmakuPlayer Player {
-			get {
-				return player;
-			}
-			set {
-				player = value;
-				field = player.Field;
-			}
+			get;
+			set;
 		}
-		
-		private DanmakuField field;
+
 		public DanmakuField Field {
 			get {
-				return field;
+				return Player.Field;
 			}
 			set {
-				field = value;
-				player = field.Player;
+				Player.Field = value;
 			}
 		}
 

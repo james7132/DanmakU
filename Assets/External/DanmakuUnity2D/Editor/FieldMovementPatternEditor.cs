@@ -24,7 +24,7 @@ namespace Danmaku2D.Editor {
 			FieldMovementPattern fmp = (FieldMovementPattern)target;
 			FieldMovementPattern.AtomicMovement[] movements = fmp.movements;
 			DanmakuField testField = Util.FindClosest<DanmakuField> (fmp.transform.position);
-			if(testField != null) {
+			if(testField != null && movements != null) {
 				Vector3 currentLocation = fmp.transform.position;
 				for(int i = 0; i < movements.Length; i++) {
 					if(movements[i] != null) {

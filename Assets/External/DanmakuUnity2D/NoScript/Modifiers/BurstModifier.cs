@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 
@@ -40,7 +40,8 @@ namespace Danmaku2D {
 
 	namespace Wrapper {
 
-		public class BurstModifier : ModifierWrapper<Danmaku2D.BurstModifier> {
+		[AddComponentMenu("Danmaku 2D/Modifiers/Burst Modifier")]
+		public class BurstModifier : Modifier<Danmaku2D.BurstModifier> {
 		}
 
 	}

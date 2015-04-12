@@ -20,7 +20,7 @@ internal class ProjectilePrefabEditor : UnityEditor.Editor {
 			SerializedProperty renderer = serializedObject.FindProperty("spriteRenderer");
 			collider.objectReferenceValue = prefab.GetComponent<CircleCollider2D>();
 			renderer.objectReferenceValue = prefab.GetComponent<SpriteRenderer>();
-//				ProjectileControlBehavior[] controllerScripts = prefab.GetComponents<ProjectileControlBehavior>();
+//				DanmakuControlBehavior[] controllerScripts = prefab.GetComponents<DanmakuControlBehavior>();
 //				controllers.arraySize = controllerScripts.Length;
 //				for(int i = 0; i < controllerScripts.Length; i++) {
 //					controllers.GetArrayElementAtIndex(i).objectReferenceValue = controllerScripts[i];
