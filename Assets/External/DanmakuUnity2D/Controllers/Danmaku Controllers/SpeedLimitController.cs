@@ -54,9 +54,5 @@ namespace Danmaku2D.DanmakuControllers {
 
 		#endregion
 	}
-
-	namespace Wrapper {
-
-	}
 }
 
