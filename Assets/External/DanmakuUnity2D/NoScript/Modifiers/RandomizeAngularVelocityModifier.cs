@@ -19,7 +19,7 @@ using UnityUtilLib;
 namespace Danmaku2D {
 	
 	[System.Serializable]
-	public class RandomizeAngularVelocityModifier : FireModifier {
+	public class RandomizeAngularVelocityModifier : DanmakuModifier {
 		
 		[SerializeField]
 		private DynamicFloat range = 0;

@@ -24,10 +24,10 @@ namespace Danmaku2D {
 	public sealed class DanmakuEmitter : DanmakuTriggerReciever {
 
 		[SerializeField]
-		private DanmakuSource[] sources;
+		private Transform[] sources;
 
 		[SerializeField]
-		private FireBuilder fireData;
+		private FireBuilder fireData = new FireBuilder();
 
 		[SerializeField]
 		private IDanmakuController[] controllers;
@@ -38,22 +38,23 @@ namespace Danmaku2D {
 		[SerializeField]
 		private float fireVolume = 1f;
 
-//		public FireModifier Modifier {
-//			get {
-//				if(modifier == null)
-//					return null;
-//				return modifier.WrappedModifier;
-//			}
-//		}
+		public override void Trigger () {
+			Fire ();
+		}
 
 		public void Fire() {
+			DanmakuField field = DanmakuField.FindClosest (transform.position);
 			fireData.Controller = null;
 			for (int i = 0; i < controllers.Length; i++) {
 				if(controllers[i] != null)
 					fireData.Controller += controllers [i].UpdateDanmaku;
 			}
-			for(int i = 0; i < sources.Length; i++)
-				sources[i].Fire (fireData);
+			FireBuilder copy = fireData.Clone ();
+			for(int i = 0; i < sources.Length; i++) {
+				copy.Position = sources[i].position;
+				copy.Rotation = sources[i].eulerAngles.z;
+				field.Fire(copy);
+			}
 			if (fireSFX != null)
 				AudioManager.PlaySFX (fireSFX, fireVolume);
 		}
@@ -73,19 +74,5 @@ namespace Danmaku2D {
 			copy.Rotation = rotation;
 			field.Fire (copy);
 		}
-
-		#region implemented abstract members of DanmakuTriggerReciever
-
-		public override void Trigger () {
-			Fire ();
-		}
-
-		public override Color NodeColor {
-			get {
-				return Color.red;
-			}
-		}
-
-		#endregion
 	}
 }

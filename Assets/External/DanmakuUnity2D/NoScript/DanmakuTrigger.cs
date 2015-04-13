@@ -42,28 +42,6 @@ namespace Danmaku2D {
 		}
 
 		public abstract void Trigger ();
-
-		#region IDanmakuNode implementation
-
-		public virtual bool Connect (IDanmakuNode node) {
-			if (node is DanmakuTrigger) {
-				triggers.Add(node as DanmakuTrigger);
-				return true;
-			}
-			return false;
-		}
-
-		public virtual string NodeName {
-			get {
-				return GetType().Name;
-			}
-		}
-
-		public abstract Color NodeColor {
-			get;
-		}
-
-		#endregion
 	}
 
 	[AddComponentMenu("Danmaku 2D/Danmaku Trigger")]
@@ -77,26 +55,6 @@ namespace Danmaku2D {
 			if(triggerCallback != null)
 				triggerCallback();
 		}
-
-		#region IDanmakuNode implementation
-
-		public string NodeName {
-			get {
-				return GetType().Name;
-			}
-		}
-		
-		public Color NodeColor {
-			get {
-				return Color.white;
-			}
-		}
-
-		public virtual bool Connect (IDanmakuNode node) {
-			return false;
-		}
-
-		#endregion
 
 	}
 

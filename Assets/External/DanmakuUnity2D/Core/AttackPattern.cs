@@ -122,7 +122,7 @@ namespace Danmaku2D {
 		                             		  DynamicFloat velocity,
 		                                      DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.View,
 		                                      DanmakuController controller = null,
-		                                      FireModifier modifier = null,
+		                                      DanmakuModifier modifier = null,
 		                                      DanmakuGroup group = null) {
 			return TargetField.FireLinear (danmakuType, location, rotation, velocity, coordSys, controller, modifier, group);
 		}
@@ -134,7 +134,7 @@ namespace Danmaku2D {
 	                                    DynamicFloat angularVelocity,
 	                                    DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.View,
 	                                    DanmakuController controller = null,
-	                                    FireModifier modifier = null,
+	                                    DanmakuModifier modifier = null,
 	                                    DanmakuGroup group = null) {
 			return TargetField.FireCurved (danmakuType, location, rotation, velocity, angularVelocity, coordSys, controller, modifier, group);
 		}

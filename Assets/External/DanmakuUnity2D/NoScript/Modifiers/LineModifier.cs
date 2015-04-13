@@ -19,7 +19,7 @@ using UnityUtilLib;
 namespace Danmaku2D {
 
 	[System.Serializable]
-	public class LineModifier : FireModifier {
+	public class LineModifier : DanmakuModifier {
 
 		public DynamicInt Depth = 1;
 		public DynamicFloat DeltaVelocity = 0f;
