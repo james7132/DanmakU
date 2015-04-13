@@ -83,7 +83,7 @@ namespace Danmaku2D {
 					all[i] = new Danmaku();
 					all[i].index = i;
 					all[i].Pool = this;
-					if(endIndex > queue.Length)
+					if(endIndex >= queue.Length)
 						endIndex = 0;
 					queue[endIndex] = i;
 				}

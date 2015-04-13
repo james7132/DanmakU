@@ -43,7 +43,7 @@ namespace Danmaku2D.NoScript {
 		protected override void UpdateSourcePoints (Vector2 position, float rotation) {
 			sourcePoints.Clear ();
 			int edge = 0;
-			float edgeRot = 90f;
+			float edgeRot = 90f + rotation;
 			float edgeDelta = 360f / edgeCount;
 			Vector2 current = position + size * Util.OnUnitCircle (edgeRot);
 			Vector2 next = position + size * Util.OnUnitCircle (edgeRot + edgeDelta);
