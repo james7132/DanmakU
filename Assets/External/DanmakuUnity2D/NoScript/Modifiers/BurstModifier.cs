@@ -52,12 +52,4 @@ namespace Danmaku2D {
 		#endregion
 
 	}
-
-	namespace Wrapper {
-
-		[AddComponentMenu("Danmaku 2D/Modifiers/Burst Modifier")]
-		public class BurstModifier : Modifier<Danmaku2D.BurstModifier> {
-		}
-
-	}
 }

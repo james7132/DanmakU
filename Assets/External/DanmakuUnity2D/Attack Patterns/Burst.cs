@@ -53,9 +53,6 @@ namespace Danmaku2D.AttackPatterns {
 		
 		[SerializeField]
 		private DynamicFloat burstRotationDelta;
-
-		[SerializeField]
-		private DanmakuControlBehavior[] controllers;
 		
 		protected override bool IsFinished {
 			get {
@@ -65,10 +62,10 @@ namespace Danmaku2D.AttackPatterns {
 
 		public override void Awake () {
 			base.Awake ();
-			for(int i = 0; i < controllers.Length; i++) {
-				if(controllers[i] != null)
-					fireData.Controller += controllers[i].Controller;
-			}
+//			for(int i = 0; i < controllers.Length; i++) {
+//				if(controllers[i] != null)
+//					fireData.Controller += controllers[i].Controller;
+//			}
 			burstData.SubModifier = depthData;
 			//Debug.Log (depthData.SubModifier);
 			fireData.Modifier = burstData;

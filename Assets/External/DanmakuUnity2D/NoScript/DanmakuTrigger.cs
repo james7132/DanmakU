@@ -16,16 +16,16 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityUtilLib;
+using Vexe.Runtime.Types;
 
 namespace Danmaku2D {
 
-	public abstract class DanmakuTriggerReciever : CachedObject, IDanmakuNode {
+	public abstract class DanmakuTriggerReciever : BetterBehaviour, IDanmakuNode {
 
 		[SerializeField]
 		private List<DanmakuTrigger> triggers;
 
-		public override void Awake () {
-			base.Awake ();
+		public void Awake () {
 			for(int i = 0; i < triggers.Count; i++) {
 				if(triggers[i] != null) {
 					triggers[i].triggerCallback += Trigger;

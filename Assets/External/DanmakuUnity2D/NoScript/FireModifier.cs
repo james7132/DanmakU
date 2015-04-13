@@ -22,6 +22,7 @@ namespace Danmaku2D {
 	[System.Serializable]
 	public abstract class FireModifier {
 
+		[SerializeField]
 		private FireModifier subModifier;
 		private FireBuilder builder;
 

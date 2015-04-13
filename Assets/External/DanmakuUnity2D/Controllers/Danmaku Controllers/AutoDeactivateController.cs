@@ -67,12 +67,4 @@ namespace Danmaku2D.DanmakuControllers {
 		
 	}
 
-	namespace Wrapper {
-		
-		[AddComponentMenu("Danmaku 2D/Controllers/Auto Deactivate Controller")]
-		internal class AutoDeactivateController : ControllerWrapperBehavior<Danmaku2D.DanmakuControllers.AutoDeactivateController> {
-		}
-
-	}
-
 }

@@ -33,12 +33,4 @@ namespace Danmaku2D {
 		#endregion
 
 	}
-
-	namespace Wrapper {
-
-		[AddComponentMenu("Danmaku 2D/Modifiers/Randomize Angle Modifier")]
-		internal class RandomizeAngleModifier : Modifier<Danmaku2D.RandomizeAngleModifier> {
-		}
-
-	}
 }

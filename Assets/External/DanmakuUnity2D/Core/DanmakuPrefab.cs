@@ -27,17 +27,13 @@ namespace Danmaku2D {
 	public sealed class DanmakuPrefab : DanmakuObjectPrefab {
 
 		private DanmakuPrefab runtime;
-		
-		private DanmakuControlBehavior[] extraControllers;
-		internal DanmakuControlBehavior[] ExtraControllers {
+
+		[SerializeField]
+		private IDanmakuController[] extraControllers;
+		internal IDanmakuController[] ExtraControllers {
 			get {
 				return extraControllers;
 			}
-		}
-
-		public override void Awake() {
-			base.Awake ();
-			extraControllers = GetComponents<DanmakuControlBehavior>();
 		}
 
 		internal DanmakuPrefab GetRuntime() {

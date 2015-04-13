@@ -40,12 +40,4 @@ namespace Danmaku2D.DanmakuControllers {
 		#endregion
 		
 	}
-
-	namespace Wrapper {
-
-		[AddComponentMenu("Danmaku 2D/Controllers/Fire Danmaku Controller")]
-		public class FireDanmakuController : ControllerWrapperBehavior<Danmaku2D.DanmakuControllers.FireDanmakuController> {
-		}
-
-	}
 }

@@ -17,10 +17,13 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 using UnityUtilLib.Pooling;
+using Vexe.Runtime.Types;
 
 namespace Danmaku2D {
 
-	public abstract class DanmakuObjectPrefab : CachedObject {
+	[RequireComponent(typeof(SpriteRenderer))]
+	[RequireComponent(typeof(CircleCollider2D))]
+	public abstract class DanmakuObjectPrefab : BetterBehaviour  {
 		
 		[HideInInspector]
 		[SerializeField]
@@ -129,19 +132,14 @@ namespace Danmaku2D {
 			}
 		}
 
-		public override void Awake() {
-			base.Awake ();
-			if (circleCollider == null) {
-				circleCollider = GetComponent<CircleCollider2D>();
-				if(circleCollider == null) {
-					throw new System.InvalidOperationException("ProjectilePrefab without a Collider! (" + name + ")");
-				}
+		public void Awake() {
+			circleCollider = GetComponent<CircleCollider2D>();
+			if(circleCollider == null) {
+				throw new System.InvalidOperationException("ProjectilePrefab without a Collider! (" + name + ")");
 			}
-			if (spriteRenderer == null) {
-				spriteRenderer = GetComponent<SpriteRenderer>();
-				if(spriteRenderer == null) {
-					throw new System.InvalidOperationException("ProjectilePrefab without a SpriteRenderer (" + name + ")");
-				}
+			spriteRenderer = GetComponent<SpriteRenderer>();
+			if(spriteRenderer == null) {
+				throw new System.InvalidOperationException("ProjectilePrefab without a SpriteRenderer (" + name + ")");
 			}
 			
 			cachedScale = transform.localScale;

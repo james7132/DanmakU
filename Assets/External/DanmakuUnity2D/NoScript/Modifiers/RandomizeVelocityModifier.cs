@@ -36,12 +36,4 @@ namespace Danmaku2D {
 
 	}
 
-	namespace Wrapper {
-		
-		[AddComponentMenu("Danmaku 2D/Modifiers/Randomize Velocity Modifier")]
-		internal class RandomizeVelocityModifier : Modifier<Danmaku2D.RandomizeVelocityModifier> {
-		}
-
-	}
-
 }

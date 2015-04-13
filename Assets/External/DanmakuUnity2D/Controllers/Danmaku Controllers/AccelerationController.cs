@@ -49,13 +49,5 @@ namespace Danmaku2D.DanmakuControllers {
 		#endregion
 	}
 
-	namespace Wrapper {
-		
-		[AddComponentMenu("Danmaku 2D/Controllers/Acceleration Controller")]
-		public class AccelerationController : ControllerWrapperBehavior<Danmaku2D.DanmakuControllers.AccelerationController> {
-		}
-		
-	}
-
 }
 
