@@ -61,12 +61,4 @@ namespace Danmaku2D.DanmakuControllers {
 
 		#endregion
 	}
-
-	namespace Wrapper {
-
-		[AddComponentMenu("Danmaku 2D/Controllers/Delayed Angle Change")]
-		public class DelayedAngleChange : ControllerWrapperBehavior<Danmaku2D.DanmakuControllers.DelayedAngleChange> {
-		}
-
-	}
 }

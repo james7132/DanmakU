@@ -458,10 +458,10 @@ namespace Danmaku2D {
 			layer = runtime.cachedLayer;
 			colliderMask = collisionMask [layer];
 
-			DanmakuControlBehavior[] pcbs = runtime.ExtraControllers;
+			IDanmakuController[] pcbs = runtime.ExtraControllers;
 			if (pcbs.Length > 0) {
 				for (int i = 0; i < pcbs.Length; i++) {
-					controllerUpdate += pcbs[i].Controller;
+					controllerUpdate += pcbs[i].UpdateDanmaku;
 				}
 			}
 		}

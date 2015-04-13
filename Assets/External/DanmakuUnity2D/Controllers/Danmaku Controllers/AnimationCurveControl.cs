@@ -31,13 +31,5 @@ namespace Danmaku2D.DanmakuControllers {
 		}
 		#endregion
 	}
-
-	namespace Wrapper {
-		
-		[AddComponentMenu("Danmaku 2D/Controllers/Animation Curve Controller")]
-		internal class AnimationCurveController : ControllerWrapperBehavior<AnimationCurveController> {
-		}
-
-	}
 }
 

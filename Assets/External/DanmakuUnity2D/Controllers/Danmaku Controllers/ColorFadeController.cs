@@ -46,11 +46,4 @@ namespace Danmaku2D.DanmakuControllers {
 			}
 		}
 	}
-
-	namespace Wrapper {
-
-		[AddComponentMenu("Danmaku 2D/Controllers/Color Fade Controller")]
-		internal class ColorFadeController : ControllerWrapperBehavior<Danmaku2D.DanmakuControllers.ColorFadeController> {
-		}
-	}
 }
