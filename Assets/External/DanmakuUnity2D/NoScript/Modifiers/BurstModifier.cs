@@ -38,15 +38,18 @@ namespace Danmaku2D {
 
 			count = Mathf.Abs (count);
 
-			float start = rotation - range * 0.5f;
-			float delta = range / (count - 1);
-
-			for (int i = 0; i < count; i++) {
-				Velocity += deltaV;
-				AngularVelocity += deltaAV;
-				FireSingle(position, start + i * delta);
+			if (count == 1) {
+				FireSingle (position, rotation);
+			} else {
+				float start = rotation - range * 0.5f;
+				float delta = range / (count - 1);
+				
+				for (int i = 0; i < count; i++) {
+					Velocity += deltaV;
+					AngularVelocity += deltaAV;
+					FireSingle(position, start + i * delta);
+				}
 			}
-
 		}
 
 		#endregion
