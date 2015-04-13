@@ -20,7 +20,7 @@ using UnityUtilLib;
 namespace Danmaku2D {
 
 	[System.Serializable]
-	public class BurstModifier : FireModifier {
+	public class BurstModifier : DanmakuModifier {
 
 		public DynamicFloat Range = 360f;
 		public DynamicInt Count = 1;

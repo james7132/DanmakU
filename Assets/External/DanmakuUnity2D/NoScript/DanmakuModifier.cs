@@ -20,10 +20,10 @@ using UnityUtilLib;
 namespace Danmaku2D {
 
 	[System.Serializable]
-	public abstract class FireModifier {
+	public abstract class DanmakuModifier {
 
 		[SerializeField]
-		private FireModifier subModifier;
+		private DanmakuModifier subModifier;
 		private FireBuilder builder;
 
 		protected DynamicFloat Velocity {
@@ -73,7 +73,7 @@ namespace Danmaku2D {
 			}
 		}
 
-		public FireModifier SubModifier {
+		public DanmakuModifier SubModifier {
 			get {
 				return subModifier;
 			}

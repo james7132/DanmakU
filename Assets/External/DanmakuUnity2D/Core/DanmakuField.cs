@@ -452,7 +452,7 @@ namespace Danmaku2D {
                                      DynamicFloat velocity,
 		                             CoordinateSystem coordSys = CoordinateSystem.View,
 		                             DanmakuController controller = null,
-                                     FireModifier modifier = null,
+                                     DanmakuModifier modifier = null,
                                      DanmakuGroup group = null) {
 			Vector2 position = WorldPoint (location, coordSys);
 			if (modifier == null) {
@@ -477,7 +477,7 @@ namespace Danmaku2D {
                                      DynamicFloat angularVelocity,
                                      CoordinateSystem coordSys = CoordinateSystem.View,
                              		 DanmakuController controller = null,
-                                     FireModifier modifier = null,
+                                     DanmakuModifier modifier = null,
                                      DanmakuGroup group = null) {
 			Vector2 position = WorldPoint (location, coordSys);
 			if (modifier == null) {
@@ -498,7 +498,7 @@ namespace Danmaku2D {
 		}
 		
 		public Danmaku Fire(FireBuilder data) {
-			FireModifier modifier = data.Modifier;
+			DanmakuModifier modifier = data.Modifier;
 			if (modifier == null) {
 				Danmaku danmaku = Danmaku.Get (this, data);
 				danmaku.Activate ();
@@ -537,8 +537,11 @@ namespace Danmaku2D {
 		public DanmakuField.CoordinateSystem CoordinateSystem = DanmakuField.CoordinateSystem.View;
 		public DanmakuGroup Group;
 		public int Damage;
-		public FireModifier Modifier;
-		
+		public DanmakuModifier Modifier;
+
+		public FireBuilder() {
+		}
+
 		public FireBuilder(DanmakuPrefab prefab) {
 			this.Prefab = prefab;
 		}
