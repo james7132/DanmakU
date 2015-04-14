@@ -72,12 +72,19 @@ namespace Danmaku2D.Editor {
 
 		void UpdateValues() {
 			if (!selectionLock) {
-				targetGameObject = Selection.activeGameObject;
-				if (targetGameObject != null) {
-					target = targetGameObject.GetComponentInChildren<DanmakuNoScriptContainer> ();
-					targetTransform = targetGameObject.transform;
+				GameObject temp = Selection.activeGameObject;
+				if (temp != null) {
+					target = temp.GetComponentInChildren<DanmakuNoScriptContainer> ();
+					if(target != null) {
+						targetGameObject = temp;
+						targetTransform = temp.transform;
+					} else {
+						targetGameObject = null;
+						targetTransform = null;
+					}
 				} else {
 					target = null;
+					targetGameObject = null;
 					targetTransform = null;
 				}
 			}
@@ -142,13 +149,35 @@ namespace Danmaku2D.Editor {
 		}
 
 		void GraphGUI() {
-			Rect temp = EditorGUILayout.BeginVertical ();
+			Rect temp = EditorGUILayout.BeginVertical ((GUIStyle)"PreBackground");
 			{
-				scroll = EditorGUILayout.BeginScrollView (scroll, (GUIStyle)"PreBackground");
-				{
-					GUILayout.FlexibleSpace ();
+				if(target != null) {
+					scroll = EditorGUILayout.BeginScrollView (scroll);
+					{
+						GUILayout.FlexibleSpace ();
+					}
+					EditorGUILayout.EndScrollView ();
+				} else {
+					if(Selection.activeGameObject != null) {
+						EditorGUILayout.BeginHorizontal();
+						{
+							//GUILayout.FlexibleSpace();
+							EditorGUILayout.BeginVertical();
+							{
+								GUILayout.FlexibleSpace();
+								if(GUILayout.Button("Add Danmaku Controller to Selected Object")) {
+									target = Selection.activeGameObject.AddComponent<DanmakuNoScriptContainer>();
+									targetGameObject = Selection.activeGameObject;
+									targetTransform = Selection.activeGameObject.transform;
+								}
+								GUILayout.FlexibleSpace();
+							}
+							EditorGUILayout.EndVertical();
+							//GUILayout.FlexibleSpace();
+						}
+						EditorGUILayout.EndHorizontal();
+					}
 				}
-				EditorGUILayout.EndScrollView ();
 			}
 			EditorGUILayout.EndVertical ();
 			
@@ -164,15 +193,22 @@ namespace Danmaku2D.Editor {
 				switch (currentEventType) {
 					case EventType.DragUpdated:
 						Object[] objects = DragAndDrop.objectReferences;
-						if (objects.Length > 0) {
+						if (targetTransform != null && objects.Length > 0) {
 							foreach (Object obj in objects) {
-								
+								GameObject referenceGameObject = obj as GameObject;
+								Transform referenceTransform = obj as Transform;
+								if(referenceGameObject != null) {
+									referenceTransform = referenceGameObject.transform;
+								}
+								if(referenceTransform != null && referenceTransform.IsChildOf(targetTransform)) {
+									
+								}
 							}
 						}
 						break;
 					case EventType.DragPerform:
 						foreach (GameObject gameObject in DragAndDrop.objectReferences) {
-
+							
 						}
 						break;
 					default:

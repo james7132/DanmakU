@@ -52,32 +52,19 @@ namespace Danmaku2D {
 			return TargetField.AngleTowardPlayer(transform.position, coordSys);
 		}
 
+		public bool Active;
+
 		/// <summary>
 		/// The Main Loop of the AttackPattern, called once every frame during the AttackPattern's execution
 		/// </summary>
-		protected abstract void MainLoop();
-
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="Danmaku2D.AttackPattern"/> is active.
-		/// Setting this to false on a currently executing AttackPattern will terminate its execution immediately.
-		/// </summary>
-		/// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
-		public bool Active {
-			get;
-			set;
-		}
-		
-		/// <summary>
-		/// Gets a value indicating whether this instance is finished.
-		/// </summary>
-		/// <value><c>true</c> if this instance is finished; otherwise, <c>false</c>.</value>
-		protected abstract bool IsFinished { get; }
+		protected abstract IEnumerator MainLoop();
 
 		/// <summary>
 		/// An overridable function that is called every time the AttackPattern starts its execution.
 		/// Use this for setup of various execution related variables
 		/// </summary>
 		protected virtual void OnInitialize() {
+			return;
 		}
 
 		/// <summary>
@@ -85,6 +72,7 @@ namespace Danmaku2D {
 		/// Use this for cleanup of various execution related variables
 		/// </summary>
 		protected virtual void OnFinalize() {
+			return;
 		}
 
 		/// <summary>
@@ -92,7 +80,7 @@ namespace Danmaku2D {
 		/// </summary>
 		public virtual void Fire () {
 			if (!Active) {
-				StartCoroutine (Execute ());
+				StartTask (Execute ());
 			} else {
 				print("Tried Executing Already Running Attack Pattern");
 			}
@@ -101,10 +89,7 @@ namespace Danmaku2D {
 		private IEnumerator Execute() {
 			Active = true;
 			OnInitialize ();
-			while(!IsFinished && Active) {
-				MainLoop();
-				yield return UtilCoroutines.WaitForUnpause(this);
-			}
+			yield return StartTask (MainLoop ());
 			OnFinalize ();
 			Active = false;
 		}

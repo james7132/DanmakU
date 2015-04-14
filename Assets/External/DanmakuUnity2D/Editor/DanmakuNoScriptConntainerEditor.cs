@@ -19,16 +19,15 @@ using UnityEditor;
 
 namespace Danmaku2D.Editor {
 
-	[CustomEditor(typeof(DanmakuNoScriptContainer))]
-	public class DanmakuNoScriptConntainerEditor : UnityEditor.Editor {
-
-		public override void OnInspectorGUI () {
-			base.OnInspectorGUI ();
-			if (GUILayout.Button ("Open Danmaku Editor")) {
-				DanmakuEditor.Open();
-			}
-		}
-
-	}
+//	[CustomEditor(typeof(DanmakuNoScriptContainer))]
+//	public class DanmakuNoScriptConntainerEditor : UnityEditor.Editor {
+//
+//		public override void OnInspectorGUI () {
+//			base.OnInspectorGUI ();
+//			if (GUILayout.Button ("Open Danmaku Editor")) {
+//				DanmakuEditor.Open ();
+//			}
+//		}
+//	}
 }
 

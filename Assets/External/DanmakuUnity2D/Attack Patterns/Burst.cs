@@ -53,12 +53,6 @@ namespace Danmaku2D.AttackPatterns {
 		
 		[SerializeField]
 		private DynamicFloat burstRotationDelta;
-		
-		protected override bool IsFinished {
-			get {
-				return burstCount.Ready();
-			}
-		}
 
 		public override void Awake () {
 			base.Awake ();
@@ -77,12 +71,14 @@ namespace Danmaku2D.AttackPatterns {
 			fireData.Rotation = burstInitialRotation;
 		}
 
-		protected override void MainLoop () {
-			if(burstDelay.Tick()) {
+		protected override IEnumerator MainLoop () {
+			while (!burstCount.Ready()) {
+//				yield return WaitForFrames(burstDelay.MaxCount);
 				fireData.Rotation += burstRotationDelta;
 				TargetField.Fire(fireData);
 				burstCount.Tick();
 			}
+			yield return null;
 		}
 	}
 }
