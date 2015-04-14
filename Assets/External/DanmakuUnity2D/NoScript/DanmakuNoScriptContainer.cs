@@ -1,20 +1,19 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Vexe.Runtime.Types;
 
 namespace Danmaku2D {
 
 	[ExecuteInEditMode]
 	[DisallowMultipleComponent]
-	public class DanmakuNoScriptContainer : MonoBehaviour {
+	public class DanmakuNoScriptContainer : BetterBehaviour {
 
 		[SerializeField]
 		private DanmakuTrigger[] triggers;
-
+		
 		[SerializeField]
-		private List<Source> sources;
-
-		private Dictionary<Guid, Source> sourceMap;
+		private Dictionary<Guid, Source> sourceMap = new Dictionary<Guid, Source>();
 
 		[System.Serializable]
 		private class Source : ISerializationCallbackReceiver {
@@ -50,20 +49,13 @@ namespace Danmaku2D {
 			#endregion
 		}
 
-		void OnEnable() {
-			sourceMap = new Dictionary<Guid, Source> ();
-			for (int i = 0; i < sources.Count; i++) {
-				sourceMap[sources[i].identifier] = sources[i];
-			}
-		}
-
 		#if UNITY_EDITOR
 		void Update() {
 			if (Application.isEditor) {
 				triggers = GetComponentsInChildren<DanmakuTrigger>();
-				for(int i = 0; i < sources.Count; i++) {
-					if(sources[i].identifier == Guid.Empty)
-						sources[i].RegenerateID();
+				foreach(Source source in sourceMap.Values) {
+					if(source.identifier == Guid.Empty)
+						source.RegenerateID();
 				}
 			}
 			DanmakuNoScriptContainer[] containers = GetComponentsInChildren<DanmakuNoScriptContainer>();

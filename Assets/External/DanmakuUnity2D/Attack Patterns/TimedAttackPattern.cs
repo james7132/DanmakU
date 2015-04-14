@@ -32,20 +32,14 @@ namespace Danmaku2D {
 		[SerializeField]
 		private FrameCounter timeout;
 
-		protected override void MainLoop () {
+		protected override IEnumerator MainLoop () {
 			if(timeout.Tick (false)) {
-				return;
 			}
+			yield return null;
 		}
 
 		protected override void OnInitialize () {
 			timeout.Reset ();
-		}
-
-		protected sealed override bool IsFinished {
-			get {
-				return timeout.Ready();
-			}
 		}
 	}
 }

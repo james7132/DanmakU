@@ -335,14 +335,14 @@ namespace Danmaku2D {
 		}
 
 		internal void Update() {
-			frames++;
-			originalPosition.x = Position.x;
-			originalPosition.y = Position.y;
 
+			#region thread_unsafe
 			if (controllerCheck) {
 				controllerUpdate(this, dt);
 			}
+			#endregion
 
+			#region thread_safe
 			if(AngularVelocity != 0f) {
 				Rotation += AngularVelocity * dt;
 			}
@@ -356,14 +356,14 @@ namespace Danmaku2D {
 			
 			movementVector.x = Position.x - originalPosition.x;
 			movementVector.y = Position.y - originalPosition.y;
-
+			#endregion
 			if(CollisionCheck) {
 				distance = movementVector.magnitude;
-				collisionCenter.x = originalPosition.x + colliderOffset.y;
-				collisionCenter.y = originalPosition.y + colliderOffset.y;
+				collisionCenter.x = originalPosition.x + colliderOffset.x * direction.x;
+				collisionCenter.y = originalPosition.y + colliderOffset.y * direction.y;
 				//Check if the collision detection should be continuous or not
 				if (distance <= circleRaidus) {
-					count = Physics2D.OverlapCircleNonAlloc(originalPosition + colliderOffset,
+					count = Physics2D.OverlapCircleNonAlloc(collisionCenter,
 					                                        circleRaidus,
 					                                        colliders,
 					                                        colliderMask);
@@ -383,7 +383,7 @@ namespace Danmaku2D {
 							scripts [j].OnDanmakuCollision (this);
 						}
 						if (to_deactivate) {
-							Position = Physics2D.CircleCast (collisionCenter, circleRaidus, movementVector, distance).point;
+							//Position = Physics2D.CircleCast (collisionCenter, circleRaidus, movementVector, distance).point;
 							break;
 						}
 					}
@@ -429,6 +429,10 @@ namespace Danmaku2D {
 			if (to_deactivate) {
 				DeactivateImmediate();
 			}
+			
+			frames++;
+			originalPosition.x = Position.x;
+			originalPosition.y = Position.y;
 		}
 
 		/// <summary>

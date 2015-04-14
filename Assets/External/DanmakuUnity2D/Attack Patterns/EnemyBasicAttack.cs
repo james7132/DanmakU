@@ -45,15 +45,10 @@ namespace Danmaku2D.AttackPatterns {
 
 		[SerializeField]
 		private DanmakuPrefab basicPrefab;
-
-		protected override bool IsFinished {
-			get {
-				return false;
-			}
-		}
 		
-		protected override void MainLoop () {
-			if (fireDelay.Tick()) {
+		protected override IEnumerator MainLoop () {
+			while (true) {
+//				yield return WaitForFrames(fireDelay.MaxCount);
 				float angle = TargetField.AngleTowardPlayer(transform.position) + Random.Range(-generalRange, generalRange);
 				FireCurved(basicPrefab, transform.position, angle, velocity, angV, DanmakuField.CoordinateSystem.World);
 			}
