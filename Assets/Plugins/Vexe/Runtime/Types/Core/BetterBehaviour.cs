@@ -12,9 +12,10 @@ namespace Vexe.Runtime.Types
     {
         [SerializeField]
         private SerializationData _serializationData;
-        public SerializationData SerializationData
+        public SerializationData BehaviourData
         {
             get { return _serializationData ?? (_serializationData = new SerializationData()); }
+            set { _serializationData = value; }
         }
 
         static SerializerBackend _serializer;
@@ -28,15 +29,15 @@ namespace Vexe.Runtime.Types
         /// Could be used at runtime as well if you have any usages of a unique id
         /// </summary>
         [SerializeField, HideInInspector]
-        private int id = -1;
+        private int _id = -1;
         static int counter;
-        public int ID
+        public int Id
         {
             get
             {
-                if (id == -1)
-                    id = counter++;
-                return id;
+                if (_id == -1)
+                    _id = counter++;
+                return _id;
             }
         }
 
@@ -45,8 +46,8 @@ namespace Vexe.Runtime.Types
 #if DBG
             Log("Serializing " + GetType().Name);
 #endif
-            SerializationData.Clear();
-            Serializer.SerializeTargetIntoData(this, SerializationData);
+            BehaviourData.Clear();
+            Serializer.SerializeTargetIntoData(this, BehaviourData);
         }
 
         public void OnAfterDeserialize()
@@ -54,7 +55,7 @@ namespace Vexe.Runtime.Types
 #if DBG
             Log("Deserializing " + GetType().Name);
 #endif
-            Serializer.DeserializeDataIntoTarget(this, SerializationData);
+            Serializer.DeserializeDataIntoTarget(this, BehaviourData);
         }
 
         // Logging
@@ -79,7 +80,7 @@ namespace Vexe.Runtime.Types
 
         protected void Log(object obj)
         {
-            LogFormat(obj.ToString(), null);
+            Debug.Log(obj, gameObject);
         }
 
         // static logs are useful when logging in nested system.object classes

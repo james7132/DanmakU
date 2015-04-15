@@ -15,12 +15,12 @@ MonoBehaviour:
     serializedObjects: []
     serializedStrings:
       keys:
-      - 'Field: MembersDisplay DefaultDisplay'
-      - 'Field: int DefaultSpacing'
+      - 4669656c643a204d656d62657273446973706c61792064656661756c74446973706c6179
+      - 4669656c643a20696e742064656661756c7453706163696e67
       values:
-      - '"BoxedMembersArea"'
-      - 10
-  id: -1
+      - 3132
+      - 38
+  id: 62666236626365662d336338372d346234372d386164612d633135613533623163393761
   dbg: 0
-  DefaultDisplay: 4
-  DefaultSpacing: 10
+  defaultDisplay: 12
+  defaultSpacing: 8
