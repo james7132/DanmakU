@@ -20,12 +20,24 @@ using System.Collections.Generic;
 namespace Danmaku2D {
 
 	[RequireComponent(typeof(Collider2D))]
-	public abstract class DanmakuPlayer : DanmakuTrigger, IPausable {
-
+	public abstract class DanmakuPlayer : DanmakuTrigger, IPausable, IDanmakuObject {
+		#region IDanmakuObject implementation
+		private DanmakuField field;
 		public virtual DanmakuField Field {
-			get;
-			set;
+			get {
+				return field;
+			}
+			set {
+				field = value;
+				if(value != null)
+					value.player = this;
+			}
 		}
+
+		#endregion
+
+
+
 
 		public bool Paused {
 			get;

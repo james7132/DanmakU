@@ -62,7 +62,7 @@ namespace Danmaku2D {
 			movementPattern.DestroyOnEnd = true;
 			attackPattern = GetComponent<AttackPattern> ();
 			if (attackPattern != null) {
-				attackPattern.TargetField = Field.TargetField;
+				attackPattern.Field = Field.TargetField;
 				attackPattern.Fire();
 			}
 			movementPattern.StartMovement ();

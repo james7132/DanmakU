@@ -29,8 +29,7 @@ namespace Danmaku2D.Editor {
 		private bool selectionLock;
 		private GameObject targetGameObject;
 		private Transform targetTransform;
-		private DanmakuNoScriptContainer target;
-
+		private DanmakuEmitter target;
 		private Vector2 scroll;
 
 		public static bool IsOpen {
@@ -74,7 +73,7 @@ namespace Danmaku2D.Editor {
 			if (!selectionLock) {
 				GameObject temp = Selection.activeGameObject;
 				if (temp != null) {
-					target = temp.GetComponentInChildren<DanmakuNoScriptContainer> ();
+					target = temp.GetComponentInChildren<DanmakuEmitter> ();
 					if(target != null) {
 						targetGameObject = temp;
 						targetTransform = temp.transform;
@@ -166,7 +165,7 @@ namespace Danmaku2D.Editor {
 							{
 								GUILayout.FlexibleSpace();
 								if(GUILayout.Button("Add Danmaku Controller to Selected Object")) {
-									target = Selection.activeGameObject.AddComponent<DanmakuNoScriptContainer>();
+									target = Selection.activeGameObject.AddComponent<DanmakuEmitter>();
 									targetGameObject = Selection.activeGameObject;
 									targetTransform = Selection.activeGameObject.transform;
 								}

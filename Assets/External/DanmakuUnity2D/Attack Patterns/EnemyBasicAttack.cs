@@ -49,7 +49,7 @@ namespace Danmaku2D.AttackPatterns {
 		protected override IEnumerator MainLoop () {
 			while (true) {
 //				yield return WaitForFrames(fireDelay.MaxCount);
-				float angle = TargetField.AngleTowardPlayer(transform.position) + Random.Range(-generalRange, generalRange);
+				float angle = Field.AngleTowardPlayer(transform.position) + Random.Range(-generalRange, generalRange);
 				FireCurved(basicPrefab, transform.position, angle, velocity, angV, DanmakuField.CoordinateSystem.World);
 			}
 		}

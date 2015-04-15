@@ -14,33 +14,25 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using UnityEngine;
-using System;
 using System.Collections;
 
 namespace Danmaku2D {
-	[Serializable]
-	public abstract class PlayerAgent : IDanmakuObject {
+	
+	public sealed class ControllerNode : DanmakuNode {
 
-		public DanmakuPlayer Player {
+		public IDanmakuController Controller {
 			get;
 			set;
 		}
 
-		#region IDanmakuObject implementation
-		public DanmakuField Field {
-			get {
-				return Player.Field;
-			}
-			set {
-				Player.Field = value;
-			}
+		#region implemented abstract members of DanmakuNode
+		protected override void Process () {
+			if (Controller != null)
+				Target.Controller += Controller.UpdateDanmaku;
+			else
+				Debug.LogError ("Controller Node: Attempted to add null controller");
 		}
-		#endregion	
-
-		/// <summary>
-		/// Update the specified dt.
-		/// </summary>
-		/// <param name="dt">Dt.</param>
-		public abstract void Update();
+		#endregion
 	}
+
 }

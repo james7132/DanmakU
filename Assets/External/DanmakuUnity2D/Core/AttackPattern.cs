@@ -26,7 +26,7 @@ namespace Danmaku2D {
 	/// An abstract class that defines the basic functionality of a DanmakuUnity Attack Pattern.
 	/// Derived classes of AbstractAttackPattern are used to define and control the various intricate patterns seen in danmaku games.
 	/// </summary>
-	public abstract class AttackPattern : CachedObject, IPausable {
+	public abstract class AttackPattern : CachedObject, IPausable, IDanmakuObject {
 		#region IPausable implementation
 		public bool Paused {
 			get;
@@ -34,13 +34,18 @@ namespace Danmaku2D {
 		}
 		#endregion
 
+		#region IDanmakuObject implementation
 		/// <summary>
 		/// The DanmakuField that all bullets fired by this pattern will end up within. <br>
 		/// This MUST be set to a non-null value before firing any bullets.
 		/// <see cref="DanmakuField"/>
 		/// </summary>
 		/// <value>The AttackPattern's target danmaku field</value>
-		public DanmakuField TargetField;
+		public virtual DanmakuField Field {
+			get;
+			set;
+		}
+		#endregion
 
 		/// <summary>
 		/// Helper method to quickly get the angle needed to directly fire at the player in the AttacKPattern's target field
@@ -49,7 +54,7 @@ namespace Danmaku2D {
 		/// <param name="position">The position to evaluate the angle to the player from.</param>
 		/// <param name="coordSys">The cordinate system used to evaluate the true location of the source location</param>
 		protected float AngleToPlayer(Vector2 position, DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.World) {
-			return TargetField.AngleTowardPlayer(transform.position, coordSys);
+			return Field.AngleTowardPlayer(transform.position, coordSys);
 		}
 
 		public bool Active;
@@ -98,7 +103,7 @@ namespace Danmaku2D {
 		                                     Vector2 location,
 		                                     DynamicFloat rotation,
 		                                     DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.View) {
-			return TargetField.SpawnDanmaku (danmakuType, location, rotation, coordSys);
+			return Field.SpawnDanmaku (danmakuType, location, rotation, coordSys);
 		}
 
 		protected Danmaku FireLinear(DanmakuPrefab danmakuType, 
@@ -109,7 +114,7 @@ namespace Danmaku2D {
 		                                      DanmakuController controller = null,
 		                                      DanmakuModifier modifier = null,
 		                                      DanmakuGroup group = null) {
-			return TargetField.FireLinear (danmakuType, location, rotation, velocity, coordSys, controller, modifier, group);
+			return Field.FireLinear (danmakuType, location, rotation, velocity, coordSys, controller, modifier, group);
 		}
 
 		protected Danmaku FireCurved(DanmakuPrefab danmakuType,
@@ -121,11 +126,11 @@ namespace Danmaku2D {
 	                                    DanmakuController controller = null,
 	                                    DanmakuModifier modifier = null,
 	                                    DanmakuGroup group = null) {
-			return TargetField.FireCurved (danmakuType, location, rotation, velocity, angularVelocity, coordSys, controller, modifier, group);
+			return Field.FireCurved (danmakuType, location, rotation, velocity, angularVelocity, coordSys, controller, modifier, group);
 		}
 
 		protected Danmaku Fire(FireBuilder data) {
-			return TargetField.Fire (data);
+			return Field.Fire (data);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2015  James Liu
+﻿// Copyright (C) 2015  James Liu
 //	
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU General Public License as published by
@@ -14,33 +14,32 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using UnityEngine;
-using System;
 using System.Collections;
 
 namespace Danmaku2D {
-	[Serializable]
-	public abstract class PlayerAgent : IDanmakuObject {
+	
+	public class TriggerNode : DanmakuNode {
+		
+		[SerializeField]
+		private DanmakuTrigger sourceTrigger;
 
-		public DanmakuPlayer Player {
-			get;
-			set;
+		protected internal override void Initialize () {
+			base.Initialize ();
+			sourceTrigger.triggerCallback += Trigger;
 		}
-
-		#region IDanmakuObject implementation
-		public DanmakuField Field {
-			get {
-				return Player.Field;
-			}
-			set {
-				Player.Field = value;
-			}
+	
+		private void Trigger() {
+			Trigger (new FireBuilder () {
+					CoordinateSystem = DanmakuField.CoordinateSystem.World
+				}
+			);
 		}
-		#endregion	
-
-		/// <summary>
-		/// Update the specified dt.
-		/// </summary>
-		/// <param name="dt">Dt.</param>
-		public abstract void Update();
+			
+		#region implemented abstract members of DanmakuNode
+		protected override void Process () {
+		}
+		#endregion
 	}
+
+
 }

@@ -122,7 +122,7 @@ namespace Danmaku2D {
 			proj.MatchPrefab (danmakuType);
 			proj.PositionImmediate = position;
 			proj.Rotation = rotation;
-			proj.field = field;
+			proj.Field = field;
 			proj.bounds = field.bounds;
 			return proj;
 		}
@@ -138,7 +138,7 @@ namespace Danmaku2D {
 			proj.Damage = builder.Damage;
 			if (builder.Group != null) 
 				proj.AddToGroup (builder.Group);
-			proj.field = field;
+			proj.Field = field;
 			proj.bounds = field.bounds;
 			return proj;
 		}
