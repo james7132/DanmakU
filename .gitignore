@@ -3,6 +3,8 @@
 [Oo]bj/
 [Bb]uild/
 [Dd]ocs/html
+
+[Pp]rojectSettings
 Assets/TestTemp
 Assets/TestTemp.meta
 
@@ -20,4 +22,5 @@ Assets/TestTemp.meta
 sysinfo.txt
 
 *.meta
+*Clipboard.asset*
 *BetterEditorPrefs.asset*
