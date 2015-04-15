@@ -15,23 +15,23 @@ MonoBehaviour:
     serializedObjects: []
     serializedStrings:
       keys:
-      - 'Field: Vector3 V3Value'
-      - 'Field: Vector2 V2Value'
-      - 'Field: int IntValue'
-      - 'Field: float FloatValue'
-      - 'Field: string StringValue'
-      - 'Field: bool BoolValue'
-      - 'Field: Color ColorValue'
-      - 'Field: Quaternion QuaternionValue'
+      - 4669656c643a20566563746f723320563356616c7565
+      - 4669656c643a20566563746f723220563256616c7565
+      - 4669656c643a20696e7420496e7456616c7565
+      - 4669656c643a20666c6f617420466c6f617456616c7565
+      - 4669656c643a20737472696e6720537472696e6756616c7565
+      - 4669656c643a20626f6f6c20426f6f6c56616c7565
+      - 4669656c643a20436f6c6f7220436f6c6f7256616c7565
+      - 4669656c643a205175617465726e696f6e205175617465726e696f6e56616c7565
       values:
-      - '{"x":0.0,"y":0.0,"z":0.0}'
-      - '{"x":0.0,"y":0.0}'
-      - 0
-      - 0.0
-      - '""'
-      - false
-      - '{"r":0.0,"g":0.0,"b":0.0,"a":0.0}'
-      - '{"x":0.0,"y":0.0,"z":0.0,"w":1.0}'
+      - 7b2278223a302e302c2279223a302e302c227a223a302e307d
+      - 7b2278223a302e302c2279223a302e307d
+      - 30
+      - 302e30
+      - 2222
+      - 66616c7365
+      - 7b2272223a302e302c2267223a302e302c2262223a302e302c2261223a302e307d
+      - 7b2278223a302e302c2279223a302e302c227a223a302e302c2277223a312e307d
   id: 1
   dbg: 0
   V3Value: {x: 0, y: 0, z: 0}
@@ -40,5 +40,9 @@ MonoBehaviour:
   FloatValue: 0
   StringValue: 
   BoolValue: 0
-  ColorValue: {r: 0, g: 0, b: 0, a: 0}
+  ColorValue:
+    r: 0
+    g: 0
+    b: 0
+    a: 0
   QuaternionValue: {x: 0, y: 0, z: 0, w: 1}
