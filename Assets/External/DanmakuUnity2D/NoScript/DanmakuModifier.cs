@@ -14,13 +14,13 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using UnityUtilLib;
 
 namespace Danmaku2D {
 
 	[System.Serializable]
-	public abstract class DanmakuModifier {
+	public abstract class DanmakuModifier : IEnumerable<DanmakuModifier> {
 
 		[SerializeField]
 		private DanmakuModifier subModifier;
@@ -115,6 +115,15 @@ namespace Danmaku2D {
 		protected virtual void OnInitialize() {
 		}
 
+		public void Append(DanmakuModifier newModifier) {
+			DanmakuModifier parent = this;
+			DanmakuModifier current = subModifier;
+			while (current != null) {
+				current = current.subModifier;
+			}
+			parent.SubModifier = newModifier;
+		}
+
 		protected void FireSingle(Vector2 position,
 		                          DynamicFloat rotation) {
 			if (SubModifier == null) {
@@ -127,6 +136,30 @@ namespace Danmaku2D {
 		}
 
 		public abstract void Fire(Vector2 position, DynamicFloat rotation);
+
+		#region IEnumerable implementation
+
+		public IEnumerator<DanmakuModifier> GetEnumerator () {
+			DanmakuModifier current = this;
+			while (current != null) {
+				yield return current;
+				current = current.subModifier;
+			}
+		}
+
+		#endregion
+
+		#region IEnumerable implementation
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator () {
+			DanmakuModifier current = this;
+			while (current != null) {
+				yield return current;
+				current = current.subModifier;
+			}
+		}
+
+		#endregion
 	}
 
 }

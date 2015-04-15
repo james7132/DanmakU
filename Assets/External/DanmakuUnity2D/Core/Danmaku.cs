@@ -27,7 +27,7 @@ namespace Danmaku2D {
 	/// A single projectile fired.
 	/// The base object that represents a single bullet in a Danmaku game
 	/// </summary>
-	public sealed partial class Danmaku : IPooledObject, IColorable, IPrefabed<DanmakuPrefab> {
+	public sealed partial class Danmaku : IPooledObject, IColorable, IPrefabed<DanmakuPrefab>, IDanmakuObject {
 		
 		internal int index;
 
@@ -64,7 +64,6 @@ namespace Danmaku2D {
 		
 		private DanmakuController controllerUpdate;
 		internal List<DanmakuGroup> groups;
-		private DanmakuField field;
 		private Bounds2D bounds;
 
 		//Preallocated variables to avoid allocation in Update
@@ -252,15 +251,16 @@ namespace Danmaku2D {
 		public bool BoundsCheck;
 		public bool CollisionCheck;
 
+		#region IDanmakuObject implementation
 		/// <summary>
 		/// Gets the DanmakuField this instance was fired from.
 		/// </summary>
 		/// <value>The field the projectile was fired from.</value>
 		public DanmakuField Field {
-			get {
-				return field;
-			}
+			get;
+			set;
 		}
+		#endregion
 
 		public void AddController(IDanmakuController controller) {
 			if(controller != null) {
@@ -375,8 +375,8 @@ namespace Danmaku2D {
 						Collider2D collider = colliders[i];
 						if(collider == null)
 							continue;
-						if(field.colliderMap.ContainsKey(collider))
-							scripts = field.colliderMap[collider];
+						if(Field.colliderMap.ContainsKey(collider))
+							scripts = Field.colliderMap[collider];
 						else
 							scripts = Util.GetComponents<IDanmakuCollider>(collider.gameObject);
 						for (int j = 0; j < scripts.Length; j++) {
@@ -404,8 +404,8 @@ namespace Danmaku2D {
 						Collider2D collider = hit.collider;
 						if(collider == null)
 							continue;
-						if(field.colliderMap.ContainsKey(collider))
-							scripts = field.colliderMap[collider];
+						if(Field.colliderMap.ContainsKey(collider))
+							scripts = Field.colliderMap[collider];
 						else
 							scripts = Util.GetComponents<IDanmakuCollider>(collider.gameObject);
 						for (int j = 0; j < scripts.Length; j++) {

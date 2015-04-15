@@ -28,7 +28,17 @@ namespace Danmaku2D {
 	[ExecuteInEditMode]
 	[DisallowMultipleComponent]
 	[AddComponentMenu("Danmaku 2D/Danmaku Field")]
-	public sealed class DanmakuField : MonoBehaviour {
+	public sealed class DanmakuField : MonoBehaviour, IDanmakuObject {
+		#region IDanmakuObject implementation
+		DanmakuField IDanmakuObject.Field {
+			get {
+				return TargetField;
+			}
+			set {
+				TargetField = value;
+			}
+		}
+		#endregion
 
 		internal static List<DanmakuField> fields;
 
@@ -553,7 +563,8 @@ namespace Danmaku2D {
 			copy.Rotation = Rotation;
 			copy.Velocity = Velocity;
 			copy.AngularVelocity = AngularVelocity;
-			copy.Controller = Controller;
+			copy.Controller = null;
+			copy.Controller += Controller;
 			copy.CoordinateSystem = CoordinateSystem;
 			copy.Modifier = Modifier;
 			copy.Damage = Damage;

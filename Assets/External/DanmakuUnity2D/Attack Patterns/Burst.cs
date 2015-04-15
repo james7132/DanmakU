@@ -75,7 +75,7 @@ namespace Danmaku2D.AttackPatterns {
 			while (!burstCount.Ready()) {
 //				yield return WaitForFrames(burstDelay.MaxCount);
 				fireData.Rotation += burstRotationDelta;
-				TargetField.Fire(fireData);
+				Field.Fire(fireData);
 				burstCount.Tick();
 			}
 			yield return null;

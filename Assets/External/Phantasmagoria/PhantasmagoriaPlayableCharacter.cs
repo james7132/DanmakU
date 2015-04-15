@@ -106,7 +106,7 @@ namespace Danmaku2D.Phantasmagoria {
 				DanmakuField field = base.Field = value;
 				for(int i = 0; i < attackPatterns.Length; i++)
 					if(attackPatterns[i] != null)
-						attackPatterns[i].TargetField = field.TargetField;
+						attackPatterns[i].Field = field.TargetField;
 			}
 		}
 

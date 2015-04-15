@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015  James Liu
+// Copyright (C) 2015  James Liu
 //	
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ namespace Danmaku2D.AttackPatterns {
 			if(prefab == null)
 				throw new MissingReferenceException(GetType().ToString() + " needs a prefab to function.");
 			Vector2 spawnPos = position - range + 2 * range.Random ();
-			Runtime = TargetField.SpawnGameObject(prefab, spawnPos);
+			Runtime = Field.SpawnGameObject(prefab, spawnPos);
 		}
 
 		protected override void OnFinalize () {
