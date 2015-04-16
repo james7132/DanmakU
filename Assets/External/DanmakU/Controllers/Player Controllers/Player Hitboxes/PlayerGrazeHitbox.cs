@@ -17,7 +17,7 @@ using UnityEngine;
 using UnityUtilLib;
 using System.Collections;
 
-namespace Danmaku2D {
+namespace DanmakU {
 	public class PlayerGrazeHitbox : MonoBehaviour, IDanmakuCollider{
 
 		private DanmakuPlayer player;

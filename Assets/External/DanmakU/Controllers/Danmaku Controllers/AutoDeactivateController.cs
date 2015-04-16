@@ -16,7 +16,7 @@
 using UnityEngine;
 using UnityUtilLib;
 
-namespace Danmaku2D.DanmakuControllers {
+namespace DanmakU.DanmakuControllers {
 
 	[System.Serializable]
 	public class AutoDeactivateController : IDanmakuController {

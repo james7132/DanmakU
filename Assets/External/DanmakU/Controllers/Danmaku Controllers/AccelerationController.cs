@@ -19,7 +19,7 @@ using UnityUtilLib;
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
-namespace Danmaku2D.DanmakuControllers {
+namespace DanmakU.DanmakuControllers {
 	
 	/// <summary>
 	/// A DanmakuController for creating bullets that move along a straight path.

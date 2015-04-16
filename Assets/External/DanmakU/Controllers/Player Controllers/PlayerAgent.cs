@@ -17,7 +17,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-namespace Danmaku2D {
+namespace DanmakU {
 	[Serializable]
 	public abstract class PlayerAgent : IDanmakuObject {
 

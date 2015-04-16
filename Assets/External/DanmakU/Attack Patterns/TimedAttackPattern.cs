@@ -20,7 +20,7 @@ using UnityUtilLib;
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
-namespace Danmaku2D {
+namespace DanmakU {
 	/// <summary>
 	/// A abstract class meant for time-limited AttackPatterns
 	/// </summary>
