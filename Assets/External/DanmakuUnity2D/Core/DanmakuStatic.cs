@@ -133,7 +133,7 @@ namespace Danmaku2D {
 			proj.PositionImmediate = field.WorldPoint (builder.Position, builder.CoordinateSystem);
 			proj.Rotation = builder.Rotation;
 			proj.Speed = builder.Velocity;
-			proj.AngularVelocity = builder.AngularVelocity;
+			proj.AngularSpeed = builder.AngularVelocity;
 			proj.AddController (builder.Controller);
 			proj.Damage = builder.Damage;
 			if (builder.Group != null) 

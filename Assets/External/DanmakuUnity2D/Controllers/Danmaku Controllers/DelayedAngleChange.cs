@@ -55,7 +55,7 @@ namespace Danmaku2D.DanmakuControllers {
 				}
 				danmaku.Rotation = baseAngle;
 				if(setAngV)
-					danmaku.AngularVelocity = angularVelocity;
+					danmaku.AngularSpeed = angularVelocity;
 			}
 		}
 

@@ -53,6 +53,13 @@ namespace Danmaku2D {
 		}
 
 		[Hide]
+		[Serialize]
+		public bool Enabled {
+			get;
+			set;
+		}
+
+		[Hide]
 		[DontSerialize]
 		protected FireBuilder Target {
 			get;
@@ -74,6 +81,7 @@ namespace Danmaku2D {
 
 		public DanmakuNode() {
 			Identifier = Regex.Replace (GetType ().Name, @"((?<=\p{Ll})\p{Lu})|((?!\A)\p{Lu}(?>\p{Ll}))", " $0").Trim ();
+			Enabled = true;
 		}
 
 		protected abstract void Process ();
@@ -82,6 +90,8 @@ namespace Danmaku2D {
 		}
 
 		internal void Trigger(FireBuilder message) {
+			if (!Enabled)
+				return;
 			if (message == null) {
 				Target = message.Clone ();
 				Process ();
