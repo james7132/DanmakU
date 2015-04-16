@@ -494,7 +494,7 @@ namespace Danmaku2D {
 				Danmaku danmaku = Danmaku.Get (bulletType, position, rotation, this);
 				danmaku.Activate ();
 				danmaku.Speed = velocity;
-				danmaku.AngularVelocity = angularVelocity;
+				danmaku.AngularSpeed = angularVelocity;
 				danmaku.AddController(controller);
 				if (group != null) {
 					group.Add (danmaku);

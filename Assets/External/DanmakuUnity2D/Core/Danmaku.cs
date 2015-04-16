@@ -16,12 +16,15 @@
 using UnityEngine;
 using UnityUtilLib;
 using UnityUtilLib.Pooling;
+using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
 namespace Danmaku2D {
+
+	public delegate IEnumerator DanmakuTask(Danmaku danmaku);
 
 	/// <summary>
 	/// A single projectile fired.
@@ -81,6 +84,8 @@ namespace Danmaku2D {
 		private bool controllerCheck;
 		internal int groupCountCache;
 
+		private List<IEnumerator> tasks;
+
 		private float speed;
 		private float angularVelocity;
 
@@ -94,7 +99,7 @@ namespace Danmaku2D {
 			}
 		}
 
-		public float AngularVelocity;
+		public float AngularSpeed;
 
 		public DanmakuPrefab Prefab {
 			get {
@@ -262,6 +267,29 @@ namespace Danmaku2D {
 		}
 		#endregion
 
+		public void StartTask(IEnumerator task) {
+			if (tasks == null)
+				tasks = new List<IEnumerator> ();
+			if (task != null)
+				tasks.Add (task);
+			else
+				Debug.LogError ("Attempted to start a null task");
+		}
+
+		public void StartTask(DanmakuTask task) {
+			if(tasks == null)
+				tasks = new List<IEnumerator>();
+			if (task != null) {
+				IEnumerator newTask = task (this);
+				if (newTask != null)
+					tasks.Add (newTask);
+				else
+					Debug.LogError ("Attempted to start a null task");
+			} else {
+				Debug.LogError ("Attempted to start a null task");
+			}
+		}
+
 		public void AddController(IDanmakuController controller) {
 			if(controller != null) {
 				controllerUpdate += controller.UpdateDanmaku;
@@ -340,11 +368,23 @@ namespace Danmaku2D {
 			if (controllerCheck) {
 				controllerUpdate(this, dt);
 			}
+
+			if(tasks != null) {
+				count = tasks.Count;
+				count2 = 0;
+				while(count2 < count) {
+					if(!tasks[count2].MoveNext())
+						tasks.RemoveAt(count2);
+					else
+						count2++;
+				}
+			}
+
 			#endregion
 
 			#region thread_safe
-			if(AngularVelocity != 0f) {
-				Rotation += AngularVelocity * dt;
+			if(AngularSpeed != 0f) {
+				Rotation += AngularSpeed * dt;
 			}
 
 			if (Speed != 0) {
@@ -546,6 +586,7 @@ namespace Danmaku2D {
 				groups[i].group.Remove (this);
 			}
 			groups.Clear ();
+			tasks.Clear ();
 			groupCountCache = 0;
 			groupCheck = false;
 			controllerUpdate = null;
