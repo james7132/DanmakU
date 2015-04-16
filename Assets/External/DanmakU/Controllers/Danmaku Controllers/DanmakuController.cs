@@ -18,7 +18,7 @@ using UnityEngine;
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
-namespace Danmaku2D {
+namespace DanmakU {
 
 	public delegate void DanmakuController(Danmaku proj, float dt);
 

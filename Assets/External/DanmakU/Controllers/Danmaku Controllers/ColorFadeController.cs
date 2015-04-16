@@ -16,7 +16,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Danmaku2D.DanmakuControllers {
+namespace DanmakU.DanmakuControllers {
 
 	[System.Serializable]
 	public class ColorFadeController : IDanmakuController {

@@ -16,7 +16,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Danmaku2D {
+namespace DanmakU {
 	public class ControlledAgent : PlayerAgent {
 
 		public override void Update () {

@@ -17,7 +17,7 @@ using UnityEngine;
 using UnityUtilLib;
 using System.Collections.Generic;
 
-namespace Danmaku2D {
+namespace DanmakU {
 
 	[RequireComponent(typeof(Collider2D))]
 	public abstract class DanmakuPlayer : DanmakuTrigger, IPausable, IDanmakuObject {

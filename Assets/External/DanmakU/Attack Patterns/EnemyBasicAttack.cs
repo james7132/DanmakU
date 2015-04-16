@@ -20,7 +20,7 @@ using UnityUtilLib;
 /// <summary>
 /// A set of scripts for commonly created Attack Patterns
 /// </summary>
-namespace Danmaku2D.AttackPatterns {
+namespace DanmakU.AttackPatterns {
 
 	/// <summary>
 	/// A basic enemy attack pattern. It fires a set of bullets in a fixed pattern at a fixed interval.

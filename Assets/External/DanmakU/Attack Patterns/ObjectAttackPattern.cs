@@ -17,7 +17,7 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 
-namespace Danmaku2D.AttackPatterns {
+namespace DanmakU.AttackPatterns {
 	
 	public class ObjectAttackPattern : TimedAttackPattern {
 

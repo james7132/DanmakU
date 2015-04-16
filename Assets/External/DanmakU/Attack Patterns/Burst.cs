@@ -20,7 +20,7 @@ using UnityUtilLib;
 /// <summary>
 /// A set of scripts for commonly created Attack Patterns
 /// </summary>
-namespace Danmaku2D.AttackPatterns {
+namespace DanmakU.AttackPatterns {
 
 	/// <summary>
 	/// An abstract class for consecutive basic bursts of bullets
