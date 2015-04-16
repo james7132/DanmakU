@@ -15,10 +15,10 @@
 
 using UnityEngine;
 using System.Collections;
-using Danmaku2D.Phantasmagoria;
+using DanmakU.Phantasmagoria;
 using UnityUtilLib;
 
-namespace Danmaku2D.Phantasmagoria.GUI {
+namespace DanmakU.Phantasmagoria.GUI {
 
 	public class ChargeBarGUI : MonoBehaviour {
 

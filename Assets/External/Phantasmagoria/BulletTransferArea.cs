@@ -17,7 +17,7 @@
 //using UnityUtilLib;
 //using System.Collections;
 //
-//namespace Danmaku2D.Phantasmagoria {
+//namespace DanmakU.Phantasmagoria {
 //
 //	[DisallowMultipleComponent]
 //	[RequireComponent(typeof(DanmakuTransferBoundary))]

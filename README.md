@@ -35,5 +35,5 @@ Note: the "--recursive" parameter is required to successfully clone the right Un
 For older clones or git versions older than 1.6.5, use the following commands.
 
     git clone https://github.com/Rhythmia/DanmakU.git
-    cd DanmakuUnity2D
+    cd DanmakU
     git submodule update --init --recursive

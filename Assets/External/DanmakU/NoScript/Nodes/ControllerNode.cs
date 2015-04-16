@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015  James Liu
+// Copyright (C) 2015  James Liu
 //	
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU General Public License as published by
@@ -15,25 +15,24 @@
 
 using UnityEngine;
 using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
 
-namespace DanmakU.Phantasmagoria.GUI {
+namespace DanmakU {
+	
+	public sealed class ControllerNode : DanmakuNode {
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
-
-		private PhantasmagoriaGameController gameControl;
-
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
+		public IDanmakuController Controller {
+			get;
+			set;
 		}
 
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
+		#region implemented abstract members of DanmakuNode
+		protected override void Process () {
+			if (Controller != null)
+				Target.Controller += Controller.UpdateDanmaku;
+			else
+				Debug.LogError ("Controller Node: Attempted to add null controller");
 		}
-
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
-		}
+		#endregion
 	}
+
 }

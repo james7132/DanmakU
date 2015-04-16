@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015  James Liu
+// Copyright (C) 2015  James Liu
 //	
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU General Public License as published by
@@ -15,25 +15,37 @@
 
 using UnityEngine;
 using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
+using UnityUtilLib;
 
-namespace DanmakU.Phantasmagoria.GUI {
+namespace DanmakU {
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
+	[AddComponentMenu("Danmaku 2D/Triggers/Timed Trigger")]
+	public class TimedTrigger : DanmakuTrigger, IPausable {
 
-		private PhantasmagoriaGameController gameControl;
+		#region IPausable implementation
+		public bool Paused {
+			get;
+			set;
+		}
+		#endregion
 
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
+		[SerializeField]
+		private DynamicFloat delay;
+		private FrameCounter delayTimer;
+
+		public override void Awake () {
+			base.Awake ();
+			delayTimer = new FrameCounter (delay);
 		}
 
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
+		public void Update() {
+			if(!Paused) {
+				if(delayTimer.Tick()) {
+					Trigger();
+				}
+			}
 		}
 
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
-		}
 	}
+
 }

@@ -18,7 +18,7 @@ using System;
 using System.Collections;
 using UnityUtilLib;
 
-namespace Danmaku2D.Phantasmagoria {
+namespace DanmakU.Phantasmagoria {
 	public class PhantasmagoriaGameController : DanmakuGameController {
 
 		[Serializable]

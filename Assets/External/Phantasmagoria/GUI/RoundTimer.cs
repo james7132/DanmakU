@@ -17,7 +17,7 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 
-namespace Danmaku2D.Phantasmagoria.GUI {
+namespace DanmakU.Phantasmagoria.GUI {
 
 	[RequireComponent(typeof(GUIText))]
 	public class RoundTimer : MonoBehaviour {
