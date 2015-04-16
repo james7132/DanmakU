@@ -31,7 +31,10 @@ namespace DanmakU {
 	public class DanmakuGameController : GameController {
 
 		[SerializeField]
-		private int maximumLives;
+		private bool frameRateIndependent = false;
+
+		[SerializeField]
+		private int maximumLives = 5;
 
 		[SerializeField]
 		private int projectileInitialCount = 1000;
@@ -41,9 +44,6 @@ namespace DanmakU {
 
 		[SerializeField]
 		private float angleResolution = 0.1f;
-
-//		private static bool inTasks;
-//		private static List<Task> tasks;
 
 		/// <summary>
 		/// The maximum number of lives a player can reach.
@@ -58,7 +58,7 @@ namespace DanmakU {
 		public override void Update() {
 			base.Update ();
 			if (!IsGamePaused) {
-				Danmaku.UpdateAll();
+				Danmaku.UpdateAll((frameRateIndependent) ? Time.timeScale : Util.TargetDeltaTime);
 			}
 		}
 
