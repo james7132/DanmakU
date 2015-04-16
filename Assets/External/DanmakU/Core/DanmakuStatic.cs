@@ -36,10 +36,7 @@ namespace DanmakU {
 		private static int[] collisionMask;
 		private static int unitCircleMax;
 		private static ProjectilePool projectilePool;
-
-		private static float oldDt;
 		private static float dt;
-		private static bool dtChanged;
 		
 		internal static void Setup(int initial, int spawn, float angRes) {
 			collisionMask = Util.CollisionLayers2D ();
@@ -85,16 +82,14 @@ namespace DanmakU {
 			return Cos (angle) / Sin (angle);
 		}
 		
-		internal static void UpdateAll() {
-			dt = Util.TargetDeltaTime;
-			dtChanged = oldDt != dt;
+		internal static void UpdateAll(float dt) {
+			Danmaku.dt = dt;
 			Danmaku[] all = projectilePool.all;
 			for (int i = 0; i < all.Length; i++) {
 				if(all[i] != null && all[i].is_active) {
 					all[i].Update();
 				}
 			}
-			oldDt = dt;
 		}
 		
 		public static void DeactivateAll() {

@@ -95,7 +95,6 @@ namespace DanmakU {
 			}
 			set {
 				speed = value;
-				movementChange = speed * dt;
 			}
 		}
 
@@ -388,8 +387,7 @@ namespace DanmakU {
 			}
 
 			if (Speed != 0) {
-				if(dtChanged)
-					movementChange = speed * dt;
+				movementChange = speed * dt;
 				Position.x += direction.x * movementChange;
 				Position.y += direction.y * movementChange;
 			}
