@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015  James Liu
+// Copyright (C) 2015  James Liu
 //	
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU General Public License as published by
@@ -13,27 +13,21 @@
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+using System;
 using UnityEngine;
-using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
+using UnityEditor;
 
-namespace DanmakU.Phantasmagoria.GUI {
+namespace DanmakU.Editor {
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
-
-		private PhantasmagoriaGameController gameControl;
-
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
-		}
-
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
-		}
-
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
-		}
-	}
+//	[CustomEditor(typeof(DanmakuNoScriptContainer))]
+//	public class DanmakuNoScriptConntainerEditor : UnityEditor.Editor {
+//
+//		public override void OnInspectorGUI () {
+//			base.OnInspectorGUI ();
+//			if (GUILayout.Button ("Open Danmaku Editor")) {
+//				DanmakuEditor.Open ();
+//			}
+//		}
+//	}
 }
+

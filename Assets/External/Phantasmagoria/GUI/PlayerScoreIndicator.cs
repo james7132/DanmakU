@@ -17,7 +17,7 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib.GUI;
 
-namespace Danmaku2D.Phantasmagoria.GUI {
+namespace DanmakU.Phantasmagoria.GUI {
 	public class PlayerScoreIndicator : MultiObjectValueIndicator {
 
 		private PhantasmagoriaGameController gameControl;

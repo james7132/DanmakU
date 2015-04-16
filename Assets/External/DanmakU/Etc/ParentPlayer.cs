@@ -15,25 +15,17 @@
 
 using UnityEngine;
 using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
+using DanmakU;
 
-namespace DanmakU.Phantasmagoria.GUI {
+public class ParentPlayer : MonoBehaviour {
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
+	[SerializeField]
+	private Vector2 offset;
 
-		private PhantasmagoriaGameController gameControl;
-
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
-		}
-
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
-		}
-
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
-		}
+	// Use this for initialization
+	void Start () {
+		DanmakuField field = DanmakuField.FindClosest (transform.position);
+		transform.parent = field.player.transform;
+		transform.localPosition = offset;
 	}
 }

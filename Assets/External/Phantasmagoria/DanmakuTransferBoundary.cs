@@ -16,7 +16,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Danmaku2D.Phantasmagoria {
+namespace DanmakU.Phantasmagoria {
 	public class DanmakuTransferBoundary : DanmakuBoundary {
 
 		protected override void ProcessDanmaku (Danmaku proj) {

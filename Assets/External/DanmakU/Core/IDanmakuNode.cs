@@ -15,25 +15,11 @@
 
 using UnityEngine;
 using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
+using UnityUtilLib;
 
-namespace DanmakU.Phantasmagoria.GUI {
+namespace DanmakU  {
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
+	public interface IDanmakuNode {
 
-		private PhantasmagoriaGameController gameControl;
-
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
-		}
-
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
-		}
-
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
-		}
 	}
 }

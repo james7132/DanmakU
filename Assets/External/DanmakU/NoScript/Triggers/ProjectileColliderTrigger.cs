@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015  James Liu
+// Copyright (C) 2015  James Liu
 //	
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU General Public License as published by
@@ -14,26 +14,29 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using UnityEngine;
-using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
+using System.Collections.Generic;
 
-namespace DanmakU.Phantasmagoria.GUI {
+namespace DanmakU  {
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
+	[RequireComponent(typeof(Collider2D)), AddComponentMenu("Danmaku 2D/Triggers/Projectile Collider Trigger")]
+	public class ProjectileColliderTrigger : DanmakuTrigger, IDanmakuCollider {
 
-		private PhantasmagoriaGameController gameControl;
+		[SerializeField]
+		private List<string> tagFilter;
 
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
+		#region IDanmakuCollider implementation
+		public void OnDanmakuCollision (Danmaku proj) {
+			for(int i = 0; i < tagFilter.Count; i++) {
+				if(proj.CompareTag(tagFilter[i])) {
+					Trigger();
+					break;
+				}
+			}
 		}
+		#endregion
 
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
-		}
 
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
-		}
+
+
 	}
 }

@@ -17,7 +17,7 @@ using UnityEngine;
 using UnityUtilLib;
 using System.Collections;
 
-namespace Danmaku2D.Phantasmagoria {
+namespace DanmakU.Phantasmagoria {
 
 	[RequireComponent(typeof(PhantasmagoriaGameController))]
 	public class TestSpawnPlayer : TestScript {

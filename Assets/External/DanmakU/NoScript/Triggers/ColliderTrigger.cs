@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015  James Liu
+// Copyright (C) 2015  James Liu
 //	
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU General Public License as published by
@@ -14,26 +14,33 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using UnityEngine;
-using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
+using System.Collections.Generic;
 
-namespace DanmakU.Phantasmagoria.GUI {
+namespace DanmakU {
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
+	[RequireComponent(typeof(Collider2D)), AddComponentMenu("Danmaku 2D/Triggers/Collider Trigger")]
+	public class ColliderTrigger : DanmakuTrigger {
+		
+		[SerializeField]
+		private string[] tagFilter;
 
-		private PhantasmagoriaGameController gameControl;
-
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
+		void OnCollisionEnter2D(Collision2D collision) {
+			TriggerCheck (collision.gameObject);
 		}
 
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
+		void OnTriggerEnter2D(Collider2D other) {
+			TriggerCheck (other.gameObject);
 		}
 
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
+		void TriggerCheck(GameObject gameObject) {
+			for(int i = 0; i < tagFilter.Length; i++) {
+				if(gameObject.CompareTag(tagFilter[i])) {
+					Trigger();
+					break;
+				}
+			}
 		}
+
 	}
+
 }

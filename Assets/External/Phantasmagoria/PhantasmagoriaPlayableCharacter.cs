@@ -17,7 +17,7 @@ using UnityEngine;
 using System.Collections;
 using UnityUtilLib;
 
-namespace Danmaku2D.Phantasmagoria {
+namespace DanmakU.Phantasmagoria {
 	public class PhantasmagoriaPlayableCharacter : DanmakuPlayer {
 
 		public Sprite characterPortrait;

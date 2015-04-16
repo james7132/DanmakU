@@ -15,25 +15,31 @@
 
 using UnityEngine;
 using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
 
-namespace DanmakU.Phantasmagoria.GUI {
+namespace DanmakU {
+	
+	public class TriggerNode : DanmakuNode {
+		
+		[SerializeField]
+		private DanmakuTrigger sourceTrigger;
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
-
-		private PhantasmagoriaGameController gameControl;
-
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
+		protected internal override void Initialize () {
+			base.Initialize ();
+			sourceTrigger.triggerCallback += Trigger;
 		}
-
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
+	
+		private void Trigger() {
+			Trigger (new FireBuilder () {
+					CoordinateSystem = DanmakuField.CoordinateSystem.World
+				}
+			);
 		}
-
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
+			
+		#region implemented abstract members of DanmakuNode
+		protected override void Process () {
 		}
+		#endregion
 	}
+
+
 }

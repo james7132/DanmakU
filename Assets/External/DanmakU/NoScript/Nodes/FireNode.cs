@@ -15,25 +15,24 @@
 
 using UnityEngine;
 using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
 
-namespace DanmakU.Phantasmagoria.GUI {
+namespace DanmakU {
 
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
+	public class FireNode : DanmakuNode {
 
-		private PhantasmagoriaGameController gameControl;
+		[SerializeField]
+		private Transform target;
 
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
+		protected override void Process() {
+			if (target != null) {
+				Target.Position = target.position;
+				Target.Rotation = target.eulerAngles.z;
+				DanmakuField.FindClosest (Target.Position).Fire (Target);
+			} else {
+				Debug.LogError("Tried to fire from a null transform");
+			}
 		}
 
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
-		}
-
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
-		}
 	}
+
 }

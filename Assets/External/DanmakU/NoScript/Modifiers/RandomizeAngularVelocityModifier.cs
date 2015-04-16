@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015  James Liu
+// Copyright (C) 2015  James Liu
 //	
 //	This program is free software: you can redistribute it and/or modify
 //	it under the terms of the GNU General Public License as published by
@@ -14,26 +14,25 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using UnityEngine;
-using System.Collections;
-using UnityUtilLib.GUI;
-using DanmakU.Phantasmagoria;
+using UnityUtilLib;
 
-namespace DanmakU.Phantasmagoria.GUI {
-
-	public class PlayerLifeIndicator : MultiObjectValueIndicator {
-
-		private PhantasmagoriaGameController gameControl;
-
-		void Awake() {
-			gameControl = (PhantasmagoriaGameController)GameController;
+namespace DanmakU {
+	
+	[System.Serializable]
+	public class RandomizeAngularVelocityModifier : DanmakuModifier {
+		
+		[SerializeField]
+		private DynamicFloat range = 0;
+		
+		#region implemented abstract members of FireModifier
+		public override void Fire (Vector2 position, DynamicFloat rotation) {
+			float oldAV = AngularVelocity;
+			float rangeValue = range.Value;
+			AngularVelocity = oldAV + Random.Range (-0.5f * rangeValue, 0.5f * rangeValue);
+			FireSingle (position, rotation);
+			AngularVelocity = oldAV;
 		}
-
-		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
-		}
-
-		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
-		}
+		#endregion
+		
 	}
 }
