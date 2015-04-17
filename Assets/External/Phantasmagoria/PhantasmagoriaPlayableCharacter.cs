@@ -149,7 +149,7 @@ namespace DanmakU.Phantasmagoria {
 
 		public override void NormalUpdate () {
 			base.NormalUpdate ();
-			float dt = Util.TargetDeltaTime;
+			float dt = Util.DeltaTime;
 			currentChargeCapacity += chargeCapacityRegen * dt;
 			if(currentChargeCapacity > MaxChargeLevel) {
 				currentChargeCapacity = MaxChargeLevel;

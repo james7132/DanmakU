@@ -27,11 +27,13 @@ namespace DanmakU {
 			}
 		}
 
-		public void OnDanmakuCollision(Danmaku danmaku) {
+		#region IDanmakuCollider implementation
+		public void OnDanmakuCollision (Danmaku danmaku) {
 			if (player != null) {
 				player.Hit (danmaku);
 				danmaku.Deactivate();
 			}
 		}
+		#endregion
 	}
 }

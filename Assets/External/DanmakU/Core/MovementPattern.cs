@@ -61,7 +61,7 @@ namespace DanmakU {
 		protected IEnumerator LinearMove(Vector3 end, float time) {
 			float t = 0;
 			Vector3 start = transform.position;
-			float dt = Util.TargetDeltaTime;
+			float dt = Util.DeltaTime;
 			while (t <= 1f) {
 				transform.position = Vector3.Lerp(start, end, t);
 				yield return UtilCoroutines.WaitForUnpause(this);
@@ -81,7 +81,7 @@ namespace DanmakU {
 		protected IEnumerator BerzierMove(Vector3 end, Vector3 controlPoint1, Vector3 controlPoint2, float time) {
 			float t = 0;
 			Vector3 start = transform.position;
-			float dt = Util.TargetDeltaTime;
+			float dt = Util.DeltaTime;
 			while (t <= 1f) {
 				transform.position = Vector3.Lerp(start, end, t);
 				yield return UtilCoroutines.WaitForUnpause(this);

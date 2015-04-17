@@ -74,7 +74,7 @@ namespace DanmakU.Phantasmagoria {
 			if (!reseting && (player1.Field.Player.LivesRemaining <= 0 || player2.Field.Player.LivesRemaining <= 0)) {
 				StartCoroutine(RoundReset ());
 			}
-			roundTimeRemaining -= Util.TargetDeltaTime;
+			roundTimeRemaining -= Util.DeltaTime;
 			bool p1win = player1.score >= winningScore;
 			bool p2win = player2.score >= winningScore;
 			if (p1win && p2win) {
@@ -131,7 +131,7 @@ namespace DanmakU.Phantasmagoria {
 			float duration = closureDuration / 2f;
 			Vector3 scale = new Vector3(1f, 0f, 1f);
 			Vector3 oldScale = scale;
-			float dt = Util.TargetDeltaTime;
+			float dt = Util.DeltaTime;
 			float t = 0;
 			scale.y = t;
 			PauseGame ();

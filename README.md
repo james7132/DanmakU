@@ -5,6 +5,12 @@ DanmakU is an open source danmaku development kit for Unity3D.
 See the [wiki](https://github.com/rhythmia/DanmakU/wiki) on a number of tutorials on how to get started.  
 See the [script documentation](http://rhythmia.org/DanmakU/Docs/html/annotated.html) to see a scripting reference.
 
+# Structure
+DanmakU is split into multiple packages which can be used seperately or together depending on your needs:
+* Core - The central core to the entire dev kit, requires UnityUtilLib, Vexe Framework, and Unity3D itself.
+* Touhou - A specialized package for single player danmaku games with many of the same mechanics as many of the mainline Touhou games, **Requires: Core**
+* Phantasmagoria - A specialized package for multiplayer versus danmaku games similar to Touhou Kaeidzuka ~ Phantasmagoria of Flower View and Touhou 3 - Touhou Yumejikuu ~ Phantasmagoria of Dim.Dream, **Requires: Core**
+
 # Dependencies
 This development kit relies heavily on [UnityUtilLib](https://github.com/james7132/UnityUtilLib), a utility library.
 

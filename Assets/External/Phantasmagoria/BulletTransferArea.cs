@@ -26,7 +26,7 @@
 //			Color spriteColor = rend.color;
 //			Color targetColor = spriteColor;
 //			targetColor.a = 0;
-//			float dt = Util.TargetDeltaTime;
+//			float dt = Util.DeltaTime;
 //			float t = 0;
 //			while (t < 1f) {
 //				transform.localScale = Vector3.Lerp(startScale, maxScaleV, t);
