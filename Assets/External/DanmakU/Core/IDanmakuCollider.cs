@@ -5,8 +5,14 @@
 using System;
 
 namespace DanmakU {
+
 	public interface IDanmakuCollider {
-		void OnDanmakuCollision(Danmaku proj);
+
+		/// <summary>
+		/// Raises the danmaku collision event.
+		/// </summary>
+		/// <param name="danmaku">Danmaku.</param>
+		void OnDanmakuCollision(Danmaku danmaku);
+	
 	}
 }
-

@@ -41,6 +41,7 @@ namespace DanmakU {
 		internal string tag;
 		internal int layer;
 		internal int frames;
+		internal float time;
 		internal string cachedTag;
 		internal int cachedLayer;
 		internal bool symmetric;
@@ -199,7 +200,7 @@ namespace DanmakU {
 		/// <value>The time since the projectile has been fired.</value>
 		public float Time {
 			get {
-				return frames * Util.TargetDeltaTime;
+				return time;
 			}
 		}
 		
@@ -458,6 +459,7 @@ namespace DanmakU {
 			}
 			
 			frames++;
+			time += dt;
 			originalPosition.x = Position.x;
 			originalPosition.y = Position.y;
 		}

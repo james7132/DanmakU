@@ -20,16 +20,13 @@ namespace DanmakU {
 	public class DanmakuGameController : GameController {
 
 		[SerializeField]
-		private bool frameRateIndependent = false;
-
-		[SerializeField]
 		private int maximumLives = 5;
 
 		[SerializeField]
-		private int projectileInitialCount = 1000;
+		private int danmakuInitialCount = 1000;
 		
 		[SerializeField]
-		private int projectileSpawnOnEmpty = 100;
+		private int danmakuSpawnOnEmpty = 100;
 
 		[SerializeField]
 		private float angleResolution = 0.1f;
@@ -47,13 +44,13 @@ namespace DanmakU {
 		public override void Update() {
 			base.Update ();
 			if (!IsGamePaused) {
-				Danmaku.UpdateAll((frameRateIndependent) ? Time.timeScale : Util.TargetDeltaTime);
+				Danmaku.UpdateAll();
 			}
 		}
 
 		public override void Awake () {
 			base.Awake ();
-			Danmaku.Setup (projectileInitialCount, projectileSpawnOnEmpty, angleResolution);
+			Danmaku.Setup (danmakuInitialCount, danmakuSpawnOnEmpty, angleResolution);
 		}
 	}
 }

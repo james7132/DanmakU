@@ -80,7 +80,7 @@ namespace DanmakU {
 					Vector3 control1 = movements[i].NextControlPoint1(field, startLocation);
 					Vector3 control2 = movements[i].NextControlPoint2(field, startLocation);
 					Vector3 oldPosition;
-					float dt = Util.TargetDeltaTime;
+					float dt = Util.DeltaTime;
 					while(t < 1f) {
 						oldPosition = transform.position;
 						transform.position = Util.BerzierCurveVectorLerp(startLocation, targetLocation, control1, control2, t);

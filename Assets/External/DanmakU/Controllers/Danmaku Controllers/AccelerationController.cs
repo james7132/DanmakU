@@ -12,7 +12,7 @@ using Vexe.Runtime.Types;
 namespace DanmakU.DanmakuControllers {
 
 	/// <summary>
-	/// A DanmakuController that makes Danmaku speed up or slow down over time.
+	/// A Danmaku Controller that makes Danmaku speed up or slow down over time.
 	/// </summary>
 	[System.Serializable]
 	public class AccelerationController : IDanmakuController {

@@ -93,7 +93,7 @@ namespace DanmakU {
 		public virtual void Move(float horizontalDirection, float verticalDirection) {
 			Bounds2D fieldBounds = Field.MovementBounds;
 			Bounds2D myBounds = new Bounds2D(movementCollider.bounds);
-			float dt = Util.TargetDeltaTime;
+			float dt = Util.DeltaTime;
 			float movementSpeed = (IsFocused) ? focusMovementSpeed : normalMovementSpeed;
 			Vector2 position = transform.position;
 			Vector2 movementVector = movementSpeed * dt * new Vector2 (Util.Sign(horizontalDirection), Util.Sign(verticalDirection));

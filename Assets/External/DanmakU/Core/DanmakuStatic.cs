@@ -71,8 +71,8 @@ namespace DanmakU {
 			return Cos (angle) / Sin (angle);
 		}
 		
-		internal static void UpdateAll(float dt) {
-			Danmaku.dt = dt;
+		internal static void UpdateAll() {
+			dt = Util.DeltaTime;
 			Danmaku[] all = projectilePool.all;
 			for (int i = 0; i < all.Length; i++) {
 				if(all[i] != null && all[i].is_active) {

@@ -30,7 +30,7 @@ namespace DanmakU {
 			Color targetColor = spriteColor;
 			targetColor.a = 0f;
 			float t = 0f;
-			float dt = Util.TargetDeltaTime;
+			float dt = Util.DeltaTime;
 			while (t < 1f) {
 				transform.localScale = Vector3.Lerp(startScale, maxScaleV, t);
 				rend.color = Color.Lerp(spriteColor, targetColor, t);

@@ -101,7 +101,7 @@ namespace DanmakU {
 					float time = 0f;
 					while(time < chainData[i].timeUntilNext) {
 						yield return UtilCoroutines.WaitForUnpause(this);
-						time += Util.TargetDeltaTime;
+						time += Util.DeltaTime;
 					}
 				}
 			}
