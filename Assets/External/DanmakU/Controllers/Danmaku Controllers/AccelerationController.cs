@@ -1,48 +1,42 @@
-// Copyright (C) 2015  James Liu
+// Copyright (c) 2015 James Liu
 //	
-//	This program is free software: you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation, either version 3 of the License, or
-//	(at your option) any later version.
-//		
-//	This program is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
-//			
-//	You should have received a copy of the GNU General Public License
-//	along with this program.  If not, see <http://www.gnu.org/licenses/>
+// See the LISCENSE file for copying permission.
 
 using UnityEngine;
 using UnityUtilLib;
+using Vexe.Runtime.Types;
 
 /// <summary>
-/// A development kit for quick development of 2D Danmaku games
+/// A variety of useful 
 /// </summary>
 namespace DanmakU.DanmakuControllers {
-	
+
 	/// <summary>
-	/// A DanmakuController for creating bullets that move along a straight path.
+	/// A DanmakuController that makes Danmaku speed up or slow down over time.
 	/// </summary>
 	[System.Serializable]
 	public class AccelerationController : IDanmakuController {
 
-		[SerializeField]
-		private float acceleration;
-
-		public AccelerationController() {
-			this.acceleration = 0f;
+		[Show]
+		[Serialize]
+		public float Acceleration {
+			get;
+			set;
 		}
 
-		public AccelerationController (float acceleration) : base() {
-			this.acceleration = acceleration;
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DanmakU.DanmakuControllers.AccelerationController"/> class.
+		/// </summary>
+		/// <param name="acceleration">Acceleration.</param>
+		public AccelerationController (float acceleration = 0f) : base() {
+			this.Acceleration = acceleration;
 		}
 		
 		#region IDanmakuController implementation
 		
 		public virtual void UpdateDanmaku (Danmaku danmaku, float dt) {
-			if (acceleration != 0) {
-				danmaku.Speed += acceleration * dt;
+			if (Acceleration != 0) {
+				danmaku.Speed += Acceleration * dt;
 			}
 		}
 		
