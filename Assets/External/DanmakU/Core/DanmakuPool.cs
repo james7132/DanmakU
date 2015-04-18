@@ -18,108 +18,83 @@ namespace DanmakU {
 	/// </summary>
 	public sealed partial class Danmaku : IPooledObject, IColorable, IPrefabed<DanmakuPrefab> {
 
-		internal class ProjectilePool : IPool<Danmaku> {
-			
-			internal int[] queue;
+		internal class DanmakuPool : IPool<Danmaku> {
+		
 			internal Danmaku[] all;
-			
-			private int currentIndex;
-			private int endIndex;
+
 			private int size;
 			
 			internal int totalCount;
-			internal int inactiveCount;
 			internal int spawnCount;
+			internal int activeCount;
 			
-			public ProjectilePool(int initial, int spawn) {
+			public DanmakuPool(int initial, int spawn) {
 				this.spawnCount = spawn;
 				totalCount = 0;
-				inactiveCount = 0;
-				Spawn (initial);
+				activeCount = 0;
+				size = initial;
+				all = new Danmaku[Mathf.NextPowerOfTwo(initial + 1)];
 			}
-			
-			protected void Spawn(int count) {
-				if(all == null || queue == null) {
-					all = new Danmaku[2];
-					queue = new int[2];
-				}
+
+			private void Spawn(int count) {
 				int endCount = totalCount + spawnCount;
 				if(all.Length < endCount) {
 					size = all.Length;
 					while (size <= endCount) {
-						size = Mathf.NextPowerOfTwo(size + 1);
+						size *= 2;
 					}
 					
 					Danmaku[] temp = new Danmaku[size];
 					Array.Copy(all, temp, all.Length);
 					all = temp;
-					
-					int[] tempQueue = new int[size];
-					int initial = 0;
-					if(currentIndex < endIndex) {
-
-						Array.Copy(queue, currentIndex, tempQueue, 0, endIndex - currentIndex);
-					} else {
-						initial = queue.Length - currentIndex - 1;
-						Array.Copy(queue, currentIndex, tempQueue, 0, initial);
-						Array.Copy(queue, 0, tempQueue, initial, endIndex);
-					}
-					currentIndex = 0;
-					endIndex = inactiveCount;
-					queue = tempQueue;
 				}
-				for(int i = totalCount; i < endCount; i++, endIndex++) {
-					all[i] = new Danmaku();
-					all[i].index = i;
-					all[i].Pool = this;
-					if(endIndex >= queue.Length)
-						endIndex = 0;
-					queue[endIndex] = i;
+				for(int i = totalCount; i < endCount; i++) {
+					Danmaku newDanmaku = new Danmaku();
+					newDanmaku = new Danmaku();
+					newDanmaku.index = i;
+					newDanmaku.Pool = this;
+					all[i] = newDanmaku;
 				}
 				totalCount = endCount;
-				inactiveCount += spawnCount;
 			}
 			
-			public void Get(Danmaku[] projectiles) {
-				if (projectiles == null)
+			public void Get(Danmaku[] danmaku) {
+				if (danmaku == null)
 					throw new ArgumentNullException ("Projectiles can't be null");
-				int count = projectiles.Length;
-				while (inactiveCount < count)
-					Spawn (spawnCount);
-				inactiveCount -= count;
-				for (int i = 0; i < projectiles.Length; i++) {
-					projectiles[i] = all[queue[currentIndex]];
-					currentIndex = (currentIndex + 1) % size;
-				}
+				int count = danmaku.Length;
+				if(count + activeCount > totalCount)
+					Spawn (count);
+				Array.Copy(all, activeCount + 1, danmaku, 0, count);
+				activeCount += count;
 			}
 			
-			public void Return(Danmaku[] projectiles) {
-				if(projectiles == null)
+			public void Return(Danmaku[] danmaku) {
+				if(danmaku == null)
 					throw new ArgumentNullException ("Projectiles can't be null");
-				int count = projectiles.Length;
-				inactiveCount += count;
+				int count = danmaku.Length;
 				for(int i = 0; i < count; i++) {
-					queue[endIndex] = projectiles[i].index;
-					endIndex = (endIndex + 1) % size;
+					Return(danmaku[i]);
 				}
 			}
 			
 			#region IPool implementation
 			
 			public Danmaku Get () {
-				if(inactiveCount <= 0) {
-					Spawn (spawnCount);
+				activeCount++;
+				if (activeCount > totalCount) {
+					Spawn(spawnCount);
 				}
-				inactiveCount--;
-				int index = queue [currentIndex];
-				currentIndex = (currentIndex + 1) % size;
-				return all [index];
+				return all [activeCount];
 			}
 			
 			public void Return (Danmaku obj) {
-				queue [endIndex] = obj.index;
-				endIndex = (endIndex + 1) % size;
-				inactiveCount++;
+				int deadIndex = obj.index;
+				Danmaku temp = all [activeCount];
+				all [activeCount] = obj;
+				all [deadIndex] = temp;
+				obj.index = activeCount;
+				temp.index = deadIndex;
+				activeCount--;
 			}
 			
 			#endregion

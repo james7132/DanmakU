@@ -511,10 +511,9 @@ namespace DanmakU {
 			}
 		}
 
-		internal bool is_active;
 		public bool IsActive {
 			get {
-				return is_active;
+				return index <= danmakuPool.activeCount;
 			}
 		}
 
@@ -524,7 +523,6 @@ namespace DanmakU {
 		/// Calling this on a projectile marked for deactivation will unmark the projectile and keep it from deactivating.
 		/// </summary>
 		public void Activate () {
-			is_active = true;
 			to_deactivate = false;
 			//gameObject.SetActive (true);
 			renderer.enabled = true;
@@ -584,7 +582,6 @@ namespace DanmakU {
 			frames = 0;
 			//gameObject.SetActive (false);
 			renderer.enabled = false;
-			is_active = false;
 			Pool.Return (this);
 			if (extraComponents != null) {
 				while(extraComponents.Count > 0) {
