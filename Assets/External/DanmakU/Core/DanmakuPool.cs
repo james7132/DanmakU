@@ -18,7 +18,7 @@ namespace DanmakU {
 	/// </summary>
 	public sealed partial class Danmaku : IPooledObject, IColorable, IPrefabed<DanmakuPrefab> {
 
-		internal class ProjectilePool : IPool<Danmaku> {
+		internal class DanmakuPool : IPool<Danmaku> {
 			
 			internal int[] queue;
 			internal Danmaku[] all;
@@ -31,7 +31,7 @@ namespace DanmakU {
 			internal int inactiveCount;
 			internal int spawnCount;
 			
-			public ProjectilePool(int initial, int spawn) {
+			public DanmakuPool(int initial, int spawn) {
 				this.spawnCount = spawn;
 				totalCount = 0;
 				inactiveCount = 0;

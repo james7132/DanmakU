@@ -18,18 +18,21 @@ namespace DanmakU {
 	/// </summary>
 	public sealed partial class Danmaku : IPooledObject, IColorable, IPrefabed<DanmakuPrefab> {
 
+		private const int standardStart = 1000;
+		private const int standardSpawn = 100;
+
 		private const float twoPI = Mathf.PI * 2;
 		private static Vector2[] unitCircle;
 		private static float angleResolution;
 		private static float invAngRes;
 		private static int[] collisionMask;
 		private static int unitCircleMax;
-		private static ProjectilePool projectilePool;
+		private static DanmakuPool projectilePool;
 		private static float dt;
 		
-		internal static void Setup(int initial, int spawn, float angRes) {
+		internal static void Setup(int initial = standardStart, int spawn = standardSpawn, float angRes = 0.1f) {
 			collisionMask = Util.CollisionLayers2D ();
-			projectilePool = new ProjectilePool (initial, spawn);
+			projectilePool = new DanmakuPool (initial, spawn);
 			angleResolution = angRes;
 			invAngRes = 1f / angRes;
 			unitCircleMax = Mathf.CeilToInt(360f / angleResolution);
@@ -102,6 +105,10 @@ namespace DanmakU {
 		}
 		
 		public static Danmaku Get (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation, DanmakuField field) {
+			if (projectilePool == null) {
+				Setup();
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			}
 			Danmaku proj = projectilePool.Get ();
 			proj.MatchPrefab (danmakuType);
 			proj.PositionImmediate = position;
@@ -112,6 +119,10 @@ namespace DanmakU {
 		}
 		
 		public static Danmaku Get(DanmakuField field, FireBuilder builder) {
+			if (projectilePool == null) {
+				Setup();
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			}
 			Danmaku proj = projectilePool.Get ();
 			proj.MatchPrefab (builder.Prefab);
 			proj.PositionImmediate = field.WorldPoint (builder.Position, builder.CoordinateSystem);

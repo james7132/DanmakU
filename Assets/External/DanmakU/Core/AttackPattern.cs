@@ -58,6 +58,7 @@ namespace DanmakU {
 		/// Use this for setup of various execution related variables
 		/// </summary>
 		protected virtual void OnInitialize() {
+			print("hello");
 			return;
 		}
 

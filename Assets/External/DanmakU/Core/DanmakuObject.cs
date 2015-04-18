@@ -36,6 +36,7 @@ namespace DanmakU {
 		internal Color cachedColor;
 		internal Material cachedMaterial;
 		internal int cachedSortingLayer;
+		internal int cachedSortingOrder;
 
 		public bool Symmetric {
 			get {
@@ -121,7 +122,13 @@ namespace DanmakU {
 			}
 		}
 
-		public void Awake() {
+		public int SortingOrder {
+			get {
+				return cachedSortingOrder;
+			}
+		}
+
+		public virtual void Awake() {
 			circleCollider = GetComponent<CircleCollider2D>();
 			if(circleCollider == null) {
 				throw new System.InvalidOperationException("ProjectilePrefab without a Collider! (" + name + ")");
@@ -140,6 +147,7 @@ namespace DanmakU {
 			cachedColor = spriteRenderer.color;
 			cachedMaterial = spriteRenderer.sharedMaterial;
 			cachedSortingLayer = spriteRenderer.sortingLayerID;
+			cachedSortingOrder = spriteRenderer.sortingOrder;
 		}
 	}
 }

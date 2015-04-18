@@ -23,21 +23,21 @@ namespace DanmakU {
 		
 		internal int index;
 
-		private Stack<Component> extraComponents;
+		//private Stack<Component> extraComponents;
 
-		private GameObject gameObject;
-		private Transform transform;
-		private SpriteRenderer renderer;
+		//private GameObject gameObject;
+		//private Transform transform;
+		//private SpriteRenderer renderer;
 
-		internal float rotation;
+		//internal float rotation;
 		internal Vector2 direction;
 
 		//Cached information about the Danmaku from its prefab
 		internal Vector2 colliderOffset = Vector2.zero; 
 		private float circleRaidus = 1f;
-		internal Sprite sprite;
-		internal Material material;
-		internal Color color;
+		//internal Sprite sprite;
+		//internal Material material;
+		//internal Color color;
 		internal string tag;
 		internal int layer;
 		internal int frames;
@@ -45,6 +45,8 @@ namespace DanmakU {
 		internal string cachedTag;
 		internal int cachedLayer;
 		internal bool symmetric;
+
+		internal ParticleSystem.Particle particle;
 
 		//Prefab information
 		private DanmakuPrefab prefab;
@@ -76,18 +78,7 @@ namespace DanmakU {
 
 		private List<IEnumerator> tasks;
 
-		private float speed;
-		private float angularVelocity;
-
-		public float Speed {
-			get {
-				return speed;
-			}
-			set {
-				speed = value;
-			}
-		}
-
+		public float Speed;
 		public float AngularSpeed;
 
 		public DanmakuPrefab Prefab {
@@ -110,12 +101,13 @@ namespace DanmakU {
 		/// <value>The sprite.</value>
 		public Sprite Sprite {
 			get {
-				return sprite;
+				//return sprite;
+				return runtime.Sprite;
 			}
-			set {
-				sprite = value;
-				renderer.sprite = value;
-			}
+			//set {
+			//	sprite = value;
+			//	renderer.sprite = value;
+			//}
 		}
 		
 		/// <summary>
@@ -125,22 +117,25 @@ namespace DanmakU {
 		/// <value>The renderer color.</value>
 		public Color Color {
 			get {
-				return color;
+				//return color;
+				return particle.color;
 			}
 			set {
-				renderer.color = value;
-				color = value;
+				//renderer.color = value;
+				//color = value;
+				particle.color = value;
 			}
 		}
 
 		public Material Material {
 			get {
-				return material;
+				//return material;
+				return runtime.Material;
 			}
-			set {
-				material = value;
-				renderer.material = value;
-			}
+			//set {
+			//	material = value;
+			//	renderer.material = value;
+			//}
 		}
 		
 		/// <summary>
@@ -154,8 +149,9 @@ namespace DanmakU {
 				return Position;
 			}
 			set {
-				transform.localPosition = value;
+				//transform.localPosition = value;
 				Position = value;
+				particle.position = value;
 			}
 		}
 		
@@ -170,13 +166,16 @@ namespace DanmakU {
 		/// <value>The rotation of the bullet in degrees.</value>
 		public float Rotation {
 			get {
-				return rotation;
+				//return rotation;
+				return particle.rotation;
 			}
 			set {
-				if(!symmetric)
-					transform.localRotation = Quaternion.Euler(0f, 0f, value);
-				rotation = value;
-				direction = UnitCircle(rotation);
+				//if(!symmetric)
+				//	transform.localRotation = Quaternion.Euler(0f, 0f, value);
+				//rotation = value;
+				particle.rotation = value;
+				//direction = UnitCircle(rotation);
+				direction = UnitCircle(value);
 			}
 		}
 		
@@ -224,7 +223,7 @@ namespace DanmakU {
 			}
 			set {
 				tag = value;
-				gameObject.tag = value;
+				//gameObject.tag = value;
 			}
 		}
 		
@@ -303,13 +302,13 @@ namespace DanmakU {
 			controllerCheck = controllerUpdate != null;
 		}
 
-		public T AddComponent<T>() where T : Component {
-			T component = gameObject.AddComponent<T> ();
-			if (extraComponents == null)
-				extraComponents = new Stack<Component> ();
-			extraComponents.Push (component);
-			return component;
-		}
+//		public T AddComponent<T>() where T : Component {
+//			T component = gameObject.AddComponent<T> ();
+//			if (extraComponents == null)
+//				extraComponents = new Stack<Component> ();
+//			extraComponents.Push (component);
+//			return component;
+//		}
 
 		public void ClearControllers() {
 			controllerCheck = true;
@@ -317,11 +316,11 @@ namespace DanmakU {
 		}
 
 		public void Rotate(DynamicFloat delta) {
-			float Delta = delta.Value;
-			if(!symmetric)
-				transform.Rotate(0f, 0f, Delta);
-			rotation += Delta;
-			direction = UnitCircle (rotation);
+			//float Delta = delta.Value;
+			//if(!symmetric)
+			//	transform.Rotate(0f, 0f, Delta);
+			Rotation += delta.Value;
+			//direction = UnitCircle (rotation);
 		}
 		
 		/// <summary>
@@ -330,25 +329,30 @@ namespace DanmakU {
 		/// </summary>
 		/// <returns><c>true</c>, if tag is an exact match to the string, <c>false</c> otherwise.</returns>
 		/// <param name="tag">Tag.</param>
-		public bool CompareTag(string tag) {
-			return gameObject.CompareTag (tag);
-		}
+//		public bool CompareTag(string tag) {
+//			return gameObject.CompareTag (tag);
+//		}
+
+		private static Vector3 forward = Vector3.forward;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
 		/// </summary>
 		internal Danmaku() {
 			groups = new List<DanmakuGroup> ();
-			gameObject = new GameObject ();
-			transform = gameObject.transform;
-			renderer = gameObject.AddComponent<SpriteRenderer> ();
+
+			//gameObject = new GameObject ();
+			//transform = gameObject.transform;
+			//renderer = gameObject.AddComponent<SpriteRenderer> ();
 			#if UNITY_EDITOR
 			//This is purely for cleaning up the inspector, no need in an actual build
-			gameObject.hideFlags = HideFlags.HideInHierarchy;
+			//gameObject.hideFlags = HideFlags.HideInHierarchy;
 			#endif
 			raycastHits = new RaycastHit2D[5];
 			colliders = new Collider2D[5];
 //			scripts = new IDanmakuCollider[5];
+
+			particle.axisOfRotation = Vector3.forward;
 		}
 
 		internal void Update() {
@@ -377,13 +381,16 @@ namespace DanmakU {
 			}
 
 			if (Speed != 0) {
-				movementChange = speed * dt;
+				movementChange = Speed * dt;
 				Position.x += direction.x * movementChange;
 				Position.y += direction.y * movementChange;
 			}
 			
 			movementVector.x = Position.x - originalPosition.x;
 			movementVector.y = Position.y - originalPosition.y;
+
+			Debug.DrawRay(originalPosition, movementVector);
+
 			#endregion
 			if(CollisionCheck) {
 				distance = movementVector.magnitude;
@@ -452,7 +459,8 @@ namespace DanmakU {
 				return;
 			}
 
-			transform.localPosition = Position;
+			//transform.localPosition = Position;
+			particle.position = Position;
 
 			if (to_deactivate) {
 				DeactivateImmediate();
@@ -477,17 +485,19 @@ namespace DanmakU {
 			if (this.prefab != prefab) {
 				this.prefab = prefab;
 				this.runtime = prefab.GetRuntime();
-				Vector2 scale = transform.localScale = runtime.cachedScale;
-				renderer.sharedMaterial = runtime.cachedMaterial;
-				renderer.sortingLayerID = runtime.cachedSortingLayer;
+				//Vector2 scale = transform.localScale = runtime.cachedScale;
+				//renderer.sharedMaterial = runtime.cachedMaterial;
+				//renderer.sortingLayerID = runtime.cachedSortingLayer;
+				Vector2 scale = runtime.cachedScale;
 				colliderOffset = scale.Hadamard2(runtime.cachedColliderOffset);
 				circleRaidus = runtime.cachedColliderRadius * scale.Max();
-				tag = gameObject.tag = runtime.cachedTag;
+				//tag = gameObject.tag = runtime.cachedTag;
+				tag = runtime.cachedTag;
 				symmetric = runtime.symmetric;
 			}
 
-			renderer.sprite = runtime.Sprite;
-			renderer.color = runtime.cachedColor;
+			//renderer.sprite = runtime.Sprite;
+			//renderer.color = runtime.cachedColor;
 			layer = runtime.cachedLayer;
 			colliderMask = collisionMask [layer];
 
@@ -527,9 +537,10 @@ namespace DanmakU {
 			is_active = true;
 			to_deactivate = false;
 			//gameObject.SetActive (true);
-			renderer.enabled = true;
+			//renderer.enabled = true;
 			BoundsCheck = true;
 			CollisionCheck = true;
+			runtime.Add(this);
 		}
 		
 		/// <summary>
@@ -575,7 +586,8 @@ namespace DanmakU {
 				groups[i].group.Remove (this);
 			}
 			groups.Clear ();
-			tasks.Clear ();
+			if(tasks != null)
+				tasks.Clear ();
 			groupCountCache = 0;
 			groupCheck = false;
 			controllerUpdate = null;
@@ -583,14 +595,14 @@ namespace DanmakU {
 			Damage = 0;
 			frames = 0;
 			//gameObject.SetActive (false);
-			renderer.enabled = false;
+			//renderer.enabled = false;
 			is_active = false;
 			Pool.Return (this);
-			if (extraComponents != null) {
-				while(extraComponents.Count > 0) {
-					Object.Destroy(extraComponents.Pop());
-				}
-			}
+			//if (extraComponents != null) {
+			//	while(extraComponents.Count > 0) {
+			//		Object.Destroy(extraComponents.Pop());
+			//	}
+			//}
 			//ProjectileManager.Return (this);
 		}
 

@@ -28,13 +28,13 @@ namespace DanmakU {
 			}
 		}
 
-		public Sprite Sprite {
-			set {
-				foreach(Danmaku danmaku in group) {
-					danmaku.Sprite = value;
-				}
-			}
-		}
+//		public Sprite Sprite {
+//			set {
+//				foreach(Danmaku danmaku in group) {
+//					danmaku.Sprite = value;
+//				}
+//			}
+//		}
 
 		public Color Color {
 			set {
@@ -157,13 +157,13 @@ namespace DanmakU {
 			groupControllers = null;
 		}
 
-		public Dictionary<Danmaku, T> AddComponent<T>() where T : Component {
-			var pairs = new Dictionary<Danmaku, T> ();
-			foreach (Danmaku danmaku in group) {
-				pairs[danmaku] = danmaku.AddComponent<T>();
-			}
-			return pairs;
-		}
+		//public Dictionary<Danmaku, T> AddComponent<T>() where T : Component {
+		//	var pairs = new Dictionary<Danmaku, T> ();
+		//	foreach (Danmaku danmaku in group) {
+		//		pairs[danmaku] = danmaku.AddComponent<T>();
+		//	}
+		//	return pairs;
+		//}
 
 		#region ICollection implementation
 
