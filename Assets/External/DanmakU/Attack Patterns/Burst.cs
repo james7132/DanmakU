@@ -45,12 +45,7 @@ namespace DanmakU.AttackPatterns {
 
 		public override void Awake () {
 			base.Awake ();
-//			for(int i = 0; i < controllers.Length; i++) {
-//				if(controllers[i] != null)
-//					fireData.Controller += controllers[i].Controller;
-//			}
 			burstData.SubModifier = depthData;
-			//Debug.Log (depthData.SubModifier);
 			fireData.Modifier = burstData;
 		}
 		
@@ -61,13 +56,11 @@ namespace DanmakU.AttackPatterns {
 		}
 
 		protected override IEnumerator MainLoop () {
-			while (!burstCount.Ready()) {
-//				yield return WaitForFrames(burstDelay.MaxCount);
+			while (!burstCount.Tick()) {
+				yield return burstDelay.MaxCount;
 				fireData.Rotation += burstRotationDelta;
 				Field.Fire(fireData);
-				burstCount.Tick();
 			}
-			yield return null;
 		}
 	}
 }

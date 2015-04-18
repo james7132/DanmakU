@@ -29,7 +29,7 @@ namespace DanmakU.DanmakuControllers {
 				projectile.Color = endColor;
 			else {
 				if(endTime <= startTime)
-					projectile.color = endColor;
+					projectile.Color = endColor;
 				else
 					projectile.Color = Color.Lerp (startColor, endColor, (bulletTime - startTime) / (endTime - startTime));
 			}

@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Bullet Material
-  m_Shader: {fileID: 4800000, guid: 7be60fcf4914ded428c34d23f13bd834, type: 3}
+  m_Shader: {fileID: 4800000, guid: 830a5d94c4571cd4da23566a33d20062, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
