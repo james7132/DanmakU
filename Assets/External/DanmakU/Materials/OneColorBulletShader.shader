@@ -2,13 +2,12 @@
 //	
 // See the LISCENSE file for copying permission.
 
-Shader "Danmaku/Touhou Sprite"
+Shader "Danmaku/Touhou Sprite - One Color"
 {
 	Properties
 	{
 		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-		_UpperColor ("Upper Color", Color) = (1,1,1,1)
-		_LowerColor ("Lower Color", Color) = (-1,-1,-1,1)
+		_Color ("Color", Color) = (1,1,1,1)
 	}
 
 	SubShader
@@ -64,22 +63,15 @@ Shader "Danmaku/Touhou Sprite"
 			}
 
 			sampler2D _MainTex;
-			fixed4 _UpperColor;
-			fixed4 _LowerColor;
+			fixed4 _Color;
 
 			fixed4 frag(v2f IN) : COLOR
 			{
+				fixed4 targetColor = IN.color;
 				fixed4 texColor = tex2D(_MainTex, IN.texcoord);
 				fixed greyScale = (texColor.r + texColor.g + texColor.b) / 3;
-				fixed4 a = (1, 1, 1, texColor.a * IN.color.a), b;
-				if(greyScale >= 0.5)
-				{
-					b = lerp(IN.color, _UpperColor, (greyScale - 0.5) * 2);
-				}
-				else
-				{
-					b = lerp(_LowerColor, IN.color, greyScale * 2);
-				}
+				fixed4 a = (1, 1, 1, texColor.a * targetColor.a);
+				fixed4 b = lerp(targetColor, _Color, greyScale);
 				return a*b;
 			}
 		ENDCG
