@@ -91,6 +91,52 @@ namespace DanmakU {
 		public static void DeactivateAll() {
 			danmakuPool.activeCount = 0;
 		}
+
+		public static void DeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
+			Danmaku[] all = danmakuPool.all;
+			Danmaku target;
+			int activeCount = danmakuPool.activeCount;
+			float sqrRadius = radius * radius, sqrDRadius, DRadius;
+			for (int i = 0; i < all.Length; i++) {
+				if(i > activeCount) {
+					break;
+				}
+				
+				// Note: the reason why I am using a for loop here is because the CIL compiler ignores bounds checking
+				// if and only if used in the form of "for(int x = 0, x < array.Length; x++)".
+				// It actually increases performance signifigantly
+				target = all[i];
+				if((layerMask & (1 << target.layer)) != 0) {
+					DRadius = target.colliderRadius;
+					sqrDRadius = DRadius * DRadius;
+					if(sqrRadius + sqrDRadius >= (target.collisionCenter - center).sqrMagnitude) {
+						target.DeactivateImmediate();
+					}
+				}
+			}
+		}
+
+		public static void DirectDeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
+			Danmaku[] all = danmakuPool.all;
+			Danmaku target;
+			int activeCount = danmakuPool.activeCount;
+			float sqrRadius = radius * radius;
+			for (int i = 0; i < all.Length; i++) {
+				if(i > activeCount) {
+					break;
+				}
+				
+				// Note: the reason why I am using a for loop here is because the CIL compiler ignores bounds checking
+				// if and only if used in the form of "for(int x = 0, x < array.Length; x++)".
+				// It actually increases performance signifigantly
+				target = all[i];
+				if((layerMask & (1 << target.layer)) != 0) {
+					if(sqrRadius >= (target.Position - center).sqrMagnitude) {
+						target.DeactivateImmediate();
+					}
+				}
+			}
+		}
 		
 		public static int TotalCount {
 			get {
