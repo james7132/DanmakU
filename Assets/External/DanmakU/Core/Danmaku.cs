@@ -34,7 +34,7 @@ namespace DanmakU {
 
 		//Cached information about the Danmaku from its prefab
 		internal Vector2 colliderOffset = Vector2.zero; 
-		private float circleRaidus = 1f;
+		private float colliderRadius = 1f;
 		internal Sprite sprite;
 		internal Material material;
 		internal Color color;
@@ -390,9 +390,9 @@ namespace DanmakU {
 				collisionCenter.x = originalPosition.x + colliderOffset.x * direction.x;
 				collisionCenter.y = originalPosition.y + colliderOffset.y * direction.y;
 				//Check if the collision detection should be continuous or not
-				if (distance <= circleRaidus) {
+				if (distance <= colliderRadius) {
 					count = Physics2D.OverlapCircleNonAlloc(collisionCenter,
-					                                        circleRaidus,
+					                                        colliderRadius,
 					                                        colliders,
 					                                        colliderMask);
 					for (int i = 0; i < count; i++) {
@@ -417,7 +417,7 @@ namespace DanmakU {
 					}
 				} else {
 					count = Physics2D.CircleCastNonAlloc(collisionCenter, 
-					                                     circleRaidus,
+					                                     colliderRadius,
 					                                     movementVector,
 					                                     raycastHits,
 					                                     distance,
@@ -454,7 +454,7 @@ namespace DanmakU {
 
 			transform.localPosition = Position;
 
-			if (to_deactivate) {
+			if (to_deactivate || !IsActive) {
 				DeactivateImmediate();
 			}
 			
@@ -481,7 +481,7 @@ namespace DanmakU {
 				renderer.sharedMaterial = runtime.cachedMaterial;
 				renderer.sortingLayerID = runtime.cachedSortingLayer;
 				colliderOffset = scale.Hadamard2(runtime.cachedColliderOffset);
-				circleRaidus = runtime.cachedColliderRadius * scale.Max();
+				colliderRadius = runtime.cachedColliderRadius * scale.Max();
 				tag = gameObject.tag = runtime.cachedTag;
 				symmetric = runtime.symmetric;
 			}
