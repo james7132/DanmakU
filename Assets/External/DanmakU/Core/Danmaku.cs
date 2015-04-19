@@ -34,7 +34,7 @@ namespace DanmakU {
 
 		//Cached information about the Danmaku from its prefab
 		internal Vector2 colliderOffset = Vector2.zero; 
-		private float circleRaidus = 1f;
+		private float colliderRadius = 1f;
 		//internal Sprite sprite;
 		//internal Material material;
 		//internal Color color;
@@ -397,9 +397,9 @@ namespace DanmakU {
 				collisionCenter.x = originalPosition.x + colliderOffset.x * direction.x;
 				collisionCenter.y = originalPosition.y + colliderOffset.y * direction.y;
 				//Check if the collision detection should be continuous or not
-				if (distance <= circleRaidus) {
+				if (distance <= colliderRadius) {
 					count = Physics2D.OverlapCircleNonAlloc(collisionCenter,
-					                                        circleRaidus,
+					                                        colliderRadius,
 					                                        colliders,
 					                                        colliderMask);
 					for (int i = 0; i < count; i++) {
@@ -424,7 +424,7 @@ namespace DanmakU {
 					}
 				} else {
 					count = Physics2D.CircleCastNonAlloc(collisionCenter, 
-					                                     circleRaidus,
+					                                     colliderRadius,
 					                                     movementVector,
 					                                     raycastHits,
 					                                     distance,
@@ -462,7 +462,7 @@ namespace DanmakU {
 			//transform.localPosition = Position;
 			particle.position = Position;
 
-			if (to_deactivate) {
+			if (to_deactivate || !IsActive) {
 				DeactivateImmediate();
 			}
 			
@@ -490,7 +490,7 @@ namespace DanmakU {
 				//renderer.sortingLayerID = runtime.cachedSortingLayer;
 				Vector2 scale = runtime.cachedScale;
 				colliderOffset = scale.Hadamard2(runtime.cachedColliderOffset);
-				circleRaidus = runtime.cachedColliderRadius * scale.Max();
+				colliderRadius = runtime.cachedColliderRadius * scale.Max();
 				//tag = gameObject.tag = runtime.cachedTag;
 				tag = runtime.cachedTag;
 				symmetric = runtime.symmetric;
@@ -521,10 +521,9 @@ namespace DanmakU {
 			}
 		}
 
-		internal bool is_active;
 		public bool IsActive {
 			get {
-				return is_active;
+				return index <= danmakuPool.activeCount;
 			}
 		}
 
@@ -534,7 +533,6 @@ namespace DanmakU {
 		/// Calling this on a projectile marked for deactivation will unmark the projectile and keep it from deactivating.
 		/// </summary>
 		public void Activate () {
-			is_active = true;
 			to_deactivate = false;
 			//gameObject.SetActive (true);
 			//renderer.enabled = true;
@@ -596,7 +594,6 @@ namespace DanmakU {
 			frames = 0;
 			//gameObject.SetActive (false);
 			//renderer.enabled = false;
-			is_active = false;
 			Pool.Return (this);
 			//if (extraComponents != null) {
 			//	while(extraComponents.Count > 0) {
