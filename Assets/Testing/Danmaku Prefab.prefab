@@ -56,24 +56,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _serializationData:
     serializedObjects:
+    - {fileID: 19897468, guid: f56f0572d67cbfa4f818e56887908592, type: 2}
     - {fileID: 5818048}
     - {fileID: 21290588}
     serializedStrings:
       keys:
+      - 'Field: ParticleSystem danmakuParticlePrefab'
       - 'Field: IDanmakuController[] extraControllers'
       - 'Field: CircleCollider2D circleCollider'
       - 'Field: SpriteRenderer spriteRenderer'
       - 'Field: bool symmetric'
       values:
-      - '[]'
       - '{"$content":0}'
+      - '[]'
       - '{"$content":1}'
+      - '{"$content":2}'
       - false
   _id: 0
   dbg: 0
   circleCollider: {fileID: 5818048}
   spriteRenderer: {fileID: 21290588}
   symmetric: 0
+  danmakuParticlePrefab: {fileID: 19897468, guid: f56f0572d67cbfa4f818e56887908592,
+    type: 2}
 --- !u!212 &21290588
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -84,7 +89,7 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2647e885c58168548b8772e9be3db555, type: 2}
+  - {fileID: 2100000, guid: 3eed65ddd34f48d4aad5ca69f28d4a11, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1

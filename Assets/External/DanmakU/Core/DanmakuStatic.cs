@@ -16,7 +16,7 @@ namespace DanmakU {
 	/// A single projectile fired.
 	/// The base object that represents a single bullet in a Danmaku game
 	/// </summary>
-	public sealed partial class Danmaku : IPooledObject, IColorable, IPrefabed<DanmakuPrefab> {
+	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab> {
 
 		private const int standardStart = 1000;
 		private const int standardSpawn = 100;
@@ -77,37 +77,29 @@ namespace DanmakU {
 		internal static void UpdateAll() {
 			dt = Util.DeltaTime;
 			Danmaku[] all = danmakuPool.all;
-			int activeCount = danmakuPool.activeCount;
-			for (int i = 0; i < all.Length; i++) {
+			int activeCount = danmakuPool.activeIndex;
+			for (int i = activeCount; i >= 0; i--) {
 				if(i > activeCount) {
 					break;
 				}
-
-				// Note: the reason why I am using a for loop here is because the CIL compiler ignores bounds checking
-				// if and only if used in the form of "for(int x = 0, x < array.Length; x++)".
-				// It actually increases performance signifigantly
 
 				all[i].Update();
 			}
 		}
 		
 		public static void DeactivateAll() {
-			danmakuPool.activeCount = 0;
+			danmakuPool.activeIndex = 0;
 		}
 
 		public static void DeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
 			Danmaku[] all = danmakuPool.all;
 			Danmaku target;
-			int activeCount = danmakuPool.activeCount;
+			int activeCount = danmakuPool.activeIndex;
 			float sqrRadius = radius * radius, sqrDRadius, DRadius;
-			for (int i = 0; i < all.Length; i++) {
+			for (int i = activeCount; i >= 0; i--) {
 				if(i > activeCount) {
 					break;
 				}
-				
-				// Note: the reason why I am using a for loop here is because the CIL compiler ignores bounds checking
-				// if and only if used in the form of "for(int x = 0, x < array.Length; x++)".
-				// It actually increases performance signifigantly
 				target = all[i];
 				if((layerMask & (1 << target.layer)) != 0) {
 					DRadius = target.colliderRadius;
@@ -122,16 +114,9 @@ namespace DanmakU {
 		public static void DirectDeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
 			Danmaku[] all = danmakuPool.all;
 			Danmaku target;
-			int activeCount = danmakuPool.activeCount;
+			int activeCount = danmakuPool.activeIndex;
 			float sqrRadius = radius * radius;
-			for (int i = 0; i < all.Length; i++) {
-				if(i > activeCount) {
-					break;
-				}
-				
-				// Note: the reason why I am using a for loop here is because the CIL compiler ignores bounds checking
-				// if and only if used in the form of "for(int x = 0, x < array.Length; x++)".
-				// It actually increases performance signifigantly
+			for (int i = activeCount; i >= 0; i--) {
 				target = all[i];
 				if((layerMask & (1 << target.layer)) != 0) {
 					if(sqrRadius >= (target.Position - center).sqrMagnitude) {
@@ -155,12 +140,11 @@ namespace DanmakU {
 		
 		public static Danmaku Get (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation, DanmakuField field) {
 			if (danmakuPool == null) {
-				Setup();
 				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			}
 			Danmaku proj = danmakuPool.Get ();
 			proj.MatchPrefab (danmakuType);
-			proj.PositionImmediate = position;
+			proj.Position = position;
 			proj.Rotation = rotation;
 			proj.Field = field;
 			proj.bounds = field.bounds;
@@ -169,12 +153,11 @@ namespace DanmakU {
 		
 		public static Danmaku Get(DanmakuField field, FireBuilder builder) {
 			if (danmakuPool == null) {
-				Setup();
 				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			}
 			Danmaku proj = danmakuPool.Get ();
 			proj.MatchPrefab (builder.Prefab);
-			proj.PositionImmediate = field.WorldPoint (builder.Position, builder.CoordinateSystem);
+			proj.Position = field.WorldPoint (builder.Position, builder.CoordinateSystem);
 			proj.Rotation = builder.Rotation;
 			proj.Speed = builder.Velocity;
 			proj.AngularSpeed = builder.AngularVelocity;

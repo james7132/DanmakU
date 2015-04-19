@@ -1,14 +1,14 @@
 fileFormatVersion: 2
 guid: f6956be316dacb54a93a5e720cf42416
-<<<<<<< HEAD
-timeCreated: 1429180299
-=======
-timeCreated: 1429408739
->>>>>>> master
+timeCreated: 1429419557
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - circleCollider: {instanceID: 0}
+  - spriteRenderer: {instanceID: 0}
+  - danmakuParticlePrefab: {fileID: 19827606, guid: f56f0572d67cbfa4f818e56887908592,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -52,14 +52,6 @@ namespace DanmakU {
 			}
 		}
 
-		public Vector2 PositionImmediate {
-			set {
-				foreach(Danmaku danmaku in group) {
-					danmaku.PositionImmediate = value;
-				}
-			}
-		}
-
 		public DynamicFloat Rotation {
 			set {
 				foreach(Danmaku danmaku in group) {
