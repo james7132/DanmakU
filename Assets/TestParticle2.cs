@@ -9,7 +9,9 @@ public class TestParticle2 : MonoBehaviour {
 	public Material testMaterial;
 	public Mesh testMesh;
 	public MaterialPropertyBlock testMPB;
-	
+
+	private const float MaxVertexCount = (float)(1 << 16);
+
 	CombineInstance[] testMultiple;
 	Mesh tempMesh;
 	public bool useMesh = true;
@@ -94,15 +96,27 @@ public class TestParticle2 : MonoBehaviour {
 		}
 		testMesh.colors = colors;
 
+		print(((float) testMultiple.Length * testMesh.vertexCount)/((float)(1 << 16)));
+
+		int perBatch = Mathf.FloorToInt(MaxVertexCount / (float)testMesh.vertexCount);
+
+		int index = 0;
+
+//		while (index < testMultiple.Length) {
+//			for(int i = 0; i < perBatch; i++) {
+//			}
+//		}
+
+
 		Matrix4x4 transformM = Matrix4x4.identity;
 		for (int i = 0; i < testMultiple.Length; i++) {
-			testMultiple[i].mesh = testMesh;
+			testMultiple[i].mesh = null;
 			transformM[13]++;
 			transformM[15]++;
 			testMultiple[i].transform = transformM	;
 		}
 
-		tempMesh.CombineMeshes(testMultiple, true, false);
+		tempMesh.CombineMeshes(testMultiple);
 
 		Graphics.DrawMesh(tempMesh, Matrix4x4.identity, testMaterial, 0);
 	}
