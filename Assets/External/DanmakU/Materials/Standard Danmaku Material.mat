@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Bullet Material
-  m_Shader: {fileID: 4800000, guid: 7be60fcf4914ded428c34d23f13bd834, type: 3}
+  m_Name: Standard Danmaku Material
+  m_Shader: {fileID: 4800000, guid: 00dea6eff7f480a4eb1cfee49533d4ff, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
