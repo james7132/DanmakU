@@ -17,24 +17,30 @@ namespace DanmakU {
 
 		private DanmakuPrefab runtime;
 
+		[SerializeField]
+		private ParticleSystem danmakuParticlePrefab;
+
 		private static ParticleSystem.Particle hiddenParticle;
 
-		private Mesh renderMesh;
-		private Material renderMaterial;
+		//public int j;
+
 		private Mesh spriteMesh;
-		private CombineInstance[] danmakuInstances;
+		private ParticleSystem runtimeSystem;
+		private ParticleSystemRenderer runtimeRenderer;
+		private ParticleSystem.Particle[] particles;
+		//private Danmaku[] currentDanmaku;
+		private HashSet<Danmaku> currentDanmaku;
+		private int danmakuCount;
 
 		static DanmakuPrefab() {
 			hiddenParticle = new ParticleSystem.Particle();
 			hiddenParticle.position = new Vector3(20000000f, 0f, 0f);
 			hiddenParticle.startLifetime = float.PositiveInfinity;
+			hiddenParticle.lifetime = float.PositiveInfinity;
+			hiddenParticle.velocity = Vector3.zero;
+			hiddenParticle.angularVelocity = 0;
+			hiddenParticle.axisOfRotation = Vector3.forward;
 		}
-
-		private ParticleSystem danmakuParticle;
-		private ParticleSystemRenderer danmakuRenderer;
-		private ParticleSystem.Particle[] particles;
-
-		private HashSet<Danmaku> currentDanmaku;
 
 		[SerializeField]
 		private IDanmakuController[] extraControllers;
@@ -45,59 +51,76 @@ namespace DanmakU {
 		}
 
 		public void Add(Danmaku danmaku) {
+//			Debug.Log("Add");
+//			if (currentDanmaku == null) {
+//				currentDanmaku = new Danmaku[128];
+//			}
+//			danmakuCount++;
+//			if (danmakuCount >= currentDanmaku.Length) {
+//				Danmaku[] temp = new Danmaku[Mathf.NextPowerOfTwo(danmakuCount + 1)];
+//				System.Array.Copy(currentDanmaku, temp, currentDanmaku.Length);
+//				currentDanmaku = temp;
+//			}
+//			danmaku.renderIndex = danmakuCount;
+//			currentDanmaku [danmakuCount] = danmaku;
 			currentDanmaku.Add(danmaku);
-			danmakuParticle.Emit(danmaku.particle);
 		}
 
 		public void Remove(Danmaku danmaku) {
+//			Debug.Log("remove");
+//			int deadIndex = danmaku.poolIndex;;
+//			Danmaku temp = currentDanmaku [danmakuCount];
+//			currentDanmaku [danmakuCount] = danmaku;
+//			currentDanmaku [deadIndex] = temp;
+//			danmaku.renderIndex = danmakuCount;
+//			danmaku.renderIndex = deadIndex;
+//			danmakuCount--;
 			currentDanmaku.Remove(danmaku);
 		}
 
 		void Update() {
-//			int count = currentDanmaku.Count;
-//			int particleCount = particles.Length;
-//			var max = danmakuParticle.maxParticles;
-//			if (max > particleCount) {
-//				particles = new ParticleSystem.Particle[max];
-//			}
-//			particleCount = 0;
-//			print(danmakuParticle.particleCount);
-//			int currentCount = danmakuParticle.GetParticles(particles);
-//			if (currentCount < count) {
-//				//print("hello" + (count - currentCount));
-//				danmakuParticle.Emit(count - currentCount);
-//			}
-//			foreach (Danmaku danmaku in currentDanmaku) {
-//				particles[particleCount] = danmaku.particle;
-//				particleCount++;
-//			}
-//			Vector3 zero = Vector2.one;
-//			var forward = Vector3.forward;
-//			for (int i = 0; i < max; i++) {
-//				if(i > count) {
-//					particles[i] = hiddenParticle;
-//				} else {
-//					ParticleSystem.Particle part = particles [i];
-//					part.position = i * zero;
-//					part.rotation = 0f;
-//					part.axisOfRotation = forward;
-//					part.startLifetime = float.PositiveInfinity;
-//					particles [i] = part;
-//				}
-//			}
-//			//danmakuParticle.SetParticles(particles, max);
-//			print(danmakuParticle.particleCount);
-//			danmakuParticle.Emit(20);
-			Matrix4x4 test = Matrix4x4.identity;
-			CombineInstance instance = danmakuInstances[0];
-			for (int i = 0; i < danmakuInstances.Length; i++) {
-				instance.mesh = spriteMesh;
-				instance.transform = Matrix4x4.TRS(Vector2.one * i, Quaternion.identity, Vector3.one);
-				danmakuInstances[i] = instance;
+			int danmakuCount = currentDanmaku.Count;
+			Debug.Log(danmakuCount);
+			int count = runtimeSystem.particleCount;
+			if (danmakuCount > count) {
+				//Debug.Log("hello");
+				runtimeSystem.maxParticles = Mathf.NextPowerOfTwo(danmakuCount);
+				runtimeSystem.Emit(danmakuCount - count);
+				//Debug.Log(runtimeSystem.particleCount);
+				count = danmakuCount;
 			}
-			renderMesh.CombineMeshes(danmakuInstances, false, true);
+			if (danmakuCount > particles.Length) {
+				particles = new ParticleSystem.Particle[Mathf.NextPowerOfTwo(danmakuCount + 1)];
+			}
 
-			Graphics.DrawMesh(renderMesh, Matrix4x4.identity, renderMaterial, cachedLayer);
+			int count2 = runtimeSystem.GetParticles(particles);
+//			if(count > count2) {
+//				Debug.Log(count + ", " + count2);
+//			}
+			Vector3 forward = Vector3.forward;
+			bool done;
+			IEnumerator<Danmaku> enumerator = currentDanmaku.GetEnumerator();
+			for(int i = 0; i < danmakuCount; i++) {
+				done = enumerator.MoveNext();
+				if(done) {
+					Danmaku danmaku = enumerator.Current;
+					particles[i].position = danmaku.Position;
+					particles[i].rotation = danmaku.Rotation;
+					particles[i].size = danmaku.Scale;
+					particles[i].axisOfRotation = forward;
+					particles[i].lifetime = 1000;
+					particles[i].color = danmaku.Color;
+				} else {
+					particles[i].size = 0f;
+					particles[i].lifetime = -1;
+				}
+			}
+//			for(; index < count; index++) {
+//				particles[index].lifetime = 10000;
+//				particles[index].position = Vector2.up * 20;
+//				particles[index].size = 0f;
+//			}
+			runtimeSystem.SetParticles(particles, danmakuCount);
 		}
 
 		public override void Awake() {
@@ -106,11 +129,10 @@ namespace DanmakU {
 			GetComponent<SpriteRenderer>().enabled = false;
 			GetComponent<CircleCollider2D>().enabled = false;
 
-			currentDanmaku = new HashSet<Danmaku> ();
+			currentDanmaku = new HashSet<Danmaku>();
+			//currentDanmaku = new Danmaku[128];
 
 			particles = new ParticleSystem.Particle[128];
-
-			renderMesh = new Mesh();
 
 			//Disable all other components
 			foreach (Behaviour comp in GetComponentsInChildren<Behaviour>()) {
@@ -118,27 +140,27 @@ namespace DanmakU {
 					comp.enabled = false;
 				}
 			}
+	
+			runtimeSystem = Instantiate(danmakuParticlePrefab) as ParticleSystem;
+			runtimeSystem.transform.position = Vector3.zero;
+			runtimeRenderer = runtimeSystem.GetComponent<ParticleSystemRenderer> ();
 
-			danmakuParticle = gameObject.AddComponent<ParticleSystem>();
-			danmakuRenderer = GetComponent<ParticleSystemRenderer>();
-
-			danmakuParticle.simulationSpace = ParticleSystemSimulationSpace.World;
-			danmakuParticle.startColor = Color;
-			danmakuParticle.startSize = 1;//new Bounds2D(Sprite.bounds).Size.Max();
-			danmakuParticle.startLifetime = float.PositiveInfinity;
-			danmakuParticle.gravityModifier = 0f;
-			danmakuParticle.startSpeed = 0f;
-			danmakuParticle.enableEmission = false;
-			danmakuParticle.maxParticles = 10000;
+			runtimeSystem.simulationSpace = ParticleSystemSimulationSpace.World;
+			runtimeSystem.startColor = Color;
+			runtimeSystem.startSize = 1;
+			runtimeSystem.startLifetime = float.PositiveInfinity;
+			runtimeSystem.gravityModifier = 0f;
+			runtimeSystem.startSpeed = 0f;
+			runtimeSystem.enableEmission = false;
 			
-			danmakuParticle.Emit(danmakuParticle.maxParticles);
+			runtimeSystem.Emit(runtimeSystem.maxParticles);
 
-			renderMaterial = new Material(Material);
+			particles = new ParticleSystem.Particle[runtimeSystem.particleCount];
+
+			Material renderMaterial = new Material(Material);
 			renderMaterial.mainTexture = Sprite.texture;
 
 			spriteMesh = new Mesh();
-
-			danmakuInstances = new CombineInstance[20];
 
 			var verts = Sprite.vertices;
 			var tris = Sprite.triangles;
@@ -161,15 +183,25 @@ namespace DanmakU {
 			spriteMesh.uv = Sprite.uv;
 			spriteMesh.triangles = triangles;
 
-			danmakuRenderer.renderMode = ParticleSystemRenderMode.Mesh;
-			danmakuRenderer.sharedMaterial = renderMaterial;
-			danmakuRenderer.mesh = spriteMesh;
-			danmakuRenderer.sortingLayerID = cachedSortingLayer;
-			danmakuRenderer.sortingOrder = cachedSortingOrder;
-			danmakuRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-			danmakuRenderer.receiveShadows = false;
-			danmakuRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-			danmakuRenderer.useLightProbes = false;
+			runtimeRenderer.renderMode = ParticleSystemRenderMode.Mesh;
+			runtimeRenderer.sharedMaterial = renderMaterial;
+			runtimeRenderer.mesh = spriteMesh;
+			runtimeRenderer.sortingLayerID = cachedSortingLayer;
+			runtimeRenderer.sortingOrder = cachedSortingOrder;
+			runtimeRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+			runtimeRenderer.receiveShadows = false;
+			runtimeRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+			runtimeRenderer.useLightProbes = false;
+
+		}
+
+		void OnDestroy() {
+			if (runtimeSystem != null) {
+				Destroy(runtimeSystem.gameObject);
+			}
+			if (spriteMesh != null) {
+				Destroy(spriteMesh);
+			}
 		}
 
 		internal DanmakuPrefab GetRuntime() {

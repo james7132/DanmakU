@@ -19,9 +19,10 @@ namespace DanmakU {
 	/// A single projectile fired.
 	/// The base object that represents a single bullet in a Danmaku game
 	/// </summary>
-	public sealed partial class Danmaku : IPooledObject, IColorable, IPrefabed<DanmakuPrefab>, IDanmakuObject {
+	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab>, IDanmakuObject {
 		
-		internal int index;
+		internal int poolIndex;
+		internal int renderIndex;
 
 		//private Stack<Component> extraComponents;
 
@@ -45,8 +46,6 @@ namespace DanmakU {
 		internal string cachedTag;
 		internal int cachedLayer;
 		internal bool symmetric;
-
-		internal ParticleSystem.Particle particle;
 
 		//Prefab information
 		private DanmakuPrefab prefab;
@@ -115,17 +114,7 @@ namespace DanmakU {
 		/// <see href="http://docs.unity3d.com/ScriptReference/SpriteRenderer-color.html">SpriteRenderer.color</see>
 		/// </summary>
 		/// <value>The renderer color.</value>
-		public Color Color {
-			get {
-				//return color;
-				return particle.color;
-			}
-			set {
-				//renderer.color = value;
-				//color = value;
-				particle.color = value;
-			}
-		}
+		public Color32 Color;
 
 		public Material Material {
 			get {
@@ -143,18 +132,9 @@ namespace DanmakU {
 		/// </summary>
 		/// <value>The position of the projectile.</value>
 		public Vector2 Position;
-		
-		public Vector2 PositionImmediate {
-			get {
-				return Position;
-			}
-			set {
-				//transform.localPosition = value;
-				Position = value;
-				particle.position = value;
-			}
-		}
-		
+
+		internal float rotation;
+
 		/// <summary>
 		/// Gets or sets the rotation of the projectile, in degrees.
 		/// If viewed from a unrotated orthographic camera:
@@ -167,13 +147,13 @@ namespace DanmakU {
 		public float Rotation {
 			get {
 				//return rotation;
-				return particle.rotation;
+				return rotation;
 			}
 			set {
 				//if(!symmetric)
 				//	transform.localRotation = Quaternion.Euler(0f, 0f, value);
 				//rotation = value;
-				particle.rotation = value;
+				rotation = value;
 				//direction = UnitCircle(rotation);
 				direction = UnitCircle(value);
 			}
@@ -190,7 +170,9 @@ namespace DanmakU {
 				return direction;
 			}
 		}
-		
+
+		public float Scale;
+
 		/// <summary>
 		/// The amount of time, in seconds,that has passed since this bullet has been fired.
 		/// This is calculated based on the number of AbstractDanmakuControllerd frames that has passed since the bullet has fired
@@ -333,8 +315,6 @@ namespace DanmakU {
 //			return gameObject.CompareTag (tag);
 //		}
 
-		private static Vector3 forward = Vector3.forward;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
 		/// </summary>
@@ -351,8 +331,6 @@ namespace DanmakU {
 			raycastHits = new RaycastHit2D[5];
 			colliders = new Collider2D[5];
 //			scripts = new IDanmakuCollider[5];
-
-			particle.axisOfRotation = Vector3.forward;
 		}
 
 		internal void Update() {
@@ -389,7 +367,7 @@ namespace DanmakU {
 			movementVector.x = Position.x - originalPosition.x;
 			movementVector.y = Position.y - originalPosition.y;
 
-			Debug.DrawRay(originalPosition, movementVector);
+			//Debug.DrawRay(originalPosition, movementVector);
 
 			#endregion
 			if(CollisionCheck) {
@@ -459,9 +437,6 @@ namespace DanmakU {
 				return;
 			}
 
-			//transform.localPosition = Position;
-			particle.position = Position;
-
 			if (to_deactivate || !IsActive) {
 				DeactivateImmediate();
 			}
@@ -496,8 +471,8 @@ namespace DanmakU {
 				symmetric = runtime.symmetric;
 			}
 
-			//renderer.sprite = runtime.Sprite;
-			//renderer.color = runtime.cachedColor;
+			Color = runtime.cachedColor;
+			Scale = 1f;
 			layer = runtime.cachedLayer;
 			colliderMask = collisionMask [layer];
 
@@ -523,7 +498,7 @@ namespace DanmakU {
 
 		public bool IsActive {
 			get {
-				return index <= danmakuPool.activeCount;
+				return poolIndex <= danmakuPool.activeIndex;
 			}
 		}
 
@@ -592,6 +567,7 @@ namespace DanmakU {
 			controllerCheck = false;
 			Damage = 0;
 			frames = 0;
+			runtime.Remove(this);
 			//gameObject.SetActive (false);
 			//renderer.enabled = false;
 			Pool.Return (this);
@@ -604,7 +580,7 @@ namespace DanmakU {
 		}
 
 		public override int GetHashCode () {
-			return index;
+			return poolIndex;;
 		}
 
 //		public override bool Equals (object obj) {
