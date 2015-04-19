@@ -476,12 +476,7 @@ namespace DanmakU {
 			layer = runtime.cachedLayer;
 			colliderMask = collisionMask [layer];
 
-			IDanmakuController[] pcbs = runtime.ExtraControllers;
-			if (pcbs.Length > 0) {
-				for (int i = 0; i < pcbs.Length; i++) {
-					controllerUpdate += pcbs[i].UpdateDanmaku;
-				}
-			}
+			controllerUpdate += runtime.ExtraControllers;
 		}
 
 		#region IPooledObject implementation

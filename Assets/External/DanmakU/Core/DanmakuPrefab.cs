@@ -43,39 +43,24 @@ namespace DanmakU {
 			hiddenParticle.axisOfRotation = Vector3.forward;
 		}
 
+
+
 		[SerializeField]
 		private IDanmakuController[] extraControllers;
-		internal IDanmakuController[] ExtraControllers {
+
+		private DanmakuController controllerAggregate;
+
+		internal DanmakuController ExtraControllers {
 			get {
-				return extraControllers;
+				return controllerAggregate;
 			}
 		}
 
 		public void Add(Danmaku danmaku) {
-//			Debug.Log("Add");
-//			if (currentDanmaku == null) {
-//				currentDanmaku = new Danmaku[128];
-//			}
-//			danmakuCount++;
-//			if (danmakuCount >= currentDanmaku.Length) {
-//				Danmaku[] temp = new Danmaku[Mathf.NextPowerOfTwo(danmakuCount + 1)];
-//				System.Array.Copy(currentDanmaku, temp, currentDanmaku.Length);
-//				currentDanmaku = temp;
-//			}
-//			danmaku.renderIndex = danmakuCount;
-//			currentDanmaku [danmakuCount] = danmaku;
 			currentDanmaku.Add(danmaku);
 		}
 
 		public void Remove(Danmaku danmaku) {
-//			Debug.Log("remove");
-//			int deadIndex = danmaku.poolIndex;;
-//			Danmaku temp = currentDanmaku [danmakuCount];
-//			currentDanmaku [danmakuCount] = danmaku;
-//			currentDanmaku [deadIndex] = temp;
-//			danmaku.renderIndex = danmakuCount;
-//			danmaku.renderIndex = deadIndex;
-//			danmakuCount--;
 			currentDanmaku.Remove(danmaku);
 		}
 
@@ -94,9 +79,7 @@ namespace DanmakU {
 			}
 
 			int count2 = runtimeSystem.GetParticles(particles);
-//			if(count > count2) {
-//				Debug.Log(count + ", " + count2);
-//			}
+				Debug.Log(count2);
 			Vector3 forward = Vector3.forward;
 			bool done;
 			IEnumerator<Danmaku> enumerator = currentDanmaku.GetEnumerator();
@@ -165,17 +148,15 @@ namespace DanmakU {
 					}
 				}
 			}
-
-//			for(; index < count; index++) {
-//				particles[index].lifetime = 10000;
-//				particles[index].position = Vector2.up * 20;
-//				particles[index].size = 0f;
-//			}
 			runtimeSystem.SetParticles(particles, danmakuCount);
 		}
 
 		public override void Awake() {
 			base.Awake();
+
+			for (int i = 0; i < extraControllers.Length; i++) {
+				controllerAggregate += extraControllers[i].UpdateDanmaku;
+			}
 
 			GetComponent<SpriteRenderer>().enabled = false;
 			GetComponent<CircleCollider2D>().enabled = false;
@@ -203,13 +184,14 @@ namespace DanmakU {
 			runtimeSystem.gravityModifier = 0f;
 			runtimeSystem.startSpeed = 0f;
 			runtimeSystem.enableEmission = false;
-			
-			runtimeSystem.Emit(runtimeSystem.maxParticles);
 
 			particles = new ParticleSystem.Particle[runtimeSystem.particleCount];
 
 			Material renderMaterial = new Material(Material);
 			renderMaterial.mainTexture = Sprite.texture;
+
+			MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+			propertyBlock.AddTexture("_MainTex", Sprite.texture);
 
 			if (useMesh) {
 				spriteMesh = new Mesh();
@@ -241,6 +223,7 @@ namespace DanmakU {
 				runtimeRenderer.renderMode = ParticleSystemRenderMode.Billboard;
 			}
 			runtimeRenderer.sharedMaterial = renderMaterial;
+			runtimeRenderer.SetPropertyBlock(propertyBlock);
 			runtimeRenderer.sortingLayerID = cachedSortingLayer;
 			runtimeRenderer.sortingOrder = cachedSortingOrder;
 			runtimeRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;

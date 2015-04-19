@@ -115,10 +115,6 @@ namespace DanmakU {
 //			
 //			#endregion
 
-
-
-
-
 			internal int[] queue;
 			internal Danmaku[] all;
 			
