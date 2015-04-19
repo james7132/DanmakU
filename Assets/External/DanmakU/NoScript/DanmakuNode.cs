@@ -9,6 +9,58 @@ using Vexe.Runtime.Types;
 
 namespace DanmakU {
 	
+	public class Path {
+		
+		private List<DanmakuNode> nodes;
+
+		private FireNode source;
+		private EmitterNode emitter;
+		
+		public bool IsValid {
+			get {
+				return source != null && emitter != null;
+			}
+		}
+
+		private Path(Path other) {
+			nodes = new List<DanmakuNode>(other.nodes);
+			source = other.source;
+			emitter = other.emitter;
+		}
+
+		public Path(TriggerNode trigger) {
+			nodes = new List<DanmakuNode>();
+			nodes.Add(trigger);
+			source = null;
+			emitter = null;
+		}
+
+		public Path Clone() {
+			return new Path(this);
+		}
+
+		public void Add(DanmakuNode node) {
+			nodes.Add(node);
+			if (node is FireNode) {
+				source = node as FireNode;
+			}
+			if (node is EmitterNode) {
+				emitter = node as EmitterNode;
+			}
+		}
+
+		public void Fire() {
+			FireBuilder target = new FireBuilder();
+			for(int i = 0; i < nodes.Count; i++) {
+				DanmakuNode node = nodes[i];
+				if(node.Enabled) {
+					nodes[i].Process(target);
+				}
+			}
+		}
+
+	}
+	
 	public abstract class DanmakuNode : IDanmakuObject, IEnumerable<DanmakuNode> {
 		#region IDanmakuObject implementation
 		[Hide]
@@ -18,16 +70,25 @@ namespace DanmakU {
 			set;
 		}
 		#endregion
-		
-		[Hide]
-		[Serialize]
+
+		public void GeneratePaths(Path currentPath, List<Path> validPaths) {
+			currentPath.Add(this);
+			if (children.Length != 0) {
+				for (int i = 0; i < children.Length; i++) {
+					children [i].GeneratePaths(currentPath.Clone(), validPaths);
+				}
+			} else {
+				if(currentPath.IsValid) {
+					validPaths.Add(currentPath);
+				}
+			}
+		}
+
+		[Hide, Serialize]
 		internal DanmakuNode[] parents;
 
-		[Hide]
-		[Serialize]
+		[Hide, Serialize]
 		internal DanmakuNode[] children;
-
-		internal bool baked;
 
 		public DanmakuNode[] Parents {
 			get {
@@ -40,58 +101,31 @@ namespace DanmakU {
 				return children;
 			}
 		}
-
-		[Hide]
-		[Serialize]
+	
+		[Show, Serialize]
 		public bool Enabled {
 			get;
 			set;
 		}
 
-		[Hide]
-		[DontSerialize]
-		protected FireBuilder Target {
-			get;
-			set;
-		}
-
-		[Show]
-		[Serialize]
+		[Show, Serialize]
 		public string Identifier {
 			get;
 			set;
 		}
 
-		protected internal virtual bool Bakeable {
-			get {
-				return false;
-			}
-		}
+		[Hide, Serialize]
+		internal Rect EditorRect;
 
 		public DanmakuNode() {
 			Identifier = Regex.Replace (GetType ().Name, @"((?<=\p{Ll})\p{Lu})|((?!\A)\p{Lu}(?>\p{Ll}))", " $0").Trim ();
 			Enabled = true;
 		}
 
-		protected abstract void Process ();
-
 		protected internal virtual void Initialize() {
 		}
 
-		internal void Trigger(FireBuilder message) {
-			if (!Enabled)
-				return;
-			if (message == null) {
-				Target = message.Clone ();
-				Process ();
-			}
-			if (children != null) {
-				for (int i = 0; i < children.Length; i++) {
-					if(!children[i].baked)
-						children[i].Trigger (message);
-				}
-			}
-		}
+		public abstract void Process (FireBuilder target);
 
 		#region IEnumerable implementation
 		public IEnumerator<DanmakuNode> GetEnumerator () {

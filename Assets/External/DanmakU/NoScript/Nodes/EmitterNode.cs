@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityUtilLib;
 
 namespace DanmakU {
 	
@@ -8,8 +9,8 @@ namespace DanmakU {
 		private FireBuilder fireData;
 
 		#region implemented abstract members of DanmakuNode
-		protected override void Process () {
-			Target = fireData.Clone ();
+		public override void Process (FireBuilder target) {
+			target.Copy(fireData);
 		}
 		#endregion
 		

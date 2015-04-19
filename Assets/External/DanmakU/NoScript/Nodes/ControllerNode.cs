@@ -15,9 +15,9 @@ namespace DanmakU {
 		}
 
 		#region implemented abstract members of DanmakuNode
-		protected override void Process () {
+		public override void Process (FireBuilder target) {
 			if (Controller != null)
-				Target.Controller += Controller.UpdateDanmaku;
+				target.Controller += Controller.UpdateDanmaku;
 			else
 				Debug.LogError ("Controller Node: Attempted to add null controller");
 		}
