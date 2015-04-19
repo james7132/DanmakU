@@ -62,23 +62,26 @@ MonoBehaviour:
     serializedStrings:
       keys:
       - 'Field: ParticleSystem danmakuParticlePrefab'
+      - 'Field: bool useMesh'
       - 'Field: IDanmakuController[] extraControllers'
       - 'Field: CircleCollider2D circleCollider'
       - 'Field: SpriteRenderer spriteRenderer'
       - 'Field: bool symmetric'
       values:
       - '{"$content":0}'
+      - true
       - '[]'
       - '{"$content":1}'
       - '{"$content":2}'
-      - false
+      - true
   _id: 0
   dbg: 0
   circleCollider: {fileID: 5818048}
   spriteRenderer: {fileID: 21290588}
-  symmetric: 0
+  symmetric: 1
   danmakuParticlePrefab: {fileID: 19897468, guid: f56f0572d67cbfa4f818e56887908592,
     type: 2}
+  useMesh: 1
 --- !u!212 &21290588
 SpriteRenderer:
   m_ObjectHideFlags: 1

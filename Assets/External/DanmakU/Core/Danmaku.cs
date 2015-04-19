@@ -496,9 +496,11 @@ namespace DanmakU {
 			}
 		}
 
+		internal bool is_active;
+
 		public bool IsActive {
 			get {
-				return poolIndex <= danmakuPool.activeIndex;
+				return is_active;
 			}
 		}
 
@@ -511,6 +513,7 @@ namespace DanmakU {
 			to_deactivate = false;
 			//gameObject.SetActive (true);
 			//renderer.enabled = true;
+			is_active = true;
 			BoundsCheck = true;
 			CollisionCheck = true;
 			runtime.Add(this);
@@ -568,6 +571,7 @@ namespace DanmakU {
 			Damage = 0;
 			frames = 0;
 			runtime.Remove(this);
+			is_active = false;
 			//gameObject.SetActive (false);
 			//renderer.enabled = false;
 			Pool.Return (this);

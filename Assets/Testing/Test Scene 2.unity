@@ -205,7 +205,7 @@ MonoBehaviour:
   playerSpawnLocation: {x: .5, y: .25}
   camera2D: {fileID: 1407123246}
   camera3D: {fileID: 0}
-  bottomLeft: {x: -26.6666679, y: -20}
+  bottomLeft: {x: -26.638298, y: -20}
   viewportRect:
     serializedVersion: 2
     x: 0
@@ -284,7 +284,7 @@ MonoBehaviour:
       range: 0
     Count:
       type: 0
-      centerValue: 20
+      centerValue: 500
       range: 0
     DeltaVelocity:
       type: 0

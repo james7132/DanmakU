@@ -22,8 +22,6 @@ namespace DanmakU {
 
 		private static ParticleSystem.Particle hiddenParticle;
 
-		//public int j;
-
 		private Mesh spriteMesh;
 		private ParticleSystem runtimeSystem;
 		private ParticleSystemRenderer runtimeRenderer;
@@ -31,6 +29,9 @@ namespace DanmakU {
 		//private Danmaku[] currentDanmaku;
 		private HashSet<Danmaku> currentDanmaku;
 		private int danmakuCount;
+
+		[SerializeField]
+		internal bool useMesh = true;
 
 		static DanmakuPrefab() {
 			hiddenParticle = new ParticleSystem.Particle();
@@ -79,8 +80,7 @@ namespace DanmakU {
 		}
 
 		void Update() {
-			int danmakuCount = currentDanmaku.Count;
-			Debug.Log(danmakuCount);
+			danmakuCount = currentDanmaku.Count;
 			int count = runtimeSystem.particleCount;
 			if (danmakuCount > count) {
 				//Debug.Log("hello");
@@ -100,21 +100,72 @@ namespace DanmakU {
 			Vector3 forward = Vector3.forward;
 			bool done;
 			IEnumerator<Danmaku> enumerator = currentDanmaku.GetEnumerator();
-			for(int i = 0; i < danmakuCount; i++) {
-				done = enumerator.MoveNext();
-				if(done) {
-					Danmaku danmaku = enumerator.Current;
-					particles[i].position = danmaku.Position;
-					particles[i].rotation = danmaku.Rotation;
-					particles[i].size = danmaku.Scale;
-					particles[i].axisOfRotation = forward;
-					particles[i].lifetime = 1000;
-					particles[i].color = danmaku.Color;
+			if (symmetric) {
+				if (useMesh) {
+					for(int i = 0; i < danmakuCount; i++) {
+						done = enumerator.MoveNext();
+						if(done) {
+							Danmaku danmaku = enumerator.Current;
+							particles[i].position = danmaku.Position;
+							particles[i].size = danmaku.Scale;
+							particles[i].axisOfRotation = forward;
+							particles[i].lifetime = 1000;
+							particles[i].color = danmaku.Color;
+						} else {
+							particles[i].size = 0f;
+							particles[i].lifetime = -1;
+						}
+					}
 				} else {
-					particles[i].size = 0f;
-					particles[i].lifetime = -1;
+					for(int i = 0; i < danmakuCount; i++) {
+						done = enumerator.MoveNext();
+						if(done) {
+							Danmaku danmaku = enumerator.Current;
+							particles[i].position = danmaku.Position;
+							particles[i].size = danmaku.Scale;
+							particles[i].lifetime = 1000;
+							particles[i].color = danmaku.Color;
+						} else {
+							particles[i].size = 0f;
+							particles[i].lifetime = -1;
+						}
+					}
+				}
+			} else {
+				if(useMesh) {
+					for(int i = 0; i < danmakuCount; i++) {
+						done = enumerator.MoveNext();
+						if(done) {
+							Danmaku danmaku = enumerator.Current;
+							particles[i].position = danmaku.Position;
+							particles[i].rotation = danmaku.rotation;
+							particles[i].size = danmaku.Scale;
+							particles[i].axisOfRotation = forward;
+							particles[i].lifetime = 1000;
+							particles[i].color = danmaku.Color;
+						} else {
+							particles[i].size = 0f;
+							particles[i].lifetime = -1;
+						}
+					}
+				} else {
+					for(int i = 0; i < danmakuCount; i++) {
+						done = enumerator.MoveNext();
+						if(done) {
+							Danmaku danmaku = enumerator.Current;
+							particles[i].position = danmaku.Position;
+							particles[i].rotation = danmaku.rotation;
+							particles[i].size = danmaku.Scale;
+							particles[i].lifetime = 1000;
+							particles[i].color = danmaku.Color;
+						} else {
+							particles[i].size = 0f;
+							particles[i].lifetime = -1;
+						}
+					}
 				}
 			}
+
 //			for(; index < count; index++) {
 //				particles[index].lifetime = 10000;
 //				particles[index].position = Vector2.up * 20;
@@ -160,32 +211,36 @@ namespace DanmakU {
 			Material renderMaterial = new Material(Material);
 			renderMaterial.mainTexture = Sprite.texture;
 
-			spriteMesh = new Mesh();
-
-			var verts = Sprite.vertices;
-			var tris = Sprite.triangles;
-			
-			Vector3[] vertexes = new Vector3[verts.Length];
-			int[] triangles = new int[tris.Length];
-
-			Matrix4x4 transformMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, transform.localScale);
-			
-			for (int i = 0; i < verts.Length; i++) {
-				vertexes[i] = transformMatrix * ((Vector3)verts[i]);
-				//vertexes[i] = verts[i];
+			if (useMesh) {
+				spriteMesh = new Mesh();
+				
+				var verts = Sprite.vertices;
+				var tris = Sprite.triangles;
+				
+				Vector3[] vertexes = new Vector3[verts.Length];
+				int[] triangles = new int[tris.Length];
+				
+				Matrix4x4 transformMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, transform.localScale);
+				
+				for (int i = 0; i < verts.Length; i++) {
+					vertexes [i] = transformMatrix * ((Vector3)verts [i]);
+					//vertexes[i] = verts[i];
+				}
+				
+				for (int i = 0; i < tris.Length; i++) {
+					triangles [i] = (int)tris [i];
+				}
+				
+				spriteMesh.vertices = vertexes;
+				spriteMesh.uv = Sprite.uv;
+				spriteMesh.triangles = triangles;
+				
+				runtimeRenderer.mesh = spriteMesh;
+				runtimeRenderer.renderMode = ParticleSystemRenderMode.Mesh;
+			} else {
+				runtimeRenderer.renderMode = ParticleSystemRenderMode.Billboard;
 			}
-			
-			for (int i = 0; i < tris.Length; i++) {
-				triangles[i] = (int)tris[i];
-			}
-
-			spriteMesh.vertices = vertexes;
-			spriteMesh.uv = Sprite.uv;
-			spriteMesh.triangles = triangles;
-
-			runtimeRenderer.renderMode = ParticleSystemRenderMode.Mesh;
 			runtimeRenderer.sharedMaterial = renderMaterial;
-			runtimeRenderer.mesh = spriteMesh;
 			runtimeRenderer.sortingLayerID = cachedSortingLayer;
 			runtimeRenderer.sortingOrder = cachedSortingOrder;
 			runtimeRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
