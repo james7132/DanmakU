@@ -3,11 +3,8 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using UnityEditor;
-using UnityUtilLib;
-using System.Linq;
+using Vexe.Editor.GUIs;
 
 namespace DanmakU.Editor {
 	
@@ -137,7 +134,7 @@ namespace DanmakU.Editor {
 		}
 
 		void GraphGUI() {
-			Rect temp = EditorGUILayout.BeginVertical ((GUIStyle)"PreBackground");
+			Rect graphArea = EditorGUILayout.BeginVertical ((GUIStyle)"PreBackground");
 			{
 				if(target != null) {
 					scroll = EditorGUILayout.BeginScrollView (scroll);
@@ -146,7 +143,10 @@ namespace DanmakU.Editor {
 					}
 					EditorGUILayout.EndScrollView ();
 				} else {
-					if(Selection.activeGameObject != null) {
+					if(!selectionLock && targetGameObject == null && Selection.activeGameObject != null) {
+						targetGameObject = Selection.activeGameObject;
+					}
+					if(targetGameObject != null) {
 						EditorGUILayout.BeginHorizontal();
 						{
 							//GUILayout.FlexibleSpace();
@@ -168,15 +168,18 @@ namespace DanmakU.Editor {
 				}
 			}
 			EditorGUILayout.EndVertical ();
-			
+			DragAndDropCheck(graphArea);
+		}
+
+		void DragAndDropCheck(Rect graphArea) {
 			Event currentEvent = Event.current;
 			EventType currentEventType = currentEvent.type;
-
+			
 			if (currentEventType == EventType.DragExited) {
 				DragAndDrop.PrepareStartDrag();
 			}
-
-			if (temp.Contains (currentEvent.mousePosition)) {
+			
+			if (graphArea.Contains (currentEvent.mousePosition)) {
 				
 				switch (currentEventType) {
 					case EventType.DragUpdated:
@@ -195,17 +198,12 @@ namespace DanmakU.Editor {
 						}
 						break;
 					case EventType.DragPerform:
-						foreach (GameObject gameObject in DragAndDrop.objectReferences) {
-							
-						}
+						//TODO -fill out
 						break;
 					default:
 						break;
 				}
 			}
-		}
-
-		void DragAndDropCheck() {
 		}
 	}
 

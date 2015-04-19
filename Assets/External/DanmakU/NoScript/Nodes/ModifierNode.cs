@@ -9,8 +9,8 @@ namespace DanmakU {
 		private DanmakuModifier modifier;
 
 		#region implemented abstract members of DanmakuNode
-		protected override void Process () {
-			Target.Modifier.Append (modifier);
+		public override void Process (FireBuilder target) {
+			target.Modifier.Append (modifier);
 		}
 		#endregion
 
