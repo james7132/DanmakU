@@ -3,20 +3,27 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System.Collections;
+using UnityUtilLib;
 
 namespace DanmakU {
 
 	public class FireNode : DanmakuNode {
 
 		[SerializeField]
-		private Transform target;
+		private Transform source;
 
-		protected override void Process() {
+		public override void Process(FireBuilder target) {
 			if (target != null) {
-				Target.Position = target.position;
-				Target.Rotation = target.eulerAngles.z;
-				DanmakuField.FindClosest (Target.Position).Fire (Target);
+				Vector2 tempPos = target.Position;
+				DynamicFloat tempRotation = target.Rotation;
+				DanmakuField.CoordinateSystem coordSys = target.CoordinateSystem;
+				target.Position = source.position;
+				target.Rotation = source.eulerAngles.z;
+				target.CoordinateSystem = DanmakuField.CoordinateSystem.World;
+				Field.Fire (target);
+				target.Position = tempPos;
+				target.Rotation = tempRotation;
+				target.CoordinateSystem = coordSys;
 			} else {
 				Debug.LogError("Tried to fire from a null transform");
 			}

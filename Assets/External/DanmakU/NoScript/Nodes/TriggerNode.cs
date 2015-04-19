@@ -3,7 +3,7 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace DanmakU {
 	
@@ -12,20 +12,28 @@ namespace DanmakU {
 		[SerializeField]
 		private DanmakuTrigger sourceTrigger;
 
+		[SerializeField]
+		private Path[] paths;
+
 		protected internal override void Initialize () {
 			base.Initialize ();
 			sourceTrigger.triggerCallback += Trigger;
 		}
 	
 		private void Trigger() {
-			Trigger (new FireBuilder () {
-					CoordinateSystem = DanmakuField.CoordinateSystem.World
-				}
-			);
+			for(int i = 0; i < paths.Length; i++) {
+				paths[i].Fire();
+			}
+		}
+
+		public void Bake() {
+			List<Path> validPaths = new List<Path>();
+			GeneratePaths(new Path(this), validPaths);
+			paths = validPaths.ToArray();
 		}
 			
 		#region implemented abstract members of DanmakuNode
-		protected override void Process () {
+		public override void Process (FireBuilder target) {
 		}
 		#endregion
 	}
