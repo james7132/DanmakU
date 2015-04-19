@@ -5,6 +5,9 @@ DanmakU is an open source danmaku development kit for Unity3D.
 See the [wiki](https://github.com/rhythmia/DanmakU/wiki) on a number of tutorials on how to get started.  
 See the [script documentation](http://rhythmia.org/DanmakU/Docs/html/annotated.html) to see a scripting reference.
 
+# Contributing
+DanmakU is open source under the MIT license. While using it, and find a bug that you fixed? See an issue in the issue tracker (of which there are many)? Have a new idea for a good feature for the development kit? Simply fork this repo, make your changes and submit a pull request. They will be merged in once it is confirmed that the changes indeed do help.
+
 # Structure
 DanmakU is split into multiple packages which can be used seperately or together depending on your needs:
 * Core - The central core to the entire dev kit, requires UnityUtilLib, Vexe Framework, and Unity3D itself.
