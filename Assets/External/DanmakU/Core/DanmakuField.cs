@@ -545,6 +545,18 @@ namespace DanmakU {
 			this.Prefab = prefab;
 		}
 
+		public void Copy(FireBuilder other) {
+			Position = other.Position;
+			Rotation = other.Rotation;
+			Velocity = other.Velocity;
+			AngularVelocity = other.AngularVelocity;
+			Controller = other.Controller;
+			CoordinateSystem = other.CoordinateSystem;
+			Group = other.Group;
+			Damage = other.Damage;
+			Modifier = other.Modifier;
+		}
+
 		#region IClonable implementation
 		public FireBuilder Clone () {
 			FireBuilder copy = new FireBuilder (Prefab);
