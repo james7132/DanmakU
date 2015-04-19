@@ -73,12 +73,12 @@ MonoBehaviour:
       - '[]'
       - '{"$content":1}'
       - '{"$content":2}'
-      - true
+      - false
   _id: 0
   dbg: 0
   circleCollider: {fileID: 5818048}
   spriteRenderer: {fileID: 21290588}
-  symmetric: 1
+  symmetric: 0
   danmakuParticlePrefab: {fileID: 19897468, guid: f56f0572d67cbfa4f818e56887908592,
     type: 2}
   useMesh: 1

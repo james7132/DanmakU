@@ -111,11 +111,10 @@ namespace DanmakU {
 		public static void DirectDeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
 			Danmaku[] all = danmakuPool.all;
 			Danmaku target;
-			float sqrRadius = radius * radius, DRadius;
+			float sqrRadius = radius * radius;
 			for (int i = 0; i < all.Length; i++) {
 				target = all[i];
 				if((layerMask & (1 << target.layer)) != 0) {
-					DRadius = target.colliderRadius;
 					if(sqrRadius >= (target.Position - center).sqrMagnitude) {
 						target.DeactivateImmediate();
 					}
