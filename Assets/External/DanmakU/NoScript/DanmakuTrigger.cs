@@ -9,7 +9,7 @@ using Vexe.Runtime.Types;
 
 namespace DanmakU {
 
-	public abstract class DanmakuTriggerReciever : BetterBehaviour, IDanmakuNode {
+	public abstract class DanmakuTriggerReciever : BetterBehaviour {
 
 		[SerializeField]
 		private List<DanmakuTrigger> triggers;
@@ -34,7 +34,7 @@ namespace DanmakU {
 	}
 
 	[AddComponentMenu("DanmakU/Danmaku Trigger")]
-	public class DanmakuTrigger : CachedObject, IDanmakuNode {
+	public class DanmakuTrigger : CachedObject {
 
 		public delegate void TriggerCallback ();
 		
