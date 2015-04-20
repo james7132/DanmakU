@@ -13,7 +13,7 @@ public class ParentPlayer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		DanmakuField field = DanmakuField.FindClosest (transform.position);
+		DanmakuField field = DanmakuField.FindClosest (this);
 		transform.parent = field.player.transform;
 		transform.localPosition = offset;
 	}

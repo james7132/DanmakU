@@ -6,7 +6,7 @@ public class TestAttackPattern : MonoBehaviour {
 
 	void Start() {
 		var ap = GetComponent<AttackPattern>();
-		ap.Field = DanmakuField.FindClosest(transform.position);
+		ap.Field = DanmakuField.FindClosest(this);
 		ap.Fire();
 	}
 

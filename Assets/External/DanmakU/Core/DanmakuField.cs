@@ -31,6 +31,18 @@ namespace DanmakU {
 
 		internal static List<DanmakuField> fields;
 
+		public static DanmakuField FindClosest(GameObject gameObject) {
+			return FindClosest (gameObject.transform.position);
+		}
+
+		public static DanmakuField FindClosest(Component component) {
+			return FindClosest (component.transform.position);
+		}
+
+		public static DanmakuField FindClosest(Transform transform) {
+			return FindClosest (transform.position);
+		}
+
 		public static DanmakuField FindClosest(Vector2 position) {
 			if(fields == null)
 				return null;
@@ -424,19 +436,5 @@ namespace DanmakU {
 			return copy;
 		}
 		#endregion
-	}
-
-	public class FieldDependentBehaviour : CachedObject {
-
-		public virtual DanmakuField Field {
-			get;
-			set;
-		}
-
-		public override void Awake () {
-			base.Awake ();
-			Field = DanmakuField.FindClosest (transform.position);
-		}
-
 	}
 }
