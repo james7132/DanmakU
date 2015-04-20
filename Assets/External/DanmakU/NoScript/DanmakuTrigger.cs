@@ -33,7 +33,7 @@ namespace DanmakU {
 		public abstract void Trigger ();
 	}
 
-	[AddComponentMenu("Danmaku 2D/Danmaku Trigger")]
+	[AddComponentMenu("DanmakU/Danmaku Trigger")]
 	public class DanmakuTrigger : CachedObject, IDanmakuNode {
 
 		public delegate void TriggerCallback ();

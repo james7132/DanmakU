@@ -8,7 +8,7 @@ using UnityUtilLib;
 
 namespace DanmakU.NoScript {
 
-	[AddComponentMenu("Danmaku 2D/Sources/Circle Source")]
+	[AddComponentMenu("DanmakU/Sources/Circle Source")]
 	internal class CircleSource : DanmakuSource {
 
 		#pragma warning disable 0649

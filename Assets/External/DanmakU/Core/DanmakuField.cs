@@ -16,7 +16,7 @@ namespace DanmakU {
 
 	[ExecuteInEditMode]
 	[DisallowMultipleComponent]
-	[AddComponentMenu("Danmaku 2D/Danmaku Field")]
+	[AddComponentMenu("DanmakU/Danmaku Field")]
 	public sealed class DanmakuField : MonoBehaviour, IDanmakuObject {
 		#region IDanmakuObject implementation
 		DanmakuField IDanmakuObject.Field {
@@ -322,7 +322,8 @@ namespace DanmakU {
 		                             CoordinateSystem coordSys = CoordinateSystem.View,
 		                             DanmakuController controller = null,
                                      DanmakuModifier modifier = null,
-                                     DanmakuGroup group = null) {
+                                     DanmakuGroup group = null,
+		                          	 Color? colorOverride = null) {
 			Vector2 position = WorldPoint (location, coordSys);
 			if (modifier == null) {
 				Danmaku danmaku = Danmaku.Get (bulletType, position, rotation, this);
@@ -387,54 +388,5 @@ namespace DanmakU {
 			Gizmos.DrawWireCube (movementBounds.Center, movementBounds.Size);
 		}
 		#endif
-	}
-
-	[System.Serializable]
-	public class FireBuilder : IClonable<FireBuilder> {
-		public DanmakuPrefab Prefab = null;
-		public Vector2 Position = Vector2.zero;
-		public DynamicFloat Rotation;
-		public DynamicFloat Velocity;
-		public DynamicFloat AngularVelocity;
-		public DanmakuController Controller = null;
-		public DanmakuField.CoordinateSystem CoordinateSystem = DanmakuField.CoordinateSystem.View;
-		public DanmakuGroup Group;
-		public int Damage;
-		public DanmakuModifier Modifier;
-
-		public FireBuilder() {
-		}
-
-		public FireBuilder(DanmakuPrefab prefab) {
-			this.Prefab = prefab;
-		}
-
-		public void Copy(FireBuilder other) {
-			Position = other.Position;
-			Rotation = other.Rotation;
-			Velocity = other.Velocity;
-			AngularVelocity = other.AngularVelocity;
-			Controller = other.Controller;
-			CoordinateSystem = other.CoordinateSystem;
-			Group = other.Group;
-			Damage = other.Damage;
-			Modifier = other.Modifier;
-		}
-
-		#region IClonable implementation
-		public FireBuilder Clone () {
-			FireBuilder copy = new FireBuilder (Prefab);
-			copy.Position = Position;
-			copy.Rotation = Rotation;
-			copy.Velocity = Velocity;
-			copy.AngularVelocity = AngularVelocity;
-			copy.Controller = null;
-			copy.Controller += Controller;
-			copy.CoordinateSystem = CoordinateSystem;
-			copy.Modifier = Modifier;
-			copy.Damage = Damage;
-			return copy;
-		}
-		#endregion
 	}
 }
