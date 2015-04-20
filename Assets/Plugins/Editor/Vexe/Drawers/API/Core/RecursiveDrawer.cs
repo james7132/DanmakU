@@ -11,8 +11,6 @@ using Vexe.Editor.Visibility;
 using Vexe.Editor.Windows;
 using Vexe.Runtime.Extensions;
 using Vexe.Runtime.Helpers;
-using Vexe.Runtime.Serialization;
-using Vexe.Runtime.Types;
 using UnityObject = UnityEngine.Object;
 
 namespace Vexe.Editor.Drawers
@@ -94,7 +92,7 @@ namespace Vexe.Editor.Drawers
                 for (int i = 0; i < memberNames.Length; i++)
                 {
                     var name = memberNames[i];
-                    var member = ReflectionUtil.GetCachedMember(targetType, name);
+                    var member = ReflectionHelper.GetCachedMember(targetType, name);
                     if (member == null)
                     {
                         LogFormat("RecursiveDrawer: Couldn't find member {0} in {1}", name, targetType.Name);
@@ -116,10 +114,10 @@ namespace Vexe.Editor.Drawers
             {
                 for (int i = 0; i < members.Count; i++)
                 {
-                    var member = members[i];
+                    MemberInfo member = members[i];
                     EditorMember em;
                     changed |= gui.Member(member, target, unityTarget, id, false, out em);
-                    target = em.Target;
+                    target = em.RawTarget;
                 }
             }
 
