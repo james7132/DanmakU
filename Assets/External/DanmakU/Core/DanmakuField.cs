@@ -52,39 +52,13 @@ namespace DanmakU {
 
 		public enum CoordinateSystem { View, ViewRelative, Relative, World }
 
+		public bool UseClipBoundary = true;
+
 		public float ClipBoundary = 1f;
 
-		public float GamePlaneDistance = 10f;
+		public Vector2 FieldSize = new Vector2(20f, 20f);
 
-		[SerializeField]
-		private float camera2DRotation = 0f;
-
-		[SerializeField]
-		private Transform cameraTransform2D;
-
-		[SerializeField]
-		private float size;
-
-		[SerializeField]
-		private bool fixedCameraArea;
-
-		[SerializeField]
-		private float cameraScreenAnchorPoint = 0.5f;
-
-		[SerializeField]
-		private float nativeScreenAspectRatio = 4f/3f;
-
-		[SerializeField]
-		private Rect nativeScreenBounds;
-
-		[SerializeField]
-		private Vector2 playerSpawnLocation = new Vector2(0.5f, 0.25f);
-
-		[SerializeField]
-		private Camera camera2D;
-		
-		[SerializeField]
-		private Camera camera3D;
+		private static readonly Vector2 infiniteSize = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
 
 		[System.NonSerialized]
 		public DanmakuField TargetField;
@@ -94,39 +68,26 @@ namespace DanmakU {
 		private float screenOffset;
 		internal Bounds2D bounds;
 		private Bounds2D movementBounds;
-		private Vector2 x, y, z, scale;
 
 		[SerializeField]
-		private Vector2 bottomLeft;
+		private Camera camera2D;
+		private Transform camera2DTransform;
 
 		[SerializeField]
-		private Rect viewportRect = new Rect(0f, 0f, 1f, 1f);
-
-		[SerializeField]
-		private LayerMask cullingMask;
-
-		[SerializeField]
-		private float depth;
-
-		[SerializeField]
-		private RenderingPath renderingPath;
-
-		[SerializeField]
-		private RenderTexture renderTexture;
-
-		[SerializeField]
-		private bool occlusionCulling;
-
-		[SerializeField]
-		private bool hdr;
+		private Camera[] otherCameras;
 
 		public float Camera2DRotation {
 			get {
-				return camera2DRotation;
+				if(camera2D == null) {
+					return float.NaN;
+				}
+				if(camera2DTransform == null) {
+					camera2DTransform = camera2D.transform;
+				}
+				return camera2DTransform.eulerAngles.z;
 			}
 			set {
-				cameraTransform2D.localRotation = Quaternion.Euler(0f, 0f, value);
-				camera2DRotation = value;
+				camera2DTransform.rotation = Quaternion.Euler(0f, 0f, value);
 			}
 		}
 
@@ -148,23 +109,12 @@ namespace DanmakU {
 			}
 		}
 
-		public void RecomputeWorldPoints() {
-			Vector2 UL, BR;
-			bottomLeft = camera2D.ViewportToWorldPoint (new Vector3(0f, 0f, 0f));
-			UL = camera2D.ViewportToWorldPoint (Vector2.up);
-			BR = camera2D.ViewportToWorldPoint (Vector2.right);
-			x = (BR - bottomLeft);
-			y = (UL - bottomLeft);
-
-			scale = new Vector2 (x.magnitude, y.magnitude);
-		}
-
 		public float XSize {
-			get { return scale.x; }
+			get { return bounds.Size.x; }
 		}
 
 		public float YSize {
-			get { return scale.y; }
+			get { return bounds.Size.y; }
 		}
 
 		public Vector2 BottomLeft {
@@ -209,114 +159,35 @@ namespace DanmakU {
 			}
 			fields.Add (this);
 			TargetField = this;
-			CameraSetup ();
 
 			colliderMap = new Dictionary<Collider2D, IDanmakuCollider[]> ();
-			
-			#if UNITY_EDITOR
-			EditorApplication.playmodeStateChanged += PlayStateModeChange;
-			#endif
-
-			RecomputeWorldPoints ();
-
-			screenOffset = nativeScreenBounds.x + 0.5f * nativeScreenBounds.width - cameraScreenAnchorPoint;
-
-			#if UNITY_EDITOR
-			if(!Application.isEditor) {
-			#endif
-				if(fixedCameraArea) {
-					currentAspectRatio = (float)Screen.width / (float)Screen.height;
-					Resize ();
-				}
-			#if UNITY_EDITOR
-			}
-			#endif
-		}
-
-		#if UNITY_EDITOR
-
-		void PlayStateModeChange() {
-			if(!EditorApplication.isPlaying){
-				camera2D.rect = viewportRect;
-				//camera2D.cullingMask = cullingMask;
-				camera2D.depth = depth;
-				camera2D.renderingPath = renderingPath;
-				camera2D.targetTexture = renderTexture;
-				camera2D.useOcclusionCulling = occlusionCulling;
-				camera2D.hdr = hdr;
-			}
-		}
-
-		#endif
-
-		void Start() {
-			CameraSetup ();
-		}
-
-		private void Resize() {
-			float changeRatio = nativeScreenAspectRatio / currentAspectRatio;
-			float targetWidth = changeRatio * nativeScreenBounds.width;
-			float center = cameraScreenAnchorPoint + changeRatio * screenOffset;
-			Rect cameraRect = camera2D.rect;
-			cameraRect.x = center - targetWidth / 2;
-			cameraRect.width = targetWidth;
-			camera2D.rect = cameraRect;
-		}
-
-		private void CameraSetup() {			
-			if (camera2D == null) {
-				print("Camera is null");
-				GameObject camObj = gameObject.FindChild("Field Camera");
-				if(camObj == null) {
-					camObj = new GameObject ("Field Camera");
-				}
-				cameraTransform2D = camObj.transform;
-				camera2D = camObj.GetComponent<Camera>();
-				if(camera2D == null){
-					camera2D = camObj.AddComponent<Camera>();
-					camObj.AddComponent<GUILayer>();
-				}
-				camObj.hideFlags = HideFlags.HideInHierarchy;
-			}
-			camera2D.orthographic = true;
-			cameraTransform2D.parent = transform;
-			cameraTransform2D.position = transform.position + Vector3.back * GamePlaneDistance;
-			cameraTransform2D.LookAt ((Vector2)transform.position);
-			camera2D.clearFlags = CameraClearFlags.Depth;
-			//camera2D.cullingMask = cullingMask;
-			camera2D.depth = depth;
-			camera2D.renderingPath = renderingPath;
-			camera2D.targetTexture = renderTexture;
-			camera2D.useOcclusionCulling = occlusionCulling;
-			camera2D.hdr = hdr;
 		}
 
 		void Update() {
-			Vector3 camPos = cameraTransform2D.position;
-			camPos.z = -GamePlaneDistance;
-			cameraTransform2D.position = camPos;
-			cameraTransform2D.rotation = Quaternion.Euler ((camPos.z > 0) ? 180f : 0f, 0f, camera2DRotation);
-			camera2D.clearFlags = CameraClearFlags.Depth;
-			camera2D.nearClipPlane = 0f;
-			camera2D.farClipPlane = Mathf.Abs(camPos.z * 2);
-			if (camera3D != null) {
-				camera3D.rect = camera2D.rect;
+			if (camera2D != null) {
+				camera2DTransform = camera2D.transform;
+				camera2D.orthographic = true;
+				movementBounds.Center = bounds.Center = (Vector2)camera2DTransform.position;
+				float size = camera2D.orthographicSize;
+				movementBounds.Extents = new Vector2 (camera2D.aspect * size, size);
+				for(int i = 0; i < otherCameras.Length; i++) {
+					if(otherCameras[i] != null)
+						otherCameras[i].rect = camera2D.rect;
+				}
+			} else {
+				camera2DTransform = null;
+				movementBounds.Center = bounds.Center = (Vector2)transform.position;
+				movementBounds.Extents = FieldSize * 0.5f;
 			}
-			movementBounds.Center = bounds.Center = (Vector2)transform.position;
-			float size = camera2D.orthographicSize;
-			movementBounds.Extents = new Vector2 (camera2D.aspect * size, size);
-			bounds.Extents = movementBounds.Extents + Vector2.one * ClipBoundary * movementBounds.Extents.Max();
+			if(UseClipBoundary) {
+				bounds.Extents = movementBounds.Extents + Vector2.one * ClipBoundary * movementBounds.Extents.Max();
+			} else {
+				bounds.Extents = infiniteSize;
+			}
 
 			#if UNITY_EDITOR
 			if(Application.isPlaying) {
 			#endif
-				if(fixedCameraArea) {
-					float newAspectRatio = (float)Screen.width / (float)Screen.height;
-					if (currentAspectRatio != newAspectRatio) {
-						currentAspectRatio = newAspectRatio;
-						Resize ();
-					}
-				}
 
 				Collider2D[] colliders = Physics2D.OverlapAreaAll(bounds.Min, bounds.Max);
 				for(int i = 0; i < colliders.Length; i++) {
@@ -332,16 +203,6 @@ namespace DanmakU {
 			if (fields != null) {
 				fields.Remove(this);
 			}
-			#if UNITY_EDITOR
-			EditorApplication.playmodeStateChanged -= PlayStateModeChange;
-			if(Application.isEditor) {
-				DestroyImmediate (camera2D.gameObject);
-			} else  {
-				Destroy (camera2D.gameObject);
-			}
-			#else
-			Destroy(camera2D.gameObject);
-			#endif
 		}
 
 		public Vector2 WorldPoint(Vector2 point, CoordinateSystem coordSys = CoordinateSystem.View) {
@@ -349,39 +210,38 @@ namespace DanmakU {
 				case CoordinateSystem.World:
 					return point;
 				case CoordinateSystem.Relative:
-					return bottomLeft + point;
+					return movementBounds.Min + point;
 				case CoordinateSystem.ViewRelative:
-					return point.x * x + point.y * y;
+					return point.Hadamard2(movementBounds.Size);
 				default:
 				case CoordinateSystem.View:
-					return bottomLeft + point.x * x + point.y * y;
+					return movementBounds.Min + point.Hadamard2(movementBounds.Size);
 			}
 		}
 
 		public Vector2 RelativePoint(Vector2 point, CoordinateSystem coordSys = CoordinateSystem.View) {
 			switch (coordSys) {
 				case CoordinateSystem.World:
-					return point - bottomLeft;
+					return point - movementBounds.Min;
 				case CoordinateSystem.Relative:
 					return point;
 				default:
 				case CoordinateSystem.View:
-					return point.x * x + point.y * y;
+					Vector2 size = movementBounds.Size;
+					Vector2 inverse = new Vector2(1 / size.x, 1 / size.y);
+					return (point - movementBounds.Min).Hadamard2(inverse);
 			}
 		}
 
 		public Vector2 ViewPoint(Vector2 point, CoordinateSystem coordSys = CoordinateSystem.World) {
+			Vector2 size = bounds.Size;
 			switch (coordSys) {
 				default:
 				case CoordinateSystem.World:
-					Vector2 offset = point - bottomLeft;
-					return new Vector2(
-						Vector3.Project (offset, x).magnitude / scale.x,
-						Vector3.Project (offset, y).magnitude / scale.y);
+					Vector2 offset = point - movementBounds.Min;
+					return new Vector2(offset.x / size.x, offset.y / size.y);
 				case CoordinateSystem.Relative:
-					return new Vector2(
-						Vector3.Project (point, x).magnitude / scale.x,
-						Vector3.Project (point, y).magnitude / scale.y);
+					return new Vector2(point.x / size.x, point.y / size.y);
 				case CoordinateSystem.View:
 					return point;
 			}
@@ -396,9 +256,10 @@ namespace DanmakU {
 		/// </summary>
 		/// <param name="character">Character prefab, defines character behavior and attack patterns.</param>
 		/// <param name="controller">Controller for the player, allows for a user to manually control it or let an AI take over.</param>
-		public DanmakuPlayer SpawnPlayer(DanmakuPlayer playerCharacter, CoordinateSystem coordSys = CoordinateSystem.View) {
-			Vector2 spawnPos = WorldPoint((Vector2)playerSpawnLocation, coordSys);
-			player =  (DanmakuPlayer) Instantiate(playerCharacter, spawnPos, Quaternion.identity);
+		public DanmakuPlayer SpawnPlayer(DanmakuPlayer playerCharacter, Vector2 position, CoordinateSystem coordSys = CoordinateSystem.View) {
+			Vector2 spawnPos = WorldPoint(position, coordSys);
+			player =  Object.Instantiate(playerCharacter);
+			player.transform.position = spawnPos;
 			if(player != null) {
 				player.Reset (5);
 				player.transform.parent = transform;
@@ -515,12 +376,6 @@ namespace DanmakU {
 			Gizmos.DrawWireCube (bounds.Center, bounds.Size);
 			Gizmos.color = Color.cyan;
 			Gizmos.DrawWireCube (movementBounds.Center, movementBounds.Size);
-			Vector3 newExtents = movementBounds.Size;
-			newExtents.z = 2 * GamePlaneDistance;
-			Gizmos.color = Color.white;
-			Vector3 camPos = movementBounds.Center;
-			Gizmos.matrix = Matrix4x4.TRS(camPos, Quaternion.Euler((camPos.z > 0) ? 180f : 0f, 0f, -Camera2DRotation), Vector3.one);
-			Gizmos.DrawWireCube(Vector3.zero, newExtents);
 		}
 		#endif
 	}
