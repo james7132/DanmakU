@@ -55,10 +55,6 @@ namespace DanmakU {
 		}
 
 		internal static Vector2 UnitCircle(float angle) {
-//			int index = Ang2Index(angle);
-//			if(index > unitCircleMax || angle < 0)
-//				Debug.Log(index);
-
 			return unitCircle [Ang2Index(angle)];
 		}
 
@@ -140,10 +136,10 @@ namespace DanmakU {
 			}
 			Danmaku proj = danmakuPool.Get ();
 			proj.MatchPrefab (danmakuType);
-			proj.Position = position;
+			proj.position.x = position.x;
+			proj.position.y = position.y;
 			proj.Rotation = rotation;
 			proj.Field = field;
-			proj.bounds = field.bounds;
 			return proj;
 		}
 		
@@ -153,7 +149,9 @@ namespace DanmakU {
 			}
 			Danmaku proj = danmakuPool.Get ();
 			proj.MatchPrefab (builder.Prefab);
-			proj.Position = field.WorldPoint (builder.Position, builder.CoordinateSystem);
+			Vector2 position = field.WorldPoint (builder.Position, builder.CoordinateSystem);
+			proj.position.x = position.x;
+			proj.position.y = position.y;
 			proj.Rotation = builder.Rotation;
 			proj.Speed = builder.Velocity;
 			proj.AngularSpeed = builder.AngularVelocity;
@@ -162,7 +160,6 @@ namespace DanmakU {
 			if (builder.Group != null) 
 				proj.AddToGroup (builder.Group);
 			proj.Field = field;
-			proj.bounds = field.bounds;
 			return proj;
 		}
 	}
