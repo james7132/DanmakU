@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace DanmakU  {
 
-	[RequireComponent(typeof(Collider2D)), AddComponentMenu("Danmaku 2D/Triggers/Projectile Collider Trigger")]
+	[RequireComponent(typeof(Collider2D)), AddComponentMenu("DanmakU/Triggers/Projectile Collider Trigger")]
 	public class ProjectileColliderTrigger : DanmakuTrigger, IDanmakuCollider {
 
 		[SerializeField]

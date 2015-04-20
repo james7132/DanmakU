@@ -11,7 +11,7 @@ namespace DanmakU {
 	/// <summary>
 	/// A container behavior used on prefabs to define how a bullet looks or behaves
 	/// </summary>
-	[RequireComponent(typeof(CircleCollider2D)), RequireComponent(typeof(SpriteRenderer)), AddComponentMenu("Danmaku 2D/Danmaku Prefab")]
+	[RequireComponent(typeof(CircleCollider2D)), RequireComponent(typeof(SpriteRenderer)), AddComponentMenu("DanmakU/Danmaku Prefab")]
 	public sealed class DanmakuPrefab : BetterBehaviour {
 
 		#region Prefab Fields

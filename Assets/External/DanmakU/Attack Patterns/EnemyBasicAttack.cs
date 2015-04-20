@@ -14,7 +14,7 @@ namespace DanmakU.AttackPatterns {
 	/// <summary>
 	/// A basic enemy attack pattern. It fires a set of bullets in a fixed pattern at a fixed interval.
 	/// </summary>
-	[AddComponentMenu("Danmaku 2D/Attack Patterns/Enemy Basic Attack")]
+	[AddComponentMenu("DanmakU/Attack Patterns/Enemy Basic Attack")]
 	public class EnemyBasicAttack : AttackPattern {
 		
 		[SerializeField]

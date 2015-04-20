@@ -35,9 +35,9 @@ internal static class DanmakuAssets {
 
 	/// <summary>
 	/// Creates a blank ProjectilePrefab asset
-	/// Found under Assets/Create/Danmaku 2D/Danmaku Prefab
+	/// Found under Assets/Create/DanmakU/Danmaku Prefab
 	/// </summary>
-	[MenuItem("Assets/Create/Danmaku 2D/Danmaku Prefab", false, 51)]
+	[MenuItem("Assets/Create/DanmakU/Danmaku Prefab", false, 51)]
 	public static void AddProjectilePrefab() {
 		GameObject temp = new GameObject ("Danmaku Prefab");
 		temp.AddComponent<DanmakuPrefab> ();
@@ -52,9 +52,9 @@ internal static class DanmakuAssets {
 
 	/// <summary>
 	/// Creates the base of a full Phantasmagoria game with a single click
-	/// Found under GameObject/Create/Danmaku 2D/Phantasmagoria/Game Gamecontroller
+	/// Found under GameObject/Create/DanmakU/Phantasmagoria/Game Gamecontroller
 	/// </summary>
-	[MenuItem("GameObject/Create/Danmaku 2D/Phantasmagoria/Game Controller")]
+	[MenuItem("GameObject/Create/DanmakU/Phantasmagoria/Game Controller")]
 	public static void CreatePhantasmagoriaGame() {
 		GameObject temp = new GameObject ("Game Controller");
 		temp.AddComponent<StaticGameObject> ();
@@ -77,10 +77,10 @@ internal static class DanmakuAssets {
 
 	/// <summary>
 	/// Creates a PhantasmagoriaField with a single click
-	/// Found under GameObject/Create/Danmaku 2D/Phantasmagoria/Field
+	/// Found under GameObject/Create/DanmakU/Phantasmagoria/Field
 	/// </summary>
 	/// <returns>The phantasmagoria field created.</returns>
-	[MenuItem("GameObject/Create/Danmaku 2D/Danmaku Field")]
+	[MenuItem("GameObject/Create/DanmakU/Danmaku Field")]
 	public static DanmakuField CreateDanmakuField() {
 		GameObject temp = new GameObject ("Field");
 		DanmakuField field = temp.AddComponent<DanmakuField> ();
@@ -103,7 +103,7 @@ internal static class DanmakuAssets {
 		return field;
 	}
 
-//	[MenuItem("Assets/Create/Danmaku 2D/Custom Attack Pattern")]
+//	[MenuItem("Assets/Create/DanmakU/Custom Attack Pattern")]
 //	public static void CreateAttackPattern() {
 //		string text = "using UnityEngine;\nusing System.Collections;\nusing DanmakU;\n" +
 //						"\npublic class NewAttackPattern : AttackPattern {\n" +

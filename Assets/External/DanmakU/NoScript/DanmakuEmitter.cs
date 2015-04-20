@@ -10,7 +10,7 @@ using Vexe.Runtime.Types;
 
 namespace DanmakU {
 
-	[AddComponentMenu("Danmaku 2D/Danmaku Emitter")]
+	[AddComponentMenu("DanmakU/Danmaku Emitter")]
 	public sealed class DanmakuEmitter : BetterBehaviour, IDanmakuObject, IEnumerable<DanmakuNode> {
 
 

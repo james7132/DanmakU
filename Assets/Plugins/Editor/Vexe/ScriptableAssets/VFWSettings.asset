@@ -8,19 +8,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd76edddd05535e47b1e1b320d9a9be0, type: 3}
+  m_Script: {fileID: 11500000, guid: 64c4260a0e749954ca4f213a41de2059, type: 3}
   m_Name: VFWSettings
   m_EditorClassIdentifier: 
   _serializationData:
     serializedObjects: []
     serializedStrings:
       keys:
-      - 4669656c643a204d656d62657273446973706c61792064656661756c74446973706c6179
-      - 4669656c643a20696e742064656661756c7453706163696e67
+      - 'Field: MembersDisplay DefaultDisplay'
+      - 'Field: int DefaultSpacing'
       values:
-      - 3132
-      - 38
-  id: 62666236626365662d336338372d346234372d386164612d633135613533623163393761
+      - '"BoxedMembersArea"'
+      - 10
+  _id: -1
   dbg: 0
-  defaultDisplay: 12
-  defaultSpacing: 8
+  DefaultDisplay: 4
+  DefaultSpacing: 10

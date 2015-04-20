@@ -8,7 +8,7 @@ using UnityUtilLib;
 
 namespace DanmakU {
 
-	[AddComponentMenu("Danmaku 2D/Triggers/Timed Trigger")]
+	[AddComponentMenu("DanmakU/Triggers/Timed Trigger")]
 	public class TimedTrigger : DanmakuTrigger, IPausable {
 
 		#region IPausable implementation
