@@ -79,7 +79,7 @@ namespace DanmakU {
 			}
 
 			int count2 = runtimeSystem.GetParticles(particles);
-				Debug.Log(count2);
+			//Debug.Log(count2);
 			Vector3 forward = Vector3.forward;
 			bool done;
 			IEnumerator<Danmaku> enumerator = currentDanmaku.GetEnumerator();
