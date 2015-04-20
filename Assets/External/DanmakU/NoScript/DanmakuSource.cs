@@ -18,7 +18,7 @@ namespace DanmakU {
 		}
 	}
 
-	public abstract class DanmakuSource : DanmakuModifier, IDanmakuNode {
+	public abstract class DanmakuSource : DanmakuModifier {
 
 		protected List<SourcePoint> sourcePoints;
 		
