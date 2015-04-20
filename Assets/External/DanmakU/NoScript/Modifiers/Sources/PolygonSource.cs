@@ -7,8 +7,7 @@ using System.Collections;
 using UnityUtilLib;
 
 namespace DanmakU.NoScript {
-	
-	[AddComponentMenu("DanmakU/Sources/Polygon Source")]
+
 	public class PolygonSource : DanmakuSource {
 
 		private enum RotationType { None, Normal, Tangential, Radial }
