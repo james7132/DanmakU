@@ -17,7 +17,6 @@ namespace DanmakU.Editor {
 
 		private SerializedProperty useClipBoundary;
 		private SerializedProperty clipBoundary;
-		private SerializedProperty gamePlaneDistance;
 		private SerializedProperty camera3D;
 		private SerializedProperty camera2D;
 		private SerializedProperty size;
@@ -27,7 +26,6 @@ namespace DanmakU.Editor {
 
 			useClipBoundary = serializedObject.FindProperty("UseClipBoundary");
 			clipBoundary = serializedObject.FindProperty ("ClipBoundary");
-			gamePlaneDistance = serializedObject.FindProperty ("GamePlaneDistance");
 			size = serializedObject.FindProperty("FieldSize");
 			camera2D = serializedObject.FindProperty ("camera2D");
 			camera3D = serializedObject.FindProperty ("otherCameras");
