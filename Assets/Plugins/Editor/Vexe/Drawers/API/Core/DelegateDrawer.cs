@@ -26,9 +26,9 @@ namespace Vexe.Editor.Drawers
         protected override void OnSingleInitialization()
         {
             adding = new AddingData();
-            kAdvanced = RTHelper.CombineHashCodes(id, "advanced");
-            kAdd = RTHelper.CombineHashCodes(id, "add");
-            kInvoke = RTHelper.CombineHashCodes(id, "invoke");
+            kAdvanced = RuntimeHelper.CombineHashCodes(id, "advanced");
+            kAdd = RuntimeHelper.CombineHashCodes(id, "add");
+            kInvoke = RuntimeHelper.CombineHashCodes(id, "invoke");
             kHeaderStr = string.Format("{0} ({1})", niceName, memberTypeName);
 
             if (memberValue == null)
@@ -45,18 +45,18 @@ namespace Vexe.Editor.Drawers
 
                 argValues[i] = paramType.GetDefaultValueEmptyIfString();
 
-                var argMember = new ArgMember(
-                        @getter: () => argValues[i],
-                        @setter: x => argValues[i] = x,
-                        @target: argValues,
+                var argMember = EditorMember.WrapGetSet(
+                        @get: () => argValues[i],
+                        @set: x => argValues[i] = x,
+                        @rawTarget: argValues,
                         @unityTarget: unityTarget,
                         @name: string.Format("({0})", paramType.GetNiceName()),
-                        @id: id + i,
-                        @dataType: paramType,
-                        @attributes: null
+                        @attributes: null,
+                        @id: RuntimeHelper.CombineHashCodes(id, i),
+                        @dataType: paramType
                     );
 
-                argMember.Target = rawTarget;
+                argMember.RawTarget = rawTarget;
                 argMembers[i] = argMember;
             }
 
@@ -302,8 +302,8 @@ namespace Vexe.Editor.Drawers
         {
             adding = new AddingData();
 
-            kAdvanced = RTHelper.CombineHashCodes(id, "advanced");
-            kAdd = RTHelper.CombineHashCodes(id, "add");
+            kAdvanced = RuntimeHelper.CombineHashCodes(id, "advanced");
+            kAdd = RuntimeHelper.CombineHashCodes(id, "add");
             kHeaderStr = string.Format("{0} ({1})", niceName, memberTypeName);
 
             if (memberValue == null)
@@ -361,7 +361,7 @@ namespace Vexe.Editor.Drawers
                         var handler = handlers[i];
                         var target = handler.target;
                         var removed = false;
-                        var key = RTHelper.CombineHashCodes(id, "udel", i);
+                        var key = RuntimeHelper.CombineHashCodes(id, "udel", i);
 
                         using (gui.Horizontal())
                         {
@@ -544,10 +544,10 @@ namespace Vexe.Editor.Drawers
                 int i = iLoop;
                 var paramType = paramTypes[i];
 
-                var argMember = new ArgMember(
-                        @getter: () => argValues[i],
-                        @setter: x => argValues[i] = x,
-                        @target: argValues,
+                var argMember = EditorMember.WrapGetSet(
+                        get: () => argValues[i],
+                        set: x => argValues[i] = x,
+                        rawTarget: argValues,
                         @unityTarget: unityTarget,
                         @name: string.Format("({0})", paramType.GetNiceName()),
                         @id: id + i,

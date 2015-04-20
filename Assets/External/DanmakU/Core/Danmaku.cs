@@ -396,7 +396,8 @@ namespace DanmakU {
 							scripts [j].OnDanmakuCollision (this);
 						}
 						if (to_deactivate) {
-							//Position = Physics2D.CircleCast (collisionCenter, circleRaidus, movementVector, distance).point;
+							Position = Physics2D.CircleCast (collisionCenter, colliderRadius, movementVector, distance).point;
+							Deactivate();
 							break;
 						}
 					}
@@ -426,19 +427,16 @@ namespace DanmakU {
 						}
 						if (to_deactivate) {
 							Position = hit.point;
+							DeactivateImmediate();
 							break;
 						}
 					}
 				}
 			}
 
-			if (BoundsCheck && !bounds.Contains (Position)) {
+			if (!is_active || (BoundsCheck && !bounds.Contains (Position))) {
 				DeactivateImmediate();
 				return;
-			}
-
-			if (to_deactivate || !IsActive) {
-				DeactivateImmediate();
 			}
 			
 			frames++;

@@ -1,8 +1,6 @@
-﻿//#define DBG
-
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Vexe.Runtime.Extensions;
+using Vexe.Runtime.Helpers;
 using Vexe.Runtime.Serialization;
 
 namespace Vexe.Runtime.Types
@@ -24,33 +22,34 @@ namespace Vexe.Runtime.Types
             get { return _serializer ?? (_serializer = new FullSerializerBackend()); }
         }
 
-        static int counter;
+        /// <summary>
+        /// A persistent identifier used primarly from editor scripts to have editor data persist
+        /// Could be used at runtime as well if you have any usages of a unique id
+        /// Note this is not the same as GetInstanceID, as it seems to change when you reload scenes
+        /// This id gets assigned only once and then serialized.
+        /// </summary>
         [SerializeField, HideInInspector]
-        private int id = -1;
+        private int _id = -1;
         public int Id
         {
             get
             {
-                if (id == -1)
-                    id = counter++;
-                return id;
+                if (_id == -1)
+                    _id = GetInstanceID();
+                return _id;
             }
         }
 
         public void OnBeforeSerialize()
         {
-#if DBG
-            Log("Saving " + GetType().Name);
-#endif
+            dLog("Serializing " + GetType().Name);
             ObjectData.Clear();
             Serializer.SerializeTargetIntoData(this, ObjectData);
         }
 
         public void OnAfterDeserialize()
         {
-#if DBG
-            Log("Loading " + GetType().Name);
-#endif
+            dLog("Deserializing " + GetType().Name);
             Serializer.DeserializeDataIntoTarget(this, ObjectData);
         }
 
@@ -58,12 +57,12 @@ namespace Vexe.Runtime.Types
         #region
         public bool dbg;
             
-        protected void dbgLogFormat(string msg, params object[] args)
+        protected void dLogFormat(string msg, params object[] args)
         {
             if (dbg) LogFormat(msg, args);
         }
 
-        protected void dbgLog(object obj)
+        protected void dLog(object obj)
         {
             if (dbg) Log(obj);
         }
@@ -94,7 +93,7 @@ namespace Vexe.Runtime.Types
 
         public virtual void Reset()
         {
-            RuntimeUtils.ResetTarget(this);
+            RuntimeHelper.ResetTarget(this);
         }
     }
 }
