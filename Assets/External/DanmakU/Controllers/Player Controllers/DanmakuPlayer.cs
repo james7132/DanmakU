@@ -46,7 +46,7 @@ namespace DanmakU {
 
 		public override void Awake () {
 			base.Awake ();
-			Field = DanmakuField.FindClosest (transform.position);
+			Field = DanmakuField.FindClosest (this);
 			Field.player = this;
 			movementCollider = GetComponent<Collider2D> ();
 		}

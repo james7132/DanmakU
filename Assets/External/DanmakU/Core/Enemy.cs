@@ -20,7 +20,7 @@ namespace DanmakU {
 	[RequireComponent(typeof(Renderer))]
 	[RequireComponent(typeof(Rigidbody2D))]
 	[RequireComponent(typeof(Collider2D))]
-	public abstract class Enemy : FieldDependentBehaviour, IPausable, IDanmakuCollider {
+	public abstract class Enemy : DanmakuCollider, IPausable, IDanmakuObject {
 
 		public virtual AttackPattern CurrentAttackPattern { 
 			get {
@@ -40,6 +40,15 @@ namespace DanmakU {
 
 		#endregion
 
+		#region IDanmakuObject implementation
+
+		public DanmakuField Field {
+			get;
+			set;
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Gets a value indicating whether this instance is dead.
 		/// </summary>
@@ -48,9 +57,14 @@ namespace DanmakU {
 			get; 
 		}
 
-		public virtual void Start() {
+		public override void Awake () {
+			base.Awake ();
 			EnemyManager.RegisterEnemy (this);
 			enemyRenderer = GetComponent<Renderer> ();
+			Field = DanmakuField.FindClosest (this);
+		}
+
+		public virtual void Start() {
 		}
 
 		public void Hit(float damage) {
@@ -84,15 +98,14 @@ namespace DanmakU {
 		protected virtual void OnDeath() {
 		}
 
-		/// <summary>
-		/// A message handler for handling collisions with Danmaku(s)
-		/// </summary>
-		/// <param name="proj">the danmaku that hit the enemy</param>
-		public void OnDanmakuCollision(Danmaku danmaku) {
+
+		#region implemented abstract members of DanmakuCollider
+		protected override void ProcessDanmaku (Danmaku danmaku){
 			if (enemyRenderer.isVisible) {
 				Hit (danmaku.Damage);
+				danmaku.Deactivate();
 			}
-			danmaku.Deactivate();
 		}
+		#endregion
 	}
 }

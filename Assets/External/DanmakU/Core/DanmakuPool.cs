@@ -166,7 +166,7 @@ namespace DanmakU {
 				for(int i = totalCount; i < endCount; i++, endIndex++) {
 					all[i] = new Danmaku();
 					all[i].poolIndex = i;
-					all[i].Pool = this;
+					all[i].pool = this;
 					if(endIndex >= queue.Length)
 						endIndex = 0;
 					queue[endIndex] = i;

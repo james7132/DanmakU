@@ -63,7 +63,7 @@ namespace DanmakU {
 		public override void Awake () {
 			base.Awake ();
 			if (field == null) {
-				field = DanmakuField.FindClosest(transform.position);
+				field = DanmakuField.FindClosest(this);
 			}
 		}
 

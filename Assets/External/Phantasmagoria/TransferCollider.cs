@@ -6,10 +6,13 @@ using UnityEngine;
 using System.Collections;
 
 namespace DanmakU.Phantasmagoria {
-	public class DanmakuTransferBoundary : DanmakuBoundary {
+
+	public class TransferCollider : DanmakuCollider {
 
 		protected override void ProcessDanmaku (Danmaku proj) {
 			PhantasmagoriaGameController.Transfer(proj);
 		}
+
 	}
+
 }
