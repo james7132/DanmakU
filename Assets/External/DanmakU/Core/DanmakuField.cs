@@ -189,10 +189,7 @@ namespace DanmakU {
 			if(Application.isPlaying) {
 			#endif
 
-				Collider2D[] colliders = Physics2D.OverlapAreaAll(bounds.Min, bounds.Max);
-				for(int i = 0; i < colliders.Length; i++) {
-					colliderMap[colliders[i]] = Util.GetComponents<IDanmakuCollider>(colliders[i].gameObject);
-				}
+				colliderMap.Clear();
 
 			#if UNITY_EDITOR
 			}

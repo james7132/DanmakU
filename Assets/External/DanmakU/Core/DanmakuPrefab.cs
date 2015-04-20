@@ -78,7 +78,7 @@ namespace DanmakU {
 				particles = new ParticleSystem.Particle[Mathf.NextPowerOfTwo(danmakuCount + 1)];
 			}
 
-			int count2 = runtimeSystem.GetParticles(particles);
+			runtimeSystem.GetParticles(particles);
 			//Debug.Log(count2);
 			Vector3 forward = Vector3.forward;
 			bool done;
@@ -89,7 +89,7 @@ namespace DanmakU {
 						done = enumerator.MoveNext();
 						if(done) {
 							Danmaku danmaku = enumerator.Current;
-							particles[i].position = danmaku.Position;
+							particles[i].position = danmaku.position;
 							particles[i].size = danmaku.Scale;
 							particles[i].axisOfRotation = forward;
 							particles[i].lifetime = 1000;
@@ -104,7 +104,7 @@ namespace DanmakU {
 						done = enumerator.MoveNext();
 						if(done) {
 							Danmaku danmaku = enumerator.Current;
-							particles[i].position = danmaku.Position;
+							particles[i].position = danmaku.position;
 							particles[i].size = danmaku.Scale;
 							particles[i].lifetime = 1000;
 							particles[i].color = danmaku.Color;
@@ -120,7 +120,7 @@ namespace DanmakU {
 						done = enumerator.MoveNext();
 						if(done) {
 							Danmaku danmaku = enumerator.Current;
-							particles[i].position = danmaku.Position;
+							particles[i].position = danmaku.position;
 							particles[i].rotation = danmaku.rotation;
 							particles[i].size = danmaku.Scale;
 							particles[i].axisOfRotation = forward;
@@ -136,7 +136,7 @@ namespace DanmakU {
 						done = enumerator.MoveNext();
 						if(done) {
 							Danmaku danmaku = enumerator.Current;
-							particles[i].position = danmaku.Position;
+							particles[i].position = danmaku.position;
 							particles[i].rotation = danmaku.rotation;
 							particles[i].size = danmaku.Scale;
 							particles[i].lifetime = 1000;

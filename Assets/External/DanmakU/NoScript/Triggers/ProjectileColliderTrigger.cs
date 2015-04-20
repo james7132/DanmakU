@@ -15,9 +15,9 @@ namespace DanmakU  {
 
 		#region IDanmakuCollider implementation
 		public void OnDanmakuCollision (Danmaku proj) {
-			string tag = proj.tag;
+			string projTag = proj.Tag;
 			for(int i = 0; i < tagFilter.Count; i++) {
-				if(tagFilter[i] == tag) {
+				if(tagFilter[i] == projTag) {
 					Trigger();
 					break;
 				}

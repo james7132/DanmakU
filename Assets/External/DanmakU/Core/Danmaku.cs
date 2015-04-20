@@ -22,13 +22,7 @@ namespace DanmakU {
 	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab>, IDanmakuObject {
 		
 		internal int poolIndex;
-		internal int renderIndex;
-
-		//private Stack<Component> extraComponents;
-
-		//private GameObject gameObject;
-		//private Transform transform;
-		//private SpriteRenderer renderer;
+		//internal int renderIndex;
 
 		//internal float rotation;
 		internal Vector2 direction;
@@ -36,16 +30,10 @@ namespace DanmakU {
 		//Cached information about the Danmaku from its prefab
 		internal Vector2 colliderOffset = Vector2.zero; 
 		private float colliderRadius = 1f;
-		//internal Sprite sprite;
-		//internal Material material;
-		//internal Color color;
-		internal string tag;
+		private float radiusSquared;
 		internal int layer;
 		internal int frames;
 		internal float time;
-		internal string cachedTag;
-		internal int cachedLayer;
-		internal bool symmetric;
 
 		//Prefab information
 		private DanmakuPrefab prefab;
@@ -58,17 +46,16 @@ namespace DanmakU {
 		
 		private DanmakuController controllerUpdate;
 		internal List<DanmakuGroup> groups;
-		private Bounds2D bounds;
+
+		private DanmakuField field;
+		private Dictionary<Collider2D, IDanmakuCollider[]> colliderMap;
+		private Bounds2D fieldBounds;
 
 		//Preallocated variables to avoid allocation in Update
-		private int count, count2;
-		private float distance;
-		private Vector2 originalPosition, movementVector;
-//		private IDanmakuCollider[] scripts;
+		private Vector2 originalPosition;
 		private RaycastHit2D[] raycastHits;
 		private Collider2D[] colliders;
 		private Vector2 collisionCenter;
-		private float movementChange;
 
 		//Cached check for controllers to avoid needing to calculate them in Update
 		internal bool groupCheck;
@@ -126,12 +113,22 @@ namespace DanmakU {
 			//	renderer.material = value;
 			//}
 		}
-		
+
+		internal Vector3 position;
+
 		/// <summary>
 		/// Gets or sets the position, in world space, of the projectile.
 		/// </summary>
 		/// <value>The position of the projectile.</value>
-		public Vector2 Position;
+		public Vector2 Position {
+			get {
+				return position;
+			}
+			set {
+				position.x = value.x;
+				position.y = value.y;
+			}
+		}
 
 		internal float rotation;
 
@@ -146,15 +143,10 @@ namespace DanmakU {
 		/// <value>The rotation of the bullet in degrees.</value>
 		public float Rotation {
 			get {
-				//return rotation;
 				return rotation;
 			}
 			set {
-				//if(!symmetric)
-				//	transform.localRotation = Quaternion.Euler(0f, 0f, value);
-				//rotation = value;
 				rotation = value;
-				//direction = UnitCircle(rotation);
 				direction = UnitCircle(value);
 			}
 		}
@@ -162,7 +154,7 @@ namespace DanmakU {
 		/// <summary>
 		/// Gets the direction vector the projectile is facing.
 		/// It is a unit vector.
-		/// Changing <see cref="Rotation"/> will change this vector.
+		/// Changing <see cref="RfieldBoundsn"/> will change this vector.
 		/// </summary>
 		/// <value>The direction vector the projectile is facing toward.</value>
 		public Vector2 Direction {
@@ -186,7 +178,7 @@ namespace DanmakU {
 		}
 		
 		/// <summary>
-		/// The number of frames that have passed since this bullet has been fired.
+		/// The number of framesfieldBoundshave passed since this bullet has been fired.
 		/// </summary>
 		/// <value>The frame count since this bullet has been fired.</value>
 		public int Frames {
@@ -199,15 +191,7 @@ namespace DanmakU {
 		/// Gets the projectile's tag.
 		/// </summary>
 		/// <value>The tag of the projectile.</value>
-		public string Tag {
-			get {
-				return tag;
-			}
-			set {
-				tag = value;
-				//gameObject.tag = value;
-			}
-		}
+		public string Tag;
 		
 		/// <summary>
 		/// Gets the projectile's layer.
@@ -232,8 +216,16 @@ namespace DanmakU {
 		/// </summary>
 		/// <value>The field the projectile was fired from.</value>
 		public DanmakuField Field {
-			get;
-			set;
+			get {
+				return field;
+			}
+			set {
+				field = value;
+				if(field != null) {
+					fieldBounds = field.bounds;
+					colliderMap = field.colliderMap;
+				}
+			}
 		}
 		#endregion
 
@@ -298,11 +290,7 @@ namespace DanmakU {
 		}
 
 		public void Rotate(DynamicFloat delta) {
-			//float Delta = delta.Value;
-			//if(!symmetric)
-			//	transform.Rotate(0f, 0f, Delta);
 			Rotation += delta.Value;
-			//direction = UnitCircle (rotation);
 		}
 		
 		/// <summary>
@@ -335,6 +323,11 @@ namespace DanmakU {
 
 		internal void Update() {
 
+			int i, j, count;
+			originalPosition.x = position.x;
+			originalPosition.y = position.y;
+			Vector2 movementVector;
+
 			#region thread_unsafe
 			if (controllerCheck) {
 				controllerUpdate(this, dt);
@@ -342,12 +335,12 @@ namespace DanmakU {
 
 			if(tasks != null) {
 				count = tasks.Count;
-				count2 = 0;
-				while(count2 < count) {
-					if(!tasks[count2].MoveNext())
-						tasks.RemoveAt(count2);
+				i = 0;
+				while(i < count) {
+					if(!tasks[i].MoveNext())
+						tasks.RemoveAt(i);
 					else
-						count2++;
+						i++;
 				}
 			}
 
@@ -355,94 +348,107 @@ namespace DanmakU {
 
 			#region thread_safe
 			if(AngularSpeed != 0f) {
-				Rotation += AngularSpeed * dt;
+				float rotationChange = AngularSpeed * dt;
+				rotation += rotationChange;
+				direction = UnitCircle(rotation);
 			}
 
 			if (Speed != 0) {
-				movementChange = Speed * dt;
-				Position.x += direction.x * movementChange;
-				Position.y += direction.y * movementChange;
+				float movementChange = Speed * dt;
+				position.x += direction.x * movementChange;
+				position.y += direction.y * movementChange;
 			}
 			
-			movementVector.x = Position.x - originalPosition.x;
-			movementVector.y = Position.y - originalPosition.y;
+			movementVector.x = position.x - originalPosition.x;
+			movementVector.y = position.y - originalPosition.y;
 
 			//Debug.DrawRay(originalPosition, movementVector);
 
 			#endregion
 			if(CollisionCheck) {
-				distance = movementVector.magnitude;
-				collisionCenter.x = originalPosition.x + colliderOffset.x * direction.x;
-				collisionCenter.y = originalPosition.y + colliderOffset.y * direction.y;
+				IDanmakuCollider[] scripts;
+				float sqrDistance = movementVector.sqrMagnitude;
+				float cx = colliderOffset.x;
+				float cy = colliderOffset.y;
+				if(cx == 0 && cy == 0) {
+					collisionCenter = originalPosition;
+				} else {
+					float c = direction.x;
+					float s = direction.y;
+					collisionCenter.x = originalPosition.x + c * cx - s * cy;
+					collisionCenter.y = originalPosition.y + s * cx + c * cy;
+				}
 				//Check if the collision detection should be continuous or not
-				if (distance <= colliderRadius) {
+				if (sqrDistance <= radiusSquared) {
 					count = Physics2D.OverlapCircleNonAlloc(collisionCenter,
 					                                        colliderRadius,
 					                                        colliders,
 					                                        colliderMask);
-					for (int i = 0; i < count; i++) {
-//						GameObject go = colliders [i].gameObject;
-//						scripts = Util.GetComponentsPrealloc (go, scripts, out count2);
-//						for (int j = 0; j < count2; j++) {
-						IDanmakuCollider[] scripts;
+					for (i = 0; i < count; i++) {
 						Collider2D collider = colliders[i];
 						if(collider == null)
 							continue;
-						if(Field.colliderMap.ContainsKey(collider))
-							scripts = Field.colliderMap[collider];
-						else
-							scripts = Util.GetComponents<IDanmakuCollider>(collider.gameObject);
-						for (int j = 0; j < scripts.Length; j++) {
+						if(colliderMap.ContainsKey(collider)) {
+							scripts = colliderMap[collider];
+							if(scripts == null) {
+								scripts = Util.GetComponents<IDanmakuCollider>(collider);
+								colliderMap[collider] = scripts;
+							}
+						} else {
+							scripts = Util.GetComponents<IDanmakuCollider>(collider);
+							colliderMap[collider] = scripts;
+						}
+						for (j = 0; j < scripts.Length; j++) {
 							scripts [j].OnDanmakuCollision (this);
 						}
 						if (to_deactivate) {
-							Position = Physics2D.CircleCast (collisionCenter, colliderRadius, movementVector, distance).point;
-							Deactivate();
-							break;
+							Position = Physics2D.CircleCast (collisionCenter, colliderRadius, movementVector, sqrDistance).point;
+							DeactivateImmediate();
+							return;
 						}
 					}
 				} else {
 					count = Physics2D.CircleCastNonAlloc(collisionCenter, 
-					                                     colliderRadius,
+					                                     Mathf.Sqrt(sqrDistance),
 					                                     movementVector,
 					                                     raycastHits,
-					                                     distance,
+					                                     sqrDistance,
 					                                     colliderMask);
-					for (int i = 0; i < count; i++) {
+					for (i = 0; i < count; i++) {
 						RaycastHit2D hit = raycastHits [i];
-//						GameObject go = hit.collider.gameObject;
-//						scripts = Util.GetComponentsPrealloc (go, scripts, out count2);
-//						for (int j = 0; j < count2; j++) {
-						
-						IDanmakuCollider[] scripts;
 						Collider2D collider = hit.collider;
 						if(collider == null)
 							continue;
-						if(Field.colliderMap.ContainsKey(collider))
-							scripts = Field.colliderMap[collider];
-						else
-							scripts = Util.GetComponents<IDanmakuCollider>(collider.gameObject);
-						for (int j = 0; j < scripts.Length; j++) {
+						if(colliderMap.ContainsKey(collider)) {
+							scripts = colliderMap[collider];
+							if(scripts == null) {
+								scripts = Util.GetComponents<IDanmakuCollider>(collider);
+								colliderMap[collider] = scripts;
+							}
+						} else {
+							scripts = Util.GetComponents<IDanmakuCollider>(collider);
+							colliderMap[collider] = scripts;
+						}
+						for (j = 0; j < scripts.Length; j++) {
 							scripts [j].OnDanmakuCollision (this);
 						}
 						if (to_deactivate) {
-							Position = hit.point;
+							position.x = hit.point.x;
+							position.y = hit.point.y;
 							DeactivateImmediate();
-							break;
+							return;
 						}
 					}
 				}
 			}
 
-			if (!is_active || (BoundsCheck && !bounds.Contains (Position))) {
+			if (!is_active || (BoundsCheck && !fieldBounds.Contains (position))) {
 				DeactivateImmediate();
 				return;
 			}
 			
 			frames++;
 			time += dt;
-			originalPosition.x = Position.x;
-			originalPosition.y = Position.y;
 		}
 
 		/// <summary>
@@ -458,34 +464,31 @@ namespace DanmakU {
 			if (this.prefab != prefab) {
 				this.prefab = prefab;
 				this.runtime = prefab.GetRuntime();
-				//Vector2 scale = transform.localScale = runtime.cachedScale;
-				//renderer.sharedMaterial = runtime.cachedMaterial;
-				//renderer.sortingLayerID = runtime.cachedSortingLayer;
 				Vector2 scale = runtime.cachedScale;
 				colliderOffset = scale.Hadamard2(runtime.cachedColliderOffset);
 				colliderRadius = runtime.cachedColliderRadius * scale.Max();
-				//tag = gameObject.tag = runtime.cachedTag;
-				tag = runtime.cachedTag;
-				symmetric = runtime.symmetric;
+				radiusSquared = colliderRadius * colliderRadius;
 			}
+
+			Tag = runtime.cachedTag;
 
 			Color = runtime.cachedColor;
 			Scale = 1f;
 			layer = runtime.cachedLayer;
 			colliderMask = collisionMask [layer];
 
-			controllerUpdate += runtime.ExtraControllers;
+			AddController (runtime.ExtraControllers);
 		}
 
 		#region IPooledObject implementation
 
-		private IPool pool;
+		internal DanmakuPool pool;
 		public IPool Pool {
 			get {
 				return pool;
 			}
 			set {
-				pool = value;
+				pool = value as DanmakuPool;
 			}
 		}
 
@@ -565,15 +568,7 @@ namespace DanmakU {
 			frames = 0;
 			runtime.Remove(this);
 			is_active = false;
-			//gameObject.SetActive (false);
-			//renderer.enabled = false;
-			Pool.Return (this);
-			//if (extraComponents != null) {
-			//	while(extraComponents.Count > 0) {
-			//		Object.Destroy(extraComponents.Pop());
-			//	}
-			//}
-			//ProjectileManager.Return (this);
+			pool.Return (this);
 		}
 
 		public override int GetHashCode () {
