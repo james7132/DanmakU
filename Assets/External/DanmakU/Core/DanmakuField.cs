@@ -38,7 +38,7 @@ namespace DanmakU {
 			float minDist = float.MaxValue;
 			for(int i = 0; i < fields.Count; i++) {
 				DanmakuField field = fields[i];
-				Vector2 diff = ((Vector2)field.transform.position - position);
+				Vector2 diff = field.bounds.Center - position;
 				float distance = diff.sqrMagnitude;
 				if(distance < minDist) {
 					closest = field;
