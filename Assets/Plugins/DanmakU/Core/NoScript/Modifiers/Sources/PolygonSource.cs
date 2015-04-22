@@ -53,7 +53,7 @@ namespace DanmakU.NoScript {
 				for(int i = 0; i < pointsPerEdge; i++) {
 					Vector2 currentPos = current + i * diff;
 					if(rotationType == RotationType.Radial) {
-						rot = Util.AngleBetween2D(position, currentPos);
+						rot = DanmakuUtil.AngleBetween2D(position, currentPos);
 					}
 					sourcePoints.Add(new SourcePoint(currentPos, rot));
 				}
