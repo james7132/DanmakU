@@ -35,14 +35,4 @@ To get DanmakU running in your Unity project, follow these instructions:
 
 #Source Code Installation/Setup
 
-To get the source code up and running, execute the following command in your command line:
-
-    git clone --recursive https://github.com/Rhythmia/DanmakU.git
-    
-Note: the "--recursive" parameter is required to successfully clone the right UnityUtilLib version. 
-
-For older clones or git versions older than 1.6.5, use the following commands.
-
-    git clone https://github.com/Rhythmia/DanmakU.git
-    cd DanmakU
-    git submodule update --init --recursive
+To get the source code up and running, simply clone this repository using your prefered form of git (GUI, command line, etc).
