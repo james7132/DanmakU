@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: f6956be316dacb54a93a5e720cf42416
-timeCreated: 1429700159
+guid: d4b5ecfe939b9704c958f85fd64199be
+timeCreated: 1429701316
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
-  - danmakuSystemPrefab: {fileID: 19876622, guid: 5fd57ad30f99fa241b8b959a2858d8d3,
+  - danmakuSystemPrefab: {fileID: 19876622, guid: 1369960486de0844c8c02f62913f5ffb,
       type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
