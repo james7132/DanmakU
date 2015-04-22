@@ -11,8 +11,9 @@ namespace DanmakU {
 		/// <summary>
 		/// Raises the danmaku collision event.
 		/// </summary>
-		/// <param name="danmaku">Danmaku.</param>
-		void OnDanmakuCollision(Danmaku danmaku);
+		/// <param name="danmaku">The danmaku collided with.</param>
+		/// <param name="danmaku">The relevant information about collision.</param>
+		void OnDanmakuCollision(Danmaku danmaku, RaycastHit2D info);
 	
 	}
 }

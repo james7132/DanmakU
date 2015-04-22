@@ -265,7 +265,7 @@ namespace DanmakU {
 					runtimeSystem = runtimeObject.AddComponent<ParticleSystem> ();
 			}
 			Transform runtimeTransform = runtimeSystem.transform;
-			Transform root = runtimeTransform.root;
+//			Transform root = runtimeTransform.root;
 			runtimeTransform.parent = null;
 			runtimeTransform.localPosition = Vector3.zero;
 
