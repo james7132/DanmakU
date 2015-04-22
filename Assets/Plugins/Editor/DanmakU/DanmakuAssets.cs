@@ -37,15 +37,25 @@ internal static class DanmakuAssets {
 	/// Creates a blank ProjectilePrefab asset
 	/// Found under Assets/Create/DanmakU/Danmaku Prefab
 	/// </summary>
-	[MenuItem("Assets/Create/DanmakU/Danmaku Prefab", false, 51)]
-	public static void AddProjectilePrefab() {
+	[MenuItem("Assets/Create/DanmakU/Sprite Danmaku Prefab", false, 51)]
+	public static void AddSpriteDanmakuPrefab() {
 		GameObject temp = new GameObject ("Danmaku Prefab");
+		temp.AddComponent<SpriteRenderer> ();
 		temp.AddComponent<DanmakuPrefab> ();
 		string pathName = GetProjectWindowFolder ();
-		GameObject prefab = PrefabUtility.CreatePrefab (pathName + "/Danmaku Prefab.prefab", temp);
+		PrefabUtility.CreatePrefab (pathName + "/Danmaku Prefab.prefab", temp);
 		Object.DestroyImmediate (temp);
-		SerializedObject so = new SerializedObject (prefab.GetComponent<DanmakuPrefab> ());
-		so.ApplyModifiedProperties ();
+	}
+
+	[MenuItem("Assets/Create/DanmakU/Mesh Danmaku Prefab", false, 52)]
+	public static void AddMeshDanmakuPrefab() {
+		GameObject temp = new GameObject ("Danmaku Prefab");
+		temp.AddComponent<MeshFilter> ();
+		temp.AddComponent<MeshRenderer> ();
+		temp.AddComponent<DanmakuPrefab> ();
+		string pathName = GetProjectWindowFolder ();
+		PrefabUtility.CreatePrefab (pathName + "/Danmaku Prefab.prefab", temp);
+		Object.DestroyImmediate (temp);
 	}
 
 	/// <summary>
