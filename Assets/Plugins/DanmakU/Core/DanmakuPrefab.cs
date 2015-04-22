@@ -251,7 +251,8 @@ namespace DanmakU {
 			cachedColliderRadius = circleCollider.radius;
 			cachedColliderOffset = circleCollider.offset;
 
-			runtimeSystem = Instantiate(danmakuSystemPrefab);
+			if(danmakuSystemPrefab != null)
+				runtimeSystem = Instantiate(danmakuSystemPrefab);
 			if (runtimeSystem == null) {
 				GameObject runtimeObject = Instantiate (Resources.Load ("Danmaku Particle System")) as GameObject;
 				if(runtimeObject == null) {

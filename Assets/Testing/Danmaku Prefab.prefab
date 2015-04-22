@@ -51,7 +51,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 167998}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6956be316dacb54a93a5e720cf42416, type: 3}
+  m_Script: {fileID: 11500000, guid: d4b5ecfe939b9704c958f85fd64199be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _serializationData:
@@ -63,7 +63,7 @@ MonoBehaviour:
       values:
       - false
       - '[]'
-  _id: -2168
+  _id: 9912
   dbg: 0
   danmakuSystemPrefab: {fileID: 0}
 --- !u!212 &21243216
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3eed65ddd34f48d4aad5ca69f28d4a11, type: 2}
+  - {fileID: 2100000, guid: 4330258e1a878ef4ba58c7bcfd36f9c0, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -90,7 +90,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b181b0a0989195349a6e47b3c2fc54b7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e17def47972c7ab44a5aa91bf55c5577, type: 3}
   m_Color: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1001 &100100000
 Prefab:
