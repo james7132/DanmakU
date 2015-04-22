@@ -216,8 +216,9 @@ namespace DanmakU {
 						particles[i].rotation = danmaku.rotation;
 						particles[i].size = danmaku.Scale;
 						particles[i].axisOfRotation = forward;
-						particles[i].lifetime = 1000;
 						particles[i].color = danmaku.Color;
+						if(particles[i].lifetime <= 1)
+							particles[i].lifetime = 1000;
 					} else {
 						particles[i].size = 0f;
 						particles[i].lifetime = -1;
