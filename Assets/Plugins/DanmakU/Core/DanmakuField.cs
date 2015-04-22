@@ -257,7 +257,7 @@ namespace DanmakU {
 		}
 
 		public float AngleTowardPlayer(Vector2 startLocation, CoordinateSystem coordinateSystem = CoordinateSystem.World) {
-			return Util.AngleBetween2D (startLocation, Player.transform.position);
+			return DanmakuUtil.AngleBetween2D (startLocation, Player.transform.position);
 		}
 
 		/// <summary>

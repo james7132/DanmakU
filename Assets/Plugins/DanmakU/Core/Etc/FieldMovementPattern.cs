@@ -84,7 +84,7 @@ namespace DanmakU {
 					while(t < 1f) {
 						oldPosition = transform.position;
 						transform.position = Util.BerzierCurveVectorLerp(startLocation, targetLocation, control1, control2, t);
-						transform.rotation = Util.RotationBetween2D(oldPosition, transform.position);
+						transform.rotation = DanmakuUtil.RotationBetween2D(oldPosition, transform.position);
 						yield return UtilCoroutines.WaitForUnpause(this);
 						t += dt / totalTime;
 					}
