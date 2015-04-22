@@ -461,6 +461,10 @@ namespace DanmakU {
 		/// </summary>
 		/// <param name="prefab">the ProjectilePrefab to match.</param>
 		public void MatchPrefab(DanmakuPrefab prefab) {
+			if (prefab == null) {
+				Debug.LogError("Tried to match a null prefab");
+				return;
+			}
 			if (this.prefab != prefab) {
 				this.prefab = prefab;
 				this.runtime = prefab.GetRuntime();

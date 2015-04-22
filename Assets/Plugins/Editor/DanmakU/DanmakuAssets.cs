@@ -45,8 +45,6 @@ internal static class DanmakuAssets {
 		GameObject prefab = PrefabUtility.CreatePrefab (pathName + "/Danmaku Prefab.prefab", temp);
 		Object.DestroyImmediate (temp);
 		SerializedObject so = new SerializedObject (prefab.GetComponent<DanmakuPrefab> ());
-		so.FindProperty ("circleCollider").objectReferenceValue = prefab.GetComponent<CircleCollider2D> ();
-		so.FindProperty ("spriteRenderer").objectReferenceValue = prefab.GetComponent<SpriteRenderer> ();
 		so.ApplyModifiedProperties ();
 	}
 
