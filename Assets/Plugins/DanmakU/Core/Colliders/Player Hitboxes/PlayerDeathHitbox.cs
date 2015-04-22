@@ -25,7 +25,7 @@ namespace DanmakU {
 
 		#region implemented abstract members of DanmakuCollider
 
-		protected override void ProcessDanmaku (Danmaku danmaku) {
+		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
 			Player.Hit (danmaku);
 			danmaku.Deactivate ();
 		}

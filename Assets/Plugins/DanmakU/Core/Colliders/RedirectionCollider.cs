@@ -20,7 +20,7 @@ namespace DanmakU {
 		}
 
 		#region implemented abstract members of DanmakuCollider
-		protected override void ProcessDanmaku (Danmaku danmaku) {
+		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
 			if (affected.Contains (danmaku))
 				return;
 			float baseAngle = angle.Value;

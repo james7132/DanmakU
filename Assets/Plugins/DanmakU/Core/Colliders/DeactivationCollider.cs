@@ -9,7 +9,7 @@ namespace DanmakU {
 	public class DeactivationCollider : DanmakuCollider {
 
 		#region implemented abstract members of DanmakuCollider
-		protected override void ProcessDanmaku (Danmaku danmaku) {
+		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
 			danmaku.Deactivate ();
 		}
 		#endregion

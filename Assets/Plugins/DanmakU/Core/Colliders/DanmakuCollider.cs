@@ -43,9 +43,9 @@ namespace DanmakU {
 		/// Called on collision with any Danmaku
 		/// </summary>
 		/// <param name="proj">Proj.</param>
-		public void OnDanmakuCollision(Danmaku danmaku) {
+		public void OnDanmakuCollision(Danmaku danmaku, RaycastHit2D info) {
 			if(validTags == null || validTags.IsMatch(danmaku.Tag)) {
-				ProcessDanmaku(danmaku);
+				ProcessDanmaku(danmaku, info);
 			}
 		}
 
@@ -57,6 +57,6 @@ namespace DanmakU {
 		/// Override this in subclasses for alternative behavior.
 		/// </summary>
 		/// <param name="proj">the projectile to process</param>
-		protected abstract void ProcessDanmaku (Danmaku danmaku);
+		protected abstract void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info);
 	}
 }

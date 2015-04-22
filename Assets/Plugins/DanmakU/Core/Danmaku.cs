@@ -161,6 +161,10 @@ namespace DanmakU {
 			get {
 				return direction;
 			}
+			set {
+				direction = value.normalized;
+				rotation = Mathf.Atan2 (direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+			}
 		}
 
 		public float Scale;
@@ -384,29 +388,37 @@ namespace DanmakU {
 					                                        colliderRadius,
 					                                        colliders,
 					                                        colliderMask);
-					for (i = 0; i < count; i++) {
-						Collider2D collider = colliders[i];
-						if(collider == null)
-							continue;
-						if(colliderMap.ContainsKey(collider)) {
-							scripts = colliderMap[collider];
-							if(scripts == null) {
-								scripts = Util.GetComponents<IDanmakuCollider>(collider);
-								colliderMap[collider] = scripts;
-							}
-						} else {
-							scripts = Util.GetComponents<IDanmakuCollider>(collider);
-							colliderMap[collider] = scripts;
-						}
-						for (j = 0; j < scripts.Length; j++) {
-							scripts [j].OnDanmakuCollision (this);
-						}
-						if (to_deactivate) {
-							Position = Physics2D.CircleCast (collisionCenter, colliderRadius, movementVector, sqrDistance).point;
-							DeactivateImmediate();
-							return;
-						}
+					if(count > 0) {
+						count = Physics2D.CircleCastNonAlloc(collisionCenter, 
+						                                     Mathf.Sqrt(sqrDistance),
+						                                     movementVector,
+						                                     raycastHits,
+						                                     sqrDistance,
+						                                     colliderMask);
 					}
+//					for (i = 0; i < count; i++) {
+//						Collider2D collider = colliders[i];
+//						if(collider == null)
+//							continue;
+//						if(colliderMap.ContainsKey(collider)) {
+//							scripts = colliderMap[collider];
+//							if(scripts == null) {
+//								scripts = Util.GetComponents<IDanmakuCollider>(collider);
+//								colliderMap[collider] = scripts;
+//							}
+//						} else {
+//							scripts = Util.GetComponents<IDanmakuCollider>(collider);
+//							colliderMap[collider] = scripts;
+//						}
+//						for (j = 0; j < scripts.Length; j++) {
+//							scripts [j].OnDanmakuCollision (this);
+//						}
+//						if (to_deactivate) {
+//							Position = Physics2D.CircleCast (collisionCenter, colliderRadius, movementVector, sqrDistance).point;
+//							DeactivateImmediate();
+//							return;
+//						}
+//					}
 				} else {
 					count = Physics2D.CircleCastNonAlloc(collisionCenter, 
 					                                     Mathf.Sqrt(sqrDistance),
@@ -414,6 +426,8 @@ namespace DanmakU {
 					                                     raycastHits,
 					                                     sqrDistance,
 					                                     colliderMask);
+				}
+				if(count > 0) {
 					for (i = 0; i < count; i++) {
 						RaycastHit2D hit = raycastHits [i];
 						Collider2D collider = hit.collider;
@@ -430,7 +444,7 @@ namespace DanmakU {
 							colliderMap[collider] = scripts;
 						}
 						for (j = 0; j < scripts.Length; j++) {
-							scripts [j].OnDanmakuCollision (this);
+							scripts [j].OnDanmakuCollision (this, hit);
 						}
 						if (to_deactivate) {
 							position.x = hit.point.x;
