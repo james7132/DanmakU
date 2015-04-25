@@ -20,7 +20,7 @@ namespace DanmakU.DanmakuControllers {
 
 		public void UpdateDanmaku (Danmaku projectile, float dt) {
 			float bulletTime = projectile.Time;
-			Color startColor = projectile.Prefab.cachedColor;
+			Color startColor = projectile.Prefab.Color;
 //			Debug.Log (bulletTime);
 			if (bulletTime < startTime)
 				projectile.Color = startColor;
