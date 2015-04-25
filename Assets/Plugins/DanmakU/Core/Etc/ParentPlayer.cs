@@ -3,18 +3,24 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System.Collections;
-using DanmakU;
 
-public class ParentPlayer : MonoBehaviour {
+namespace DanmakU {
 
-	[SerializeField]
-	private Vector2 offset;
+	/// <summary>
+	/// A small utility script that forces its GameObject to become a child GameObject of the Player
+	/// </summary>
+	public class ParentPlayer : MonoBehaviour {
+		
+		[SerializeField]
+		private Vector2 offset;
 
-	// Use this for initialization
-	void Start () {
-		DanmakuField field = DanmakuField.FindClosest (this);
-		transform.parent = field.player.transform;
-		transform.localPosition = offset;
+		void Awake () {
+			DanmakuField field = DanmakuField.FindClosest (this);
+			transform.parent = field.player.transform;
+			transform.localPosition = offset;
+			Destroy (this);
+		}
 	}
+
+
 }

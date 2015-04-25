@@ -4,8 +4,15 @@
 
 using UnityEngine;
 
+/// <summary>
+/// A development kit for quick development of 2D Danmaku games
+/// </summary>
 namespace DanmakU {
 
+	/// <summary>
+	/// An interface for any behaviour that would like to recieve messages of when danmaku collides
+	/// with an attached collider.
+	/// </summary>
 	public interface IDanmakuCollider {
 
 		/// <summary>

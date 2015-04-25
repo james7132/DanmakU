@@ -5,11 +5,14 @@ using UnityEngine;
 
 namespace DanmakU {
 
+	/// <summary>
+	/// A DanmakuCollider that deactivates all valid danmaku that come in contact with it.
+	/// </summary>
 	[AddComponentMenu("DanmakU/Colliders/Deactivation Collider")]
 	public class DeactivationCollider : DanmakuCollider {
 
 		#region implemented abstract members of DanmakuCollider
-		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
+		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			danmaku.Deactivate ();
 		}
 		#endregion

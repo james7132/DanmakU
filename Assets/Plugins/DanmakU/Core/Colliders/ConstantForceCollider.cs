@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015 James Liu
+// Copyright (c) 2015 James Liu
 //	
 // See the LISCENSE file for copying permission.
 
@@ -29,7 +29,7 @@ namespace DanmakU {
 		}
 
 		#region implemented abstract members of DanmakuCollider
-		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
+		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			danmaku.Position += actual;
 		}
 		#endregion

@@ -3,14 +3,18 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using UnityUtilLib;
-using System.Collections;
 
 namespace DanmakU {
 
 	public class PlayerDeathHitbox : PlayerHitbox<DanmakuPlayer> {
 
+		#region Fields
+
 		private SpriteRenderer spriteRenderer;
+
+		#endregion
+
+		#region Standard Unity Callbacks
 
 		public override void Awake() {
 			base.Awake ();
@@ -23,9 +27,11 @@ namespace DanmakU {
 			}
 		}
 
+		#endregion
+
 		#region implemented abstract members of DanmakuCollider
 
-		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
+		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			Player.Hit (danmaku);
 			danmaku.Deactivate ();
 		}

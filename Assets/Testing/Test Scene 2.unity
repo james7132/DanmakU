@@ -162,6 +162,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeef69c2f9ebf2240b56074ec9bfd1e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _serializationData:
+    serializedObjects: []
+    serializedStrings:
+      keys:
+      - 'Field: string tagFilter'
+      values:
+      - '""'
+  _id: -1
+  dbg: 0
   tagFilter: 
 --- !u!61 &665728762
 BoxCollider2D:

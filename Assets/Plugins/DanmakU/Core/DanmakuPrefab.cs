@@ -12,7 +12,6 @@ namespace DanmakU {
 	/// A container behavior used on prefabs to define how a bullet looks or behaves
 	/// </summary>
 	[DisallowMultipleComponent]
-	[RequireComponent(typeof(CircleCollider2D))]
 	[AddComponentMenu("DanmakU/Danmaku Prefab")]
 	public sealed class DanmakuPrefab : BetterBehaviour {
 
@@ -21,6 +20,58 @@ namespace DanmakU {
 		#region Prefab Fields
 		[SerializeField]
 		private ParticleSystem danmakuSystemPrefab;
+
+		[SerializeField]
+		internal Danmaku.ColliderType collisionType;
+
+		[SerializeField]
+		internal Vector2 colliderSize;
+
+		[SerializeField]
+		internal Vector2 colliderOffset;
+
+		[SerializeField]
+		private RenderingType renderingType;
+
+		[SerializeField]
+		private Sprite sprite;
+
+		[SerializeField]
+		private Mesh mesh;
+
+		[SerializeField]
+		private Color color;
+		
+		[SerializeField]
+		private Material material;
+
+		[SerializeField]
+		private int sortingLayer;
+
+		[SerializeField]
+		private int sortingOrder;
+
+		private void Reset() {
+			danmakuSystemPrefab = (Resources.Load ("Danmaku Particle System") as GameObject).GetComponent<ParticleSystem> ();
+			collisionType = Danmaku.ColliderType.Point;
+			colliderSize = Vector2.zero;
+			colliderOffset = Vector2.zero;
+			renderingType = RenderingType.Sprite;
+			sprite = null;
+			mesh = null;
+			color = Color.white;
+			sortingLayer = 0;
+			sortingOrder = 0;
+			SpriteRenderer temp = GetComponent<SpriteRenderer> ();
+			if (temp == null) {
+				gameObject.AddComponent<SpriteRenderer> ();
+				material = temp.sharedMaterial;
+				Object.DestroyImmediate (temp);
+			} else {
+				material = temp.sharedMaterial;
+			}
+
+		}
 
 		[Serialize]
 		internal bool fixedAngle;
@@ -31,9 +82,6 @@ namespace DanmakU {
 		internal Vector3 cachedScale;
 		internal string cachedTag;
 		internal int cachedLayer;
-		
-		internal float cachedColliderRadius;
-		internal Vector2 cachedColliderOffset;
 		
 		internal Sprite cachedSprite;
 		internal Color cachedColor;
@@ -90,9 +138,9 @@ namespace DanmakU {
 		/// Gets the radius of the instance's collider
 		/// </summary>
 		/// <value>the radius of the collider.</value>
-		public float ColliderRadius {
+		public Vector2 ColliderSize {
 			get {
-				return cachedColliderRadius;
+				return colliderSize;
 			}
 		}
 		
@@ -102,7 +150,7 @@ namespace DanmakU {
 		/// <value>the offset of the collider.</value>
 		public Vector2 ColliderOffset {
 			get {
-				return cachedColliderOffset;
+				return colliderOffset;
 			}
 		}
 		
@@ -231,11 +279,6 @@ namespace DanmakU {
 		public void Awake() {
 			Vector3[] vertexes;
 
-			CircleCollider2D circleCollider = GetComponent<CircleCollider2D>();
-			if(circleCollider == null) {
-				throw new System.InvalidOperationException("ProjectilePrefab without a Collider! (" + name + ")");
-			}
-
 			Renderer singleRenderer;
 			SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
 			MeshRenderer meshRenderer = GetComponent<MeshRenderer> ();
@@ -248,8 +291,6 @@ namespace DanmakU {
 			cachedScale = transform.localScale;
 			cachedTag = gameObject.tag;
 			cachedLayer = gameObject.layer;
-			cachedColliderRadius = circleCollider.radius;
-			cachedColliderOffset = circleCollider.offset;
 
 			if(danmakuSystemPrefab != null)
 				runtimeSystem = Instantiate(danmakuSystemPrefab);
@@ -364,7 +405,7 @@ namespace DanmakU {
 			runtimeRenderer.mesh = renderMesh;
 
 			singleRenderer.enabled = false;
-			GetComponent<CircleCollider2D>().enabled = false;
+			//GetComponent<CircleCollider2D>().enabled = false;
 			//Disable all other components
 			foreach (Behaviour comp in GetComponentsInChildren<Behaviour>()) {
 				if(comp != this) {

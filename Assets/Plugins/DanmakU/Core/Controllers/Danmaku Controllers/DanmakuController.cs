@@ -2,13 +2,14 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
-
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
 namespace DanmakU {
 
+	/// <summary>
+	/// Delegate form of IDanmakuController
+	/// </summary>
 	public delegate void DanmakuController(Danmaku proj, float dt);
 
 	/// <summary>

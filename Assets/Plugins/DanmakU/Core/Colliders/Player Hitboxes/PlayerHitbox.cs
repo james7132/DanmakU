@@ -17,6 +17,7 @@ namespace DanmakU {
 			base.Awake ();
 			Player = GetComponentInParent<T> ();
 		}
+
 	}
 }
 

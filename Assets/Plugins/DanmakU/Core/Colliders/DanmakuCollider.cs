@@ -4,7 +4,7 @@
 
 using UnityEngine;
 using System.Text.RegularExpressions;
-using UnityUtilLib;
+using Vexe.Runtime.Types;
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
@@ -15,7 +15,7 @@ namespace DanmakU {
 	/// A script for defining boundaries for detecting collision with Projectiles
 	/// </summary>
 	[RequireComponent(typeof(Collider2D))]
-	public abstract class DanmakuCollider : CachedObject, IDanmakuCollider {
+	public abstract class DanmakuCollider : BetterBehaviour, IDanmakuCollider {
 
 		/// <summary>
 		/// A filter for a set of tags, delimited by "|" for selecting which bullets to affect
@@ -29,8 +29,7 @@ namespace DanmakU {
 		/// <summary>
 		/// Called on Component instantiation
 		/// </summary>
-		public override void Awake() {
-			base.Awake ();
+		public virtual void Awake() {
 			if (string.IsNullOrEmpty (tagFilter))
 				validTags = null;
 			else
@@ -45,18 +44,12 @@ namespace DanmakU {
 		/// <param name="proj">Proj.</param>
 		public void OnDanmakuCollision(Danmaku danmaku, RaycastHit2D info) {
 			if(validTags == null || validTags.IsMatch(danmaku.Tag)) {
-				ProcessDanmaku(danmaku, info);
+				DanmakuCollision(danmaku, info);
 			}
 		}
 
 		#endregion
 
-		/// <summary>
-		/// Processes a danmaku.
-		/// By default, this deactivates all Projectiles that come in contact with the ProjectileBoundary
-		/// Override this in subclasses for alternative behavior.
-		/// </summary>
-		/// <param name="proj">the projectile to process</param>
-		protected abstract void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info);
+		protected abstract void DanmakuCollision (Danmaku danmaku, RaycastHit2D info);
 	}
 }

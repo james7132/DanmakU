@@ -2,7 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityUtilLib;
 using UnityUtilLib.Pooling;
@@ -29,8 +29,11 @@ namespace DanmakU {
 		private static int unitCircleMax;
 		private static DanmakuPool danmakuPool;
 		private static float dt;
+
+		private static Dictionary<Collider2D, IDanmakuCollider[]> colliderMap;
 		
 		internal static void Setup(int initial = standardStart, int spawn = standardSpawn, float angRes = 0.1f) {
+			colliderMap = new Dictionary<Collider2D, IDanmakuCollider[]> ();
 			collisionMask = Util.CollisionLayers2D ();
 			danmakuPool = new DanmakuPool (initial, spawn);
 			angleResolution = angRes;
@@ -71,6 +74,7 @@ namespace DanmakU {
 		}
 		
 		internal static void UpdateAll() {
+			colliderMap.Clear ();
 			Danmaku.dt = Util.DeltaTime;
 			Danmaku[] all = danmakuPool.all;
 			for (int i = 0; i < all.Length; i++) {
@@ -88,23 +92,23 @@ namespace DanmakU {
 			}
 		}
 
-		public static void DeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
-			Danmaku[] all = danmakuPool.all;
-			Danmaku target;
-			float sqrRadius = radius * radius, sqrDRadius, DRadius;
-			for (int i = 0; i < all.Length; i++) {
-				target = all[i];
-				if((layerMask & (1 << target.layer)) != 0) {
-					DRadius = target.colliderRadius;
-					sqrDRadius = DRadius * DRadius;
-					if(sqrRadius + sqrDRadius >= (target.collisionCenter - center).sqrMagnitude) {
-						target.DeactivateImmediate();
-					}
-				}
-			}
-		}
+//		public static void DeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
+//			Danmaku[] all = danmakuPool.all;
+//			Danmaku target;
+//			float sqrRadius = radius * radius, sqrDRadius, DRadius;
+//			for (int i = 0; i < all.Length; i++) {
+//				target = all[i];
+//				if((layerMask & (1 << target.layer)) != 0) {
+//					DRadius = target.colliderRadius;
+//					sqrDRadius = DRadius * DRadius;
+//					if(sqrRadius + sqrDRadius >= (target.collisionCenter - center).sqrMagnitude) {
+//						target.DeactivateImmediate();
+//					}
+//				}
+//			}
+//		}
 
-		public static void DirectDeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
+		public static void DeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
 			Danmaku[] all = danmakuPool.all;
 			Danmaku target;
 			float sqrRadius = radius * radius;
