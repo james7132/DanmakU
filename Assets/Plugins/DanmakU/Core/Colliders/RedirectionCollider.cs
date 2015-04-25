@@ -3,6 +3,9 @@ using UnityUtilLib;
 
 namespace DanmakU {
 
+	/// <summary>
+	/// A DanmakuCollider that changes the direction of motion for all valid bullets that come into contact with it.
+	/// </summary>
 	[AddComponentMenu("DanmakU/Colliders/Redirection Collider")]
 	public class RedirectionCollider : DanmakuCollider {
 
@@ -14,13 +17,16 @@ namespace DanmakU {
 
 		private DanmakuGroup affected;
 
+		/// <summary>
+		/// Called on Component instantiation
+		/// </summary>
 		public override void Awake () {
 			base.Awake ();
 			affected = new DanmakuGroup ();
 		}
 
 		#region implemented abstract members of DanmakuCollider
-		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
+		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			if (affected.Contains (danmaku))
 				return;
 			float baseAngle = angle.Value;

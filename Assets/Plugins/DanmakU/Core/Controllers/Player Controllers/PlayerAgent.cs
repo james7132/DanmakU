@@ -2,12 +2,9 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
-using System;
-using System.Collections;
-
 namespace DanmakU {
-	[Serializable]
+
+	[System.Serializable]
 	public abstract class PlayerAgent : IDanmakuObject {
 
 		public DanmakuPlayer Player {
@@ -32,4 +29,5 @@ namespace DanmakU {
 		/// <param name="dt">Dt.</param>
 		public abstract void Update();
 	}
+
 }

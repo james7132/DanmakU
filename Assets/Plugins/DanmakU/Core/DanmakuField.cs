@@ -60,8 +60,6 @@ namespace DanmakU {
 			return closest;
 		}
 
-		internal Dictionary<Collider2D, IDanmakuCollider[]> colliderMap;
-
 		public enum CoordinateSystem { View, ViewRelative, Relative, World }
 
 		public bool UseClipBoundary = true;
@@ -171,8 +169,6 @@ namespace DanmakU {
 			}
 			fields.Add (this);
 			TargetField = this;
-
-			colliderMap = new Dictionary<Collider2D, IDanmakuCollider[]> ();
 		}
 
 		void Update() {
@@ -196,16 +192,6 @@ namespace DanmakU {
 			} else {
 				bounds.Extents = infiniteSize;
 			}
-
-			#if UNITY_EDITOR
-			if(Application.isPlaying) {
-			#endif
-
-				colliderMap.Clear();
-
-			#if UNITY_EDITOR
-			}
-			#endif
 		}
 
 		void OnDestroy() {

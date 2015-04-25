@@ -20,7 +20,9 @@ namespace DanmakU {
 	/// The base object that represents a single bullet in a Danmaku game
 	/// </summary>
 	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab>, IDanmakuObject {
-		
+
+		public enum ColliderType { Point, Line, Circle, Box }
+
 		internal int poolIndex;
 		//internal int renderIndex;
 
@@ -28,9 +30,10 @@ namespace DanmakU {
 		internal Vector2 direction;
 
 		//Cached information about the Danmaku from its prefab
+		internal ColliderType colliderType = ColliderType.Circle;
 		internal Vector2 colliderOffset = Vector2.zero; 
-		private float colliderRadius = 1f;
-		private float radiusSquared;
+		internal Vector2 colliderSize = Vector2.zero;
+		private float sizeSquared;
 		internal int layer;
 		internal int frames;
 		internal float time;
@@ -48,13 +51,12 @@ namespace DanmakU {
 		internal List<DanmakuGroup> groups;
 
 		private DanmakuField field;
-		private Dictionary<Collider2D, IDanmakuCollider[]> colliderMap;
 		private Bounds2D fieldBounds;
 
 		//Preallocated variables to avoid allocation in Update
 		private Vector2 originalPosition;
 		private RaycastHit2D[] raycastHits;
-		private Collider2D[] colliders;
+		//private Collider2D[] colliders;
 		private Vector2 collisionCenter;
 
 		//Cached check for controllers to avoid needing to calculate them in Update
@@ -227,7 +229,6 @@ namespace DanmakU {
 				field = value;
 				if(field != null) {
 					fieldBounds = field.bounds;
-					colliderMap = field.colliderMap;
 				}
 			}
 		}
@@ -321,7 +322,7 @@ namespace DanmakU {
 			//gameObject.hideFlags = HideFlags.HideInHierarchy;
 			#endif
 			raycastHits = new RaycastHit2D[5];
-			colliders = new Collider2D[5];
+//			colliders = new Collider2D[5];
 //			scripts = new IDanmakuCollider[5];
 		}
 
@@ -370,7 +371,6 @@ namespace DanmakU {
 
 			#endregion
 			if(CollisionCheck) {
-				IDanmakuCollider[] scripts;
 				float sqrDistance = movementVector.sqrMagnitude;
 				float cx = colliderOffset.x;
 				float cy = colliderOffset.y;
@@ -383,51 +383,49 @@ namespace DanmakU {
 					collisionCenter.y = originalPosition.y + s * cx + c * cy;
 				}
 				//Check if the collision detection should be continuous or not
-				if (sqrDistance <= radiusSquared) {
-					count = Physics2D.OverlapCircleNonAlloc(collisionCenter,
-					                                        colliderRadius,
-					                                        colliders,
-					                                        colliderMask);
-					if(count > 0) {
-						count = Physics2D.CircleCastNonAlloc(collisionCenter, 
-						                                     Mathf.Sqrt(sqrDistance),
-						                                     movementVector,
-						                                     raycastHits,
-						                                     sqrDistance,
-						                                     colliderMask);
-					}
-//					for (i = 0; i < count; i++) {
-//						Collider2D collider = colliders[i];
-//						if(collider == null)
-//							continue;
-//						if(colliderMap.ContainsKey(collider)) {
-//							scripts = colliderMap[collider];
-//							if(scripts == null) {
-//								scripts = Util.GetComponents<IDanmakuCollider>(collider);
-//								colliderMap[collider] = scripts;
-//							}
-//						} else {
-//							scripts = Util.GetComponents<IDanmakuCollider>(collider);
-//							colliderMap[collider] = scripts;
-//						}
-//						for (j = 0; j < scripts.Length; j++) {
-//							scripts [j].OnDanmakuCollision (this);
-//						}
-//						if (to_deactivate) {
-//							Position = Physics2D.CircleCast (collisionCenter, colliderRadius, movementVector, sqrDistance).point;
-//							DeactivateImmediate();
-//							return;
-//						}
-//					}
-				} else {
-					count = Physics2D.CircleCastNonAlloc(collisionCenter, 
-					                                     Mathf.Sqrt(sqrDistance),
-					                                     movementVector,
-					                                     raycastHits,
-					                                     sqrDistance,
-					                                     colliderMask);
+				count = 0;
+				switch(colliderType) {
+					default:
+					case ColliderType.Point:
+						if(sqrDistance > sizeSquared || Physics2D.OverlapPoint(collisionCenter, colliderMask) != null) {
+							count = Physics2D.RaycastNonAlloc(collisionCenter,
+							                                  movementVector,
+							                                  raycastHits,
+							                                  Mathf.Sqrt(sqrDistance),
+							                                  colliderMask);
+						}
+						break;
+					case ColliderType.Line:
+						float length = Mathf.Sqrt(sqrDistance) + colliderSize.x;
+						if(sqrDistance > sizeSquared || Physics2D.Raycast(collisionCenter, movementVector, length, colliderMask).collider != null) {
+							count = Physics2D.RaycastNonAlloc(collisionCenter,
+							                                  movementVector,
+							                                  raycastHits,
+							                                  Mathf.Sqrt(sqrDistance) + colliderSize.x,
+							                                  colliderMask);
+						}
+						break;
+					case ColliderType.Circle:
+						if(sqrDistance > sizeSquared || Physics2D.OverlapCircle(collisionCenter, colliderSize.x, colliderMask) != null) {
+							count = Physics2D.CircleCastNonAlloc(collisionCenter, 
+								                                 colliderSize.x,
+							                                     movementVector,
+							                                     raycastHits,
+							                                     sqrDistance,
+							                                     colliderMask);
+						}
+						break;
+					case ColliderType.Box:
+						count = Physics2D.BoxCastNonAlloc(collisionCenter,
+					                                      colliderSize,
+					                                      rotation,
+					                                      movementVector,
+					                                  	  raycastHits,
+					                                      colliderMask);
+						break;
 				}
 				if(count > 0) {
+					IDanmakuCollider[] scripts;
 					for (i = 0; i < count; i++) {
 						RaycastHit2D hit = raycastHits [i];
 						Collider2D collider = hit.collider;
@@ -481,11 +479,25 @@ namespace DanmakU {
 			}
 			if (this.prefab != prefab) {
 				this.prefab = prefab;
-				this.runtime = prefab.GetRuntime();
+				runtime = prefab.GetRuntime ();
 				Vector2 scale = runtime.cachedScale;
-				colliderOffset = scale.Hadamard2(runtime.cachedColliderOffset);
-				colliderRadius = runtime.cachedColliderRadius * scale.Max();
-				radiusSquared = colliderRadius * colliderRadius;
+				colliderType = runtime.collisionType;
+				switch(colliderType) {
+					default:
+					case ColliderType.Point:
+						colliderSize = Vector2.zero;
+						sizeSquared = 0;
+						break;
+					case ColliderType.Circle:
+						colliderSize = runtime.colliderSize * scale.Max();
+						break;
+					case ColliderType.Line:
+						colliderSize = runtime.colliderSize;
+						break;
+				}
+				sizeSquared = colliderSize.y * colliderSize.y;
+				colliderOffset = scale.Hadamard2(runtime.colliderOffset);
+
 			}
 
 			Tag = runtime.cachedTag;

@@ -3,8 +3,6 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System.Collections;
-using UnityUtilLib;
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games

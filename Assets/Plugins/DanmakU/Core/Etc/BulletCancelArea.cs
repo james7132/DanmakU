@@ -10,6 +10,7 @@ using UnityUtilLib;
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
 namespace DanmakU {
+
 	[RequireComponent(typeof(SpriteRenderer))]
 	[RequireComponent(typeof(DeactivationCollider))]
 	[RequireComponent(typeof(Collider2D))]
@@ -40,4 +41,5 @@ namespace DanmakU {
 			Destroy (gameObject);
 		}
 	}
+
 }

@@ -6,10 +6,9 @@ using UnityEngine;
 using UnityUtilLib;
 
 namespace DanmakU.DanmakuControllers {
+
 	[System.Serializable]
 	public class DelayedAngleChange : IDanmakuController {
-
-		private enum RotationMode { Absolute, Relative, Player }
 
 		[SerializeField]
 		private RotationMode rotationMode;
@@ -50,4 +49,5 @@ namespace DanmakU.DanmakuControllers {
 
 		#endregion
 	}
+
 }

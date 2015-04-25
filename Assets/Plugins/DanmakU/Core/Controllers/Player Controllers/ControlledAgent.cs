@@ -2,9 +2,6 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
-using System.Collections;
-
 namespace DanmakU {
 	public class ControlledAgent : PlayerAgent {
 

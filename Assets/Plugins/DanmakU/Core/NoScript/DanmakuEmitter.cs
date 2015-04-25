@@ -3,17 +3,17 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using UnityUtilLib;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Vexe.Runtime.Types;
 
+/// <summary>
+/// A development kit for quick development of 2D Danmaku games
+/// </summary>
 namespace DanmakU {
 
 	[AddComponentMenu("DanmakU/Danmaku Emitter")]
 	public sealed class DanmakuEmitter : BetterBehaviour, IDanmakuObject, IEnumerable<DanmakuNode> {
-
-
 
 		[Serialize]
 		private DanmakuNode[] nodes;

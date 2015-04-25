@@ -16,12 +16,13 @@ namespace DanmakU {
 		}
 
 		#region implemented abstract members of DanmakuCollider
-		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
+		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			if (affected.Contains (danmaku))
 				return;
 			Vector2 normal = info.normal;
 			Vector2 direction = danmaku.direction;
 			danmaku.Direction = direction - 2 * Vector2.Dot (normal, direction) * normal;
+			danmaku.position = info.point;
 			affected.Add (danmaku);
 		}
 		#endregion

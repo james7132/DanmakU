@@ -1,10 +1,16 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿// Copyright (c) 2015 James Liu
+//	
+// See the LISCENSE file for copying permission. 
+
+using UnityEngine;
 
 namespace DanmakU {
 
+	/// <summary>
+	/// A set of utility functions that can be quite useful when using DanmakU
+	/// </summary>
 	public static class DanmakuUtil {
-		
+
 		public static float AngleBetween2D(Vector2 v1, Vector2 v2) {
 			Vector2 diff = v2 - v1;
 			return Mathf.Atan2 (diff.y, diff.x) * 180f / Mathf.PI - 90f; 

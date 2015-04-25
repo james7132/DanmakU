@@ -4,7 +4,6 @@
 
 using UnityEngine;
 using UnityUtilLib;
-using System.Collections.Generic;
 
 namespace DanmakU {
 
@@ -24,9 +23,6 @@ namespace DanmakU {
 		}
 
 		#endregion
-
-
-
 
 		public bool Paused {
 			get;

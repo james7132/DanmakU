@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015 James Liu
+// Copyright (c) 2015 James Liu
 //	
 // See the LISCENSE file for copying permission.
 
@@ -7,6 +7,9 @@ using UnityUtilLib;
 
 namespace DanmakU {
 
+	/// <summary>
+	/// A Danmaku Controller that speeds up or slows down danmaku so long as bullets are contacting it.
+	/// </summary>
 	[AddComponentMenu("DanmakU/Colliders/Acceleration Collider")]
 	public class AccelerationCollider : DanmakuCollider {
 
@@ -29,13 +32,10 @@ namespace DanmakU {
 		}
 
 		#region implemented abstract members of DanmakuCollider
-		protected override void ProcessDanmaku (Danmaku danmaku, RaycastHit2D info) {
+		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			danmaku.Speed += actual;
 		}
 		#endregion
-
-
-
 
 	}
 
