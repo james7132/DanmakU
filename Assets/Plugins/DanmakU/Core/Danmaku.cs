@@ -502,7 +502,7 @@ namespace DanmakU {
 
 			Tag = runtime.cachedTag;
 
-			Color = runtime.cachedColor;
+			Color = runtime.Color;
 			Scale = 1f;
 			layer = runtime.cachedLayer;
 			colliderMask = collisionMask [layer];

@@ -21,55 +21,43 @@ namespace DanmakU {
 		[SerializeField]
 		private ParticleSystem danmakuSystemPrefab;
 
-		[SerializeField]
+		[Serialize, Default(Enum = 0)]
 		internal Danmaku.ColliderType collisionType;
 
-		[SerializeField]
+		[Serialize, Default(1f, 1f)]
 		internal Vector2 colliderSize;
 
-		[SerializeField]
+		[Serialize, Default(0f, 0f)]
 		internal Vector2 colliderOffset;
 
-		[SerializeField]
+		[Serialize, Default(Enum = 0)]
 		private RenderingType renderingType;
 
-		[SerializeField]
+		[Serialize]
 		private Sprite sprite;
-
-		[SerializeField]
+		
+		[Serialize]
 		private Mesh mesh;
-
-		[SerializeField]
+		
+		[Serialize]
 		private Color color;
 		
-		[SerializeField]
+		[Serialize]
 		private Material material;
-
-		[SerializeField]
+		
+		[Serialize, Default(0)]
 		private int sortingLayer;
-
-		[SerializeField]
+		
+		[Serialize, Default(0)]
 		private int sortingOrder;
 
-		private void Reset() {
+		public override void Reset() {
+			base.Reset ();
 			danmakuSystemPrefab = (Resources.Load ("Danmaku Particle System") as GameObject).GetComponent<ParticleSystem> ();
-			collisionType = Danmaku.ColliderType.Point;
-			colliderSize = Vector2.zero;
-			colliderOffset = Vector2.zero;
-			renderingType = RenderingType.Sprite;
 			sprite = null;
 			mesh = null;
 			color = Color.white;
-			sortingLayer = 0;
-			sortingOrder = 0;
-			SpriteRenderer temp = GetComponent<SpriteRenderer> ();
-			if (temp == null) {
-				gameObject.AddComponent<SpriteRenderer> ();
-				material = temp.sharedMaterial;
-				Object.DestroyImmediate (temp);
-			} else {
-				material = temp.sharedMaterial;
-			}
+			material = null;
 
 		}
 
@@ -82,17 +70,11 @@ namespace DanmakU {
 		internal Vector3 cachedScale;
 		internal string cachedTag;
 		internal int cachedLayer;
-		
-		internal Sprite cachedSprite;
-		internal Color cachedColor;
-		internal Material cachedMaterial;
-		internal int cachedSortingLayer;
-		internal int cachedSortingOrder;
+
 		private DanmakuController controllerAggregate;
 		#endregion
 
 		#region Runtime fields
-		private RenderingType renderType;
 		private DanmakuPrefab runtime;
 		private Mesh renderMesh;
 		private Material renderMaterial;
@@ -106,7 +88,7 @@ namespace DanmakU {
 		#region Accessor Properties
 		public RenderingType RenderType {
 			get {
-				return renderType;
+				return renderingType;
 			}
 		}
 
@@ -160,7 +142,7 @@ namespace DanmakU {
 		/// <value>The sprite to be rendered.</value>
 		public Sprite Sprite {
 			get {
-				return cachedSprite;
+				return sprite;
 			}
 		}
 
@@ -176,7 +158,7 @@ namespace DanmakU {
 		/// <value>The color to be rendered with.</value>
 		public Color Color {
 			get {
-				return cachedColor;
+				return color;
 			}
 		}
 		
@@ -186,7 +168,7 @@ namespace DanmakU {
 		/// <value>The material to be rendered with.</value>
 		public Material Material {
 			get {
-				return cachedMaterial;
+				return material;
 			}
 		}
 		
@@ -196,13 +178,13 @@ namespace DanmakU {
 		/// <value>The sorting layer to be used when rendering.</value>
 		public int SortingLayerID {
 			get {
-				return cachedSortingLayer;
+				return sortingLayer;
 			}
 		}
 		
 		public int SortingOrder {
 			get {
-				return cachedSortingOrder;
+				return sortingOrder;
 			}
 		}
 		#endregion
@@ -279,13 +261,23 @@ namespace DanmakU {
 		public void Awake() {
 			Vector3[] vertexes;
 
-			Renderer singleRenderer;
-			SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-			MeshRenderer meshRenderer = GetComponent<MeshRenderer> ();
-			if (spriteRenderer == null && meshRenderer == null) {
-				Debug.LogError("Danmaku Prefab (" + name + ") has neither SpriteRenderer or MeshRenderer. Attach one or the other to it.");
-				Destroy (this);
-				return;
+//			Renderer singleRenderer;
+//			SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+//			MeshRenderer meshRenderer = GetComponent<MeshRenderer> ();
+//			if (spriteRenderer == null && meshRenderer == null) {
+//				Debug.LogError("Danmaku Prefab (" + name + ") has neither SpriteRenderer or MeshRenderer. Attach one or the other to it.");
+//				Destroy (this);
+//				return;
+//			}
+
+			foreach (Component otherComponent in GetComponentsInChildren<Component>()) {
+				if(otherComponent != this && !(otherComponent is Transform)) {
+					Destroy(otherComponent);
+				}
+			}
+
+			foreach (Transform child in transform) {
+				Destroy (child.gameObject);
 			}
 			
 			cachedScale = transform.localScale;
@@ -331,24 +323,15 @@ namespace DanmakU {
 			
 			renderMesh = new Mesh();
 
-			if (meshRenderer == null) {
-				renderType = RenderingType.Sprite;
-				singleRenderer = spriteRenderer;
-				cachedSprite = spriteRenderer.sprite;
-				cachedColor = spriteRenderer.color;
-				cachedMaterial = spriteRenderer.sharedMaterial;
-				cachedSortingLayer = spriteRenderer.sortingLayerID;
-				cachedSortingOrder = spriteRenderer.sortingOrder;
-
-				renderMaterial = new Material(cachedMaterial);
+			if (renderingType == RenderingType.Sprite) {
+				renderMaterial = new Material(material);
 				renderMaterial.mainTexture = Sprite.texture;
 
-				if(cachedSprite == null)
+				if(sprite == null)
 					runtimeRenderer.mesh = null;
 				else {
-					renderType = RenderingType.Sprite;
-					var verts = cachedSprite.vertices;
-					var tris = cachedSprite.triangles;
+					var verts = sprite.vertices;
+					var tris = sprite.triangles;
 					
 					vertexes = new Vector3[verts.Length];
 					int[] triangles = new int[tris.Length];
@@ -362,30 +345,18 @@ namespace DanmakU {
 					}
 					
 					renderMesh.vertices = vertexes;
-					renderMesh.uv = cachedSprite.uv;
+					renderMesh.uv = sprite.uv;
 					renderMesh.triangles = triangles;
 				}
 			} else {
-				renderType = RenderingType.Mesh;
-				singleRenderer = meshRenderer;
-				cachedSprite = null;
-				cachedColor = Color.white;
-				cachedMaterial = meshRenderer.sharedMaterial;
-				cachedSortingLayer = meshRenderer.sortingLayerID;
-				cachedSortingOrder = meshRenderer.sortingOrder;
-
-				renderMaterial = meshRenderer.sharedMaterial;
-				MeshFilter filter = meshRenderer.GetComponent<MeshFilter>();
-				if(filter == null) {
-					Debug.LogError("Danmaku Prefab (" + name + ") is trying to use a MeshRenderer as a base, but no MeshFilter is found. Please add one.");
-				} else {
-					Mesh filterMesh = filter.mesh;
-					renderMesh.vertices = filterMesh.vertices;
-					renderMesh.uv = filterMesh.uv;
-					renderMesh.triangles = filterMesh.triangles;
-					renderMesh.colors = filterMesh.colors;
-					renderMesh.normals = filterMesh.normals;
-					renderMesh.tangents = filterMesh.tangents;
+				if(mesh != null) {
+					renderMaterial = material;
+					renderMesh.vertices = mesh.vertices;
+					renderMesh.uv = mesh.uv;
+					renderMesh.triangles = mesh.triangles;
+					renderMesh.colors = mesh.colors;
+					renderMesh.normals = mesh.normals;
+					renderMesh.tangents = mesh.tangents;
 				}
 			}
 
@@ -404,7 +375,7 @@ namespace DanmakU {
 			
 			runtimeRenderer.mesh = renderMesh;
 
-			singleRenderer.enabled = false;
+			//singleRenderer.enabled = false;
 			//GetComponent<CircleCollider2D>().enabled = false;
 			//Disable all other components
 			foreach (Behaviour comp in GetComponentsInChildren<Behaviour>()) {
@@ -414,7 +385,8 @@ namespace DanmakU {
 			}
 
 			runtimeSystem.simulationSpace = ParticleSystemSimulationSpace.World;
-			runtimeSystem.startColor = cachedColor;
+			//runtimeSystem.startColor = cachedColor;
+			runtimeSystem.startColor = color;
 			runtimeSystem.startSize = 1;
 			runtimeSystem.startLifetime = float.PositiveInfinity;
 			runtimeSystem.gravityModifier = 0f;
@@ -431,12 +403,18 @@ namespace DanmakU {
 			runtimeRenderer.renderMode = ParticleSystemRenderMode.Mesh;
 			
 			runtimeRenderer.sharedMaterial = renderMaterial;
-			runtimeRenderer.sortingLayerID = cachedSortingLayer;
-			runtimeRenderer.sortingOrder = cachedSortingOrder;
+			//runtimeRenderer.sortingLayerID = cachedSortingLayer;
+			//runtimeRenderer.sortingOrder = cachedSortingOrder;
+			runtimeRenderer.sortingLayerID = sortingLayer;
+			runtimeRenderer.sortingOrder = sortingOrder;
 			runtimeRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
 			runtimeRenderer.receiveShadows = false;
 			runtimeRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 			runtimeRenderer.useLightProbes = false;
+		}
+
+		void OnDrawGizmosSelected() {
+
 		}
 		
 		void OnDestroy() {
@@ -455,9 +433,9 @@ namespace DanmakU {
 		}
 
 		private static DanmakuPrefab CreateRuntimeInstance(DanmakuPrefab prefab) {
-			DanmakuPrefab runtime = (DanmakuPrefab)Instantiate (prefab);
-			//runtime.gameObject.hideFlags = HideFlags.HideInHierarchy;
-			//runtime.gameObject.SetActive (false);
+			DanmakuPrefab runtime = Instantiate (prefab);
+			runtime.enabled = true;
+			runtime.gameObject.SetActive (true);
 			return runtime;
 		}
 	}
