@@ -348,7 +348,6 @@ namespace DanmakU {
 						i++;
 				}
 			}
-
 			#endregion
 
 			#region thread_safe
@@ -367,7 +366,7 @@ namespace DanmakU {
 			movementVector.x = position.x - originalPosition.x;
 			movementVector.y = position.y - originalPosition.y;
 
-			//Debug.DrawRay(originalPosition, movementVector);
+			Debug.DrawRay(originalPosition, movementVector);
 
 			#endregion
 			if(CollisionCheck) {

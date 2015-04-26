@@ -8,9 +8,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 401748}
-  - 212: {fileID: 21243216}
-  - 58: {fileID: 5877478}
-  - 114: {fileID: 11471304}
+  - 114: {fileID: 11447126}
+  - 212: {fileID: 21229434}
   m_Layer: 0
   m_Name: Danmaku Prefab
   m_TagString: Untagged
@@ -25,25 +24,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 167998}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.93038619, y: .216335848, z: 0}
+  m_LocalPosition: {x: -6.72943735, y: .0750520229, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!58 &5877478
-CircleCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 167998}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: .202164069
---- !u!114 &11471304
+--- !u!114 &11447126
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -55,18 +41,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _serializationData:
-    serializedObjects: []
+    serializedObjects:
+    - {fileID: 19876622, guid: 1369960486de0844c8c02f62913f5ffb, type: 2}
     serializedStrings:
       keys:
+      - 'Field: ParticleSystem danmakuSystemPrefab'
+      - 'Field: ColliderType collisionType'
+      - 'Field: Vector2 colliderSize'
+      - 'Field: Vector2 colliderOffset'
       - 'Field: bool fixedAngle'
       - 'Field: IDanmakuController[] extraControllers'
       values:
+      - '{"$content":0}'
+      - '"Point"'
+      - '{"x":1.0,"y":1.0}'
+      - '{"x":0.0,"y":0.0}'
       - false
       - '[]'
-  _id: 9912
+  _id: -10430
   dbg: 0
-  danmakuSystemPrefab: {fileID: 0}
---- !u!212 &21243216
+  danmakuSystemPrefab: {fileID: 19876622, guid: 1369960486de0844c8c02f62913f5ffb,
+    type: 2}
+--- !u!212 &21229434
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
