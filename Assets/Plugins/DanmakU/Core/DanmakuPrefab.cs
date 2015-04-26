@@ -226,7 +226,7 @@ namespace DanmakU {
 						Danmaku danmaku = enumerator.Current;
 						particles[i].position = danmaku.position;
 						particles[i].size = danmaku.Scale;
-						particles[i].axisOfRotation = forward;
+						//particles[i].axisOfRotation = forward;
 						particles[i].lifetime = 1000;
 						particles[i].color = danmaku.Color;
 					} else {
@@ -369,7 +369,7 @@ namespace DanmakU {
 				Matrix4x4 transformMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, transform.localScale);
 				vertexes = renderMesh.vertices;
 				for(int i = 0; i < vertexes.Length; i++) {
-					Debug.Log(vertexes[i]);
+					//Debug.Log(vertexes[i]);
 					vertexes[i] = transformMatrix * vertexes[i];
 				}
 				renderMesh.vertices = vertexes;
