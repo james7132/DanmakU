@@ -9,17 +9,12 @@ See the [script documentation](http://rhythmia.org/DanmakU/Docs/html/annotated.h
 DanmakU is open source under the MIT license. While using it, and find a bug that you fixed? See an issue in the issue tracker (of which there are many)? Have a new idea for a good feature for the development kit? Simply fork this repo, make your changes and submit a pull request. They will be merged in once it is confirmed that the changes indeed do help.
 
 # Structure
-DanmakU is split into multiple packages which can be used seperately or together depending on your needs:
-* Core - The central core to the entire dev kit, requires UnityUtilLib, Vexe Framework, and Unity3D itself.
-* Touhou - A specialized package for single player danmaku games with many of the same mechanics as many of the mainline Touhou games, **Requires: Core**
-* Phantasmagoria - A specialized package for multiplayer versus danmaku games similar to Touhou Kaeidzuka ~ Phantasmagoria of Flower View and Touhou 3 - Touhou Yumejikuu ~ Phantasmagoria of Dim.Dream, **Requires: Core**
+DanmakU is split into multiple packages which can be used seperately or together depending on your needs, each have their own dependencies:
+* **Core** - The central core to the entire dev kit. **Requires [UnityUtilLib](https://github.com/james7132/UnityUtilLib), [Vexe Framework](http://forum.unity3d.com/threads/free-vfw-full-set-of-drawers-savesystem-serialize-interfaces-generics-auto-props-delegates.266165/), and Unity3D itself.**
+* **Touhou** - A specialized package for single player danmaku games with many of the same mechanics as many of the mainline Touhou games, **Requires: Core**
+* **Phantasmagoria** - A specialized package for multiplayer versus danmaku games similar to Touhou Kaeidzuka ~ Phantasmagoria of Flower View and Touhou 3 - Touhou Yumejikuu ~ Phantasmagoria of Dim.Dream, **Requires: Core**
 
-# Dependencies
-This development kit relies heavily on [UnityUtilLib](https://github.com/james7132/UnityUtilLib), a utility library.
 
-All releases of DanmakU, including the source code releases, come packaged with the version of UnityUtilLib that is used.
-
-It is also being tested with [Vexe Framework](http://forum.unity3d.com/threads/free-vfw-full-set-of-drawers-savesystem-serialize-interfaces-generics-auto-props-delegates.266165/) as a way to serialize a number of objects that are not currently easily serialized by Unity.
 
 #Installation
 
