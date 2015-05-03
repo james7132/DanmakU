@@ -160,10 +160,10 @@ namespace DanmakU.Phantasmagoria {
 			for(int i = 0; i < allEnemies.Length; i++) {
 				Destroy (allEnemies[i].gameObject);
 			}
-			BulletCancelArea[] bcas = FindObjectsOfType<BulletCancelArea> ();
-			for(int i = 0; i < bcas.Length; i++) {
-				Destroy (bcas[i].gameObject);
-			}
+//			BulletCancelArea[] bcas = FindObjectsOfType<BulletCancelArea> ();
+//			for(int i = 0; i < bcas.Length; i++) {
+//				Destroy (bcas[i].gameObject);
+//			}
 			AttackPattern[] attackPatterns = FindObjectsOfType<AttackPattern> ();
 			for (int i = 0; i < attackPatterns.Length; i++) {
 				attackPatterns[i].Active = false;
