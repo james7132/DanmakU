@@ -10,7 +10,7 @@ DanmakU is open source under the MIT license. While using it, and find a bug tha
 
 # Structure
 DanmakU is split into multiple packages which can be used seperately or together depending on your needs:
-* Core - The central core to the entire dev kit, requires UnityUtilLib, Vexe Framework, and Unity3D itself.
+* **Core** - The central core to the entire dev kit. **Requires [UnityUtilLib](https://github.com/james7132/UnityUtilLib), [Vexe Framework](http://forum.unity3d.com/threads/free-vfw-full-set-of-drawers-savesystem-serialize-interfaces-generics-auto-props-delegates.266165/), and Unity3D itself.**
 * Colliders - A package that contains a number of useful Danmaku Colliders that can be used in a number of ways. **Requires: Core**
 * Controllers - A package that contains a number of useful Danmaku Controllers that can be used in a number of ways. **Requires: Core**
 * Modifiers - A package that contains a number of useful Fire Modifiers. **Requires: Core**
@@ -20,13 +20,6 @@ DanmakU is split into multiple packages which can be used seperately or together
 * NoScript - A general system for creating complex danmaku patterns without needing to code much. **Requires: Core, Modifiers** 
 * Touhou - A specialized package for single player danmaku games with many of the same mechanics as many of the mainline Touhou games, **Requires: Core**
 * Phantasmagoria - A specialized package for multiplayer versus danmaku games similar to Touhou Kaeidzuka ~ Phantasmagoria of Flower View and Touhou 3 - Touhou Yumejikuu ~ Phantasmagoria of Dim.Dream, **Requires: Core**
-
-# Dependencies
-This development kit relies heavily on [UnityUtilLib](https://github.com/james7132/UnityUtilLib), a utility library.
-
-All releases of DanmakU, including the source code releases, come packaged with the version of UnityUtilLib that is used.
-
-It is also being tested with [Vexe Framework](http://forum.unity3d.com/threads/free-vfw-full-set-of-drawers-savesystem-serialize-interfaces-generics-auto-props-delegates.266165/) as a way to serialize a number of objects that are not currently easily serialized by Unity.
 
 #Installation
 
