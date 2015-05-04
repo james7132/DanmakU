@@ -36,16 +36,6 @@ namespace DanmakU {
 		}
 		#endregion
 
-		/// <summary>
-		/// Helper method to quickly get the angle needed to directly fire at the player in the AttacKPattern's target field
-		/// </summary>
-		/// <returns>The angle needed to fire directly toward the player.</returns>
-		/// <param name="position">The position to evaluate the angle to the player from.</param>
-		/// <param name="coordSys">The cordinate system used to evaluate the true location of the source location</param>
-		protected float AngleToPlayer(Vector2 position, DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.World) {
-			return Field.AngleTowardPlayer(transform.position, coordSys);
-		}
-
 		public bool Active;
 
 		/// <summary>

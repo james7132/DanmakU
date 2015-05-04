@@ -96,7 +96,7 @@ namespace DanmakU {
 					float rx = Random.Range(area.xMin, area.xMax);
 					float ry = Random.Range(area.yMin, area.yMax);
 					for(int j = 0; j < fields.Count; j++) {
-						fields[j].SpawnEnemy(chainData[i].EnemyPrefab, new Vector2(rx, ry));
+						fields[j].SpawnObject<Enemy>(chainData[i].EnemyPrefab, new Vector2(rx, ry));
 					}
 					float time = 0f;
 					while(time < chainData[i].timeUntilNext) {

@@ -25,7 +25,7 @@ namespace DanmakU.Phantasmagoria.GUI {
 		private GameObject indicator;
 
 		void Start() {
-			player = (PhantasmagoriaPlayableCharacter)field.Player;
+//			player = (PhantasmagoriaPlayableCharacter)field.Player;
 			int maxIndicatorLevel = player.MaxChargeLevel - 1;
 			float inc = 0.5f / (float)player.MaxChargeLevel;
 			Vector3 ls = indicator.transform.localScale;
@@ -40,10 +40,10 @@ namespace DanmakU.Phantasmagoria.GUI {
 		}
 
 		void Update () {
-			Vector3 capacityScale = chargeCapacity.localScale;
-			Vector3 levelScale = chargeCapacity.localScale;
 			if (player.MaxChargeLevel > 0) {
+				Vector3 capacityScale = chargeCapacity.localScale;
 				capacityScale.x = player.CurrentChargeCapacity / (float)player.MaxChargeLevel;
+				Vector3 levelScale = chargeCapacity.localScale;
 				levelScale.x = player.CurrentChargeLevel / (float)player.MaxChargeLevel;
 				chargeCapacity.localScale = capacityScale;
 				chargeLevel.localScale = levelScale;

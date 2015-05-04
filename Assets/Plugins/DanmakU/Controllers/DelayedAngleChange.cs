@@ -25,6 +25,11 @@ namespace DanmakU.DanmakuControllers {
 		[SerializeField]
 		private DynamicFloat angularVelocity;
 
+		public Transform Target {
+			get;
+			set;
+		}
+
 		#region implemented abstract members of IDanmakuController
 
 		public void UpdateDanmaku (Danmaku danmaku, float dt) {
@@ -35,8 +40,8 @@ namespace DanmakU.DanmakuControllers {
 					case RotationMode.Relative:
 						baseAngle += danmaku.Rotation;
 						break;
-					case RotationMode.Player:
-						baseAngle += danmaku.Field.AngleTowardPlayer(danmaku.Position);
+					case RotationMode.Object:
+						baseAngle += DanmakuUtil.AngleBetween2D (danmaku.Position, Target.position);
 						break;
 					case RotationMode.Absolute:
 						break;

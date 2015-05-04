@@ -10,16 +10,10 @@ namespace DanmakU {
 	[RequireComponent(typeof(Collider2D))]
 	public abstract class DanmakuPlayer : DanmakuTrigger, IPausable, IDanmakuObject {
 		#region IDanmakuObject implementation
-		private DanmakuField field;
+
 		public virtual DanmakuField Field {
-			get {
-				return field;
-			}
-			set {
-				field = value;
-				if(value != null)
-					value.player = this;
-			}
+			get;
+			set;
 		}
 
 		#endregion
@@ -43,7 +37,6 @@ namespace DanmakU {
 		public override void Awake () {
 			base.Awake ();
 			Field = DanmakuField.FindClosest (this);
-			Field.player = this;
 			movementCollider = GetComponent<Collider2D> ();
 		}
 

@@ -17,7 +17,7 @@ namespace DanmakU {
 	[ExecuteInEditMode]
 	[DisallowMultipleComponent]
 	[AddComponentMenu("DanmakU/Danmaku Field")]
-	public sealed class DanmakuField : MonoBehaviour, IDanmakuObject {
+	public class DanmakuField : MonoBehaviour, IDanmakuObject {
 		#region IDanmakuObject implementation
 		DanmakuField IDanmakuObject.Field {
 			get {
@@ -73,7 +73,6 @@ namespace DanmakU {
 		[System.NonSerialized]
 		public DanmakuField TargetField;
 
-		internal DanmakuPlayer player;
 		private float currentAspectRatio;
 		private float screenOffset;
 		internal Bounds2D bounds;
@@ -98,12 +97,6 @@ namespace DanmakU {
 			}
 			set {
 				camera2DTransform.rotation = Quaternion.Euler(0f, 0f, value);
-			}
-		}
-
-		public DanmakuPlayer Player {
-			get {
-				return player;
 			}
 		}
 
@@ -163,7 +156,7 @@ namespace DanmakU {
 			get { return WorldPoint (new Vector2 (0f, 0.5f));}
 		}
 
-		void Awake () {
+		public virtual void Awake () {
 			if (fields == null) {
 				fields = new List<DanmakuField>();
 			}
@@ -171,7 +164,7 @@ namespace DanmakU {
 			TargetField = this;
 		}
 
-		void Update() {
+		public virtual void Update() {
 			if (camera2D != null) {
 				camera2DTransform = camera2D.transform;
 				camera2D.orthographic = true;
@@ -241,37 +234,9 @@ namespace DanmakU {
 					return point;
 			}
 		}
-
-		public float AngleTowardPlayer(Vector2 startLocation, CoordinateSystem coordinateSystem = CoordinateSystem.World) {
-			return DanmakuUtil.AngleBetween2D (startLocation, Player.transform.position);
-		}
-
-		/// <summary>
-		/// Spawns the player with the given controller
-		/// </summary>
-		/// <param name="character">Character prefab, defines character behavior and attack patterns.</param>
-		/// <param name="controller">Controller for the player, allows for a user to manually control it or let an AI take over.</param>
-		public DanmakuPlayer SpawnPlayer(DanmakuPlayer playerCharacter, Vector2 position, CoordinateSystem coordSys = CoordinateSystem.View) {
-			Vector2 spawnPos = WorldPoint(position, coordSys);
-			player =  Object.Instantiate(playerCharacter);
-			player.transform.position = spawnPos;
-			if(player != null) {
-				player.Reset (5);
-				player.transform.parent = transform;
-				player.Field = this;
-			}
-			return player;
-		}
-
-		public Enemy SpawnEnemy(Enemy prefab, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) {
-			Quaternion rotation = prefab.transform.rotation;
-			Enemy enemy = Instantiate(prefab, WorldPoint(location, coordSys), rotation) as Enemy;
-			enemy.Field = this;
-			return enemy;
-		}
 		
-		public GameObject SpawnGameObject(GameObject gameObject, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) {
-			Quaternion rotation = gameObject.transform.rotation;
+		public GameObject SpawnGameObject(GameObject prefab, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) {
+			Quaternion rotation = prefab.transform.rotation;
 			return Instantiate (gameObject, WorldPoint (location, coordSys), rotation) as GameObject;
 		}
 
@@ -282,7 +247,10 @@ namespace DanmakU {
 
 		public T SpawnObject<T>(T prefab, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) where T : Component {
 			Quaternion rotation = prefab.transform.rotation;
-			return Instantiate (prefab, WorldPoint (location, coordSys), rotation) as T;
+			T clone = Instantiate (prefab, WorldPoint (location, coordSys), rotation) as T;
+			if (clone is IDanmakuObject)
+				(clone as IDanmakuObject).Field = this;
+			return clone;
 		}
 		
 		/// <summary>

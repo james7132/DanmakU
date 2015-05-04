@@ -15,8 +15,7 @@ namespace DanmakU {
 		private Vector2 offset;
 
 		void Awake () {
-			DanmakuField field = DanmakuField.FindClosest (this);
-			transform.parent = field.player.transform;
+			transform.parent = FindObjectOfType<DanmakuPlayer>().transform;
 			transform.localPosition = offset;
 			Destroy (this);
 		}

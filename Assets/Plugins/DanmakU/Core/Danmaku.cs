@@ -19,9 +19,9 @@ namespace DanmakU {
 	/// A single projectile fired.
 	/// The base object that represents a single bullet in a Danmaku game
 	/// </summary>
-	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab>, IDanmakuObject {
+	public partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab>, IDanmakuObject {
 
-		public enum ColliderType { Point, Line, Circle, Box }
+		public enum ColliderType { Circle, Box, Point, Line }
 
 		internal int poolIndex;
 		//internal int renderIndex;
