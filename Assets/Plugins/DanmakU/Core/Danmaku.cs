@@ -539,7 +539,7 @@ namespace DanmakU {
 		/// <param name="group">the group this Danmaku is to be added to</param>
 		public void AddToGroup(DanmakuGroup group) {
 			groups.Add (group);
-			group.group.Add (this);
+			group.Add (this);
 			groupCountCache++;
 			groupCheck = groupCountCache > 0;
 		}
@@ -550,7 +550,7 @@ namespace DanmakU {
 		/// <param name="group">the group this Danmaku is to be removed from</param>
 		public void RemoveFromGroup(DanmakuGroup group) {
 			groups.Remove (group);
-			group.group.Remove (this);
+			group.Remove (this);
 			groupCountCache--;
 			groupCheck = groupCountCache > 0;
 		}
@@ -562,7 +562,7 @@ namespace DanmakU {
 		/// </summary>
 		public void DeactivateImmediate() {
 			for (int i = 0; i < groups.Count; i++) {
-				groups[i].group.Remove (this);
+				groups[i].Remove (this);
 			}
 			groups.Clear ();
 			if(tasks != null)

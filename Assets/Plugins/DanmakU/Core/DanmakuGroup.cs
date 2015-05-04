@@ -10,35 +10,21 @@ using UnityUtilLib;
 
 namespace DanmakU {
 
-	public sealed class DanmakuGroup : ICollection<Danmaku> {
-
-		internal HashSet<Danmaku> group;
+	public sealed class DanmakuGroup : HashSet<Danmaku> {
 
 		internal DanmakuController groupControllers;
 
-		public DanmakuGroup() {
-			group = new HashSet<Danmaku> ();
-		}
-
 		public int Damage {
 			set {
-				foreach(Danmaku danmaku in group) {
+				foreach(Danmaku danmaku in this) {
 					danmaku.Damage = value;
 				}
 			}
 		}
 
-//		public Sprite Sprite {
-//			set {
-//				foreach(Danmaku danmaku in group) {
-//					danmaku.Sprite = value;
-//				}
-//			}
-//		}
-
 		public Color Color {
 			set {
-				foreach(Danmaku danmaku in group) {
+				foreach(Danmaku danmaku in this) {
 					danmaku.Color = value;
 				}
 			}
@@ -46,7 +32,7 @@ namespace DanmakU {
 
 		public Vector2 Position {
 			set {
-				foreach(Danmaku danmaku in group) {
+				foreach(Danmaku danmaku in this) {
 					danmaku.Position = value;
 				}
 			}
@@ -54,7 +40,7 @@ namespace DanmakU {
 
 		public DynamicFloat Rotation {
 			set {
-				foreach(Danmaku danmaku in group) {
+				foreach(Danmaku danmaku in this) {
 					danmaku.Rotation = value.Value;
 				}
 			}
@@ -62,7 +48,7 @@ namespace DanmakU {
 
 		public string Tag {
 			set {
-				foreach(Danmaku danmaku in group) {
+				foreach(Danmaku danmaku in this) {
 					danmaku.Tag = value;
 				}
 			}
@@ -70,7 +56,7 @@ namespace DanmakU {
 
 		public int Layer {
 			set {
-				foreach(Danmaku danmaku in group) {
+				foreach(Danmaku danmaku in this) {
 					danmaku.Layer = value;
 				}
 			}
@@ -78,7 +64,7 @@ namespace DanmakU {
 
 		public bool BoundsCheck {
 			set {
-				foreach(Danmaku danmaku in group) {
+				foreach(Danmaku danmaku in this) {
 					danmaku.BoundsCheck = value;
 				}
 			}
@@ -86,81 +72,53 @@ namespace DanmakU {
 
 		public bool CollisionCheck {
 			set {
-				foreach(Danmaku danmaku in group) {
+				foreach(Danmaku danmaku in this) {
 					danmaku.CollisionCheck = value;
 				}
 			}
 		}
 
 		public void Rotate(DynamicFloat delta) {
-			foreach(Danmaku danmaku in group) {
+			foreach(Danmaku danmaku in this) {
 				danmaku.Rotate(delta);
 			}
 		}
 
 		public void MatchPrefab(DanmakuPrefab prefab) {
-			foreach (Danmaku danmaku in group) {
+			foreach (Danmaku danmaku in this) {
 				danmaku.MatchPrefab(prefab);
-			}
-		}
-
-		public void AddToGroup(DanmakuGroup otherGroup) {
-			if(this == otherGroup)
-				return;
-			foreach(Danmaku danmaku in group) {
-				danmaku.AddToGroup(otherGroup);
-			}
-		}
-
-		public void RemoveFromGroup(DanmakuGroup otherGroup) {
-			if (this == otherGroup) {
-				Clear();
-				return;
-			}
-			foreach(Danmaku danmaku in group) {
-				danmaku.RemoveFromGroup(otherGroup);
 			}
 		}
 
 		public void AddController(IDanmakuController controller) {
 			groupControllers -= controller.UpdateDanmaku;
-			foreach(Danmaku proj in group) {
+			foreach(Danmaku proj in this) {
 				proj.AddController(controller.UpdateDanmaku);
 			}
 		}
 
 		public void RemoveController(IDanmakuController controller) {
 			groupControllers -= controller.UpdateDanmaku;
-			foreach(Danmaku proj in group) {
+			foreach(Danmaku proj in this) {
 				proj.RemoveController(controller.UpdateDanmaku);
 			}
 		}
 
 		public void ClearControllers() {
-			foreach(Danmaku danmaku in group) {
+			foreach(Danmaku danmaku in this) {
 				danmaku.ClearControllers();
 			}
 		}
 
 		public void ClearGroupControllers() {
-			foreach(Danmaku danmaku in group) {
+			foreach(Danmaku danmaku in this) {
 				danmaku.RemoveController(groupControllers);
 			}
 			groupControllers = null;
 		}
 
-		//public Dictionary<Danmaku, T> AddComponent<T>() where T : Component {
-		//	var pairs = new Dictionary<Danmaku, T> ();
-		//	foreach (Danmaku danmaku in group) {
-		//		pairs[danmaku] = danmaku.AddComponent<T>();
-		//	}
-		//	return pairs;
-		//}
-
-		#region ICollection implementation
-
-		public void Add (Danmaku item) {
-			bool added = group.Add(item);
+		public new void Add (Danmaku item) {
+			bool added = base.Add(item);
 			if (added) {
 				item.groups.Add (this);
 				item.groupCountCache++;
@@ -169,23 +127,16 @@ namespace DanmakU {
 			}
 		}
 
-		public void Clear () {
-			foreach(Danmaku proj in group) {
+		public new void Clear () {
+			foreach(Danmaku proj in this) {
 				proj.RemoveFromGroup(this);
 			}
+			base.Clear ();
 		}
 
-		public bool Contains (Danmaku item) {
-			return group.Contains (item);
-		}
-
-		public void CopyTo (Danmaku[] array, int arrayIndex) {
-			group.CopyTo (array, arrayIndex);
-		}
-
-		public bool Remove (Danmaku item) {
+		public new bool Remove (Danmaku item) {
 			bool success = false;
-			success = group.Remove(item);
+			success = base.Remove(item);
 			if (success) {
 				item.groups.Remove (this);
 				item.groupCountCache--;
@@ -194,39 +145,6 @@ namespace DanmakU {
 			}
 			return success;
 		}
-
-		public int Count {
-			get {
-				return group.Count;
-			}
-		}
-
-		public bool IsReadOnly {
-			get {
-				return false;
-			}
-		}
-
-		#endregion
-
-		#region IEnumerable implementation
-
-		public IEnumerator<Danmaku> GetEnumerator () {
-			return group.GetEnumerator ();
-		}
-
-		#endregion
-
-		#region IEnumerable implementation
-
-		IEnumerator IEnumerable.GetEnumerator () {
-			return group.GetEnumerator ();
-		}
-
-		#endregion
-
-
-
 
 	}
 }
