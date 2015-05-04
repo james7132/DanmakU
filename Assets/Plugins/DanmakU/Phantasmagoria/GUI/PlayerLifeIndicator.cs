@@ -18,7 +18,9 @@ namespace DanmakU.Phantasmagoria.GUI {
 		}
 
 		protected override int GetMaxValue () {
-			return DanmakuGameController.MaximumLives;
+//			return DanmakuGameController.MaximumLives;
+			//FIXME
+			return 0;
 		}
 
 		protected override int GetValue () {
