@@ -20,26 +20,13 @@ namespace DanmakU {
 	public class DanmakuGameController : GameController {
 
 		[SerializeField]
-		private int maximumLives = 5;
-
-		[SerializeField]
-		private int danmakuInitialCount = 1000;
+		private int danmakuInitialCount = Danmaku.standardStart;
 		
 		[SerializeField]
-		private int danmakuSpawnOnEmpty = 100;
+		private int danmakuSpawnOnEmpty = Danmaku.standardSpawn;
 
 		[SerializeField]
 		private float angleResolution = 0.1f;
-
-		/// <summary>
-		/// The maximum number of lives a player can reach.
-		/// </summary>
-		/// <value>The maximum lives.</value>
-		public static int MaximumLives {
-			get {
-				return (Instance as DanmakuGameController).maximumLives;
-			}
-		}
 
 		public override void Update() {
 			base.Update ();
@@ -51,6 +38,10 @@ namespace DanmakU {
 		public override void Awake () {
 			base.Awake ();
 			Danmaku.Setup (danmakuInitialCount, danmakuSpawnOnEmpty, angleResolution);
+		}
+
+		void OnLevelWasLoaded(int level) {
+			Danmaku.DeactivateAll ();
 		}
 	}
 }

@@ -19,14 +19,24 @@ namespace DanmakU {
 	/// A single projectile fired.
 	/// The base object that represents a single bullet in a Danmaku game
 	/// </summary>
-	public partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab>, IDanmakuObject {
+	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab>, IDanmakuObject {
 
-		public enum ColliderType { Circle, Box, Point, Line }
+		/// <summary>
+		/// The supported collider shapes used by danmaku
+		/// </summary>
+		public enum ColliderType { 
+			Circle, 
+			Box, 
+			Point, 
+			Line 
+		}
 
+		/// <summary>
+		/// The index of the pool.
+		/// </summary>
 		internal int poolIndex;
 		//internal int renderIndex;
 
-		//internal float rotation;
 		internal Vector2 direction;
 
 		//Cached information about the Danmaku from its prefab
@@ -281,14 +291,6 @@ namespace DanmakU {
 			controllerCheck = controllerUpdate != null;
 		}
 
-//		public T AddComponent<T>() where T : Component {
-//			T component = gameObject.AddComponent<T> ();
-//			if (extraComponents == null)
-//				extraComponents = new Stack<Component> ();
-//			extraComponents.Push (component);
-//			return component;
-//		}
-
 		public void ClearControllers() {
 			controllerCheck = true;
 			controllerUpdate = null;
@@ -297,33 +299,13 @@ namespace DanmakU {
 		public void Rotate(DynamicFloat delta) {
 			Rotation += delta.Value;
 		}
-		
-		/// <summary>
-		/// Compares the tag of the Danmaku instance to the given string.
-		/// Mirrors <a href="http://docs.unity3d.com/ScriptReference/GameObject.CompareTag.html">GameObject.CompareTag</a>.
-		/// </summary>
-		/// <returns><c>true</c>, if tag is an exact match to the string, <c>false</c> otherwise.</returns>
-		/// <param name="tag">Tag.</param>
-//		public bool CompareTag(string tag) {
-//			return gameObject.CompareTag (tag);
-//		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
 		/// </summary>
 		internal Danmaku() {
 			groups = new List<DanmakuGroup> ();
-
-			//gameObject = new GameObject ();
-			//transform = gameObject.transform;
-			//renderer = gameObject.AddComponent<SpriteRenderer> ();
-			#if UNITY_EDITOR
-			//This is purely for cleaning up the inspector, no need in an actual build
-			//gameObject.hideFlags = HideFlags.HideInHierarchy;
-			#endif
 			raycastHits = new RaycastHit2D[5];
-//			colliders = new Collider2D[5];
-//			scripts = new IDanmakuCollider[5];
 		}
 
 		internal void Update() {
@@ -333,7 +315,6 @@ namespace DanmakU {
 			originalPosition.y = position.y;
 			Vector2 movementVector;
 
-			#region thread_unsafe
 			if (controllerCheck) {
 				controllerUpdate(this, dt);
 			}
@@ -348,9 +329,7 @@ namespace DanmakU {
 						i++;
 				}
 			}
-			#endregion
 
-			#region thread_safe
 			if(AngularSpeed != 0f) {
 				float rotationChange = AngularSpeed * dt;
 				rotation += rotationChange;
@@ -366,9 +345,8 @@ namespace DanmakU {
 			movementVector.x = position.x - originalPosition.x;
 			movementVector.y = position.y - originalPosition.y;
 
-			Debug.DrawRay(originalPosition, movementVector);
+			//Debug.DrawRay(originalPosition, movementVector);
 
-			#endregion
 			if(CollisionCheck) {
 				float sqrDistance = movementVector.sqrMagnitude;
 				float cx = colliderOffset.x;
@@ -603,25 +581,5 @@ namespace DanmakU {
 		public override int GetHashCode () {
 			return poolIndex;;
 		}
-
-//		public override bool Equals (object obj) {
-//			return this == (obj as Danmaku);
-//		}
-//
-//		public static bool operator ==(Danmaku d1, Danmaku d2) {
-//			bool d1null = (object)d1 == null;
-//			bool d2null = (object)d2 == null;
-//			if(d1null && d2null)
-//				return true;
-//			if(d1null && !d2null)
-//				return d2.is_active;
-//			if(!d1null && d2null)
-//				return d1.is_active;
-//			return System.Object.ReferenceEquals(d1, d2);
-//		}
-//
-//		public static bool operator !=(Danmaku d1, Danmaku d2) {
-//			return !(d1 == d2);
-//		}
 	}
 }
