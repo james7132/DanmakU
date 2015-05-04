@@ -30,6 +30,8 @@ namespace DanmakU {
 
 		/// <summary>
 		/// A set of 2D vectors corresponding to unit circle coordinates
+		/// Precalculated since Cosine and Sine calculations are expensive when called thousands of times per frame.
+		/// An array access on an array of structs is much cheaper than calling both Mathf.Cos, and Mathf.Sin.
 		/// </summary>
 		internal static Vector2[] unitCircle;
 		private static float invAngRes;
