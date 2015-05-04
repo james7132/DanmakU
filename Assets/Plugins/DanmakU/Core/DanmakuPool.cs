@@ -12,227 +12,217 @@ using UnityUtilLib.Pooling;
 /// </summary>
 namespace DanmakU {
 	
-	/// <summary>
-	/// A single projectile fired.
-	/// The base object that represents a single bullet in a Danmaku game
-	/// </summary>
-	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab> {
-
-		internal class DanmakuPool : IPool<Danmaku> {
+	class DanmakuPool : IPool<Danmaku> {
 		
-			//FIXME: Currently not working: optimized version of pool, need to debug
-
-//			internal Danmaku[] all;
-//			
-//			internal int totalCount;
-//			internal int spawnCount;
-//			internal int activeIndex;
-//			
-//			public DanmakuPool(int initial, int spawn) {
-//				this.spawnCount = spawn;
-//				totalCount = 0;
-//				activeIndex = 0;
-//				all = new Danmaku[Mathf.NextPowerOfTwo(initial + 1)];
-//				Spawn(initial);
-//			}
-//			
-//			private void Spawn(int count) {
-//				int endCount = totalCount + count;
-//				if(all.Length < endCount) {
-//					//Debug.Log("extend");
-//					
-//					Danmaku[] temp = new Danmaku[Mathf.NextPowerOfTwo(endCount + 1)];
-//					Array.Copy(all, temp, all.Length);
-//					//					int test = 0;
-//					//					while(all[test] != null) {
-//					//						test++;
-//					//					}
-//					//					Debug.Log(test);
-//					all = temp;
-//				}
-//				for(int i = totalCount; i < endCount; i++) {
-//					Danmaku newDanmaku = new Danmaku();
-//					newDanmaku.poolIndex = i;
-//					newDanmaku.Pool = this;
-//					all[i] = newDanmaku;
-//				}
-//				totalCount = endCount;
-//			}
-//			
-//			public void Get(Danmaku[] danmaku) {
-//				if (danmaku == null)
-//					throw new ArgumentNullException ("Danmaku array can't be null");
-//				int count = danmaku.Length;
-//				if(count + activeIndex > totalCount)
-//					Spawn (count);
-//				Array.Copy(all, activeIndex + 1, danmaku, 0, count);
-//				activeIndex += count;
-//			}
-//			
-//			public void Return(Danmaku[] danmaku) {
-//				if(danmaku == null)
-//					throw new ArgumentNullException ("Danmaku array can't be null");
-//				int count = danmaku.Length;
-//				for(int i = 0; i < count; i++) {
-//					Return(danmaku[i]);
-//				}
-//			}
-//			
-//			#region IPool implementation
-//			
-//			public Danmaku Get () {
-//				activeIndex++;
-//				if (activeIndex >= totalCount) {
-//					Spawn(spawnCount);
-//				}
-//				//				if (all [activeCount] == null) {
-//				//					Debug.Log(activeCount);
-//				//				}
-//				return all [activeIndex];
-//			}
-//			
-//			public void Return (Danmaku obj) {
-//				int deadIndex = obj.poolIndex;;
-//				Danmaku temp = all [activeIndex];
-//				all [activeIndex] = obj;
-//				all [deadIndex] = temp;
-//				obj.poolIndex = activeIndex;
-//				temp.poolIndex = deadIndex;
-//				activeIndex--;
-//			}
-//			
-//			#endregion
-//			
-//			#region IPool implementation
-//			
-//			object IPool.Get () {
-//				return Get ();
-//			}
-//			
-//			public void Return (object obj) {
-//				Return (obj as Danmaku);
-//			}
-//			
-//			#endregion
-
-			internal int[] queue;
-			internal Danmaku[] all;
-			
-			private int currentIndex;
-			private int endIndex;
-			private int size;
-			
-			internal int totalCount;
-			internal int inactiveCount;
-			internal int spawnCount;
-			
-			public DanmakuPool(int initial, int spawn) {
-				this.spawnCount = spawn;
-				totalCount = 0;
-				inactiveCount = 0;
-				Spawn (initial);
-			}
-			
-			protected void Spawn(int count) {
-				if(all == null || queue == null) {
-					all = new Danmaku[2];
-					queue = new int[2];
-				}
-				int endCount = totalCount + spawnCount;
-				if(all.Length < endCount) {
-					size = all.Length;
-					while (size <= endCount) {
-						size = Mathf.NextPowerOfTwo(size + 1);
-					}
-					
-					Danmaku[] temp = new Danmaku[size];
-					Array.Copy(all, temp, all.Length);
-					all = temp;
-					
-					int[] tempQueue = new int[size];
-					int initial = 0;
-					if(currentIndex < endIndex) {
-						
-						Array.Copy(queue, currentIndex, tempQueue, 0, endIndex - currentIndex);
-					} else {
-						initial = queue.Length - currentIndex - 1;
-						Array.Copy(queue, currentIndex, tempQueue, 0, initial);
-						Array.Copy(queue, 0, tempQueue, initial, endIndex);
-					}
-					currentIndex = 0;
-					endIndex = inactiveCount;
-					queue = tempQueue;
-				}
-				for(int i = totalCount; i < endCount; i++, endIndex++) {
-					all[i] = new Danmaku();
-					all[i].poolIndex = i;
-					all[i].pool = this;
-					if(endIndex >= queue.Length)
-						endIndex = 0;
-					queue[endIndex] = i;
-				}
-				totalCount = endCount;
-				inactiveCount += spawnCount;
-			}
-			
-			public void Get(Danmaku[] projectiles) {
-				if (projectiles == null)
-					throw new ArgumentNullException ("Projectiles can't be null");
-				int count = projectiles.Length;
-				while (inactiveCount < count)
-					Spawn (spawnCount);
-				inactiveCount -= count;
-				for (int i = 0; i < projectiles.Length; i++) {
-					projectiles[i] = all[queue[currentIndex]];
-					currentIndex = (currentIndex + 1) % size;
-				}
-			}
-			
-			public void Return(Danmaku[] projectiles) {
-				if(projectiles == null)
-					throw new ArgumentNullException ("Projectiles can't be null");
-				int count = projectiles.Length;
-				inactiveCount += count;
-				for(int i = 0; i < count; i++) {
-					queue[endIndex] = projectiles[i].poolIndex;
-					endIndex = (endIndex + 1) % size;
-				}
-			}
-			
-			#region IPool implementation
-			
-			public Danmaku Get () {
-				if(inactiveCount <= 0) {
-					Spawn (spawnCount);
-				}
-				inactiveCount--;
-				int index = queue [currentIndex];
-				currentIndex = (currentIndex + 1) % size;
-				return all [index];
-			}
-			
-			public void Return (Danmaku obj) {
-				queue [endIndex] = obj.poolIndex;
-				endIndex = (endIndex + 1) % size;
-				inactiveCount++;
-			}
-			
-			#endregion
-			
-			#region IPool implementation
-			
-			object IPool.Get () {
-				return Get ();
-			}
-			
-			public void Return (object obj) {
-				Return (obj as Danmaku);
-			}
-			
-			#endregion
+		//FIXME: Currently not working: optimized version of pool, need to debug
+		
+		//			internal Danmaku[] all;
+		//			
+		//			internal int totalCount;
+		//			internal int spawnCount;
+		//			internal int activeIndex;
+		//			
+		//			public DanmakuPool(int initial, int spawn) {
+		//				this.spawnCount = spawn;
+		//				totalCount = 0;
+		//				activeIndex = 0;
+		//				all = new Danmaku[Mathf.NextPowerOfTwo(initial + 1)];
+		//				Spawn(initial);
+		//			}
+		//			
+		//			private void Spawn(int count) {
+		//				int endCount = totalCount + count;
+		//				if(all.Length < endCount) {
+		//					//Debug.Log("extend");
+		//					
+		//					Danmaku[] temp = new Danmaku[Mathf.NextPowerOfTwo(endCount + 1)];
+		//					Array.Copy(all, temp, all.Length);
+		//					//					int test = 0;
+		//					//					while(all[test] != null) {
+		//					//						test++;
+		//					//					}
+		//					//					Debug.Log(test);
+		//					all = temp;
+		//				}
+		//				for(int i = totalCount; i < endCount; i++) {
+		//					Danmaku newDanmaku = new Danmaku();
+		//					newDanmaku.poolIndex = i;
+		//					newDanmaku.Pool = this;
+		//					all[i] = newDanmaku;
+		//				}
+		//				totalCount = endCount;
+		//			}
+		//			
+		//			public void Get(Danmaku[] danmaku) {
+		//				if (danmaku == null)
+		//					throw new ArgumentNullException ("Danmaku array can't be null");
+		//				int count = danmaku.Length;
+		//				if(count + activeIndex > totalCount)
+		//					Spawn (count);
+		//				Array.Copy(all, activeIndex + 1, danmaku, 0, count);
+		//				activeIndex += count;
+		//			}
+		//			
+		//			public void Return(Danmaku[] danmaku) {
+		//				if(danmaku == null)
+		//					throw new ArgumentNullException ("Danmaku array can't be null");
+		//				int count = danmaku.Length;
+		//				for(int i = 0; i < count; i++) {
+		//					Return(danmaku[i]);
+		//				}
+		//			}
+		//			
+		//			#region IPool implementation
+		//			
+		//			public Danmaku Get () {
+		//				activeIndex++;
+		//				if (activeIndex >= totalCount) {
+		//					Spawn(spawnCount);
+		//				}
+		//				//				if (all [activeCount] == null) {
+		//				//					Debug.Log(activeCount);
+		//				//				}
+		//				return all [activeIndex];
+		//			}
+		//			
+		//			public void Return (Danmaku obj) {
+		//				int deadIndex = obj.poolIndex;;
+		//				Danmaku temp = all [activeIndex];
+		//				all [activeIndex] = obj;
+		//				all [deadIndex] = temp;
+		//				obj.poolIndex = activeIndex;
+		//				temp.poolIndex = deadIndex;
+		//				activeIndex--;
+		//			}
+		//			
+		//			#endregion
+		//			
+		//			#region IPool implementation
+		//			
+		//			object IPool.Get () {
+		//				return Get ();
+		//			}
+		//			
+		//			public void Return (object obj) {
+		//				Return (obj as Danmaku);
+		//			}
+		//			
+		//			#endregion
+		
+		internal int[] queue;
+		internal Danmaku[] all;
+		
+		private int currentIndex;
+		private int endIndex;
+		private int size;
+		
+		internal int totalCount;
+		internal int inactiveCount;
+		internal int spawnCount;
+		
+		public DanmakuPool(int initial, int spawn) {
+			this.spawnCount = spawn;
+			totalCount = 0;
+			inactiveCount = 0;
+			Spawn (initial);
 		}
-
-
+		
+		protected void Spawn(int count) {
+			if(all == null || queue == null) {
+				all = new Danmaku[2];
+				queue = new int[2];
+			}
+			int endCount = totalCount + spawnCount;
+			if(all.Length < endCount) {
+				size = all.Length;
+				while (size <= endCount) {
+					size = Mathf.NextPowerOfTwo(size + 1);
+				}
+				
+				Danmaku[] temp = new Danmaku[size];
+				Array.Copy(all, temp, all.Length);
+				all = temp;
+				
+				int[] tempQueue = new int[size];
+				if(currentIndex < endIndex) {
+					Array.Copy(queue, currentIndex, tempQueue, 0, endIndex - currentIndex);
+				} else {
+					int initial = 0;
+					initial = queue.Length - currentIndex - 1;
+					Array.Copy(queue, currentIndex, tempQueue, 0, initial);
+					Array.Copy(queue, 0, tempQueue, initial, endIndex);
+				}
+				currentIndex = 0;
+				endIndex = inactiveCount;
+				queue = tempQueue;
+			}
+			for(int i = totalCount; i < endCount; i++, endIndex++) {
+				all[i] = new Danmaku();
+				all[i].poolIndex = i;
+				all[i].pool = this;
+				if(endIndex >= queue.Length)
+					endIndex = 0;
+				queue[endIndex] = i;
+			}
+			totalCount = endCount;
+			inactiveCount += spawnCount;
+		}
+		
+		public void Get(Danmaku[] projectiles) {
+			if (projectiles == null)
+				throw new ArgumentNullException ("Projectiles can't be null");
+			int count = projectiles.Length;
+			while (inactiveCount < count)
+				Spawn (spawnCount);
+			inactiveCount -= count;
+			for (int i = 0; i < projectiles.Length; i++) {
+				projectiles[i] = all[queue[currentIndex]];
+				currentIndex = (currentIndex + 1) % size;
+			}
+		}
+		
+		public void Return(Danmaku[] projectiles) {
+			if(projectiles == null)
+				throw new ArgumentNullException ("Projectiles can't be null");
+			int count = projectiles.Length;
+			inactiveCount += count;
+			for(int i = 0; i < count; i++) {
+				queue[endIndex] = projectiles[i].poolIndex;
+				endIndex = (endIndex + 1) % size;
+			}
+		}
+		
+		#region IPool implementation
+		
+		public Danmaku Get () {
+			if(inactiveCount <= 0) {
+				Spawn (spawnCount);
+			}
+			inactiveCount--;
+			int index = queue [currentIndex];
+			currentIndex = (currentIndex + 1) % size;
+			return all [index];
+		}
+		
+		public void Return (Danmaku obj) {
+			queue [endIndex] = obj.poolIndex;
+			endIndex = (endIndex + 1) % size;
+			inactiveCount++;
+		}
+		
+		#endregion
+		
+		#region IPool implementation
+		
+		object IPool.Get () {
+			return Get ();
+		}
+		
+		public void Return (object obj) {
+			Return (obj as Danmaku);
+		}
+		
+		#endregion
 	}
 }
 

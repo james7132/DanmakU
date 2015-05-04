@@ -17,7 +17,7 @@ namespace DanmakU.Phantasmagoria {
 
 		protected override void OnDeath () {
 			Field.SpawnGameObject (onDeathSpawn, transform.position, DanmakuField.CoordinateSystem.World);
-			(Field.player as PhantasmagoriaPlayableCharacter).CurrentChargeCapacity += specialBoost;
+			FindObjectOfType<PhantasmagoriaPlayableCharacter>().CurrentChargeCapacity += specialBoost;
 		}
 	}
 }

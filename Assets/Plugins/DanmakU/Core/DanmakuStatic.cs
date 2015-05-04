@@ -16,7 +16,7 @@ namespace DanmakU {
 	/// A single projectile fired.
 	/// The base object that represents a single bullet in a Danmaku game
 	/// </summary>
-	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab> {
+	public partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab> {
 
 		private const int standardStart = 1000;
 		private const int standardSpawn = 100;

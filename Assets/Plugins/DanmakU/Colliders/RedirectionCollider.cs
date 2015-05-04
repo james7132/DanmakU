@@ -1,5 +1,10 @@
-﻿using UnityEngine;
+﻿// Copyright (c) 2015 James Liu
+//	
+// See the LISCENSE file for copying permission.
+
+using UnityEngine;
 using UnityUtilLib;
+using Vexe.Runtime.Types;
 
 namespace DanmakU {
 
@@ -16,6 +21,11 @@ namespace DanmakU {
 		private DynamicFloat angle;
 
 		private DanmakuGroup affected;
+
+		public Transform Target {
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// Called on Component instantiation
@@ -34,8 +44,8 @@ namespace DanmakU {
 			case RotationMode.Relative:
 				baseAngle += danmaku.Rotation;
 				break;
-			case RotationMode.Player:
-				baseAngle += danmaku.Field.AngleTowardPlayer(danmaku.Position);
+			case RotationMode.Object:
+				baseAngle += DanmakuUtil.AngleBetween2D (danmaku.Position, Target.position);
 				break;
 			case RotationMode.Absolute:
 				break;

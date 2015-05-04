@@ -22,7 +22,7 @@ namespace DanmakU.Phantasmagoria.GUI {
 		}
 
 		protected override int GetValue () {
-			return ((player) ? gameControl.player1 : gameControl.player2).Field.Player.LivesRemaining;
+			return FindObjectOfType<DanmakuPlayer>().LivesRemaining;
 		}
 	}
 }

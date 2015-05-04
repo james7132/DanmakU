@@ -216,7 +216,6 @@ namespace DanmakU {
 
 			runtimeSystem.GetParticles(particles);
 			//Debug.Log(count2);
-			Vector3 forward = Vector3.forward;
 			bool done;
 			IEnumerator<Danmaku> enumerator = currentDanmaku.GetEnumerator();
 			if (fixedAngle) {
@@ -235,6 +234,7 @@ namespace DanmakU {
 					}
 				}
 			} else {
+				Vector3 forward = Vector3.forward;
 				for(int i = 0; i < danmakuCount; i++) {
 					done = enumerator.MoveNext();
 					if(done) {

@@ -19,10 +19,10 @@ namespace DanmakU.Phantasmagoria {
 //				return;
 //			}
 			PhantasmagoriaGameController controller = GetComponent<PhantasmagoriaGameController> ();
-			PhantasmagoriaPlayableCharacter player1 = (PhantasmagoriaPlayableCharacter) controller.player1.Field.SpawnPlayer (character1, Vector2.one * 0.5f);
-			PhantasmagoriaPlayableCharacter player2 = (PhantasmagoriaPlayableCharacter) controller.player2.Field.SpawnPlayer (character2, Vector2.one * 0.5f);
-			player1.Agent = new PhantasmagoriaControlledAgent(1);
-			player2.Agent = new PhantasmagoriaControlledAgent(2);
+			//PhantasmagoriaPlayableCharacter player1 = (PhantasmagoriaPlayableCharacter) controller.player1.Field.SpawnPlayer (character1, Vector2.one * 0.5f);
+			//PhantasmagoriaPlayableCharacter player2 = (PhantasmagoriaPlayableCharacter) controller.player2.Field.SpawnPlayer (character2, Vector2.one * 0.5f);
+			//player1.Agent = new PhantasmagoriaControlledAgent(1);
+			//player2.Agent = new PhantasmagoriaControlledAgent(2);
 		}
 	}
 }

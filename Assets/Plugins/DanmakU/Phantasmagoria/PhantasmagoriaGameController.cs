@@ -71,9 +71,9 @@ namespace DanmakU.Phantasmagoria {
 
 		public override void Update() {
 			base.Update ();
-			if (!reseting && (player1.Field.Player.LivesRemaining <= 0 || player2.Field.Player.LivesRemaining <= 0)) {
-				StartCoroutine(RoundReset ());
-			}
+//			if (!reseting && (player1.Field.Player.LivesRemaining <= 0 || player2.Field.Player.LivesRemaining <= 0)) {
+//				StartCoroutine(RoundReset ());
+//			}
 			roundTimeRemaining -= Util.DeltaTime;
 			bool p1win = player1.score >= winningScore;
 			bool p2win = player2.score >= winningScore;
@@ -147,12 +147,12 @@ namespace DanmakU.Phantasmagoria {
 			for(int i = 0; i < closure.Length; i++) {
 				closure[i].localScale = Vector3.one;
 			}
-			bool p1dead = player1.Field.Player.LivesRemaining <= 0;
-			bool p2dead = player2.Field.Player.LivesRemaining <= 0;
-			player1.score += (p2dead && !p1dead) ? 1 : 0;
-			player2.score += (p1dead && !p2dead) ? 1 : 0;
-			player1.Field.Player.Reset (MaximumLives);
-			player2.Field.Player.Reset (MaximumLives);
+//			bool p1dead = player1.Field.Player.LivesRemaining <= 0;
+//			bool p2dead = player2.Field.Player.LivesRemaining <= 0;
+//			player1.score += (p2dead && !p1dead) ? 1 : 0;
+//			player2.score += (p1dead && !p2dead) ? 1 : 0;
+//			player1.Field.Player.Reset (MaximumLives);
+//			player2.Field.Player.Reset (MaximumLives);
 			player1.Field.Camera2DRotation = 0f;
 			player2.Field.Camera2DRotation = 0f;
 			Danmaku.DeactivateAll ();
