@@ -44,8 +44,18 @@ namespace DanmakU {
 		}
 
 		public static DanmakuField FindClosest(Vector2 position) {
-			if(fields == null)
-				return null;
+			if (fields == null) {
+				fields = new List<DanmakuField>();
+				fields.AddRange(Object.FindObjectsOfType<DanmakuField>());
+			}
+			if (fields.Count == 0) {
+				DanmakuField encompassing = new GameObject("Danmaku Field").AddComponent<DanmakuField>();
+				encompassing.UseClipBoundary = false;
+				fields.Add(encompassing);
+			}
+			if (fields.Count == 1) {
+				return fields[0];
+			}
 			DanmakuField closest = null;
 			float minDist = float.MaxValue;
 			for(int i = 0; i < fields.Count; i++) {
@@ -236,35 +246,33 @@ namespace DanmakU {
 		}
 		
 		public GameObject SpawnGameObject(GameObject prefab, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) {
+			if (TargetField == null)
+				TargetField = this;
 			Quaternion rotation = prefab.transform.rotation;
-			return Instantiate (gameObject, WorldPoint (location, coordSys), rotation) as GameObject;
+			return Instantiate (gameObject, TargetField.WorldPoint (location, coordSys), rotation) as GameObject;
 		}
 
 		public Component SpawnObject(Component prefab, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) {
+			if (TargetField == null)
+				TargetField = this;
 			Quaternion rotation = prefab.transform.rotation;
-			return Instantiate (prefab, WorldPoint (location, coordSys), rotation) as Component;
+			return Instantiate (prefab, TargetField.WorldPoint (location, coordSys), rotation) as Component;
 		}
 
 		public T SpawnObject<T>(T prefab, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) where T : Component {
+			if (TargetField == null)
+				TargetField = this;
 			Quaternion rotation = prefab.transform.rotation;
-			T clone = Instantiate (prefab, WorldPoint (location, coordSys), rotation) as T;
+			T clone = Instantiate (prefab, TargetField.WorldPoint (location, coordSys), rotation) as T;
 			if (clone is IDanmakuObject)
 				(clone as IDanmakuObject).Field = this;
 			return clone;
 		}
 		
-		/// <summary>
-		/// Spawns a projectile in the field.
-		/// 
-		/// If absoluteWorldCoord is set to false, location specifies a relative position in the field. 0.0 = left/bottom, 1.0 = right/top. Values greater than 1 or less than 0 spawn
-		/// outside of of the camera view.
-		/// </summary>
-		/// <param name="prefab">Prefab for the spawned projectile, describes the visuals, size, and hitbox characteristics of the prefab.</param>
-		/// <param name="location">The location within the field to spawn the projectile.</param>
-		/// <param name="rotation">Rotation.</param>
-		/// <param name="absoluteWorldCoord">If set to <c>true</c>, <c>location</c> is in absolute world coordinates relative to the bottom right corner of the game plane.</param>
 		public Danmaku SpawnDanmaku(DanmakuPrefab bulletType, Vector2 location, DynamicFloat rotation, CoordinateSystem coordSys = CoordinateSystem.View) {
-			Danmaku bullet = Danmaku.Get (bulletType, WorldPoint(location, coordSys), rotation, this);
+			if (TargetField == null)
+				TargetField = this;
+			Danmaku bullet = Danmaku.Get (bulletType, TargetField.WorldPoint(location, coordSys), rotation, this);
 			bullet.Activate ();
 			return bullet;
 		}
@@ -277,8 +285,10 @@ namespace DanmakU {
 		                             DanmakuController controller = null,
                                      DanmakuModifier modifier = null,
                                      DanmakuGroup group = null,
-		                          	 Color? colorOverride = null) {
-			Vector2 position = WorldPoint (location, coordSys);
+		                          Color? colorOverride = null) {
+			if (TargetField == null)
+				TargetField = this;
+			Vector2 position = TargetField.WorldPoint (location, coordSys);
 			if (modifier == null) {
 				Danmaku danmaku = Danmaku.Get (bulletType, position, rotation, this);
 				danmaku.Activate ();
@@ -302,8 +312,10 @@ namespace DanmakU {
                                      CoordinateSystem coordSys = CoordinateSystem.View,
                              		 DanmakuController controller = null,
                                      DanmakuModifier modifier = null,
-                                     DanmakuGroup group = null) {
-			Vector2 position = WorldPoint (location, coordSys);
+		                          DanmakuGroup group = null) {
+			if (TargetField == null)
+				TargetField = this;
+			Vector2 position = TargetField.WorldPoint (location, coordSys);
 			if (modifier == null) {
 				Danmaku danmaku = Danmaku.Get (bulletType, position, rotation, this);
 				danmaku.Activate ();
@@ -329,7 +341,9 @@ namespace DanmakU {
 				return danmaku;
 			} else {
 				modifier.Initialize (data, this);
-				modifier.Fire (WorldPoint (data.Position, data.CoordinateSystem), data.Rotation);
+				if (TargetField == null)
+					TargetField = this;
+				modifier.Fire (TargetField.WorldPoint (data.Position, data.CoordinateSystem), data.Rotation);
 				return null;
 			}
 		}

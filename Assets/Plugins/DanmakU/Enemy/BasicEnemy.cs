@@ -49,7 +49,7 @@ namespace DanmakU {
 			movementPattern.DestroyOnEnd = true;
 			attackPattern = GetComponent<AttackPattern> ();
 			if (attackPattern != null) {
-				attackPattern.Field = Field.TargetField;
+				attackPattern.Field = Field;
 				attackPattern.Fire();
 			}
 			movementPattern.StartMovement ();
