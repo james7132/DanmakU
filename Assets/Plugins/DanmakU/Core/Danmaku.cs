@@ -296,10 +296,6 @@ namespace DanmakU {
 			controllerUpdate = null;
 		}
 
-		public void Rotate(DynamicFloat delta) {
-			Rotation += delta.Value;
-		}
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
 		/// </summary>

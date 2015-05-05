@@ -11,9 +11,6 @@ using Vexe.Runtime.Types;
 /// </summary>
 namespace DanmakU {
 
-	/// <summary>
-	/// A script for defining boundaries for detecting collision with Projectiles
-	/// </summary>
 	[RequireComponent(typeof(Collider2D))]
 	public abstract class DanmakuCollider : BetterBehaviour, IDanmakuCollider {
 

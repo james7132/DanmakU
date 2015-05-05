@@ -116,7 +116,7 @@ Transform:
   - {fileID: 1511435270}
   - {fileID: 1913114740}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!114 &10457275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +184,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 53.300972, y: 5.3300972}
+  m_Size: {x: 9.99999975e-05, y: 9.99999975e-05}
 --- !u!4 &665728763
 Transform:
   m_ObjectHideFlags: 0
@@ -192,11 +192,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 665728760}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -22.6650486, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!114 &665728764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,7 +326,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!1 &1511435269
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,76 +387,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1511435269}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &1633881672
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -6.72943735
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: .0750520229
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11447126, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: _serializationData.serializedStrings.values.Array.data[1]
-      value: '"Circle"'
-      objectReference: {fileID: 0}
-    - target: {fileID: 11447126, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: _serializationData.serializedStrings.values.Array.data[2]
-      value: '{"x":1.0,"y":1.0}'
-      objectReference: {fileID: 0}
-    - target: {fileID: 11447126, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: _serializationData.serializedStrings.values.Array.data[3]
-      value: '{"x":0.0,"y":0.0}'
-      objectReference: {fileID: 0}
-    - target: {fileID: 21229434, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 21229434, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 401748, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 0f7edcf9ac9cfe245a37d0ac15bbcff7, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1913114739
 GameObject:
   m_ObjectHideFlags: 0
