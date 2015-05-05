@@ -16,7 +16,7 @@ namespace DanmakU {
 	public interface IDanmakuCollider {
 
 		/// <summary>
-		/// Raises the danmaku collision event.
+		/// Raises a danmaku collision event.
 		/// </summary>
 		/// <param name="danmaku">The danmaku collided with.</param>
 		/// <param name="danmaku">The relevant information about collision.</param>
