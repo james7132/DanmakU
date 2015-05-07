@@ -23,6 +23,5 @@ namespace DanmakU {
 		/// <returns>the displacement from the Danmaku's original position after udpating</returns>
 		/// <param name="dt">the change in time since the last update</param>
 		void UpdateDanmaku (Danmaku danmaku, float dt);
-
 	}
 }
