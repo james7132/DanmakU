@@ -147,6 +147,66 @@ namespace DanmakU {
 				return (danmakuPool != null) ? danmakuPool.totalCount : 0;
 			}
 		}
+
+		public static Danmaku FindByTag (string tag) {
+			if (tag == null) {
+				throw new System.ArgumentNullException("Tag cannot be null!");
+			}
+			Danmaku[] all = danmakuPool.all;
+			for(int i = 0; i < all.Length; i++) {
+				if(all[i].is_active && all[i].Tag == tag) {
+					return all[i];
+				}
+			}
+			return null;
+		}
+
+		public static Danmaku[] FindAllByTag (string tag) {
+			if (tag == null) {
+				throw new System.ArgumentNullException("Tag cannot be null!");
+			}
+			List<Danmaku> matches = new List<Danmaku> ();
+			Danmaku[] all = danmakuPool.all;
+			for (int i = 0; i < all.Length; i++) {
+				if(all[i].is_active && all[i].Tag == tag) {
+					matches.Add (all[i]);
+				}
+			}
+			return matches.ToArray ();
+		}
+
+		public static int FindAllByTagNoAlloc (string tag, Danmaku[] danmaku) {
+			if (tag == null) {
+				throw new System.ArgumentNullException ("Tag cannot be null!");
+			} else if (danmaku == null) {
+				throw new System.ArgumentNullException ("Danmaku Array cannot be null!");
+			}
+			int count = -1;
+			Danmaku[] all = danmakuPool.all;
+			for (int i = 0; i < all.Length; i++) {
+				if(all[i].is_active && all[i].Tag == tag) {
+					count++;
+					danmaku[count] = all[i];
+				}
+			}
+			return count;
+		}
+
+		public static int AddAllByTag (string tag, ICollection<Danmaku> collection) {
+			if (tag == null) {
+				throw new System.ArgumentNullException ("Tag cannot be null!");
+			} else if (collection == null) {
+				throw new System.ArgumentNullException ("Danmaku container cannot be null!");
+			}
+			int count = -1;
+			Danmaku[] all = danmakuPool.all;
+			for (int i = 0; i < all.Length; i++) {
+				if(all[i].is_active && all[i].Tag == tag) {
+					collection.Add(all[i]);
+				}
+			}
+			return count;
+		}
 		
 		public static Danmaku Get (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation, DanmakuField field) {
 			if (danmakuPool == null) {
