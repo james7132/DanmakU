@@ -20,6 +20,8 @@ sysinfo.txt
 *.meta
 */
 !Core/
+!Core/Materials/*.meta
+!Core/Resources/*.meta
 
 *Clipboard.asset*
 *BetterEditorPrefs.asset*
