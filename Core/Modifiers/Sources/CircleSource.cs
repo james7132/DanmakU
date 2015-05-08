@@ -3,12 +3,11 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System.Collections;
 using UnityUtilLib;
 
 namespace DanmakU.NoScript {
 
-	internal class CircleSource : DanmakuSource {
+	public class CircleSource : DanmakuSource {
 
 		#pragma warning disable 0649
 		public int count;
