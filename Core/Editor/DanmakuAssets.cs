@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityUtilLib;
 using DanmakU;
-using DanmakU.Phantasmagoria;
+//using DanmakU.Phantasmagoria;
 using System.IO;
 
 /// <summary>
@@ -58,30 +58,30 @@ internal static class DanmakuAssets {
 		Object.DestroyImmediate (temp);
 	}
 
-	/// <summary>
-	/// Creates the base of a full Phantasmagoria game with a single click
-	/// Found under GameObject/Create/DanmakU/Phantasmagoria/Game Gamecontroller
-	/// </summary>
-	[MenuItem("GameObject/Create/DanmakU/Phantasmagoria/Game Controller")]
-	public static void CreatePhantasmagoriaGame() {
-		GameObject temp = new GameObject ("Game Controller");
-		temp.AddComponent<StaticGameObject> ();
-		PhantasmagoriaGameController pcg = temp.AddComponent<PhantasmagoriaGameController> ();
-		DanmakuField playerField1 = CreateDanmakuField ();
-		DanmakuField playerField2 = CreateDanmakuField ();
-		playerField1.gameObject.name = "Player 1 " + playerField1.gameObject.name;
-		playerField2.gameObject.name = "Player 2 " + playerField2.gameObject.name;
-		SerializedObject pcgS = new SerializedObject (pcg);
-		pcgS.FindProperty ("player1.field").objectReferenceValue = playerField1;
-		pcgS.FindProperty ("player2.field").objectReferenceValue = playerField2;
-		pcgS.ApplyModifiedProperties ();
-		playerField1.transform.position = new Vector3 (-100f, 0f, 0f);
-		playerField2.transform.position = new Vector3 (100f, 0f, 0f);
-		temp.AddComponent<TestSpawnPlayer> ();
-		temp.AddComponent<AudioListener> ();
-		temp.AddComponent<AudioSource>();
-		temp.AddComponent<AudioManager> ();
-	}
+//	/// <summary>
+//	/// Creates the base of a full Phantasmagoria game with a single click
+//	/// Found under GameObject/Create/DanmakU/Phantasmagoria/Game Gamecontroller
+//	/// </summary>
+//	[MenuItem("GameObject/Create/DanmakU/Phantasmagoria/Game Controller")]
+//	public static void CreatePhantasmagoriaGame() {
+//		GameObject temp = new GameObject ("Game Controller");
+//		temp.AddComponent<StaticGameObject> ();
+//		PhantasmagoriaGameController pcg = temp.AddComponent<PhantasmagoriaGameController> ();
+//		DanmakuField playerField1 = CreateDanmakuField ();
+//		DanmakuField playerField2 = CreateDanmakuField ();
+//		playerField1.gameObject.name = "Player 1 " + playerField1.gameObject.name;
+//		playerField2.gameObject.name = "Player 2 " + playerField2.gameObject.name;
+//		SerializedObject pcgS = new SerializedObject (pcg);
+//		pcgS.FindProperty ("player1.field").objectReferenceValue = playerField1;
+//		pcgS.FindProperty ("player2.field").objectReferenceValue = playerField2;
+//		pcgS.ApplyModifiedProperties ();
+//		playerField1.transform.position = new Vector3 (-100f, 0f, 0f);
+//		playerField2.transform.position = new Vector3 (100f, 0f, 0f);
+//		temp.AddComponent<TestSpawnPlayer> ();
+//		temp.AddComponent<AudioListener> ();
+//		temp.AddComponent<AudioSource>();
+//		temp.AddComponent<AudioManager> ();
+//	}
 
 	/// <summary>
 	/// Creates a PhantasmagoriaField with a single click
