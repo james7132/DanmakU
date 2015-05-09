@@ -431,7 +431,7 @@ namespace DanmakU {
 					//Handles.PositionHandle(Vector3.zero, Quaternion.identity);
 					break;
 				case Danmaku.ColliderType.Circle:
-					hitboxMatrix = Matrix4x4.TRS ((Vector2)transform.position, Quaternion.Euler(0f, 0f, transform.eulerAngles.z), transform.lossyScale.Max() * Vector3.one);
+					hitboxMatrix = Matrix4x4.TRS ((Vector2)transform.position, Quaternion.Euler(0f, 0f, transform.Rotation2D()), transform.lossyScale.Max() * Vector3.one);
 					Gizmos.matrix = hitboxMatrix;
 					Handles.matrix = hitboxMatrix;
 					Handles.DrawWireDisc(colliderOffset, Vector3.forward, colliderSize.Max());

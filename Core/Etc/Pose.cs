@@ -30,7 +30,7 @@ namespace DanmakU {
 		
 		public Pose2D(Transform transform) {
 			Position = transform.position;
-			Rotation = transform.eulerAngles.z;
+			Rotation = transform.Rotation2D();
 		}
 		
 		public Pose2D(Transform2D transform) {

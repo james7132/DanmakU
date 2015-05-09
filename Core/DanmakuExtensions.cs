@@ -50,6 +50,12 @@ namespace DanmakU {
 			}
 		}
 
+		public static void SetPosition(this IEnumerable<Danmaku> danmakus, Transform transform) {
+			if (transform == null)
+				throw new System.ArgumentNullException ();
+			SetPosition (danmakus, transform.position);
+		}
+
 		/// <summary>
 		/// Moves all of the Danmaku in the collection to a specified 2D point based on a Unity GameObject's Transform's absolute world position.
 		/// This function discards the Z axis and will place the Danmaku at the corresponding 2D location on the Z = 0 plane.
@@ -126,7 +132,13 @@ namespace DanmakU {
 		#endregion
 		
 		#region Rotation Functions
-		
+
+		/// <summary>
+		/// Rotates the 
+		/// </summary>
+		/// <exception cref="System.NullReferenceException">Thrown if the input collection is null.</exception>
+		/// <param name="danmakus">Danmakus.</param>
+		/// <param name="rotation">Rotation.</param>
 		public static void SetRotation(this IEnumerable<Danmaku> danmakus, DynamicFloat rotation) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
@@ -149,6 +161,11 @@ namespace DanmakU {
 				}
 			}
 		}
+
+		public static void SetRotation (this IEnumerable<Danmaku> danmakus, Component component) {
+		}
+
+
 		
 		public static void Rotate(this IEnumerable<Danmaku> danmakus, DynamicFloat delta) {
 			if (danmakus == null)
