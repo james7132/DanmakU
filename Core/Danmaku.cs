@@ -486,7 +486,7 @@ namespace DanmakU {
 		#region IPooledObject implementation
 
 		internal DanmakuPool pool;
-		public IPool Pool {
+		IPool IPooledObject.Pool {
 			get {
 				return pool;
 			}
