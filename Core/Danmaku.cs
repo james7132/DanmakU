@@ -30,6 +30,8 @@ namespace DanmakU {
 			Point, 
 			Line 
 		}
+		
+		#region Private and Internal Fields
 
 		/// <summary>
 		/// The index of the pool.
@@ -76,14 +78,16 @@ namespace DanmakU {
 
 		private List<IEnumerator> tasks;
 
-		public float Speed;
-		public float AngularSpeed;
-
-		public DanmakuPrefab Prefab {
-			get {
-				return runtime;
-			}
-		}
+		#endregion
+		
+		#region Public Fields
+		
+		/// <summary>
+		/// Gets or sets the renderer color of the projectile.
+		/// <see href="http://docs.unity3d.com/ScriptReference/SpriteRenderer-color.html">SpriteRenderer.color</see>
+		/// </summary>
+		/// <value>The renderer color.</value>
+		public Color32 Color;
 
 		/// <summary>
 		/// Gets or sets the damage this projectile does to entities.
@@ -91,6 +95,22 @@ namespace DanmakU {
 		/// </summary>
 		/// <value>The damage this projectile does.</value>
 		public int Damage;
+
+		public bool BoundsCheck;
+		public bool CollisionCheck;
+
+		public float Speed;
+		public float AngularSpeed;
+
+		#endregion
+
+		#region Public Properties
+
+		public DanmakuPrefab Prefab {
+			get {
+				return runtime;
+			}
+		}
 		
 		/// <summary>
 		/// Gets the renderer sprite of the projectile.
@@ -107,13 +127,6 @@ namespace DanmakU {
 			//	renderer.sprite = value;
 			//}
 		}
-		
-		/// <summary>
-		/// Gets or sets the renderer color of the projectile.
-		/// <see href="http://docs.unity3d.com/ScriptReference/SpriteRenderer-color.html">SpriteRenderer.color</see>
-		/// </summary>
-		/// <value>The renderer color.</value>
-		public Color32 Color;
 
 		public Material Material {
 			get {
@@ -223,10 +236,10 @@ namespace DanmakU {
 			}
 		}
 
-		public bool BoundsCheck;
-		public bool CollisionCheck;
+		#endregion
 
 		#region IDanmakuObject implementation
+
 		/// <summary>
 		/// Gets the DanmakuField this instance was fired from.
 		/// </summary>
@@ -242,6 +255,7 @@ namespace DanmakU {
 				}
 			}
 		}
+
 		#endregion
 
 		public void StartTask(IEnumerator task) {
@@ -295,6 +309,75 @@ namespace DanmakU {
 			controllerCheck = true;
 			controllerUpdate = null;
 		}
+
+		#region Position Functions
+
+		/// <summary>
+		/// Moves the bullet closer to the specified target point.
+		/// 
+		/// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
+		/// </summary>
+		/// <param name="target">The target position to move towards in absolute world coordinates.</param>
+		/// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
+		public void MoveTowards (Vector2 target, float maxDistanceDelta) {
+			Position = Vector2.MoveTowards (position, target, maxDistanceDelta);
+		}
+
+		/// <summary>
+		/// Moves the bullet closer to the specified target Transform's position.
+		/// 
+		/// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
+		/// </summary>
+		/// <exception cref="System.ArgumentNullException">Thrown if the target Transform is null.</exception>
+		/// <param name="target">The Transform of the object to move towards.</param>
+		/// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
+		public void MoveTowards (Transform target, float maxDistanceDelta) {
+			if (target == null)
+				throw new System.ArgumentNullException();
+			Position = Vector2.MoveTowards (position, target.position, maxDistanceDelta);
+		}
+
+		/// <summary>
+		/// Moves the bullet closer to the specified target Component's position.
+		/// 
+		/// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
+		/// </summary>
+		/// <exception cref="System.ArgumentNullException">Thrown if the target Component is null.</exception>
+		/// <param name="target">The Component of the object to move towards.</param>
+		/// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
+		public void MoveTowards (Component target, float maxDistanceDelta) {
+			if (target == null)
+				throw new System.ArgumentNullException();
+			Position = Vector2.MoveTowards (position, target.transform.position, maxDistanceDelta);
+		}
+
+		/// <summary>
+		/// Moves the bullet closer to the specified target GameObject's position.
+		/// 
+		/// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
+		/// </summary>
+		/// <exception cref="System.ArgumentNullException">Thrown if the target GameObject is null.</exception>
+		/// <param name="target">The GameObject of the object to move towards.</param>
+		/// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
+		public void MoveTowards (GameObject target, float maxDistanceDelta) {
+			if (target == null)
+				throw new System.ArgumentNullException();
+			Position = Vector2.MoveTowards (position, target.transform.position, maxDistanceDelta);
+		}
+
+		public void Translate (Vector2 deltaPos) {
+			Position += deltaPos;
+		}
+
+		#endregion
+
+		#region Rotation Functions
+
+		public void Rotate (float deltaTheta) {
+			Rotation += deltaTheta;
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
@@ -437,14 +520,14 @@ namespace DanmakU {
 		}
 
 		/// <summary>
-		/// Makes the instance of Danmaku match the given ProjectilePrefab
+		/// Makes the instance of Danmaku match the given DanmakuPrefab
 		/// This copies:
-		/// - the sprite, material, sorting layer, and color from the ProjectilePrefab's SpriteRenderer
-		/// - the collider's size and offset from the ProjectilePrefab's CircleCollider2D
-		/// - the tag and layer from the ProjectilePrefab's GameObject
-		/// - any <see cref="DanmakuControlBehavior"/> on the ProjectilePrefab will be included as additional <see cref="IDanmakuController"/> that will affect the behavior of this bullet
+		/// - the sprite, material, sorting layer, and color from the DanmakuPrefab's SpriteRenderer
+		/// - the collider's size and offset from the DanmakuPrefab's CircleCollider2D
+		/// - the tag and layer from the DanmakuPrefab's GameObject
+		/// - any <see cref="DanmakuControlBehavior"/> on the DanmakuPrefab will be included as additional <see cref="IDanmakuController"/> that will affect the behavior of this bullet
 		/// </summary>
-		/// <param name="prefab">the ProjectilePrefab to match.</param>
+		/// <param name="prefab">the DanmakuPrefab to match.</param>
 		public void MatchPrefab(DanmakuPrefab prefab) {
 			if (prefab == null) {
 				Debug.LogError("Tried to match a null prefab");
@@ -510,8 +593,6 @@ namespace DanmakU {
 		/// </summary>
 		public void Activate () {
 			to_deactivate = false;
-			//gameObject.SetActive (true);
-			//renderer.enabled = true;
 			is_active = true;
 			BoundsCheck = true;
 			CollisionCheck = true;
@@ -519,8 +600,7 @@ namespace DanmakU {
 		}
 		
 		/// <summary>
-		/// Marks the Danmaku for deactivation, and the Danmaku will deactivate and return to the ProjectileManager after 
-		/// finishing processing current updates, or when the Danmaku is next updated
+		/// Marks the bullet for deactivation. The bullet removed from the active set and all bullet functionality will cease after current 
 		/// If Danmaku needs to be deactivated in a moment when it is not being updated (i.e. when the game is paused), use <see cref="DeactivateImmediate"/> instead.
 		/// </summary>
 		public void Deactivate()  {
@@ -530,29 +610,35 @@ namespace DanmakU {
 		#endregion
 
 		/// <summary>
-		/// Adds this projectile to the given ProjectileGroup
+		/// Adds this projectile to the given DanmakuGroup.
 		/// </summary>
 		/// <param name="group">the group this Danmaku is to be added to</param>
+		/// <seealso cref="DanmakuGroup.Add"/>
 		public void AddToGroup(DanmakuGroup group) {
-			groups.Add (group);
-			group.Add (this);
-			groupCountCache++;
-			groupCheck = groupCountCache > 0;
+			if (!group.Contains (this)) {
+				groups.Add (group);
+				group.Add (this);
+				groupCountCache++;
+				groupCheck = groupCountCache > 0;
+			}
 		}
 
 		/// <summary>
-		/// Removes this projectile from the given ProjectileGroup
+		/// Removes this projectile from the given DanmakuGroup
 		/// </summary>
 		/// <param name="group">the group this Danmaku is to be removed from</param>
+		/// <seealso cref="DanmakuGroup.Remove"/>
 		public void RemoveFromGroup(DanmakuGroup group) {
-			groups.Remove (group);
-			group.Remove (this);
-			groupCountCache--;
-			groupCheck = groupCountCache > 0;
+			if (group.Contains (this)) {
+				groups.Remove (group);
+				group.Remove (this);
+				groupCountCache--;
+				groupCheck = groupCountCache > 0;
+			}
 		}
 
 		/// <summary>
-		/// Immediately deactivates this Danmaku and returns it to the pool it came from
+		/// Immediately deactivates this Danmaku and ceases all processing done on it.
 		/// Calling this generally unadvised. Use <see cref="Deactivate"/> whenever possible.
 		/// This method should only be used when dealing with Projectiles while the game is paused or when ProjectileManager is not enabled
 		/// </summary>
