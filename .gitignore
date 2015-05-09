@@ -17,9 +17,15 @@
 #Unity3D Generated File On Crash Reports
 sysinfo.txt
 
-*.meta
-*/
+#Ignore all subdirectories of the root directory except Core
+*/*
 !Core/
+!Core/*
+
+#Ignore all meta files
+*.meta
+
+#Except in the folders that need it
 !Core/Materials/*.meta
 !Core/Resources/*.meta
 
