@@ -34,7 +34,7 @@ internal static class DanmakuAssets {
 	}
 
 	/// <summary>
-	/// Creates a blank ProjectilePrefab asset
+	/// Creates a blank DanmakuPrefab asset
 	/// Found under Assets/Create/DanmakU/Danmaku Prefab
 	/// </summary>
 	[MenuItem("Assets/Create/DanmakU/Sprite Danmaku Prefab", false, 51)]

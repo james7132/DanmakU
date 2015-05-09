@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DanmakU {
 
-	public static class DanmakuCollectionExtensions {
+	public static class DanmakuExtensions {
 
 		//TODO: Implement and test potential higher performance versions of these functions for Arrays.
 
@@ -13,6 +13,7 @@ namespace DanmakU {
 		/// <summary>
 		/// Moves all of the Danmaku in the collection to a specified 2D point.
 		/// All contained null objects will be ignored.
+		/// See: <see cref="Danmaku.Position"/>
 		/// </summary>
 		/// <exception cref="System.NullReferenceException">Thrown if the input collection is null.</exception> 
 		/// <param name="danmakus">The enumerable collection of Danmaku. Will throw System.NullReferenceException if null.</param>
@@ -21,9 +22,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Position = position;
-				}
 			}
 		}
 
@@ -32,6 +32,7 @@ namespace DanmakU {
 		/// Positions are chosen randomly and independently for each Danmaku from a uniform distribution.
 		/// This function is not thread-safe: it can only be called from the Unity main thread as it utilizes Unity API calls.
 		/// All contained null objects will be ignored.
+		/// See: <see cref="Danmaku.Position"/>
 		/// </summary>
 		/// <exception cref="System.NullReferenceException">Thrown if the input collection is null.</exception>
 		/// <exception cref="System.ArgumentNullException">Thrown if the position array is null.</exception>
@@ -44,12 +45,22 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ();
 			int max = positions.Length;
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Position = positions[Random.Range(0, max)];
-				}
 			}
 		}
-
+		
+		/// <summary>
+		/// Moves all of the Danmaku in the collection to a specified 2D point based on a Unity Transform's absolute world position.
+		/// This function discards the Z axis and will place the Danmaku at the corresponding 2D location on the Z = 0 plane.
+		/// This function is not thread-safe: it can only be called from the Unity main thread as it utilizes Unity API calls.
+		/// All contained null objects will be ignored.
+		/// See: <see cref="Danmaku.Position"/>
+		/// </summary>
+		/// <exception cref="System.NullReferenceException">Thrown if the input collection is null.</exception>
+		/// <exception cref="System.ArgumentNullException">Thrown if the transform is null.</exception>
+		/// <param name="danmakus">The enumerable collection of Danmaku. Will throw System.NullReferenceException if null.</param>
+		/// <param name="transform">The Transform to move to.</param>
 		public static void SetPosition(this IEnumerable<Danmaku> danmakus, Transform transform) {
 			if (transform == null)
 				throw new System.ArgumentNullException ();
@@ -57,15 +68,16 @@ namespace DanmakU {
 		}
 
 		/// <summary>
-		/// Moves all of the Danmaku in the collection to a specified 2D point based on a Unity GameObject's Transform's absolute world position.
+		/// Moves all of the Danmaku in the collection to a specified 2D point based on a Unity Component's Transform's absolute world position.
 		/// This function discards the Z axis and will place the Danmaku at the corresponding 2D location on the Z = 0 plane.
 		/// This function is not thread-safe: it can only be called from the Unity main thread as it utilizes Unity API calls.
 		/// All contained null objects will be ignored.
+		/// See: <see cref="Danmaku.Position"/>
 		/// </summary>
 		/// <exception cref="System.NullReferenceException">Thrown if the input collection is null.</exception>
-		/// <exception cref="System.ArgumentNullException">Thrown if the component is null.</exception>
+		/// <exception cref="System.ArgumentNullException">Thrown if the Component is null.</exception>
 		/// <param name="danmakus">The enumerable collection of Danmaku. Will throw System.NullReferenceException if null.</param>
-		/// <param name="component">The component to move to.</param>
+		/// <param name="component">The Component to move to.</param>
 		public static void SetPosition (this IEnumerable<Danmaku> danmakus, Component component) {
 			if (component == null)
 				throw new System.ArgumentNullException ();
@@ -77,6 +89,7 @@ namespace DanmakU {
 		/// This function discards the Z axis and will place the Danmaku at the corresponding 2D location on the Z = 0 plane.
 		/// This function is not thread-safe: it can only be called from the Unity main thread as it utilizes Unity API calls.
 		/// All contained null objects will be ignored.
+		/// See: <see cref="Danmaku.Position"/>
 		/// </summary>
 		/// <exception cref="System.NullReferenceException">Thrown if the input collection is null.</exception>
 		/// <exception cref="System.ArgumentNullException">Thrown if the position array is null.</exception>
@@ -93,6 +106,7 @@ namespace DanmakU {
 		/// Positions are chosen randomly and independently for each Danmaku from a uniform distribution.
 		/// This function is not thread-safe: it can only be called from the Unity main thread as it utilizes Unity API calls.
 		/// All contained null objects will be ignored.
+		/// See: <see cref="Danmaku.Position"/>
 		/// </summary>
 		/// <exception cref="System.NullReferenceException">Thrown if the input collection is null.</exception>
 		/// <param name="danmakus">The enumerable collection of Danmaku. Will throw System.NullReferenceException if null.</param>
@@ -101,10 +115,36 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Position = area.RandomPoint();
-				}
 			}
+		}
+
+		public static void MoveTowards (this IEnumerable<Danmaku> danmakus, Vector2 target, float maxDistanceDelta) {
+			if (danmakus == null)
+				throw new System.NullReferenceException ();
+			foreach (var danmaku in danmakus) {
+				if(danmaku != null)
+					danmaku.MoveTowards(target, maxDistanceDelta);
+			}
+		}
+
+		public static void MoveTowards (this IEnumerable<Danmaku> danmakus, Transform target, float maxDistanceDelta) {
+			if (target == null)
+				throw new System.ArgumentNullException ();
+			danmakus.MoveTowards (target.position, maxDistanceDelta);
+		}
+
+		public static void MoveTowards (this IEnumerable<Danmaku> danmakus, Component target, float maxDistanceDelta) {
+			if (target == null)
+				throw new System.ArgumentNullException ();
+			danmakus.MoveTowards (target.transform.position, maxDistanceDelta);
+		}
+
+		public static void MoveTowards (this IEnumerable<Danmaku> danmakus, GameObject target, float maxDistanceDelta) {
+			if (target == null)
+				throw new System.ArgumentNullException ();
+			danmakus.MoveTowards (target.transform.position, maxDistanceDelta);
 		}
 
 		/// <summary>
@@ -123,9 +163,8 @@ namespace DanmakU {
 				return;
 
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Position += deltaPos;
-				}
 			}
 		}
 		
@@ -143,9 +182,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Rotation = rotation.Value;
-				}
 			}
 		}
 		
@@ -156,24 +194,17 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ();
 			int max = rotations.Length;
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Rotation = rotations[Random.Range(0, max)];
-				}
 			}
 		}
 
-		public static void SetRotation (this IEnumerable<Danmaku> danmakus, Component component) {
-		}
-
-
-		
 		public static void Rotate(this IEnumerable<Danmaku> danmakus, DynamicFloat delta) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Rotation += delta;
-				}
 			}
 		}
 		
@@ -185,9 +216,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Speed = velocity.Value;
-				}
 			}
 		}
 		
@@ -198,9 +228,8 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ();
 			int max = speeds.Length;
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Speed = speeds[Random.Range(0, max)];
-				}
 			}
 		}
 		
@@ -208,7 +237,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				danmaku.Speed += deltaSpeed.Value;
+				if(danmaku != null)
+					danmaku.Speed += deltaSpeed.Value;
 			}
 		}
 		
@@ -220,9 +250,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.AngularSpeed = angularSpeed.Value;
-				}
 			}
 		}
 		
@@ -233,9 +262,8 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ();
 			int max = angularSpeeds.Length;
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.AngularSpeed = angularSpeeds[Random.Range(0, max)];
-				}
 			}
 		}
 		
@@ -243,9 +271,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.AngularSpeed += deltaSpeed.Value;
-				}
 			}
 		}
 		
@@ -257,9 +284,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Damage = damage.Value;
-				}
 			}
 		}
 		
@@ -270,9 +296,8 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ();
 			int max = damages.Length;
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Damage = damages[Random.Range(0, max)].Value;
-				}
 			}
 		}
 		
@@ -284,9 +309,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Color = color;
-				}
 			}
 		}
 		
@@ -297,9 +321,8 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ();
 			int max = colors.Length;
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Color = colors[Random.Range(0, max)];
-				}
 			}
 		}
 		
@@ -307,9 +330,8 @@ namespace DanmakU {
 			if (colors == null)
 				throw new System.ArgumentNullException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Color = colors.Evaluate(Random.value);
-				}
 			}
 		}
 		
@@ -321,9 +343,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.AddController(controller.UpdateDanmaku);
-				}
 			}
 		}
 		
@@ -331,9 +352,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.RemoveController(controller.UpdateDanmaku);
-				}
 			}
 		}
 		
@@ -341,9 +361,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.ClearControllers();
-				}
 			}
 		}
 		
@@ -355,9 +374,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Deactivate();
-				}
 			}
 		}
 		
@@ -365,9 +383,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.DeactivateImmediate();
-				}
 			}
 		}
 		
@@ -379,9 +396,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Tag = tag;
-				}
 			}
 		}
 		
@@ -389,9 +405,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.Layer = layer;
-				}
 			}
 		}
 		
@@ -399,9 +414,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.BoundsCheck = boundsCheck;
-				}
 			}
 		}
 		
@@ -409,9 +423,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.CollisionCheck = collisionCheck;
-				}
 			}
 		}
 		
@@ -419,9 +432,8 @@ namespace DanmakU {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
-				if(danmaku != null) {
+				if(danmaku != null)
 					danmaku.MatchPrefab(prefab);
-				}
 			}
 		}
 		

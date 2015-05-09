@@ -175,7 +175,7 @@ namespace DanmakU {
 			return matches.ToArray ();
 		}
 
-		public static int FindAllByTagNoAlloc (string tag, Danmaku[] danmaku) {
+		public static int FindAllByTagNoAlloc (string tag, IList<Danmaku> danmaku) {
 			if (tag == null) {
 				throw new System.ArgumentNullException ("Tag cannot be null!");
 			} else if (danmaku == null) {
