@@ -1,0 +1,4 @@
+#Ignore all subdirectories except Core
+*/*
+!Core/
+!Core/*
