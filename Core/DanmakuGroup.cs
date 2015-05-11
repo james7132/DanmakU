@@ -19,14 +19,12 @@ namespace DanmakU {
 			bool added = base.Add(item);
 			if (added) {
 				item.groups.Add (this);
-				item.groupCountCache++;
-				item.groupCheck = item.groupCountCache > 0;
 			}
 		}
 
 		public new void Clear () {
-			foreach(Danmaku proj in this) {
-				proj.RemoveFromGroup(this);
+			foreach(Danmaku danmaku in this) {
+				danmaku.RemoveFromGroup(this);
 			}
 			base.Clear ();
 		}
@@ -36,8 +34,6 @@ namespace DanmakU {
 			success = base.Remove(item);
 			if (success) {
 				item.groups.Remove (this);
-				item.groupCountCache--;
-				item.groupCheck = item.groupCountCache > 0;
 			}
 			return success;
 		}

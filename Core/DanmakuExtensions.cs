@@ -369,8 +369,26 @@ namespace DanmakU {
 		#endregion
 		
 		#region General Functions
+
+		public static void SetActive(this IEnumerable<Danmaku> danmakus, bool value) {
+			if (danmakus == null)
+				throw new System.NullReferenceException ();
+			foreach (var danmaku in danmakus) {
+				if(danmaku != null)
+					danmaku.IsActive = value;
+			}
+		}
+
+		public static void Activate (this IEnumerable<Danmaku> danmakus) {
+			if (danmakus == null)
+				throw new System.NullReferenceException ();
+			foreach (var danmaku in danmakus) {
+				if(danmaku != null)
+					danmaku.Activate();
+			}
+		}
 		
-		public static void Deactivate(this IEnumerable<Danmaku> danmakus) {
+		public static void Deactivate (this IEnumerable<Danmaku> danmakus) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {
@@ -379,7 +397,7 @@ namespace DanmakU {
 			}
 		}
 		
-		public static void DeactivateImmediate(this IEnumerable<Danmaku> danmakus) {
+		public static void DeactivateImmediate (this IEnumerable<Danmaku> danmakus) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			foreach (var danmaku in danmakus) {

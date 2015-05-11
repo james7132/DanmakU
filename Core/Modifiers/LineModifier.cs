@@ -20,8 +20,8 @@ namespace DanmakU {
 			float deltaAV = DeltaAngularVelocity.Value;
 			float depth = Depth.Value;
 			for(int i = 0; i < depth; i++) {
-				Velocity += deltaV;
-				AngularVelocity += deltaAV;
+				Speed += deltaV;
+				AngularSpeed += deltaAV;
 				FireSingle(position, rotation);
 			}
 

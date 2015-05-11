@@ -15,11 +15,11 @@ namespace DanmakU {
 		
 		#region implemented abstract members of FireModifier
 		public override void Fire (Vector2 position, DynamicFloat rotation) {
-			float oldAV = AngularVelocity;
+			float oldAV = AngularSpeed;
 			float rangeValue = range.Value;
-			AngularVelocity = oldAV + Random.Range (-0.5f * rangeValue, 0.5f * rangeValue);
+			AngularSpeed = oldAV + Random.Range (-0.5f * rangeValue, 0.5f * rangeValue);
 			FireSingle (position, rotation);
-			AngularVelocity = oldAV;
+			AngularSpeed = oldAV;
 		}
 		#endregion
 		

@@ -118,11 +118,36 @@ namespace DanmakU {
 			Danmaku[] all = danmakuPool.all;
 			for (int i = 0; i < all.Length; i++) {
 				if(all[i] != null && all[i].is_active)
+					all[i].Deactivate();
+			}
+		}
+		
+		/// <summary>
+		/// Deactivates all currently active bullets.
+		/// </summary>
+		public static void DeactivateAllImmediate() {
+			Danmaku[] all = danmakuPool.all;
+			for (int i = 0; i < all.Length; i++) {
+				if(all[i] != null && all[i].is_active)
 					all[i].DeactivateImmediate();
 			}
 		}
 
 		public static void DeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
+			Danmaku[] all = danmakuPool.all;
+			Danmaku target;
+			float sqrRadius = radius * radius;
+			for (int i = 0; i < all.Length; i++) {
+				target = all[i];
+				if((layerMask & (1 << target.layer)) != 0) {
+					if(sqrRadius >= (target.Position - center).sqrMagnitude) {
+						target.Deactivate();
+					}
+				}
+			}
+		}
+
+		public static void DeactivateInCircleImmediate (Vector2 center, float radius, int layerMask = ~0) {
 			Danmaku[] all = danmakuPool.all;
 			Danmaku target;
 			float sqrRadius = radius * radius;
@@ -207,38 +232,167 @@ namespace DanmakU {
 			}
 			return count;
 		}
-		
-		public static Danmaku Get (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation, DanmakuField field) {
-			if (danmakuPool == null) {
+
+		/// <summary>
+		/// Gets a single unactivated bullet. The bullet
+		/// </summary>
+		public static Danmaku GetInactive () {
+			return danmakuPool.Get ();
+		}
+
+		/// <summary>
+		/// Get the specified count.
+		/// </summary>
+		/// <param name="count">Count.</param>
+		public static Danmaku[] GetInactive (DynamicInt count) {
+			if (danmakuPool == null)
 				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			Danmaku[] array = new Danmaku[count];
+			danmakuPool.Get (array);
+			return array;
+		}
+
+		public static void GetInactive (Danmaku[] prealloc) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			if (prealloc == null)
+				throw new System.ArgumentNullException ();
+			danmakuPool.Get (prealloc);
+		}
+
+		public static Danmaku GetInactive (Vector2 position, DynamicFloat rotation) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			Danmaku danmaku = danmakuPool.Get ();
+			danmaku.position.x = position.x;
+			danmaku.position.y = position.y;
+			danmaku.Rotation = rotation.Value;
+			return danmaku;
+		}
+
+		public static Danmaku[] GetInactive (Vector2 position, DynamicFloat rotation, DynamicInt count) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			Danmaku[] array = new Danmaku[count];
+			GetInactive (position, rotation, array);
+			danmakuPool.Get (array);
+			for (int i = 0; i < array.Length; i++) {
+				Danmaku danmaku = array[i];
+				danmaku.position.x = position.x;
+				danmaku.position.y = position.y;
+				danmaku.Rotation = rotation.Value;
 			}
-			Danmaku proj = danmakuPool.Get ();
-			proj.MatchPrefab (danmakuType);
-			proj.position.x = position.x;
-			proj.position.y = position.y;
-			proj.Rotation = rotation;
-			proj.Field = field;
-			return proj;
+			return array;
+		}
+
+		public static void GetInactive (Vector2 position, DynamicFloat rotation, Danmaku[] prealloc) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			danmakuPool.Get (prealloc);
+			for (int i = 0; i < prealloc.Length; i++) {
+				Danmaku danmaku = prealloc[i];
+				danmaku.position.x = position.x;
+				danmaku.position.y = position.y;
+				danmaku.Rotation = rotation.Value;
+			}
 		}
 		
-		public static Danmaku Get(DanmakuField field, FireBuilder builder) {
-			if (danmakuPool == null) {
+		public static Danmaku GetInactive (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation) {
+			if (danmakuPool == null)
 				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			Danmaku danmaku = danmakuPool.Get ();
+			danmaku.MatchPrefab (danmakuType);
+			danmaku.position.x = position.x;
+			danmaku.position.y = position.y;
+			danmaku.Rotation = rotation;
+			return danmaku;
+		}
+		
+		public static Danmaku[] GetInactive (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation, DynamicInt count) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			Danmaku[] array = new Danmaku[count];
+			danmakuPool.Get (array);
+			for (int i = 0; i < array.Length; i++) {
+				Danmaku danmaku = array[i];
+				danmaku.MatchPrefab (danmakuType);
+				danmaku.position.x = position.x;
+				danmaku.position.y = position.y;
+				danmaku.Rotation = rotation.Value;
 			}
-			Danmaku proj = danmakuPool.Get ();
-			proj.MatchPrefab (builder.Prefab);
-			Vector2 position = field.WorldPoint (builder.Position, builder.CoordinateSystem);
-			proj.position.x = position.x;
-			proj.position.y = position.y;
-			proj.Rotation = builder.Rotation;
-			proj.Speed = builder.Velocity;
-			proj.AngularSpeed = builder.AngularVelocity;
-			proj.AddController (builder.Controller);
-			proj.Damage = builder.Damage;
+			return array;
+		}
+		
+		public static void GetInactive (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation, Danmaku[] prealloc) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			danmakuPool.Get (prealloc);
+			for (int i = 0; i < prealloc.Length; i++) {
+				Danmaku danmaku = prealloc[i];
+				danmaku.MatchPrefab (danmakuType);
+				danmaku.position.x = position.x;
+				danmaku.position.y = position.y;
+				danmaku.Rotation = rotation.Value;
+			}
+		}
+
+		public static Danmaku GetInactive (FireData data) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			if (data == null)
+				throw new System.ArgumentNullException ();
+			Danmaku danmaku = danmakuPool.Get ();
+			danmaku.MatchPrefab (data.Prefab);
+			danmaku.position.x = data.Position.x;
+			danmaku.position.y = data.Position.y;
+			danmaku.Rotation = data.Rotation.Value;
+			danmaku.Speed = data.Speed.Value;
+			danmaku.AngularSpeed = data.AngularSpeed.Value;
+			danmaku.AddController (data.Controller);
+			danmaku.Damage = data.Damage.Value;
+			if (data.Group != null)
+				data.Group.Add (danmaku);
+			return danmaku;
+		}
+
+		public static Danmaku[] GetInactive(FireData data, DynamicInt count) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			if (data == null)
+				throw new System.ArgumentNullException ();
+			Danmaku[] danmakus = new Danmaku[count];
+			danmakuPool.Get (danmakus);
+			for (int i = 0; i < danmakus.Length; i++) {
+				Danmaku danmaku = danmakus[i];
+				danmaku.MatchPrefab (data.Prefab);
+				danmaku.position.x = data.Position.x;
+				danmaku.position.y = data.Position.y;
+				danmaku.Rotation = data.Rotation.Value;
+				danmaku.Speed = data.Speed.Value;
+				danmaku.AngularSpeed = data.AngularSpeed.Value;
+				danmaku.AddController (data.Controller);
+				danmaku.Damage = data.Damage.Value;
+			}
+			return danmakus;
+		}
+		
+		public static Danmaku GetInactive (FireBuilder builder) {
+			if (danmakuPool == null)
+				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+			if (builder == null)
+				throw new System.ArgumentNullException ();
+			Danmaku danmaku = danmakuPool.Get ();
+			danmaku.MatchPrefab (builder.Prefab);
+			danmaku.position.x = builder.Position.x;
+			danmaku.position.y = builder.Position.y;
+			danmaku.Rotation = builder.Rotation;
+			danmaku.Speed = builder.Velocity;
+			danmaku.AngularSpeed = builder.AngularVelocity;
+			danmaku.AddController (builder.Controller);
+			danmaku.Damage = builder.Damage;
 			if (builder.Group != null) 
-				proj.AddToGroup (builder.Group);
-			proj.Field = field;
-			return proj;
+				danmaku.AddToGroup (builder.Group);
+			return danmaku;
 		}
 	}
 }

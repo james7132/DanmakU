@@ -5,9 +5,6 @@
 using UnityEngine;
 using UnityUtilLib;
 using System.Collections.Generic;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
@@ -19,6 +16,7 @@ namespace DanmakU {
 	[AddComponentMenu("DanmakU/Danmaku Field")]
 	public class DanmakuField : MonoBehaviour, IDanmakuObject {
 		#region IDanmakuObject implementation
+
 		DanmakuField IDanmakuObject.Field {
 			get {
 				return TargetField;
@@ -27,6 +25,7 @@ namespace DanmakU {
 				TargetField = value;
 			}
 		}
+
 		#endregion
 
 		internal static List<DanmakuField> fields;
@@ -83,8 +82,6 @@ namespace DanmakU {
 		[System.NonSerialized]
 		public DanmakuField TargetField;
 
-		private float currentAspectRatio;
-		private float screenOffset;
 		internal Bounds2D bounds;
 		private Bounds2D movementBounds;
 
@@ -252,13 +249,6 @@ namespace DanmakU {
 			return Instantiate (gameObject, TargetField.WorldPoint (location, coordSys), rotation) as GameObject;
 		}
 
-		public Component SpawnObject(Component prefab, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) {
-			if (TargetField == null)
-				TargetField = this;
-			Quaternion rotation = prefab.transform.rotation;
-			return Instantiate (prefab, TargetField.WorldPoint (location, coordSys), rotation) as Component;
-		}
-
 		public T SpawnObject<T>(T prefab, Vector2 location, CoordinateSystem coordSys = CoordinateSystem.View) where T : Component {
 			if (TargetField == null)
 				TargetField = this;
@@ -272,80 +262,77 @@ namespace DanmakU {
 		public Danmaku SpawnDanmaku(DanmakuPrefab bulletType, Vector2 location, DynamicFloat rotation, CoordinateSystem coordSys = CoordinateSystem.View) {
 			if (TargetField == null)
 				TargetField = this;
-			Danmaku bullet = Danmaku.Get (bulletType, TargetField.WorldPoint(location, coordSys), rotation, this);
+			Danmaku bullet = Danmaku.GetInactive (bulletType, TargetField.WorldPoint(location, coordSys), rotation);
+			bullet.Field = TargetField;
 			bullet.Activate ();
 			return bullet;
 		}
 
-		public Danmaku FireLinear(DanmakuPrefab bulletType, 
-                                     Vector2 location, 
-                                     DynamicFloat rotation, 
-                                     DynamicFloat velocity,
-		                             CoordinateSystem coordSys = CoordinateSystem.View,
-		                             DanmakuController controller = null,
-                                     DanmakuModifier modifier = null,
-                                     DanmakuGroup group = null,
-		                          Color? colorOverride = null) {
+		public Danmaku FireLinear(DanmakuPrefab prefab, 
+                                  Vector2 location, 
+                                  DynamicFloat rotation, 
+                                  DynamicFloat speed,
+		                          CoordinateSystem coordSys = CoordinateSystem.View,
+                                  DanmakuModifier modifier = null) {
 			if (TargetField == null)
 				TargetField = this;
 			Vector2 position = TargetField.WorldPoint (location, coordSys);
 			if (modifier == null) {
-				Danmaku danmaku = Danmaku.Get (bulletType, position, rotation, this);
+				Danmaku danmaku = Danmaku.GetInactive (prefab, position, rotation);
+				danmaku.Field = TargetField;
 				danmaku.Activate ();
-				danmaku.Speed = velocity;
-				if (group != null) {
-					group.Add (danmaku);
-				}
+				danmaku.Speed = speed;
+				danmaku.AngularSpeed = 0f;
 				return danmaku;
 			} else {
-				modifier.Initialize(bulletType, velocity, 0f, this,  null, group);
+				FireData temp = new FireData();
+				temp.Prefab = prefab;
+				temp.Speed = speed;
+				temp.AngularSpeed = 0f;
+				temp.Field = this;
+				modifier.Initialize(temp);
 				modifier.Fire(position, rotation);
 				return null;
 			}
 		}
 		
-		public Danmaku FireCurved(DanmakuPrefab bulletType,
+		public Danmaku FireCurved (DanmakuPrefab prefab,
                                      Vector2 location,
                                      DynamicFloat rotation,
-                                     DynamicFloat velocity,
-                                     DynamicFloat angularVelocity,
+                                     DynamicFloat speed,
+                                     DynamicFloat angularSpeed,
                                      CoordinateSystem coordSys = CoordinateSystem.View,
-                             		 DanmakuController controller = null,
-                                     DanmakuModifier modifier = null,
-		                          DanmakuGroup group = null) {
+                                     DanmakuModifier modifier = null) {
 			if (TargetField == null)
 				TargetField = this;
 			Vector2 position = TargetField.WorldPoint (location, coordSys);
 			if (modifier == null) {
-				Danmaku danmaku = Danmaku.Get (bulletType, position, rotation, this);
+				Danmaku danmaku = Danmaku.GetInactive (prefab, position, rotation);
+				danmaku.Field = this;
 				danmaku.Activate ();
-				danmaku.Speed = velocity;
-				danmaku.AngularSpeed = angularVelocity;
-				danmaku.AddController(controller);
-				if (group != null) {
-					group.Add (danmaku);
-				}
+				danmaku.Speed = speed;
+				danmaku.AngularSpeed = angularSpeed;
 				return danmaku;
 			} else {
-				modifier.Initialize(bulletType, velocity, angularVelocity, this, null, group);
+				FireData temp = new FireData();
+				temp.Prefab = prefab;
+				temp.Speed = speed;
+				temp.AngularSpeed = angularSpeed;
+				temp.Field = this;
+				modifier.Initialize(temp);
 				modifier.Fire(position, rotation);
 				return null;
 			}
 		}
-		
-		public Danmaku Fire(FireBuilder data) {
-			DanmakuModifier modifier = data.Modifier;
-			if (modifier == null) {
-				Danmaku danmaku = Danmaku.Get (this, data);
-				danmaku.Activate ();
-				return danmaku;
-			} else {
-				modifier.Initialize (data, this);
-				if (TargetField == null)
-					TargetField = this;
-				modifier.Fire (TargetField.WorldPoint (data.Position, data.CoordinateSystem), data.Rotation);
-				return null;
-			}
+
+		public Danmaku Fire (FireData data) {
+			if (TargetField == null)
+				TargetField = this;
+			DanmakuField old = data.Field;
+			data.Field = TargetField;
+			Danmaku danmaku = data.Fire ();
+			data.Field = old;
+			return danmaku;
 		}
 
 		#if UNITY_EDITOR

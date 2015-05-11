@@ -13,52 +13,71 @@ namespace DanmakU {
 
 		[SerializeField]
 		private DanmakuModifier subModifier;
-		private FireBuilder builder;
+		private FireData data;
 
-		protected DynamicFloat Velocity {
+		protected DynamicFloat Speed {
 			get {
-				return builder.Velocity;
+				return data.Speed;
 			}
 			set {
-				builder.Velocity = value;
-				if(subModifier != null) {
-					subModifier.Velocity = value;
-				}
+				data.Speed = value;
+				if(subModifier != null)
+					subModifier.Speed = value;
 			}
 		}
 
-		protected DynamicFloat AngularVelocity {
+		protected DynamicFloat AngularSpeed {
 			get {
-				return builder.AngularVelocity;
+				return data.AngularSpeed;
 			}
 			set {
-				builder.AngularVelocity = value;
-				if(subModifier != null) {
-					subModifier.AngularVelocity = value;
-				}
+				data.AngularSpeed = value;
+				if(subModifier != null)
+					subModifier.AngularSpeed = value;
 			}
 		}
 
 		protected DanmakuField TargetField {
-			get;
-			private set;
+			get {
+				return data.Field;
+			}
+			set {
+				data.Field = value;
+				if (subModifier != null)
+					subModifier.TargetField = value;
+			}
 		}
 
 		protected DanmakuController Controller {
 			get {
-				return builder.Controller;
+				return data.Controller;
+			}
+			set {
+				data.Controller = value;
+				if (subModifier != null)
+					subModifier.Controller = value;
 			}
 		}
 
 		protected DanmakuPrefab BulletType {
 			get {
-				return builder.Prefab;
+				return data.Prefab;
+			}
+			set {
+				data.Prefab = value;
+				if (subModifier != null)
+					subModifier.BulletType = value;
 			}
 		}
 
 		protected DanmakuGroup Group {
 			get {
-				return builder.Group;
+				return data.Group;
+			}
+			set {
+				data.Group = value;
+				if (subModifier != null)
+					subModifier.Group = value;
 			}
 		}
 
@@ -69,35 +88,14 @@ namespace DanmakU {
 			set {
 				subModifier = value;
 				if(subModifier == null)
-					subModifier.Initialize(BulletType, Velocity, AngularVelocity, TargetField, Controller, Group);
+					subModifier.Initialize(data);
 			}
 		}
 
-		internal void Initialize(DanmakuPrefab prefab,
-		                         float velocity,
-		                         float angularVelocity,
-				                 DanmakuField field,
-				                 DanmakuController controller,
-		                         DanmakuGroup group) {
-			TargetField = field;
-			builder = new FireBuilder (prefab);
-			builder.Velocity = velocity;
-			builder.AngularVelocity = angularVelocity;
-			builder.Controller = controller;
-			builder.Group = group;
-			builder.CoordinateSystem = DanmakuField.CoordinateSystem.World;
+		internal void Initialize(FireData data) {
+			this.data = data;
 			if (subModifier != null)
-				subModifier.Initialize (builder, field);
-			OnInitialize ();
-		}
-
-		internal void Initialize (FireBuilder builder, DanmakuField field) {
-			TargetField = field;
-			this.builder = builder.Clone ();
-			this.builder.CoordinateSystem = DanmakuField.CoordinateSystem.World;
-			this.builder.Modifier = null;
-			if (subModifier != null)
-				subModifier.Initialize (builder, field);
+				subModifier.Initialize (data);
 			OnInitialize ();
 		}
 
@@ -116,9 +114,9 @@ namespace DanmakU {
 		protected void FireSingle(Vector2 position,
 		                          DynamicFloat rotation) {
 			if (SubModifier == null) {
-				builder.Position = position;
-				builder.Rotation = rotation;
-				TargetField.Fire(builder);
+				data.Position = position;
+				data.Rotation = rotation;
+				data.Fire();
 			} else {
 				SubModifier.Fire (position, rotation);
 			}

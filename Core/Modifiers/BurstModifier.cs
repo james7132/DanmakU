@@ -34,8 +34,8 @@ namespace DanmakU {
 				float delta = range / (count - 1);
 				
 				for (int i = 0; i < count; i++) {
-					Velocity += deltaV;
-					AngularVelocity += deltaAV;
+					Speed += deltaV;
+					AngularSpeed += deltaAV;
 					FireSingle(position, start + i * delta);
 				}
 			}
