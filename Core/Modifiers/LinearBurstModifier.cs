@@ -8,7 +8,7 @@ using UnityUtilLib;
 namespace DanmakU {
 
 	[System.Serializable]
-	public class LineModifier : DanmakuModifier {
+	public class LinearBurstModifier : DanmakuModifier {
 
 		public DynamicInt Depth = 1;
 		public DynamicFloat DeltaVelocity = 0f;
