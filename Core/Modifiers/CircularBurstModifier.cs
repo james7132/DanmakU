@@ -3,7 +3,6 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System.Collections;
 using UnityUtilLib;
 
 namespace DanmakU {
@@ -21,18 +20,18 @@ namespace DanmakU {
 		public override void Fire (Vector2 position, DynamicFloat rotation) {
 
 			int count = Count.Value;
-			float range = Range.Value;
-			float deltaV = DeltaVelocity.Value;
-			float deltaAV = DeltaAngularVelocity.Value; 
 
 			count = Mathf.Abs (count);
 
 			if (count == 1) {
 				FireSingle (position, rotation);
 			} else {
+				float range = Range.Value;
 				float start = rotation - range * 0.5f;
 				float delta = range / (count - 1);
 				
+				float deltaV = DeltaVelocity.Value;
+				float deltaAV = DeltaAngularVelocity.Value;
 				for (int i = 0; i < count; i++) {
 					Speed += deltaV;
 					AngularSpeed += deltaAV;

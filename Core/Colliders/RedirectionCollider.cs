@@ -22,9 +22,28 @@ namespace DanmakU {
 
 		private DanmakuGroup affected;
 
+		[Serialize]
 		public Transform Target {
 			get;
 			set;
+		}
+
+		public RotationMode RotationMode {
+			get {
+				return rotationMode;
+			}
+			set {
+				rotationMode = value;
+			}
+		}
+
+		public DynamicFloat Angle {
+			get {
+				return angle;
+			}
+			set {
+				angle = value;
+			}
 		}
 
 		/// <summary>
@@ -45,7 +64,10 @@ namespace DanmakU {
 				baseAngle += danmaku.Rotation;
 				break;
 			case RotationMode.Object:
-				baseAngle += DanmakuUtil.AngleBetween2D (danmaku.Position, Target.position);
+				if(Target != null)
+					baseAngle += DanmakuUtil.AngleBetween2D (danmaku.Position, Target.position);
+				else
+					Debug.LogWarning ("Trying to direct at an object but no Target object assinged");
 				break;
 			case RotationMode.Absolute:
 				break;

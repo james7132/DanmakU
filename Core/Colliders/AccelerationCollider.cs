@@ -5,7 +5,10 @@
 using UnityEngine;
 using UnityUtilLib;
 
-namespace DanmakU {
+/// <summary>
+/// A set of pre-created Danmaku Colliders that can be used
+/// </summary>
+namespace DanmakU.Collider {
 
 	/// <summary>
 	/// A Danmaku Controller that speeds up or slows down danmaku so long as bullets are contacting it.
@@ -32,9 +35,11 @@ namespace DanmakU {
 		}
 
 		#region implemented abstract members of DanmakuCollider
+
 		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			danmaku.Speed += actual;
 		}
+
 		#endregion
 
 	}
