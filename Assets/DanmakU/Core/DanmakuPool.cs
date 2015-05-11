@@ -4,8 +4,6 @@
 
 using System;
 using UnityEngine;
-using UnityUtilLib;
-using UnityUtilLib.Pooling;
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games

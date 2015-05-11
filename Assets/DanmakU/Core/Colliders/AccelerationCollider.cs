@@ -3,7 +3,7 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using UnityUtilLib;
+
 
 /// <summary>
 /// A set of pre-created Danmaku Colliders that can be used
@@ -31,7 +31,7 @@ namespace DanmakU.Collider {
 		}
 
 		private void Update () {
-			actual = acceleration * Util.DeltaTime;
+			actual = acceleration * TimeUtil.DeltaTime;
 		}
 
 		#region implemented abstract members of DanmakuCollider

@@ -3,7 +3,7 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using UnityUtilLib;
+
 
 namespace DanmakU.NoScript {
 
@@ -21,9 +21,9 @@ namespace DanmakU.NoScript {
 			sourcePoints.Clear ();
 			float delta = Util.TwoPI / count;
 			for (int i = 0; i < count; i++) {
-				float currentRotation = Util.Degree2Rad * rotation + i * delta;
+				float currentRotation = Mathf.Deg2Rad * rotation + i * delta;
 				SourcePoint sourcePoint = new SourcePoint(position + radius  * Util.OnUnitCircleRadians(currentRotation),
-				                                          ((raidalDirection) ? Util.Rad2Degree * currentRotation - 90f : rotation));
+				                                          ((raidalDirection) ? Mathf.Rad2Deg * currentRotation - 90f : rotation));
 				sourcePoints.Add(sourcePoint);
 			}
 		}

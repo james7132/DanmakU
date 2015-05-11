@@ -4,8 +4,6 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using UnityUtilLib;
-using UnityUtilLib.Pooling;
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
@@ -67,6 +65,18 @@ namespace DanmakU {
 				unitCircle[i] = Util.OnUnitCircle(angle);
 			}
 		}
+		
+		public static int TotalCount {
+			get {
+				return (danmakuPool != null) ? danmakuPool.totalCount : 0;
+			}
+		}
+		
+		public static int ActiveCount {
+			get {
+				return (danmakuPool != null) ? danmakuPool.totalCount : 0;
+			}
+		}
 
 		internal static int Ang2Index(float angle) {
 			float clamp = angle - 360 * Mathf.FloorToInt (angle / 360);
@@ -102,7 +112,7 @@ namespace DanmakU {
 			colliderMap.Clear ();
 
 			//caches the change in time since the last frame
-			Danmaku.dt = Util.DeltaTime;
+			Danmaku.dt = TimeUtil.DeltaTime;
 			Danmaku[] all = danmakuPool.all;
 			for (int i = 0; i < all.Length; i++) {
 				if(all[i] != null && all[i].is_active) {
@@ -158,18 +168,6 @@ namespace DanmakU {
 						target.DeactivateImmediate();
 					}
 				}
-			}
-		}
-		
-		public static int TotalCount {
-			get {
-				return (danmakuPool != null) ? danmakuPool.totalCount : 0;
-			}
-		}
-		
-		public static int ActiveCount {
-			get {
-				return (danmakuPool != null) ? danmakuPool.totalCount : 0;
 			}
 		}
 

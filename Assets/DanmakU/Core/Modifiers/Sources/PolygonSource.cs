@@ -4,7 +4,7 @@
 
 using UnityEngine;
 using System.Collections;
-using UnityUtilLib;
+
 
 namespace DanmakU.NoScript {
 

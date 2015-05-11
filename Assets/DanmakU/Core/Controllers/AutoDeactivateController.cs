@@ -2,7 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityUtilLib;
+
 using Vexe.Runtime.Types;
 
 namespace DanmakU.DanmakuControllers {
@@ -21,10 +21,10 @@ namespace DanmakU.DanmakuControllers {
 
 		public float Time {
 			get {
-				return Util.FramesToTime(Frames);
+				return TimeUtil.FramesToTime(Frames);
 			}
 			set {
-				Frames = Util.TimeToFrames(value);
+				Frames = TimeUtil.TimeToFrames(value);
 			}
 		}
 
@@ -33,7 +33,7 @@ namespace DanmakU.DanmakuControllers {
 		}
 
 		public AutoDeactivateController(float time) {
-			Frames = Util.TimeToFrames (time);
+			Frames = TimeUtil.TimeToFrames (time);
 		}
 
 		#region IDanmakuController implementation

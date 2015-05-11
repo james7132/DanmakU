@@ -3,7 +3,6 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using UnityUtilLib;
 using Vexe.Runtime.Types;
 
 namespace DanmakU {

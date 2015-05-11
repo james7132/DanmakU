@@ -21,7 +21,7 @@ namespace DanmakU {
 		}
 
 		#region implemented abstract members of DanmakuModifier
-		public override void Fire (Vector2 position, UnityUtilLib.DynamicFloat rotation) {
+		public override void Fire (Vector2 position, DynamicFloat rotation) {
 
 			DanmakuPrefab oldPrefab = Prefab;
 			Prefab = prefab;

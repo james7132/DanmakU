@@ -5,7 +5,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityUtilLib;
+
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
@@ -15,9 +15,10 @@ namespace DanmakU {
 	/// <summary>
 	/// A GameController implementation for 2D Danmaku games.
 	/// </summary>
-//	[RequireComponent(typeof(EnemyManager))]
 	[AddComponentMenu("DanmakU/Danmaku Game Controller")]
-	public class DanmakuGameController : GameController {
+	public class DanmakuGameController : Singleton<DanmakuGameController> {
+		
+		public bool FrameRateIndependent = true;
 
 		[SerializeField]
 		private int danmakuInitialCount = Danmaku.standardStart;
@@ -28,11 +29,8 @@ namespace DanmakU {
 		[SerializeField]
 		private float angleResolution = 0.1f;
 
-		public override void Update() {
-			base.Update ();
-			if (!IsGamePaused) {
-				Danmaku.UpdateAll();
-			}
+		public virtual void Update() {
+			Danmaku.UpdateAll ();
 		}
 
 		public override void Awake () {

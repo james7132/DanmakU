@@ -3,7 +3,7 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using UnityUtilLib;
+
 
 namespace DanmakU {
 
@@ -25,7 +25,7 @@ namespace DanmakU {
 		}
 
 		private void Update() {
-			actual = force * Util.DeltaTime;
+			actual = force * TimeUtil.DeltaTime;
 		}
 
 		#region implemented abstract members of DanmakuCollider
