@@ -2,14 +2,12 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using System;
 using UnityEngine;
-using UnityUtilLib;
 
 namespace DanmakU {
 
 	[ExecuteInEditMode]
-	public class FieldBoundary : CachedObject {
+	public sealed class FieldBoundary : MonoBehaviour {
 
 		private enum Edge { Top = 0, Bottom = 1, Left = 2, Right = 3}
 		
@@ -39,8 +37,7 @@ namespace DanmakU {
 		private Bounds2D oldBounds;
 		private Bounds2D newBounds;
 		
-		public override void Awake () {
-			base.Awake ();
+		void Awake () {
 			boundary = GetComponent<BoxCollider2D> ();
 			if (field == null) {
 				print("No field provided, searching in ancestor GameObjects...");

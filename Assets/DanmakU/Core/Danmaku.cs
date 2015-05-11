@@ -3,8 +3,6 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using UnityUtilLib;
-using UnityUtilLib.Pooling;
 using System.Collections;
 using System.Collections.Generic;
 
