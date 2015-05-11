@@ -102,6 +102,34 @@ namespace DanmakU {
 		protected virtual void OnInitialize() {
 		}
 
+		public static DanmakuModifier Construct (IEnumerable<DanmakuModifier> enumerable) {
+			if (enumerable == null)
+				throw new System.ArgumentNullException ();
+			DanmakuModifier top = null;
+			DanmakuModifier current = null;
+			foreach (var next in enumerable) {
+				if(next != null) {
+					if(top == null)
+						top = next;
+					else
+						current.subModifier = next;
+					current = next;
+				}
+			}
+			return top;
+		}
+
+		public void Insert (DanmakuModifier newModifier) {
+			if (newModifier == null)
+				throw new System.ArgumentNullException ();
+			if (subModifier == null)
+				subModifier = newModifier;
+			else {
+				newModifier.subModifier = subModifier;
+				subModifier = newModifier;
+			}
+		}
+
 		public void Append(DanmakuModifier newModifier) {
 			DanmakuModifier parent = this;
 			DanmakuModifier current = subModifier;
