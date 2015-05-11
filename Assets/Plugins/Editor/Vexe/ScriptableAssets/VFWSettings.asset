@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd76edddd05535e47b1e1b320d9a9be0, type: 3}
+  m_Name: VFWSettings
+  m_EditorClassIdentifier: 
+  _serializationData:
+    serializedObjects: []
+    serializedStrings:
+      keys:
+      - CategoryDisplay DefaultDisplay
+      - int DefaultSpacing
+      - string DefaultMemberFormat
+      - string DefaultSequenceFormat
+      - string DefaultDictionaryFormat
+      - bool DisplayReadonlyIfTrue
+      values:
+      - '"BoxedMembersArea"'
+      - 10
+      - '"$nicename"'
+      - '"$nicename ($nicetype)"'
+      - '"$nicename ($nicetype)"'
+      - true
+  _id: -1
+  dbg: 0
+  DefaultDisplay: 4
+  DefaultSpacing: 10
+  DefaultMemberFormat: $nicename
+  DefaultSequenceFormat: $nicename ($nicetype)
+  DefaultDictionaryFormat: $nicename ($nicetype)
+  DisplayReadonlyIfTrue: 1
