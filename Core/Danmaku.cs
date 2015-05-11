@@ -19,7 +19,7 @@ namespace DanmakU {
 	/// A single projectile fired.
 	/// The base object that represents a single bullet in a Danmaku game
 	/// </summary>
-	public sealed partial class Danmaku : IPooledObject, IPrefabed<DanmakuPrefab>, IDanmakuObject {
+	public sealed partial class Danmaku {
 
 		/// <summary>
 		/// The supported collider shapes used by danmaku
@@ -72,9 +72,7 @@ namespace DanmakU {
 		private Vector2 collisionCenter;
 
 		//Cached check for controllers to avoid needing to calculate them in Update
-		internal bool groupCheck;
 		private bool controllerCheck;
-		internal int groupCountCache;
 
 		private List<IEnumerator> tasks;
 
@@ -580,9 +578,25 @@ namespace DanmakU {
 
 		internal bool is_active;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is active.
+		/// Setting ti to true while inactive is equal to calling Activate.
+		/// Setting it to false while active is equal to calling DeactivateImmediate.
+		/// </summary>
+		/// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
 		public bool IsActive {
 			get {
 				return is_active;
+			}
+			set {
+				if(is_active) {
+					if(!value)
+						DeactivateImmediate();
+				} else {
+					if(value)
+						Activate();
+				}
+				is_active = value;
 			}
 		}
 
@@ -618,8 +632,6 @@ namespace DanmakU {
 			if (!group.Contains (this)) {
 				groups.Add (group);
 				group.Add (this);
-				groupCountCache++;
-				groupCheck = groupCountCache > 0;
 			}
 		}
 
@@ -632,8 +644,6 @@ namespace DanmakU {
 			if (group.Contains (this)) {
 				groups.Remove (group);
 				group.Remove (this);
-				groupCountCache--;
-				groupCheck = groupCountCache > 0;
 			}
 		}
 
@@ -643,14 +653,12 @@ namespace DanmakU {
 		/// This method should only be used when dealing with Projectiles while the game is paused or when ProjectileManager is not enabled
 		/// </summary>
 		public void DeactivateImmediate() {
-			for (int i = 0; i < groups.Count; i++) {
+			for(int i = 0; i < groups.Count; i++) {
 				groups[i].Remove (this);
 			}
 			groups.Clear ();
 			if(tasks != null)
 				tasks.Clear ();
-			groupCountCache = 0;
-			groupCheck = false;
 			controllerUpdate = null;
 			controllerCheck = false;
 			Damage = 0;

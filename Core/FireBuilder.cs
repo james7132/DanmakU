@@ -7,15 +7,45 @@ using UnityUtilLib;
 
 namespace DanmakU {
 
-	[System.Serializable]
-	public class FireBuilder : IClonable<FireBuilder> {
-		public DanmakuPrefab Prefab = null;
+	/// <summary>
+	/// A container class for passing information about firing a single bullet.
+	/// For creating more complex firing. See FireBuilder.
+	/// </summary>
+	public sealed class FireData {
+
+		public DanmakuPrefab Prefab;
+		public DanmakuField Field;
 		public Vector2 Position = Vector2.zero;
+		public DynamicFloat Rotation = 0f;
+		public DynamicFloat Speed = 0f;
+		public DynamicFloat AngularSpeed = 0f;
+		public DanmakuController Controller;
+		public DynamicInt Damage = 0;
+		public DanmakuGroup Group;
+
+		public Danmaku Fire() {
+			Danmaku danmaku = Danmaku.GetInactive(this);
+			danmaku.Field = Field;
+			danmaku.Activate ();
+			return danmaku;
+		}
+
+	}
+
+	public abstract class AbstractFireBuilder {
+
+		public abstract void AddModifier (DanmakuModifier modifier);
+
+	}
+
+	[System.Serializable]
+	public class FireBuilder {
+		public DanmakuPrefab Prefab;
+		public Vector2 Position;
 		public DynamicFloat Rotation;
 		public DynamicFloat Velocity;
 		public DynamicFloat AngularVelocity;
-		public DanmakuController Controller = null;
-		public DanmakuField.CoordinateSystem CoordinateSystem = DanmakuField.CoordinateSystem.View;
+		public DanmakuController Controller;
 		public DanmakuGroup Group;
 		public int Damage;
 		public DanmakuModifier Modifier;
@@ -30,30 +60,6 @@ namespace DanmakU {
 			ColorOverride = Prefab.Color;
 		}
 		
-		public FireBuilder(DanmakuPrefab prefab) {
-			this.Prefab = prefab;
-		}
-		
-		public void Copy(FireBuilder other) {
-			Prefab = other.Prefab;
-			Position = other.Position;
-			Rotation = other.Rotation;
-			Velocity = other.Velocity;
-			AngularVelocity = other.AngularVelocity;
-			Controller = other.Controller;
-			CoordinateSystem = other.CoordinateSystem;
-			Group = other.Group;
-			Damage = other.Damage;
-			Modifier = other.Modifier;
-		}
-		
-		#region IClonable implementation
-		public FireBuilder Clone () {
-			FireBuilder copy = new FireBuilder ();
-			copy.Copy (this);
-			return copy;
-		}
-		#endregion
 	}
 }
 
