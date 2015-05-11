@@ -8,7 +8,6 @@ namespace DanmakU.DanmakuControllers {
 
 	public class HomingController : IDanmakuController {
 
-		
 		public Transform Target {
 			get;
 			set;
