@@ -12,7 +12,7 @@ using UnityUtilLib.Pooling;
 /// </summary>
 namespace DanmakU {
 	
-	class DanmakuPool : IPool<Danmaku> {
+	class DanmakuPool {
 		
 		//FIXME: Currently not working: optimized version of pool, need to debug
 		
@@ -157,9 +157,10 @@ namespace DanmakU {
 				queue = tempQueue;
 			}
 			for(int i = totalCount; i < endCount; i++, endIndex++) {
-				all[i] = new Danmaku();
-				all[i].poolIndex = i;
-				all[i].pool = this;
+				Danmaku danmaku = new Danmaku();
+				danmaku = new Danmaku();
+				danmaku.poolIndex = i;
+				all[i] = danmaku;
 				if(endIndex >= queue.Length)
 					endIndex = 0;
 				queue[endIndex] = i;
@@ -208,18 +209,6 @@ namespace DanmakU {
 			queue [endIndex] = obj.poolIndex;
 			endIndex = (endIndex + 1) % size;
 			inactiveCount++;
-		}
-		
-		#endregion
-		
-		#region IPool implementation
-		
-		object IPool.Get () {
-			return Get ();
-		}
-		
-		public void Return (object obj) {
-			Return (obj as Danmaku);
 		}
 		
 		#endregion

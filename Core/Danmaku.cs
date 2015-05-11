@@ -564,18 +564,6 @@ namespace DanmakU {
 			AddController (runtime.ExtraControllers);
 		}
 
-		#region IPooledObject implementation
-
-		internal DanmakuPool pool;
-		IPool IPooledObject.Pool {
-			get {
-				return pool;
-			}
-			set {
-				pool = value as DanmakuPool;
-			}
-		}
-
 		internal bool is_active;
 
 		/// <summary>
@@ -621,8 +609,6 @@ namespace DanmakU {
 			to_deactivate = true;
 		}
 
-		#endregion
-
 		/// <summary>
 		/// Adds this projectile to the given DanmakuGroup.
 		/// </summary>
@@ -665,7 +651,7 @@ namespace DanmakU {
 			frames = 0;
 			runtime.Remove(this);
 			is_active = false;
-			pool.Return (this);
+			danmakuPool.Return (this);
 		}
 
 		public override int GetHashCode () {

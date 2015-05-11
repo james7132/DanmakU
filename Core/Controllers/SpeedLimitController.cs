@@ -17,6 +17,24 @@ namespace DanmakU.DanmakuControllers {
 		[SerializeField]
 		private float limit;
 
+		public LimitType LimitType2 {
+			get {
+				return limitType;
+			}
+			set {
+				limitType = value;
+			}
+		}
+
+		public float Limit {
+			get {
+				return limit;
+			}
+			set {
+				limit = value;
+			}
+		}
+
 		public SpeedLimitController () {
 			limit = float.NaN;
 		}
