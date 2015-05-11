@@ -9,7 +9,7 @@ using UnityUtilLib;
 namespace DanmakU {
 
 	[System.Serializable]
-	public class BurstModifier : DanmakuModifier {
+	public class CircularBurstModifier : DanmakuModifier {
 
 		public DynamicFloat Range = 360f;
 		public DynamicInt Count = 1;
