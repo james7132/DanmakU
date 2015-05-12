@@ -52,7 +52,7 @@ namespace DanmakU {
 				throw new System.NullReferenceException ();
 			if (positions == null)
 				throw new System.ArgumentNullException ();
-			int max = positions.Length;
+			int max = positions.Count;
 			Danmaku[] arrayTest = danmakus as Danmaku[];
 			if (arrayTest != null) {
 				for(int i = 0; i < arrayTest.Length; i++) {
@@ -246,7 +246,7 @@ namespace DanmakU {
 				throw new System.NullReferenceException ();
 			if (rotations == null)
 				throw new System.ArgumentNullException ();
-			int max = rotations.Length;
+			int max = rotations.Count;
 			Danmaku[] arrayTest = danmakus as Danmaku[];
 			if (arrayTest != null) {
 				for(int i = 0; i < arrayTest.Length; i++) {
@@ -307,7 +307,7 @@ namespace DanmakU {
 				throw new System.NullReferenceException ();
 			if (speeds == null)
 				throw new System.ArgumentNullException ();
-			int max = speeds.Length;
+			int max = speeds.Count;
 			Danmaku[] arrayTest = danmakus as Danmaku[];
 			if (arrayTest != null) {
 				for(int i = 0; i < arrayTest.Length; i++) {
@@ -368,7 +368,7 @@ namespace DanmakU {
 				throw new System.NullReferenceException ();
 			if (angularSpeeds == null)
 				throw new System.ArgumentNullException ();
-			int max = angularSpeeds.Length;
+			int max = angularSpeeds.Count;
 			Danmaku[] arrayTest = danmakus as Danmaku[];
 			if (arrayTest != null) {
 				for(int i = 0; i < arrayTest.Length; i++) {
