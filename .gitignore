@@ -17,5 +17,9 @@
 #Unity3D Generated File On Crash Reports
 sysinfo.txt
 
+#The meta files related to code shouldn't matter
+#There shouldn't be any prefabs/scenes saved with MonoBehaviour references
+*.cs.meta
+
 *Clipboard.asset*
 *BetterEditorPrefs.asset*
