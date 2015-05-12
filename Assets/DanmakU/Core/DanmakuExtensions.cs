@@ -6,8 +6,6 @@ namespace DanmakU {
 
 	public static class DanmakuExtensions {
 
-		//TODO: Implement and test potential higher performance versions of these functions for Arrays.
-
 		#region Position Functions
 
 		/// <summary>
