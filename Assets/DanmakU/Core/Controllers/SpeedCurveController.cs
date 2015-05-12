@@ -31,7 +31,7 @@ namespace DanmakU.DanmakuControllers {
 		}
 
 		#region IDanmakuController implementation
-		public virtual void UpdateDanmaku (Danmaku danmaku, float dt) {
+		public virtual void Update (Danmaku danmaku, float dt) {
 			if (absolute) {
 				danmaku.Speed = speedCuve.Evaluate (danmaku.Time);
 			} else {
@@ -71,7 +71,7 @@ namespace DanmakU.DanmakuControllers {
 		}
 		
 		#region IDanmakuController implementation
-		public virtual void UpdateDanmaku (Danmaku danmaku, float dt) {
+		public virtual void Update (Danmaku danmaku, float dt) {
 			if (absolute) {
 				danmaku.AngularSpeed = angularSpeedCurve.Evaluate(danmaku.Time);
 			} else {

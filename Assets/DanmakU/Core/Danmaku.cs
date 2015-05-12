@@ -279,7 +279,7 @@ namespace DanmakU {
 
 		public void AddController(IDanmakuController controller) {
 			if(controller != null) {
-				controllerUpdate += controller.UpdateDanmaku;
+				controllerUpdate += controller.Update;
 				controllerCheck = controllerUpdate != null;
 			}
 		}
@@ -291,7 +291,7 @@ namespace DanmakU {
 
 		public void RemoveController(IDanmakuController controller) {
 			if(controller != null) {
-				controllerUpdate -= controller.UpdateDanmaku;
+				controllerUpdate -= controller.Update;
 				controllerCheck = controllerUpdate != null;
 			}
 		}

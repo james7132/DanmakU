@@ -18,7 +18,7 @@ namespace DanmakU.DanmakuControllers {
 		[SerializeField]
 		private float endTime;
 
-		public void UpdateDanmaku (Danmaku projectile, float dt) {
+		public void Update (Danmaku projectile, float dt) {
 			float bulletTime = projectile.Time;
 			Color startColor = projectile.Prefab.Color;
 //			Debug.Log (bulletTime);

@@ -344,7 +344,7 @@ namespace DanmakU {
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
 				if(danmaku != null)
-					danmaku.AddController(controller.UpdateDanmaku);
+					danmaku.AddController(controller.Update);
 			}
 		}
 		
@@ -353,7 +353,7 @@ namespace DanmakU {
 				throw new System.NullReferenceException ();
 			foreach(var danmaku in danmakus) {
 				if(danmaku != null)
-					danmaku.RemoveController(controller.UpdateDanmaku);
+					danmaku.RemoveController(controller.Update);
 			}
 		}
 		

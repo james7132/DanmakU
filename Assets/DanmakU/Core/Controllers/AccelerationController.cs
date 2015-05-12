@@ -32,7 +32,7 @@ namespace DanmakU.DanmakuControllers {
 		
 		#region IDanmakuController implementation
 		
-		public virtual void UpdateDanmaku (Danmaku danmaku, float dt) {
+		public virtual void Update (Danmaku danmaku, float dt) {
 			if (Acceleration != 0) {
 				danmaku.Speed += Acceleration * dt;
 			}

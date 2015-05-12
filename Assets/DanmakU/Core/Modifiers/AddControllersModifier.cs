@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015 James Liu
+// Copyright (c) 2015 James Liu
 //	
 // See the LISCENSE file for copying permission.
 
@@ -20,11 +20,11 @@ namespace DanmakU {
 		}
 
 		public void AddController(IDanmakuController controller) {
-			controllerAggregate += controller.UpdateDanmaku;
+			controllerAggregate += controller.Update;
 		}
 
 		public void RemoveController(IDanmakuController controller) {
-			controllerAggregate -= controller.UpdateDanmaku;
+			controllerAggregate -= controller.Update;
 		}
 
 		public void ClearControllers() {
@@ -37,7 +37,7 @@ namespace DanmakU {
 
 			DanmakuController temp = controllerAggregate;
 			for(int i = 0; i < controllers.Length; i++) {
-				temp += controllers[i].UpdateDanmaku;
+				temp += controllers[i].Update;
 			}
 			Controller += temp;
 			FireSingle (position, rotation);
