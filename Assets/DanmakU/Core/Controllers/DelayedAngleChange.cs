@@ -32,7 +32,7 @@ namespace DanmakU.DanmakuControllers {
 
 		#region implemented abstract members of IDanmakuController
 
-		public void UpdateDanmaku (Danmaku danmaku, float dt) {
+		public void Update (Danmaku danmaku, float dt) {
 			float time = danmaku.Time;
 			if(time >= delay && time - dt <= delay) {
 				float baseAngle = angle.Value;

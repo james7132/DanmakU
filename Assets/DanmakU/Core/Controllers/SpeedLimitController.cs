@@ -46,7 +46,7 @@ namespace DanmakU.DanmakuControllers {
 
 		#region IDanmakuController implementation
 
-		public void UpdateDanmaku (Danmaku danmaku, float dt) {
+		public void Update (Danmaku danmaku, float dt) {
 			if(limitType == LimitType.Maximum) {
 				if(danmaku.Speed > limit && !float.IsNaN(limit)) {
 					danmaku.Speed = limit;

@@ -7,9 +7,17 @@ using UnityEngine;
 namespace DanmakU {
 
 	public static class TimeUtil {
-		
-		private static float normalFPS = 60f;
-		private static float normalDeltaTime = 1f / 60f;
+
+		static TimeUtil() {
+			normalFPS = 60f;
+			normalDeltaTime = 1f / normalFPS;
+		}
+
+		private static float normalFPS;
+		private static float normalDeltaTime;
+
+
+		public static bool FrameRateIndependent = true;
 		
 		/// <summary>
 		/// The normal target frames per second
@@ -51,8 +59,6 @@ namespace DanmakU {
 			}
 		}
 		
-		public static bool FrameRateIndependent = false;
-		
 		/// <summary>
 		/// Gets the expected frames per second of the current Application.
 		/// Normally this is set to Application.targetFrameRate if it is not 0.
@@ -61,15 +67,13 @@ namespace DanmakU {
 		/// <value>The expected frames per second.</value>
 		public static float FPS {
 			get {
-				if(Time.timeScale != 0) {
-					if(FrameRateIndependent) {
+				if (Mathf.Abs (Time.timeScale - 0) > float.Epsilon) {
+					if (FrameRateIndependent)
 						return 1f / Time.deltaTime;
-					} else {
+					else
 						return (Application.targetFrameRate > 0f) ? Application.targetFrameRate : normalFPS;
-					}
-				} else {
+				} else
 					return float.PositiveInfinity;
-				}
 			}
 		}
 		
@@ -84,11 +88,10 @@ namespace DanmakU {
 				if(FrameRateIndependent) {
 					return Time.deltaTime;
 				} else {
-					if(Time.timeScale != 0) {
-						return (Application.targetFrameRate > 0f) ? 1f / Application.targetFrameRate : normalDeltaTime;
-					} else {
+					if(Mathf.Abs (Time.timeScale - 0) > float.Epsilon)
+								return Time.timeScale * ((Application.targetFrameRate <= 0f) ? normalDeltaTime : 1f / Application.targetFrameRate);
+					else
 						return 0f;
-					}
 				}
 			}
 		}

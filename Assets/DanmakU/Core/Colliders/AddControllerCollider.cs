@@ -22,16 +22,16 @@ namespace DanmakU {
 			if (controllers == null)
 				return;
 			for (int i = 0; i < controllers.Length; i++) {
-				controllerAggregate += controllers[i].UpdateDanmaku;
+				controllerAggregate += controllers[i].Update;
 			}
 		}
 
 		public void AddController(IDanmakuController controller) {
-			controllerAggregate += controller.UpdateDanmaku;
+			controllerAggregate += controller.Update;
 		}
 		
 		public void RemoveController(IDanmakuController controller) {
-			controllerAggregate -= controller.UpdateDanmaku;
+			controllerAggregate -= controller.Update;
 		}
 		
 		public void ClearControllers() {

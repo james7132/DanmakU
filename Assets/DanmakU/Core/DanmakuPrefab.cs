@@ -400,7 +400,7 @@ namespace DanmakU {
 			currentDanmaku = new HashSet<Danmaku> ();
 			particles = new ParticleSystem.Particle[runtimeSystem.particleCount];
 			for (int i = 0; i < extraControllers.Length; i++) {
-				controllerAggregate += extraControllers[i].UpdateDanmaku;
+				controllerAggregate += extraControllers[i].Update;
 			}
 			
 			runtimeRenderer.mesh = renderMesh;

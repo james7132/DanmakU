@@ -37,7 +37,7 @@ namespace DanmakU.DanmakuControllers {
 		}
 
 		#region IDanmakuController implementation
-		public void UpdateDanmaku (Danmaku danmaku, float dt) {
+		public void Update (Danmaku danmaku, float dt) {
 			if (danmaku.frames > Frames) {
 				danmaku.Deactivate();
 			}
