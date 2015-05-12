@@ -56,8 +56,7 @@ namespace DanmakU {
 		private int colliderMask;
 
 		private bool to_deactivate;
-		
-		private DanmakuController controllerUpdate;
+
 		internal List<DanmakuGroup> groups;
 
 		private DanmakuField field;
@@ -78,8 +77,10 @@ namespace DanmakU {
 		
 		#region Public Fields
 		
+		public event DanmakuController ControllerUpdate;
+
 		/// <summary>
-		/// Gets or sets the renderer color of the projectile.
+		/// The renderer color of the projectile.
 		/// <see href="http://docs.unity3d.com/ScriptReference/SpriteRenderer-color.html">SpriteRenderer.color</see>
 		/// </summary>
 		/// <value>The renderer color.</value>
@@ -279,31 +280,31 @@ namespace DanmakU {
 
 		public void AddController(IDanmakuController controller) {
 			if(controller != null) {
-				controllerUpdate += controller.Update;
-				controllerCheck = controllerUpdate != null;
+				ControllerUpdate += controller.Update;
+				controllerCheck = ControllerUpdate != null;
 			}
 		}
 
 		public void AddController(DanmakuController controller) {
-			controllerUpdate += controller;
-			controllerCheck = controllerUpdate != null;
+			ControllerUpdate += controller;
+			controllerCheck = ControllerUpdate != null;
 		}
 
 		public void RemoveController(IDanmakuController controller) {
 			if(controller != null) {
-				controllerUpdate -= controller.Update;
-				controllerCheck = controllerUpdate != null;
+				ControllerUpdate -= controller.Update;
+				controllerCheck = ControllerUpdate != null;
 			}
 		}
 
 		public void RemoveController(DanmakuController controller) {
-			controllerUpdate -= controller;
-			controllerCheck = controllerUpdate != null;
+			ControllerUpdate -= controller;
+			controllerCheck = ControllerUpdate != null;
 		}
 
 		public void ClearControllers() {
 			controllerCheck = true;
-			controllerUpdate = null;
+			ControllerUpdate = null;
 		}
 
 		#region Position Functions
@@ -391,7 +392,7 @@ namespace DanmakU {
 			Vector2 movementVector;
 
 			if (controllerCheck) {
-				controllerUpdate(this, dt);
+				ControllerUpdate(this, dt);
 			}
 
 			if(tasks != null) {
@@ -643,7 +644,7 @@ namespace DanmakU {
 			groups.Clear ();
 			if(tasks != null)
 				tasks.Clear ();
-			controllerUpdate = null;
+			ControllerUpdate = null;
 			controllerCheck = false;
 			Damage = 0;
 			frames = 0;
