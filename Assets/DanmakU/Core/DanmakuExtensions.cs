@@ -21,9 +21,18 @@ namespace DanmakU {
 		public static void SetPosition(this IEnumerable<Danmaku> danmakus, Vector2 position) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Position = position;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Position = position;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Position = position;
+				}
 			}
 		}
 
@@ -38,15 +47,24 @@ namespace DanmakU {
 		/// <exception cref="System.ArgumentNullException">Thrown if the position array is null.</exception>
 		/// <param name="danmakus">The enumerable collection of Danmaku. Will throw System.NullReferenceException if null.</param>
 		/// <param name="position">the potential positions to move the contained danmaku to, in absolute world coordinates.</param>
-		public static void SetPosition (this IEnumerable<Danmaku> danmakus, Vector2[] positions) {
+		public static void SetPosition (this IEnumerable<Danmaku> danmakus, IList<Vector2> positions) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			if (positions == null)
 				throw new System.ArgumentNullException ();
 			int max = positions.Length;
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Position = positions[Random.Range(0, max)];
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Position = positions[Random.Range(0, max)];
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Position = positions[Random.Range(0, max)];
+				}
 			}
 		}
 		
@@ -114,18 +132,36 @@ namespace DanmakU {
 		public static void SetPosition (this IEnumerable<Danmaku> danmakus, Rect area) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Position = area.RandomPoint();
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Position = area.RandomPoint();
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Position = area.RandomPoint();
+				}
 			}
 		}
 
 		public static void MoveTowards (this IEnumerable<Danmaku> danmakus, Vector2 target, float maxDistanceDelta) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.MoveTowards(target, maxDistanceDelta);
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.MoveTowards(target, maxDistanceDelta);
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.MoveTowards(target, maxDistanceDelta);
+				}
 			}
 		}
 
@@ -161,10 +197,19 @@ namespace DanmakU {
 			//if movement is nonexistent, don't waste time and return immediately
 			if (deltaPos == new Vector2 (0f, 0f))
 				return;
-
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Position += deltaPos;
+			
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Position += deltaPos;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Position += deltaPos;
+				}
 			}
 		}
 		
@@ -181,30 +226,57 @@ namespace DanmakU {
 		public static void SetRotation(this IEnumerable<Danmaku> danmakus, DynamicFloat rotation) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Rotation = rotation.Value;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Rotation = rotation.Value;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Rotation = rotation.Value;
+				}
 			}
 		}
 		
-		public static void SetRotation (this IEnumerable<Danmaku> danmakus, DynamicFloat[] rotations) {
+		public static void SetRotation (this IEnumerable<Danmaku> danmakus, IList<DynamicFloat> rotations) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			if (rotations == null)
 				throw new System.ArgumentNullException ();
 			int max = rotations.Length;
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Rotation = rotations[Random.Range(0, max)];
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Rotation = rotations[Random.Range(0, max)];
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Rotation = rotations[Random.Range(0, max)];
+				}
 			}
 		}
 
 		public static void Rotate(this IEnumerable<Danmaku> danmakus, DynamicFloat delta) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Rotation += delta;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Rotation += delta;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Rotation += delta;
+				}
 			}
 		}
 		
@@ -215,30 +287,57 @@ namespace DanmakU {
 		public static void SetSpeed(this IEnumerable<Danmaku> danmakus, DynamicFloat velocity) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Speed = velocity.Value;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Speed = velocity.Value;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Speed = velocity.Value;
+				}
 			}
 		}
 		
-		public static void SetSpeed (this IEnumerable<Danmaku> danmakus, DynamicFloat[] speeds) {
+		public static void SetSpeed (this IEnumerable<Danmaku> danmakus, IList<DynamicFloat> speeds) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			if (speeds == null)
 				throw new System.ArgumentNullException ();
 			int max = speeds.Length;
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Speed = speeds[Random.Range(0, max)];
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Speed = speeds[Random.Range(0, max)];
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Speed = speeds[Random.Range(0, max)];
+				}
 			}
 		}
 		
 		public static void Accelerate (this IEnumerable<Danmaku> danmakus, DynamicFloat deltaSpeed) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Speed += deltaSpeed.Value;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Speed += deltaSpeed.Value;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Speed += deltaSpeed.Value;
+				}
 			}
 		}
 		
@@ -249,30 +348,57 @@ namespace DanmakU {
 		public static void SetAngularSpeed(this IEnumerable<Danmaku> danmakus, DynamicFloat angularSpeed) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.AngularSpeed = angularSpeed.Value;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.AngularSpeed = angularSpeed.Value;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.AngularSpeed = angularSpeed.Value;
+				}
 			}
 		}
 		
-		public static void SetAngularSpeed (this IEnumerable<Danmaku> danmakus, DynamicFloat[] angularSpeeds) {
+		public static void SetAngularSpeed (this IEnumerable<Danmaku> danmakus, IList<DynamicFloat> angularSpeeds) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			if (angularSpeeds == null)
 				throw new System.ArgumentNullException ();
 			int max = angularSpeeds.Length;
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.AngularSpeed = angularSpeeds[Random.Range(0, max)];
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.AngularSpeed = angularSpeeds[Random.Range(0, max)];
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.AngularSpeed = angularSpeeds[Random.Range(0, max)];
+				}
 			}
 		}
 		
 		public static void AngularAccelerate (this IEnumerable<Danmaku> danmakus, DynamicFloat deltaSpeed) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.AngularSpeed += deltaSpeed.Value;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.AngularSpeed += deltaSpeed.Value;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.AngularSpeed += deltaSpeed.Value;
+				}
 			}
 		}
 		
@@ -283,21 +409,39 @@ namespace DanmakU {
 		public static void SetDamage (this IEnumerable<Danmaku> danmakus, DynamicInt damage) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Damage = damage.Value;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Damage = damage.Value;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Damage = damage.Value;
+				}
 			}
 		}
 		
-		public static void SetDamage (this IEnumerable<Danmaku> danmakus, DynamicInt[] damages) {
+		public static void SetDamage (this IEnumerable<Danmaku> danmakus, IList<DynamicInt> damages) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			if (damages == null)
 				throw new System.ArgumentNullException ();
-			int max = damages.Length;
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Damage = damages[Random.Range(0, max)].Value;
+			int max = damages.Count;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Damage = damages[Random.Range(0, max)].Value;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Damage = damages[Random.Range(0, max)].Value;
+				}
 			}
 		}
 		
@@ -308,30 +452,57 @@ namespace DanmakU {
 		public static void SetColor(this IEnumerable<Danmaku> danmakus, Color color) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Color = color;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Color = color;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Color = color;
+				}
 			}
 		}
 		
-		public static void SetColor(this IEnumerable<Danmaku> danmakus, Color[] colors) {
+		public static void SetColor(this IEnumerable<Danmaku> danmakus, IList<Color> colors) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
 			if (colors == null)
 				throw new System.ArgumentNullException ();
-			int max = colors.Length;
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Color = colors[Random.Range(0, max)];
+			int max = colors.Count;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Color = colors[Random.Range(0, max)];
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Color = colors[Random.Range(0, max)];
+				}
 			}
 		}
 		
 		public static void SetColor(this IEnumerable<Danmaku> danmakus, Gradient colors) {
 			if (colors == null)
 				throw new System.ArgumentNullException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Color = colors.Evaluate(Random.value);
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Color = colors.Evaluate(Random.value);
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Color = colors.Evaluate(Random.value);
+				}
 			}
 		}
 		
@@ -342,27 +513,92 @@ namespace DanmakU {
 		public static void AddController(this IEnumerable<Danmaku> danmakus, IDanmakuController controller) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.AddController(controller.Update);
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			DanmakuController controlleDelegate = controller.Update;
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.AddController(controlleDelegate);
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.AddController(controlleDelegate);
+				}
 			}
 		}
 		
 		public static void RemoveController(this IEnumerable<Danmaku> danmakus, IDanmakuController controller) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.RemoveController(controller.Update);
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			DanmakuController controlleDelegate = controller.Update;
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.RemoveController(controlleDelegate);
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.RemoveController(controlleDelegate);
+				}
+			}
+		}
+
+		public static void AddController(this IEnumerable<Danmaku> danmakus, DanmakuController controller) {
+			if (danmakus == null)
+				throw new System.NullReferenceException ();
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.AddController(controller);
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.AddController(controller);
+				}
+			}
+		}
+		
+		public static void RemoveController(this IEnumerable<Danmaku> danmakus, DanmakuController controller) {
+			if (danmakus == null)
+				throw new System.NullReferenceException ();
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.RemoveController(controller);
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.RemoveController(controller);
+				}
 			}
 		}
 		
 		public static void ClearControllers(this IEnumerable<Danmaku> danmakus) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.ClearControllers();
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.ClearControllers();
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.ClearControllers();
+				}
 			}
 		}
 		
@@ -373,36 +609,72 @@ namespace DanmakU {
 		public static void SetActive(this IEnumerable<Danmaku> danmakus, bool value) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.IsActive = value;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.IsActive = value;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.IsActive = value;
+				}
 			}
 		}
 
 		public static void Activate (this IEnumerable<Danmaku> danmakus) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Activate();
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Activate();
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Activate();
+				}
 			}
 		}
 		
 		public static void Deactivate (this IEnumerable<Danmaku> danmakus) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Deactivate();
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Deactivate();
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Deactivate();
+				}
 			}
 		}
 		
 		public static void DeactivateImmediate (this IEnumerable<Danmaku> danmakus) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.DeactivateImmediate();
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.DeactivateImmediate();
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.DeactivateImmediate();
+				}
 			}
 		}
 		
@@ -413,45 +685,90 @@ namespace DanmakU {
 		public static void SetTag(this IEnumerable<Danmaku> danmakus, string tag) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Tag = tag;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Tag = tag;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Tag = tag;
+				}
 			}
 		}
 		
 		public static void SetLayer(this IEnumerable<Danmaku> danmakus, int layer) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.Layer = layer;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.Layer = layer;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.Layer = layer;
+				}
 			}
 		}
 		
 		public static void SetBoundsCheck(this IEnumerable<Danmaku> danmakus, bool boundsCheck) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach(var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.BoundsCheck = boundsCheck;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.BoundsCheck = boundsCheck;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.BoundsCheck = boundsCheck;
+				}
 			}
 		}
 		
 		public static void SetCollisionCheck (this IEnumerable<Danmaku> danmakus, bool collisionCheck) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.CollisionCheck = collisionCheck;
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.CollisionCheck = collisionCheck;
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.CollisionCheck = collisionCheck;
+				}
 			}
 		}
 		
 		public static void MatchPrefab(this IEnumerable<Danmaku> danmakus, DanmakuPrefab prefab) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
-			foreach (var danmaku in danmakus) {
-				if(danmaku != null)
-					danmaku.MatchPrefab(prefab);
+			Danmaku[] arrayTest = danmakus as Danmaku[];
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null)
+						danmaku.MatchPrefab(prefab);
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null)
+						danmaku.MatchPrefab(prefab);
+				}
 			}
 		}
 		
