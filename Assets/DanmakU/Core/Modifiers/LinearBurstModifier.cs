@@ -3,6 +3,7 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
+using Vexe.Runtime.Types;
 
 
 namespace DanmakU.Modifiers {
@@ -10,14 +11,29 @@ namespace DanmakU.Modifiers {
 	[System.Serializable]
 	public class LinearBurstModifier : DanmakuModifier {
 
-		public DynamicInt Depth = 1;
-		public DynamicFloat DeltaVelocity = 0f;
-		public DynamicFloat DeltaAngularVelocity = 0f;
+		[Serialize, Show, Default(1)]
+		public DynamicInt Depth {
+			get;
+			set;
+		}
+
+		[Serialize, Show, Default(0f)]
+		public DynamicFloat DeltaVelocity {
+			get;
+			set;
+		}
+		
+		[Serialize, Show, Default(0f)]
+		public DynamicFloat DeltaAngularVelocity {
+			get;
+			set;
+		}
 
 		#region implemented abstract members of FireModifier
+
 		public override void Fire (Vector2 position, DynamicFloat rotation) {
-			float deltaV = DeltaVelocity.Value;
-			float deltaAV = DeltaAngularVelocity.Value;
+			DynamicFloat deltaV = DeltaVelocity;
+			DynamicFloat deltaAV = DeltaAngularVelocity;
 			float depth = Depth.Value;
 			for(int i = 0; i < depth; i++) {
 				Speed += deltaV;
@@ -26,6 +42,7 @@ namespace DanmakU.Modifiers {
 			}
 
 		}
+
 		#endregion
 	}
 }

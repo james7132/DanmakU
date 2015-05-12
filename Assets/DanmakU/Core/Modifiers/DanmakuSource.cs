@@ -17,7 +17,8 @@ namespace DanmakU.Modifiers {
 			this.BaseRotation = rotation;
 		}
 	}
-	
+
+	[System.Serializable]
 	public abstract class DanmakuSource : DanmakuModifier {
 		
 		protected List<SourcePoint> sourcePoints;

@@ -5,7 +5,7 @@
 
 using Vexe.Runtime.Types;
 
-namespace DanmakU.DanmakuControllers {
+namespace DanmakU.Controllers {
 
 	/// <summary>
 	/// An Danmaku Controller that automatically deactivates Danmaku after a certain time after being fired.

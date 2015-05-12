@@ -6,11 +6,11 @@ using UnityEngine;
 
 using Vexe.Runtime.Types;
 
-namespace DanmakU {
+namespace DanmakU.Modifiers {
 
 	public class AddControllersModifier : DanmakuModifier {
 
-		[Serialize]
+		[Serialize, Show]
 		private IDanmakuController[] controllers;
 
 		private DanmakuController controllerAggregate;
@@ -27,8 +27,17 @@ namespace DanmakU {
 			controllerAggregate -= controller.Update;
 		}
 
+		public void AddController(DanmakuController controller) {
+			controllerAggregate += controller;
+		}
+
+		public void RemoveController(DanmakuController controller) {
+			controllerAggregate -= controller;
+		}
+
 		public void ClearControllers() {
 			controllerAggregate = null;
+			controllers = new IDanmakuController[0];
 		}
 
 		#region implemented abstract members of DanmakuModifier

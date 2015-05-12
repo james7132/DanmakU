@@ -4,7 +4,6 @@
 
 using UnityEngine;
 
-
 /// <summary>
 /// A set of pre-created Danmaku Colliders that can be used
 /// </summary>

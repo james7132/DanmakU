@@ -2,7 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
+using Vexe.Runtime.Types;
 
 namespace DanmakU.Controllers {
 
@@ -11,50 +11,38 @@ namespace DanmakU.Controllers {
 
 		public enum LimitType { Maximum, Minimum }
 
-		[SerializeField]
-		private LimitType limitType;
-
-		[SerializeField]
-		private float limit;
-
-		public LimitType LimitType2 {
-			get {
-				return limitType;
-			}
-			set {
-				limitType = value;
-			}
+		[Serialize, Show]
+		public LimitType Type {
+			get;
+			set;
 		}
-
+		
+		[Serialize, Show]
 		public float Limit {
-			get {
-				return limit;
-			}
-			set {
-				limit = value;
-			}
+			get;
+			set;
 		}
 
 		public SpeedLimitController () {
-			limit = float.NaN;
+			Limit = float.NaN;
 		}
 
 		public SpeedLimitController(float limit, LimitType type) {
-			this.limit = limit;
-			this.limitType = type;
+			this.Limit = limit;
+			this.Type = type;
 		}
 
 		#region IDanmakuController implementation
 
 		public void Update (Danmaku danmaku, float dt) {
-			if(limitType == LimitType.Maximum) {
-				if(danmaku.Speed > limit && !float.IsNaN(limit)) {
-					danmaku.Speed = limit;
-				}
+			if(float.IsNaN(Limit))
+				return;
+			if(Type == LimitType.Maximum) {
+				if(danmaku.Speed > Limit)
+					danmaku.Speed = Limit;
 			} else {
-				if(danmaku.Speed < limit && !float.IsNaN(limit)) {
-					danmaku.Speed = limit;
-				}
+				if(danmaku.Speed < Limit)
+					danmaku.Speed = Limit;
 			}
 		}
 

@@ -3,28 +3,34 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
+using Vexe.Runtime.Types;
 
-
-namespace DanmakU.DanmakuControllers {
+namespace DanmakU.Controllers {
 
 	[System.Serializable]
 	public class DelayedAngleChange : IDanmakuController {
 
-		[SerializeField]
-		private RotationMode rotationMode;
+		//TODO Find a better solution to than this
 
-		[SerializeField]
-		private float delay;
+		[Serialize, Show]
+		public RotationMode RotationMode {
+			get;
+			set;
+		}
 
-		[SerializeField]
-		private DynamicFloat angle;
+		[Serialize, Show]
+		public float Delay {
+			get;
+			set;
+		}
 
-		[SerializeField]
-		private bool setAngV;
-
-		[SerializeField]
-		private DynamicFloat angularVelocity;
-
+		[Serialize, Show]
+		public DynamicFloat Angle {
+			get;
+			set;
+		}
+		
+		[Serialize, Show]
 		public Transform Target {
 			get;
 			set;
@@ -34,9 +40,9 @@ namespace DanmakU.DanmakuControllers {
 
 		public void Update (Danmaku danmaku, float dt) {
 			float time = danmaku.Time;
-			if(time >= delay && time - dt <= delay) {
-				float baseAngle = angle.Value;
-				switch(rotationMode) {
+			if(time >= Delay && time - dt <= Delay) {
+				float baseAngle = Angle.Value;
+				switch(RotationMode) {
 					case RotationMode.Relative:
 						baseAngle += danmaku.Rotation;
 						break;
@@ -47,8 +53,6 @@ namespace DanmakU.DanmakuControllers {
 						break;
 				}
 				danmaku.Rotation = baseAngle;
-				if(setAngV)
-					danmaku.AngularSpeed = angularVelocity;
 			}
 		}
 

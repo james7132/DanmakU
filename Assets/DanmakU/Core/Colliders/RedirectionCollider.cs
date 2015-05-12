@@ -5,7 +5,7 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU {
+namespace DanmakU.Collider {
 
 	/// <summary>
 	/// A DanmakuCollider that changes the direction of motion for all valid bullets that come into contact with it.

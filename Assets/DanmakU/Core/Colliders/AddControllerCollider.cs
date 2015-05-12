@@ -5,7 +5,7 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU {
+namespace DanmakU.Collider {
 	
 	public class AddControllerCollider : DanmakuCollider {
 		

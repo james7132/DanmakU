@@ -59,14 +59,14 @@ namespace DanmakU {
 			}
 		}
 
-		protected DanmakuPrefab BulletType {
+		protected DanmakuPrefab Prefab {
 			get {
 				return data.Prefab;
 			}
 			set {
 				data.Prefab = value;
 				if (subModifier != null)
-					subModifier.BulletType = value;
+					subModifier.Prefab = value;
 			}
 		}
 
