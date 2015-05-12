@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace DanmakU {
+namespace DanmakU.Collider {
 	
 	public class PrefabChangeCollider : DanmakuCollider {
 

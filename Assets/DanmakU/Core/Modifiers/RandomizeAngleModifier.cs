@@ -5,7 +5,7 @@
 using UnityEngine;
 
 
-namespace DanmakU {
+namespace DanmakU.Modifiers {
 
 	[System.Serializable]
 	public class RandomizeAngleModifier : DanmakuModifier {

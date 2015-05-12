@@ -4,8 +4,7 @@
 
 using UnityEngine;
 
-
-namespace DanmakU {
+namespace DanmakU.Modifiers {
 
 	[System.Serializable]
 	public class RandomizeVelocityModifier : DanmakuModifier {

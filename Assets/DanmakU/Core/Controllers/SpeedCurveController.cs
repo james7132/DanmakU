@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace DanmakU.DanmakuControllers {
+namespace DanmakU.Controllers {
 
 	[System.Serializable]
 	public class SpeedCurveController : IDanmakuController {

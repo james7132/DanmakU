@@ -3,27 +3,44 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
+using Vexe.Runtime.Types;
 
 
-namespace DanmakU.NoScript {
+namespace DanmakU.Modifiers {
 
 	public class CircleSource : DanmakuSource {
 
 		#pragma warning disable 0649
-		public int count;
-		public float radius;
-		public bool raidalDirection;
+
+		[Serialize, Show]
+		public DynamicInt Count {
+			get;
+			set;
+		}
+		
+		[Serialize, Show]
+		public DynamicFloat Radius {
+			get;
+			set;
+		}
+		
+		[Serialize, Show]
+		public bool RaidalDirection {
+			get;
+			set;
+		}
+
 		#pragma warning restore 0649
 
 		#region implemented abstract members of ProjectileSource
 
 		protected override void UpdateSourcePoints (Vector2 position, float rotation) {
 			sourcePoints.Clear ();
-			float delta = Util.TwoPI / count;
-			for (int i = 0; i < count; i++) {
+			float delta = Util.TwoPI / Count;
+			for (int i = 0; i < Count; i++) {
 				float currentRotation = Mathf.Deg2Rad * rotation + i * delta;
-				SourcePoint sourcePoint = new SourcePoint(position + radius  * Util.OnUnitCircleRadians(currentRotation),
-				                                          ((raidalDirection) ? Mathf.Rad2Deg * currentRotation - 90f : rotation));
+				SourcePoint sourcePoint = new SourcePoint(position + Radius  * Util.OnUnitCircleRadians(currentRotation),
+				                                          ((RaidalDirection) ? Mathf.Rad2Deg * currentRotation - 90f : rotation));
 				sourcePoints.Add(sourcePoint);
 			}
 		}
