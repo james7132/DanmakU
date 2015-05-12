@@ -3,7 +3,7 @@
 // See the LISCENSE file for copying permission.
 using UnityEngine;
 
-namespace DanmakU {
+namespace DanmakU.Collider {
 
 	/// <summary>
 	/// A DanmakuCollider that deactivates all valid danmaku that come in contact with it.

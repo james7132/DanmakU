@@ -5,7 +5,7 @@
 using UnityEngine;
 
 
-namespace DanmakU {
+namespace DanmakU.Modifiers {
 	
 	public class ClearControllersModifier : DanmakuModifier {
 

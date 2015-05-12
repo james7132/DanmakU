@@ -6,7 +6,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-namespace DanmakU {
+namespace DanmakU.Modifiers {
 	
 	public class SourcePoint {
 		public Vector2 Position;

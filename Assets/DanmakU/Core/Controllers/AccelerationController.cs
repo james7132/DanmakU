@@ -7,7 +7,7 @@ using Vexe.Runtime.Types;
 /// <summary>
 /// A variety of useful 
 /// </summary>
-namespace DanmakU.DanmakuControllers {
+namespace DanmakU.Controllers {
 
 	/// <summary>
 	/// A Danmaku Controller that makes Danmaku speed up or slow down over time.
