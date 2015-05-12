@@ -10,10 +10,15 @@ namespace DanmakU.Modifiers {
 	[System.Serializable]
 	public class RandomizeAngularVelocityModifier : DanmakuModifier {
 		
-		[Serialize, Show]
+		[SerializeField, Show]
+		DynamicFloat range;
 		public DynamicFloat Range {
-			get;
-			set;
+			get {
+				return range;
+			}
+			set {
+				range = value;
+			}
 		}
 		
 		#region implemented abstract members of FireModifier

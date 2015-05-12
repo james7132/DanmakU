@@ -9,23 +9,30 @@ namespace DanmakU.Modifiers {
 
 	public class ChangePrefabModifier : DanmakuModifier {
 
-		[SerializeField]
+		[SerializeField, Show]
+		private DanmakuPrefab newPrefab;
 		public DanmakuPrefab NewPrefab {
-			get;
-			set;
+			get {
+				return newPrefab;
+			}
+			set {
+				newPrefab = value;
+			}
 		}
 
 		#region implemented abstract members of DanmakuModifier
+
 		public override void Fire (Vector2 position, DynamicFloat rotation) {
 
 			DanmakuPrefab oldPrefab = Prefab;
-			Prefab = NewPrefab;
+			Prefab = newPrefab;
 
 			FireSingle (position, rotation);
 
 			Prefab = oldPrefab;
 
 		}
+
 		#endregion
 	}
 

@@ -3,6 +3,7 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
+using Vexe.Runtime.Types;
 
 /// <summary>
 /// A set of pre-created Danmaku Colliders that can be used
@@ -15,11 +16,8 @@ namespace DanmakU.Collider {
 	[AddComponentMenu("DanmakU/Colliders/Acceleration Collider")]
 	public class AccelerationCollider : DanmakuCollider {
 
-		[SerializeField]
+		[SerializeField, Show]
 		private float acceleration;
-	
-		private float actual;
-
 		public float Acceleration {
 			get {
 				return acceleration;
@@ -28,6 +26,8 @@ namespace DanmakU.Collider {
 				acceleration = value;
 			}
 		}
+
+		private float actual;
 
 		private void Update () {
 			actual = acceleration * TimeUtil.DeltaTime;

@@ -10,23 +10,38 @@ namespace DanmakU.Modifiers {
 
 	[System.Serializable]
 	public class LinearBurstModifier : DanmakuModifier {
-
-		[Serialize, Show, Default(1)]
+		
+		[SerializeField, Show]
+		private DynamicInt depth = 1;
 		public DynamicInt Depth {
-			get;
-			set;
-		}
-
-		[Serialize, Show, Default(0f)]
-		public DynamicFloat DeltaVelocity {
-			get;
-			set;
+			get {
+				return depth;
+			}
+			set {
+				depth = value;
+			}
 		}
 		
-		[Serialize, Show, Default(0f)]
+		[SerializeField, Show]
+		private DynamicFloat deltaVelocity;
+		public DynamicFloat DeltaVelocity {
+			get {
+				return deltaVelocity;
+			}
+			set {
+				deltaVelocity = value;
+			}
+		}
+		
+		[SerializeField, Show]
+		private DynamicFloat deltaAngularVelocity;
 		public DynamicFloat DeltaAngularVelocity {
-			get;
-			set;
+			get {
+				return deltaAngularVelocity;
+			}
+			set {
+				deltaAngularVelocity = value;
+			}
 		}
 
 		#region implemented abstract members of FireModifier

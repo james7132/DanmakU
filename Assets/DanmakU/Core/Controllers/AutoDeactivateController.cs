@@ -2,7 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
-
+using UnityEngine;
 using Vexe.Runtime.Types;
 
 namespace DanmakU.Controllers {
@@ -13,10 +13,15 @@ namespace DanmakU.Controllers {
 	[System.Serializable]
 	public class AutoDeactivateController : IDanmakuController {
 
-		[Show, Serialize]
+		[SerializeField, Show]
+		private int frames;
 		public int Frames {
-			get;
-			set;
+			get {
+				return frames;
+			}
+			set {
+				frames = value;
+			}
 		}
 
 		public float Time {
@@ -38,7 +43,7 @@ namespace DanmakU.Controllers {
 
 		#region IDanmakuController implementation
 		public void Update (Danmaku danmaku, float dt) {
-			if (danmaku.frames > Frames) {
+			if (danmaku.frames > frames) {
 				danmaku.Deactivate();
 			}
 		}

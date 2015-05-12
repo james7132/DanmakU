@@ -10,13 +10,13 @@ namespace DanmakU.Controllers {
 	[System.Serializable]
 	public class SpeedCurveController : IDanmakuController {
 
-		[Serialize, Show]
+		[SerializeField, Show]
 		public bool Absolute {
 			get;
 			set;
 		}
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
 		private AnimationCurve speedCuve;
 		public AnimationCurve SpeedCurve {
 			get {
@@ -42,14 +42,14 @@ namespace DanmakU.Controllers {
 
 	[System.Serializable]
 	public class AngularSpeedCurveController : IDanmakuController {
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
 		public bool Absolute {
 			get;
 			set;
 		}
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
 		private AnimationCurve angularSpeedCurve;
 		public AnimationCurve AngularSpeedCurve {
 			get {

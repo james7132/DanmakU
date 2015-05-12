@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace DanmakU.Collider {
 	
+	[AddComponentMenu("DanmakU/Colliders/Reflection Collider")]
 	public class ReflectionCollider : DanmakuCollider {
 		
 		private DanmakuGroup affected;
@@ -16,6 +17,7 @@ namespace DanmakU.Collider {
 		}
 
 		#region implemented abstract members of DanmakuCollider
+
 		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			if (affected.Contains (danmaku))
 				return;
@@ -25,6 +27,7 @@ namespace DanmakU.Collider {
 			danmaku.position = info.point;
 			affected.Add (danmaku);
 		}
+
 		#endregion
 
 	}

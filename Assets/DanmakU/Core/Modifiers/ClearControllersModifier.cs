@@ -4,7 +4,6 @@
 
 using UnityEngine;
 
-
 namespace DanmakU.Modifiers {
 	
 	public class ClearControllersModifier : DanmakuModifier {

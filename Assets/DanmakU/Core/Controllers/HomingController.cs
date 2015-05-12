@@ -9,7 +9,7 @@ namespace DanmakU.Controllers {
 
 	public class HomingController : IDanmakuController {
 
-		[Serialize, Show]
+		[SerializeField, Show]
 		public Transform Target {
 			get;
 			set;

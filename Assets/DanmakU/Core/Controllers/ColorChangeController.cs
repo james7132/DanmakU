@@ -9,20 +9,20 @@ namespace DanmakU.Controllers {
 
 	[System.Serializable]
 	public class ColorChangeController : IDanmakuController {
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
 		public Gradient ColorGradient {
 			get;
 			set;
 		}
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
 		public float StartTime {
 			get;
 			set;
 		}
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
 		public float EndTime {
 			get;
 			set;

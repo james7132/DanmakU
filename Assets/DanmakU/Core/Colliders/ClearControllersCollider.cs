@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace DanmakU.Collider {
 
+	[AddComponentMenu("DanmakU/Colliders/Clear Controllers Collider")]
 	public class ClearControllersCollider : DanmakuCollider {
 		
 		private DanmakuGroup affected;
