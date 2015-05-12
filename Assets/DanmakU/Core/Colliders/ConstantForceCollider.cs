@@ -5,7 +5,7 @@
 using UnityEngine;
 
 
-namespace DanmakU {
+namespace DanmakU.Collider {
 
 	
 	public class ConstantForceCollider : DanmakuCollider {

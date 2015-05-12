@@ -3,27 +3,21 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
+using Vexe.Runtime.Types;
 
 namespace DanmakU.Controllers {
 
 	[System.Serializable]
 	public class SpeedCurveController : IDanmakuController {
 
-		[SerializeField]
-		private bool absolute;
-
+		[Serialize, Show]
 		public bool Absolute {
-			get {
-				return absolute;
-			}
-			set {
-				absolute = value;
-			}
+			get;
+			set;
 		}
 
-		[SerializeField]
+		[Serialize, Show]
 		private AnimationCurve speedCuve;
-
 		public AnimationCurve SpeedCurve {
 			get {
 				return SpeedCurve;
@@ -32,7 +26,7 @@ namespace DanmakU.Controllers {
 
 		#region IDanmakuController implementation
 		public virtual void Update (Danmaku danmaku, float dt) {
-			if (absolute) {
+			if (Absolute) {
 				danmaku.Speed = speedCuve.Evaluate (danmaku.Time);
 			} else {
 				float time = danmaku.Time;
@@ -49,21 +43,14 @@ namespace DanmakU.Controllers {
 	[System.Serializable]
 	public class AngularSpeedCurveController : IDanmakuController {
 
-		[SerializeField]
-		private bool absolute;
-
+		[Serialize, Show]
 		public bool Absolute {
-			get {
-				return absolute;
-			}
-			set {
-				absolute = value;
-			}
+			get;
+			set;
 		}
 
-		[SerializeField]
+		[Serialize, Show]
 		private AnimationCurve angularSpeedCurve;
-
 		public AnimationCurve AngularSpeedCurve {
 			get {
 				return angularSpeedCurve;
@@ -71,8 +58,9 @@ namespace DanmakU.Controllers {
 		}
 		
 		#region IDanmakuController implementation
+
 		public virtual void Update (Danmaku danmaku, float dt) {
-			if (absolute) {
+			if (Absolute) {
 				danmaku.AngularSpeed = angularSpeedCurve.Evaluate(danmaku.Time);
 			} else {
 				float time = danmaku.Time;
@@ -83,6 +71,7 @@ namespace DanmakU.Controllers {
 				}
 			}
 		}
+
 		#endregion
 
 	}

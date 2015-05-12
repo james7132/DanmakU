@@ -10,8 +10,6 @@ namespace DanmakU.Modifiers {
 
 	public class CircleSource : DanmakuSource {
 
-		#pragma warning disable 0649
-
 		[Serialize, Show]
 		public DynamicInt Count {
 			get;
@@ -29,8 +27,6 @@ namespace DanmakU.Modifiers {
 			get;
 			set;
 		}
-
-		#pragma warning restore 0649
 
 		#region implemented abstract members of ProjectileSource
 

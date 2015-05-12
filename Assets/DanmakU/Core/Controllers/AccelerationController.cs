@@ -12,11 +12,9 @@ namespace DanmakU.Controllers {
 	/// <summary>
 	/// A Danmaku Controller that makes Danmaku speed up or slow down over time.
 	/// </summary>
-	[System.Serializable]
 	public class AccelerationController : IDanmakuController {
 
-		[Show]
-		[Serialize]
+		[Show, Serialize]
 		public float Acceleration {
 			get;
 			set;
