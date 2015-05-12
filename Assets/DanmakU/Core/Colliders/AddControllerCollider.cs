@@ -7,9 +7,10 @@ using Vexe.Runtime.Types;
 
 namespace DanmakU.Collider {
 	
+	[AddComponentMenu("DanmakU/Colliders/Add Controller Collider")]
 	public class AddControllerCollider : DanmakuCollider {
 		
-		[Serialize]
+		[SerializeField, Show]
 		private IDanmakuController[] controllers;
 		
 		private DanmakuController controllerAggregate;
@@ -32,6 +33,14 @@ namespace DanmakU.Collider {
 		
 		public void RemoveController(IDanmakuController controller) {
 			controllerAggregate -= controller.Update;
+		}
+
+		public void AddController(DanmakuController controller) {
+			controllerAggregate += controller;
+		}
+
+		public void RemoveController(DanmakuController controller) {
+			controllerAggregate -= controller;
 		}
 		
 		public void ClearControllers() {

@@ -11,29 +11,49 @@ namespace DanmakU.Controllers {
 	public class DelayedAngleChange : IDanmakuController {
 
 		//TODO Find a better solution to than this
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
+		private RotationMode rotationMode;
 		public RotationMode RotationMode {
-			get;
-			set;
-		}
-
-		[Serialize, Show]
-		public float Delay {
-			get;
-			set;
-		}
-
-		[Serialize, Show]
-		public DynamicFloat Angle {
-			get;
-			set;
+			get {
+				return rotationMode;
+			}
+			set {
+				rotationMode = value;
+			}
 		}
 		
-		[Serialize, Show]
+		[SerializeField, Show]
+		private float delay;
+		public float Delay {
+			get {
+				return delay;
+			}
+			set {
+				delay = value;
+			}
+		}
+		
+		[SerializeField, Show]
+		private DynamicFloat angle;
+		public DynamicFloat Angle {
+			get {
+				return angle;
+			}
+			set {
+				angle = value;
+			}
+		}
+		
+		[SerializeField, Show]
+		private Transform target;
 		public Transform Target {
-			get;
-			set;
+			get {
+				return target;
+			}
+			set {
+				target = value;
+			}
 		}
 
 		#region implemented abstract members of IDanmakuController

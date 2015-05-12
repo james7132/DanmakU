@@ -2,6 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using UnityEngine;
 using Vexe.Runtime.Types;
 
 /// <summary>
@@ -14,10 +15,15 @@ namespace DanmakU.Controllers {
 	/// </summary>
 	public class AccelerationController : IDanmakuController {
 
-		[Show, Serialize]
+		[SerializeField, Show]
+		private float acceleration;
 		public float Acceleration {
-			get;
-			set;
+			get {
+				return acceleration;
+			}
+			set {
+				acceleration = value;
+			}
 		}
 
 		/// <summary>

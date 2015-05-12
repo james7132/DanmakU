@@ -3,14 +3,14 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-
+using Vexe.Runtime.Types;
 
 namespace DanmakU.Collider {
-
 	
+	[AddComponentMenu("DanmakU/Colliders/Constant Force Collider")]
 	public class ConstantForceCollider : DanmakuCollider {
 		
-		[SerializeField]
+		[SerializeField, Show]
 		private Vector2 force;
 
 		private Vector2 actual;

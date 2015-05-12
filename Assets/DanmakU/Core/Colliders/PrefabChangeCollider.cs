@@ -3,14 +3,15 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
+using Vexe.Runtime.Types;
 
 namespace DanmakU.Collider {
 	
+	[AddComponentMenu("DanmakU/Colliders/Prefab Change Collider")]
 	public class PrefabChangeCollider : DanmakuCollider {
 
-		[SerializeField]
+		[SerializeField, Show]
 		private DanmakuPrefab prefab;
-
 		public DanmakuPrefab Prefab {
 			get {
 				return prefab;
