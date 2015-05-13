@@ -16,6 +16,15 @@ namespace DanmakU {
     /// </summary>
     public static class UtilExtensionMethods {
 
+		#region IList
+
+		public static T Random<T>(this IList<T> list) {
+			int count = list.Count;
+			return list [UnityEngine.Random.Range (0, count)];
+		}
+
+		#endregion
+
 		#region MonoBehaviour
 
 		public static Task StartTask(this MonoBehaviour behaviour, IEnumerator task) {

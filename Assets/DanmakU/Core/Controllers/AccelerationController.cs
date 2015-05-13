@@ -27,7 +27,7 @@ namespace DanmakU.Controllers {
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DanmakU.DanmakuControllers.AccelerationController"/> class.
+		/// Initializes a new instance of the <see cref="DanmakU.Controllers.AccelerationController"/> class.
 		/// </summary>
 		/// <param name="acceleration">Acceleration.</param>
 		public AccelerationController (float acceleration = 0f) : base() {
@@ -35,7 +35,12 @@ namespace DanmakU.Controllers {
 		}
 		
 		#region IDanmakuController implementation
-		
+
+		/// <summary>
+		/// Updates the Danmaku controlled by the controller instance.
+		/// </summary>
+		/// <param name="danmaku">the bullet to update.</param>
+		/// <param name="dt">the change in time since the last update</param>
 		public virtual void Update (Danmaku danmaku, float dt) {
 			if (Acceleration != 0) {
 				danmaku.Speed += Acceleration * dt;

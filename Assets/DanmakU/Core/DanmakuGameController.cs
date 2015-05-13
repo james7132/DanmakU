@@ -38,7 +38,7 @@ namespace DanmakU {
 			Danmaku.Setup (danmakuInitialCount, danmakuSpawnOnEmpty, angleResolution);
 		}
 
-		void OnLevelWasLoaded(int level) {
+		protected virtual void OnLevelWasLoaded(int level) {
 			Danmaku.DeactivateAll ();
 		}
 	}

@@ -65,7 +65,6 @@ namespace DanmakU {
 		//Preallocated variables to avoid allocation in Update
 		private Vector2 originalPosition;
 		private RaycastHit2D[] raycastHits;
-		//private Collider2D[] colliders;
 		private Vector2 collisionCenter;
 
 		//Cached check for controllers to avoid needing to calculate them in Update
@@ -262,6 +261,10 @@ namespace DanmakU {
 				tasks.Add (task);
 			else
 				Debug.LogError ("Attempted to start a null task");
+		}
+
+		public void StartTask(IEnumerable task) {
+			StartTask (task.GetEnumerator ());
 		}
 
 		public void StartTask(DanmakuTask task) {

@@ -15,9 +15,14 @@ namespace DanmakU.Collider {
 	/// </summary>
 	[AddComponentMenu("DanmakU/Colliders/Acceleration Collider")]
 	public class AccelerationCollider : DanmakuCollider {
-
+		
 		[SerializeField, Show]
 		private float acceleration;
+
+		/// <summary>
+		/// Gets or sets the acceleration.
+		/// </summary>
+		/// <value>The acceleration applied to bullets, in absolute world units/second^2.</value>
 		public float Acceleration {
 			get {
 				return acceleration;
@@ -27,16 +32,15 @@ namespace DanmakU.Collider {
 			}
 		}
 
-		private float actual;
-
-		private void Update () {
-			actual = acceleration * TimeUtil.DeltaTime;
-		}
-
 		#region implemented abstract members of DanmakuCollider
 
+		/// <summary>
+		/// Handles a Danmaku collision. Only ever called with Danmaku that pass the filter.
+		/// </summary>
+		/// <param name="danmaku">the danmaku that hit the collider.</param>
+		/// <param name="info">additional information about the collision</param>
 		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
-			danmaku.Speed += actual;
+			danmaku.Speed += acceleration * TimeUtil.DeltaTime;
 		}
 
 		#endregion

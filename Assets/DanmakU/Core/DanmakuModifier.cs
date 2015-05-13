@@ -5,7 +5,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-
 namespace DanmakU {
 
 	[System.Serializable]
@@ -37,14 +36,14 @@ namespace DanmakU {
 			}
 		}
 
-		protected DanmakuField TargetField {
+		protected DanmakuField Field {
 			get {
 				return data.Field;
 			}
 			set {
 				data.Field = value;
 				if (subModifier != null)
-					subModifier.TargetField = value;
+					subModifier.Field = value;
 			}
 		}
 
@@ -105,6 +104,8 @@ namespace DanmakU {
 		public static DanmakuModifier Construct (IEnumerable<DanmakuModifier> enumerable) {
 			if (enumerable == null)
 				throw new System.ArgumentNullException ();
+			if (enumerable is DanmakuModifier)
+				return enumerable as DanmakuModifier;
 			DanmakuModifier top = null;
 			DanmakuModifier current = null;
 			foreach (var next in enumerable) {
