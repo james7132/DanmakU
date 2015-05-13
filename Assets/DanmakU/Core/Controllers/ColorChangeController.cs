@@ -11,34 +11,50 @@ namespace DanmakU.Controllers {
 	public class ColorChangeController : IDanmakuController {
 		
 		[SerializeField, Show]
+		private Gradient colorGradient;
 		public Gradient ColorGradient {
-			get;
-			set;
+			get {
+				return colorGradient;
+			}
+			set {
+				colorGradient = value;
+			}
 		}
 		
 		[SerializeField, Show]
+		private float startTime;
 		public float StartTime {
-			get;
-			set;
+			get {
+				return startTime;
+			}
+			set {
+				startTime = value;
+			}
 		}
 		
 		[SerializeField, Show]
+		private float endTime;
 		public float EndTime {
-			get;
-			set;
+			get {
+				return endTime;
+			}
+			set {
+				endTime = value;
+			}
 		}
+
+		#region IDanmakuController implementation
 
 		public void Update (Danmaku projectile, float dt) {
 			Gradient gradient = ColorGradient;
 			if (gradient == null)
 				return;
-
+			
 			float start = StartTime;
 			float end = EndTime;
 			float bulletTime = projectile.Time;
 			Color endColor = gradient.Evaluate (1f);
 
-//			Debug.Log (bulletTime);
 			if (bulletTime < start) {
 				projectile.Color = projectile.Prefab.Color;
 			} else if (bulletTime > end)
@@ -50,5 +66,7 @@ namespace DanmakU.Controllers {
 					projectile.Color = gradient.Evaluate ((bulletTime - start) / (end - start));
 			}
 		}
+
+		#endregion
 	}
 }

@@ -6,9 +6,6 @@ using System.Collections.Generic;
 
 namespace DanmakU {
 
-	/// <summary>
-	/// A high performance
-	/// </summary>
 	public class DanmakuGroup : ICollection<Danmaku> {
 
 		protected ICollection<Danmaku> Group;

@@ -231,17 +231,10 @@ namespace DanmakU {
 			return count;
 		}
 
-		/// <summary>
-		/// Gets a single unactivated bullet. The bullet
-		/// </summary>
 		public static Danmaku GetInactive () {
 			return danmakuPool.Get ();
 		}
 
-		/// <summary>
-		/// Get the specified count.
-		/// </summary>
-		/// <param name="count">Count.</param>
 		public static Danmaku[] GetInactive (DynamicInt count) {
 			if (danmakuPool == null)
 				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
@@ -373,24 +366,24 @@ namespace DanmakU {
 			}
 			return danmakus;
 		}
-		
-		public static Danmaku GetInactive (FireBuilder builder) {
+
+		public static void GetInactive(FireData data, Danmaku[] prealloc) {
 			if (danmakuPool == null)
 				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
-			if (builder == null)
+			if (data == null)
 				throw new System.ArgumentNullException ();
-			Danmaku danmaku = danmakuPool.Get ();
-			danmaku.MatchPrefab (builder.Prefab);
-			danmaku.position.x = builder.Position.x;
-			danmaku.position.y = builder.Position.y;
-			danmaku.Rotation = builder.Rotation;
-			danmaku.Speed = builder.Velocity;
-			danmaku.AngularSpeed = builder.AngularVelocity;
-			danmaku.AddController (builder.Controller);
-			danmaku.Damage = builder.Damage;
-			if (builder.Group != null) 
-				danmaku.AddToGroup (builder.Group);
-			return danmaku;
+			danmakuPool.Get (prealloc);
+			for (int i = 0; i < prealloc.Length; i++) {
+				Danmaku danmaku = prealloc[i];
+				danmaku.MatchPrefab (data.Prefab);
+				danmaku.position.x = data.Position.x;
+				danmaku.position.y = data.Position.y;
+				danmaku.Rotation = data.Rotation.Value;
+				danmaku.Speed = data.Speed.Value;
+				danmaku.AngularSpeed = data.AngularSpeed.Value;
+				danmaku.AddController (data.Controller);
+				danmaku.Damage = data.Damage.Value;
+			}
 		}
 	}
 }

@@ -25,6 +25,7 @@ namespace DanmakU.Controllers {
 		}
 
 		#region IDanmakuController implementation
+
 		public virtual void Update (Danmaku danmaku, float dt) {
 			if (Absolute) {
 				danmaku.Speed = speedCuve.Evaluate (danmaku.Time);
@@ -37,6 +38,7 @@ namespace DanmakU.Controllers {
 				}
 			}
 		}
+
 		#endregion
 	}
 
@@ -59,6 +61,12 @@ namespace DanmakU.Controllers {
 		
 		#region IDanmakuController implementation
 
+		/// <summary>
+		/// Updates the Danmaku controlled by the controller instance.
+		/// </summary>
+		/// <returns>the displacement from the Danmaku's original position after udpating</returns>
+		/// <param name="dt">the change in time since the last update</param>
+		/// <param name="danmaku">Danmaku.</param>
 		public virtual void Update (Danmaku danmaku, float dt) {
 			if (Absolute) {
 				danmaku.AngularSpeed = angularSpeedCurve.Evaluate(danmaku.Time);

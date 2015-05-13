@@ -29,9 +29,16 @@ namespace DanmakU.Collider {
 		}
 
 		#region implemented abstract members of DanmakuCollider
+
+		/// <summary>
+		/// Handles a Danmaku collision. Only ever called with Danmaku that pass the filter.
+		/// </summary>
+		/// <param name="danmaku">the danmaku that hit the collider.</param>
+		/// <param name="info">additional information about the collision</param>
 		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
 			danmaku.Position += actual;
 		}
+
 		#endregion
 	}
 
