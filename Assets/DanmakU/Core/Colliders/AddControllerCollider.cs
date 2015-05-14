@@ -1,10 +1,13 @@
-﻿// Copyright (c) 2015 James Liu
+// Copyright (c) 2015 James Liu
 //	
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
 using Vexe.Runtime.Types;
 
+/// <summary>
+/// A set of pre-created Danmaku Colliders that can be used
+/// </summary>
 namespace DanmakU.Collider {
 	
 	[AddComponentMenu("DanmakU/Colliders/Add Controller Collider")]
@@ -19,7 +22,7 @@ namespace DanmakU.Collider {
 
 		public override void Awake () {
 			base.Awake ();
-			affected = new DanmakuGroup ();
+			affected = new DanmakuSet ();
 			if (controllers == null)
 				return;
 			for (int i = 0; i < controllers.Length; i++) {
@@ -27,6 +30,11 @@ namespace DanmakU.Collider {
 			}
 		}
 
+		/// <summary>
+		/// Adds a Danmaku Controller to the list. This Danmaku Controller will be added to all bullets that touch
+		/// the collider until it is removed from the list.
+		/// </summary>
+		/// <param name="controller">The IDanmakuController implementation of a danmaku controller.</param>
 		public void AddController(IDanmakuController controller) {
 			controllerAggregate += controller.Update;
 		}
@@ -58,7 +66,7 @@ namespace DanmakU.Collider {
 			if(affected.Contains(danmaku))
 			   return;
 
-			danmaku.AddController (controllerAggregate);
+			danmaku.ControllerUpdate += controllerAggregate;
 
 			affected.Add (danmaku);
 		}
