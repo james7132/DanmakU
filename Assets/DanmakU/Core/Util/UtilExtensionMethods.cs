@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace DanmakU {
+
     /// <summary>
     /// Class with util extension methods.
     /// The class is organized for easy reading.
@@ -380,5 +381,6 @@ namespace DanmakU {
 		}
 
 		#endregion
-    }
+    
+	}
 }

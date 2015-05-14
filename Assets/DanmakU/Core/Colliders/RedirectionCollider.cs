@@ -50,7 +50,7 @@ namespace DanmakU.Collider {
 		/// </summary>
 		public override void Awake () {
 			base.Awake ();
-			affected = new DanmakuGroup ();
+			affected = new DanmakuSet ();
 		}
 
 		#region implemented abstract members of DanmakuCollider

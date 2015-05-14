@@ -13,6 +13,8 @@ namespace DanmakU {
 
 	public delegate IEnumerator DanmakuTask(Danmaku danmaku);
 
+	public delegate void DanmakuEvent (Danmaku danmaku);
+
 	/// <summary>
 	/// A single projectile fired.
 	/// The base object that represents a single bullet in a Danmaku game
@@ -76,6 +78,10 @@ namespace DanmakU {
 		
 		#region Public Fields
 		
+		public event DanmakuEvent OnActivate;
+
+		public event DanmakuEvent OnDeactivate;
+
 		public event DanmakuController ControllerUpdate;
 
 		/// <summary>
@@ -379,9 +385,6 @@ namespace DanmakU {
 
 		#endregion
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
-		/// </summary>
 		internal Danmaku() {
 			groups = new List<DanmakuGroup> ();
 			raycastHits = new RaycastHit2D[5];
@@ -519,15 +522,6 @@ namespace DanmakU {
 			time += dt;
 		}
 
-		/// <summary>
-		/// Makes the instance of Danmaku match the given DanmakuPrefab
-		/// This copies:
-		/// - the sprite, material, sorting layer, and color from the DanmakuPrefab's SpriteRenderer
-		/// - the collider's size and offset from the DanmakuPrefab's CircleCollider2D
-		/// - the tag and layer from the DanmakuPrefab's GameObject
-		/// - any <see cref="DanmakuControlBehavior"/> on the DanmakuPrefab will be included as additional <see cref="IDanmakuController"/> that will affect the behavior of this bullet
-		/// </summary>
-		/// <param name="prefab">the DanmakuPrefab to match.</param>
 		public void MatchPrefab(DanmakuPrefab prefab) {
 			if (prefab == null) {
 				Debug.LogError("Tried to match a null prefab");
@@ -535,7 +529,15 @@ namespace DanmakU {
 			}
 			if (this.prefab != prefab) {
 				this.prefab = prefab;
-				runtime = prefab.GetRuntime ();
+
+				if(is_active) {
+					runtime.Remove(this);
+					runtime = prefab.GetRuntime ();
+					runtime.Add(this);
+				} else {
+					runtime = prefab.GetRuntime ();
+				}
+
 				Vector2 scale = runtime.cachedScale;
 				colliderType = runtime.collisionType;
 				switch(colliderType) {
@@ -597,10 +599,12 @@ namespace DanmakU {
 		/// </summary>
 		public void Activate () {
 			to_deactivate = false;
-			is_active = true;
 			BoundsCheck = true;
 			CollisionCheck = true;
 			runtime.Add(this);
+			if (!is_active && OnActivate != null)
+				OnActivate (this);
+			is_active = true;
 		}
 		
 		/// <summary>
@@ -641,13 +645,14 @@ namespace DanmakU {
 		/// This method should only be used when dealing with Projectiles while the game is paused or when ProjectileManager is not enabled
 		/// </summary>
 		public void DeactivateImmediate() {
-			for(int i = 0; i < groups.Count; i++) {
-				groups[i].Remove (this);
-			}
-			groups.Clear ();
+			if (is_active && OnDeactivate != null)
+				OnDeactivate (this);
+
 			if(tasks != null)
 				tasks.Clear ();
 			ControllerUpdate = null;
+			OnActivate = null;
+			OnDeactivate = null;
 			controllerCheck = false;
 			Damage = 0;
 			frames = 0;
