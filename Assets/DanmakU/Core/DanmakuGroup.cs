@@ -2,6 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -57,6 +58,41 @@ namespace DanmakU {
 					Remove (danmaku);
 				}
 			}
+		}
+
+		public Danmaku Find (Predicate<Danmaku> predicate) {
+			IList<Danmaku> colList = Group as IList<Danmaku>;
+			if (colList != null) {
+				for(int i = 0; i < colList.Count; i++) {
+					if(predicate(colList[i]))
+						return colList[i];
+				}
+			} else {
+				foreach (var danmaku in Group) {
+					if(predicate(danmaku))
+						return danmaku;
+				}
+			}
+			return null;
+		}
+
+		public IEnumerable FindAll(Predicate<Danmaku> predicate) {
+			IList<Danmaku> colList = Group as IList<Danmaku>;
+			if (colList != null) {
+				for(int i = 0; i < colList.Count; i++) {
+					if(predicate(colList[i]))
+						yield return colList[i];
+				}
+			} else {
+				foreach (var danmaku in Group) {
+					if(predicate(danmaku))
+						yield return danmaku;
+				}
+			}
+		}
+
+		public void RemoveAll (Predicate<Danmaku> predicate) {
+		
 		}
 
 		public Danmaku[] ToArray() {
@@ -140,18 +176,10 @@ namespace DanmakU {
 			Group = new T();
 		}
 
-		public DanmakuGroup(IEnumerable<Danmaku> danmakus) : base (danmakus) {
+		public DanmakuGroup(IEnumerable<Danmaku> danmakus) : base () {
 			Group = new T();
 			AddRange (danmakus);
 		}
-
-		#region implemented abstract members of DanmakuGroup
-
-		protected override ICollection<Danmaku> CreateGroup () {
-			return new T ();
-		}
-
-		#endregion
 
 	}
 	
@@ -168,10 +196,6 @@ namespace DanmakU {
 		
 		public DanmakuList(IEnumerable<Danmaku> danmakus) : base (danmakus) {
 			danmakuList = Group as List<Danmaku>;
-		}
-		protected override ICollection<Danmaku> CreateGroup () {
-			danmakuList = base.CreateGroup () as List<Danmaku>;
-			return danmakuList;
 		}
 
 		#region IList implementation
