@@ -32,12 +32,6 @@ namespace DanmakU {
 
 	}
 
-	public abstract class AbstractFireBuilder {
-
-		public abstract void AddModifier (DanmakuModifier modifier);
-
-	}
-
 	[System.Serializable]
 	public class FireBuilder {
 		public DanmakuPrefab Prefab;

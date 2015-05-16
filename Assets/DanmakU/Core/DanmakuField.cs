@@ -14,30 +14,33 @@ namespace DanmakU {
 	[ExecuteInEditMode]
 	[DisallowMultipleComponent]
 	[AddComponentMenu("DanmakU/Danmaku Field")]
-	public class DanmakuField : MonoBehaviour, IDanmakuObject {
-		#region IDanmakuObject implementation
-
-		DanmakuField IDanmakuObject.Field {
-			get {
-				return TargetField;
-			}
-			set {
-				TargetField = value;
-			}
-		}
-
-		#endregion
+	public class DanmakuField : MonoBehaviour {
 
 		internal static List<DanmakuField> fields;
 
+		/// <summary>
+		/// Finds the closest DanmakuField to a GameObject's position.
+		/// </summary>
+		/// <returns>The closest DanmakuField to the GameObject.</returns>
+		/// <param name="gameObject">the GameObject used to find the closest DanmakuField.</param>
 		public static DanmakuField FindClosest(GameObject gameObject) {
 			return FindClosest (gameObject.transform.position);
 		}
 
+		/// <summary>
+		/// Finds the closest DanmakuField to a Component's GameObject's position.
+		/// </summary>
+		/// <returns>The closest DanmakuField to the Component and it's GameObject.</returns>
+		/// <param name="gameObject">the Component used to find the closest DanmakuField.</param>
 		public static DanmakuField FindClosest(Component component) {
 			return FindClosest (component.transform.position);
 		}
 
+		/// <summary>
+		/// Finds the closest DanmakuField to the point specified by a Transform's position.
+		/// </summary>
+		/// <returns>The closest DanmakuField to the Transform's position.</returns>
+		/// <param name="gameObject">the Transform used to find the closest DanmakuField.</param>
 		public static DanmakuField FindClosest(Transform transform) {
 			return FindClosest (transform.position);
 		}
@@ -49,7 +52,7 @@ namespace DanmakU {
 			}
 			if (fields.Count == 0) {
 				DanmakuField encompassing = new GameObject("Danmaku Field").AddComponent<DanmakuField>();
-				encompassing.UseClipBoundary = false;
+				encompassing.useClipBoundary = false;
 				fields.Add(encompassing);
 			}
 			if (fields.Count == 1) {
@@ -71,26 +74,71 @@ namespace DanmakU {
 
 		public enum CoordinateSystem { View, ViewRelative, Relative, World }
 
-		public bool UseClipBoundary = true;
+		[SerializeField]
+		private bool useClipBoundary = true;
+		public bool UseClipBoundary {
+			get {
+				return useClipBoundary;
+			}
+			set {
+				useClipBoundary = value;
+			}
+		}
 
-		public float ClipBoundary = 1f;
+		[SerializeField]
+		private float clipBoundary = 1f;
 
-		public Vector2 FieldSize = new Vector2(20f, 20f);
+		public float ClipBoundary {
+			get {
+				return clipBoundary;
+			}
+			set {
+				clipBoundary = value;
+			}
+		}
+
+		[SerializeField]
+		private Vector2 fieldSize = new Vector2(20f, 20f);
+
+		public Vector2 FieldSize {
+			get {
+				return fieldSize;
+			}
+			set {
+				fieldSize = value;
+			}
+		}
 
 		private static readonly Vector2 infiniteSize = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
 
-		[System.NonSerialized]
-		public DanmakuField TargetField;
+		public DanmakuField TargetField {
+			get;
+			set;
+		}
 
 		internal Bounds2D bounds;
 		private Bounds2D movementBounds;
 
 		[SerializeField]
 		private Camera camera2D;
+		public Camera Camera2D {
+			get {
+				return camera2D;
+			}
+			set {
+				camera2D = value;
+			}
+		}
+
 		private Transform camera2DTransform;
 
 		[SerializeField]
-		private Camera[] otherCameras;
+		private List<Camera> otherCameras;
+		public List<Camera> OtherCameras {
+			get {
+				return otherCameras;
+			}
+		}
 
 		public float Camera2DRotation {
 			get {
@@ -119,50 +167,6 @@ namespace DanmakU {
 			}
 		}
 
-		public float XSize {
-			get { return bounds.Size.x; }
-		}
-
-		public float YSize {
-			get { return bounds.Size.y; }
-		}
-
-		public Vector2 BottomLeft {
-			get { return WorldPoint (new Vector2(0f, 0f)); }
-		}
-
-		public Vector2 BottomRight {
-			get { return WorldPoint (new Vector2(1f, 0f)); }
-		}
-
-		public Vector2 TopLeft {
-			get { return WorldPoint (new Vector2(0f, 1f)); }
-		}
-
-		public Vector2 TopRight {
-			get { return WorldPoint (new Vector2(1f, 1f)); }
-		}
-
-		public Vector2 Center {
-			get { return WorldPoint (new Vector2(0.5f, 0.5f)); }
-		}
-
-		public Vector2 Top {
-			get { return WorldPoint (new Vector2 (0.5f, 1f)); }
-		}
-
-		public Vector2 Bottom {
-			get { return WorldPoint (new Vector2 (0.5f, 0f));}
-		}
-
-		public Vector2 Right {
-			get { return WorldPoint (new Vector2 (1f, 0.5f)); }
-		}
-
-		public Vector2 Left {
-			get { return WorldPoint (new Vector2 (0f, 0.5f));}
-		}
-
 		public virtual void Awake () {
 			if (fields == null) {
 				fields = new List<DanmakuField>();
@@ -178,17 +182,17 @@ namespace DanmakU {
 				movementBounds.Center = bounds.Center = (Vector2)camera2DTransform.position;
 				float size = camera2D.orthographicSize;
 				movementBounds.Extents = new Vector2 (camera2D.aspect * size, size);
-				for(int i = 0; i < otherCameras.Length; i++) {
+				for(int i = 0; i < otherCameras.Count; i++) {
 					if(otherCameras[i] != null)
 						otherCameras[i].rect = camera2D.rect;
 				}
 			} else {
 				camera2DTransform = null;
 				movementBounds.Center = bounds.Center = (Vector2)transform.position;
-				movementBounds.Extents = FieldSize * 0.5f;
+				movementBounds.Extents = fieldSize * 0.5f;
 			}
-			if(UseClipBoundary) {
-				bounds.Extents = movementBounds.Extents + Vector2.one * ClipBoundary * movementBounds.Extents.Max();
+			if(useClipBoundary) {
+				bounds.Extents = movementBounds.Extents + Vector2.one * clipBoundary * movementBounds.Extents.Max();
 			} else {
 				bounds.Extents = infiniteSize;
 			}
