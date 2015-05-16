@@ -470,14 +470,43 @@ namespace DanmakU {
 		}
 
 		public void UnionWith (IEnumerable<Danmaku> collection) {
+			if(collection == null)
+				throw new System.ArgumentNullException();
+			
+			var otherAsCollection = collection as ICollection<Danmaku>;
+			if(otherAsCollection != null && otherAsCollection.Count <= 0)
+				return;
+
 			AddRange(collection);
 		}
 
 		public void ExceptWith (IEnumerable<Danmaku> collection) {
+			if(collection == null)
+				throw new System.ArgumentNullException();
+			
+			if(danmakuSet.Count == 0)
+				return;
+			
+			var otherAsCollection = collection as ICollection<Danmaku>;
+			if(otherAsCollection != null && otherAsCollection.Count <= 0)
+				return;
+
 			RemoveRange(collection);
 		}
 
 		public void IntersectWith (IEnumerable<Danmaku> collection) {
+			if(collection == null)
+				throw new System.ArgumentNullException();
+
+			if(danmakuSet.Count <= 0)
+				return;
+
+			var otherAsCollection = collection as ICollection<Danmaku>;
+			if(otherAsCollection != null && otherAsCollection.Count <= 0) {
+				Clear();
+				return;
+			}
+
 			foreach(var danmaku in danmakuSet) {
 				if(!collection.Contains(danmaku))
 					RaiseRemoveEvent(danmaku); 

@@ -147,11 +147,11 @@ namespace DanmakU {
 				data.Rotation = rotation;
 				data.Fire();
 			} else {
-				SubModifier.Fire (position, rotation);
+				SubModifier.OnFire (position, rotation);
 			}
 		}
 
-		public abstract void Fire(Vector2 position, DynamicFloat rotation);
+		public abstract void OnFire(Vector2 position, DynamicFloat rotation);
 
 		#region IEnumerable implementation
 

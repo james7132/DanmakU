@@ -76,7 +76,7 @@ namespace DanmakU {
 		}
 		
 		public static bool operator ==(DynamicInt df1, DynamicInt df2) {
-			return (df1.centerValue == df2.centerValue) && (df1.range == df2.range);
+			return (System.Math.Abs (df1.centerValue - df2.centerValue) < float.Epsilon) && (System.Math.Abs (df1.range - df2.range) < float.Epsilon);
 		}
 		
 		public static bool operator !=(DynamicInt df1, DynamicInt df2) {

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015 James Liu
+// Copyright (c) 2015 James Liu
 //	
 // See the LISCENSE file for copying permission.
 
@@ -10,7 +10,7 @@ namespace DanmakU.Modifiers {
 
 		#region implemented abstract members of DanmakuModifier
 
-		public override void Fire (Vector2 position, DynamicFloat rotation) {
+		public override void OnFire (Vector2 position, DynamicFloat rotation) {
 
 			Controller = null;
 			FireSingle (position, rotation);

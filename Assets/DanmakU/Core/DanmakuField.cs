@@ -295,7 +295,7 @@ namespace DanmakU {
 				temp.AngularSpeed = 0f;
 				temp.Field = this;
 				modifier.Initialize(temp);
-				modifier.Fire(position, rotation);
+				modifier.OnFire(position, rotation);
 				return null;
 			}
 		}
@@ -324,7 +324,7 @@ namespace DanmakU {
 				temp.AngularSpeed = angularSpeed;
 				temp.Field = this;
 				modifier.Initialize(temp);
-				modifier.Fire(position, rotation);
+				modifier.OnFire(position, rotation);
 				return null;
 			}
 		}

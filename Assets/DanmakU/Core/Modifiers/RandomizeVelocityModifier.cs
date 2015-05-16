@@ -21,9 +21,13 @@ namespace DanmakU.Modifiers {
 			}
 		}
 
+		public RandomizeVelocityModifier (DynamicFloat range) {
+			this.range = range;
+		}
+
 		#region implemented abstract members of FireModifier
 
-		public override void Fire (Vector2 position, DynamicFloat rotation) {
+		public override void OnFire (Vector2 position, DynamicFloat rotation) {
 			DynamicFloat oldVelocity = Speed;
 			float rangeValue = Range.Value;
 			Speed = oldVelocity + Random.Range (-0.5f * rangeValue, 0.5f * rangeValue);
