@@ -11,47 +11,74 @@ namespace DanmakU.Modifiers {
 	public class PolygonSource : DanmakuSource {
 
 		public enum RotationType { None, Normal, Tangential, Radial }
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
+		private DynamicFloat size;
 		public DynamicFloat Size {
-			get;
-			set;
+			get {
+				return size;
+			}
+			set {
+				size = value;
+			}
 		}
 		
-		[Serialize, Show]
+		[SerializeField, Show]
+		private DynamicInt edgeCount;
 		public DynamicInt EdgeCount {
-			get;
-			set;
+			get {
+				return edgeCount;
+			}
+			set {
+				edgeCount = value;
+			}
 		}
-
-		[Serialize, Show]
+		
+		[SerializeField, Show]
+		private DynamicInt pointsPerEdge;
 		public DynamicInt PointsPerEdge {
-			get;
-			set;
+			get {
+				return pointsPerEdge;
+			}
+			set {
+				pointsPerEdge = value;
+			}
+		}
+		
+		[SerializeField, Show]
+		private RotationType type;
+		public RotationType Type {
+			get {
+				return type;
+			}
+			set {
+				type = value;
+			}
 		}
 
-		[Serialize, Show]
-		public RotationType Rotation {
-			get;
-			set;
+		public PolygonSource(DynamicFloat size, 
+		                     DynamicInt edgeCount, 
+		                     DynamicInt pointsPerEdge, 
+		                     RotationType type) {
+			this.size = size;
+			this.edgeCount = edgeCount;
+			this.pointsPerEdge = pointsPerEdge;
+			this.type = type;
 		}
-
-		[Serialize, Show]
-		private float rotationOffset;
 
 		#region implemented abstract members of DanmakuSource
 		protected override void UpdateSourcePoints (Vector2 position, float rotation) {
-			sourcePoints.Clear ();
+			SourcePoints.Clear ();
 			int edge = 0;
 			float edgeRot = 90f + rotation;
 			float edgeDelta = 360f / EdgeCount;
 			Vector2 current = position + Size * Util.OnUnitCircle (edgeRot);
 			Vector2 next = position + Size * Util.OnUnitCircle (edgeRot + edgeDelta);
 			edgeRot += edgeDelta;
-			while(edge <= EdgeCount) {
-				Vector2 diff = (next - current) / (PointsPerEdge);
+			while(edge <= edgeCount) {
+				Vector2 diff = (next - current) / (pointsPerEdge);
 				float rot = rotation;
-				switch(Rotation) {
+				switch(type) {
 					case RotationType.None:
 					case RotationType.Radial:
 						break;
@@ -64,10 +91,10 @@ namespace DanmakU.Modifiers {
 				}
 				for(int i = 0; i < PointsPerEdge; i++) {
 					Vector2 currentPos = current + i * diff;
-					if(Rotation == RotationType.Radial) {
+					if(Type == RotationType.Radial) {
 						rot = DanmakuUtil.AngleBetween2D(position, currentPos);
 					}
-					sourcePoints.Add(new SourcePoint(currentPos, rot));
+					SourcePoints.Add(new SourcePoint(currentPos, rot));
 				}
 				edge++;
 				edgeRot += edgeDelta;

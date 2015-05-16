@@ -3,7 +3,8 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-
+using System.Collections.Generic;
+using DanmakU.Modifiers;
 
 namespace DanmakU {
 
@@ -34,24 +35,61 @@ namespace DanmakU {
 
 	[System.Serializable]
 	public class FireBuilder {
-		public DanmakuPrefab Prefab;
-		public Vector2 Position;
-		public DynamicFloat Rotation;
-		public DynamicFloat Velocity;
-		public DynamicFloat AngularVelocity;
-		public DanmakuController Controller;
-		public DanmakuGroup Group;
-		public int Damage;
-		public DanmakuModifier Modifier;
-		public Color ColorOverride;
-		
-		public FireBuilder() {
+		private DanmakuPrefab prefab;
+		public DanmakuPrefab Prefab {
+			get {
+				return prefab;
+			}
+			set {
+				prefab = value;
+			}
 		}
+
+		private Stack<DanmakuModifier> modifiers;
 		
-		public void ResetColor() {
-			if (Prefab != null)
-				throw new System.InvalidOperationException ("Cannot reset color without a Danmaku Prefab");
-			ColorOverride = Prefab.Color;
+		public FireBuilder(DanmakuPrefab prefab) {
+
+			this.prefab = prefab;
+			modifiers = new Stack<DanmakuModifier>();
+		}
+
+		public FireBuilder AddModifier(DanmakuModifier modifier) {
+			modifiers.Push(modifier);
+			return this;
+		}
+
+		public FireBuilder WithController (IDanmakuController controller) {
+			modifiers.Push(new AddControllersModifier(controller));
+			return this;
+		}
+
+		public FireBuilder WithController (IEnumerable<IDanmakuController> controllers) {
+			modifiers.Push(new AddControllersModifier(controllers));
+			return this;
+		}
+
+		public FireBuilder WithController (DanmakuController controller) {
+			modifiers.Push(new AddControllersModifier(controller));
+			return this;
+		}
+
+		public FireBuilder WithController (IEnumerable<DanmakuController> controllers) {
+			modifiers.Push(new AddControllersModifier(controllers));
+			return this;
+		}
+
+		public FireBuilder WithoutControllers () {
+			modifiers.Push(new ClearControllersModifier());
+			return this;
+		}
+
+		public void Fire() {
+			DanmakuModifier modifier = DanmakuModifier.Construct(modifiers);
+			modifier.Initialize(new FireData() { Prefab = Prefab });
+			modifier.OnFire(Vector2.zero, 0f);
+		}
+
+		public void Fire(FireData data) {
 		}
 		
 	}

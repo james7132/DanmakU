@@ -23,32 +23,40 @@ namespace DanmakU.Modifiers {
 		}
 		
 		[SerializeField, Show]
-		private DynamicFloat deltaVelocity;
-		public DynamicFloat DeltaVelocity {
+		private DynamicFloat deltaSpeed;
+		public DynamicFloat DeltaSpeed {
 			get {
-				return deltaVelocity;
+				return deltaSpeed;
 			}
 			set {
-				deltaVelocity = value;
+				deltaSpeed = value;
 			}
 		}
 		
 		[SerializeField, Show]
-		private DynamicFloat deltaAngularVelocity;
-		public DynamicFloat DeltaAngularVelocity {
+		private DynamicFloat deltaAngularSpeed;
+		public DynamicFloat DeltaAngularSpeed {
 			get {
-				return deltaAngularVelocity;
+				return deltaAngularSpeed;
 			}
 			set {
-				deltaAngularVelocity = value;
+				deltaAngularSpeed = value;
 			}
+		}
+
+		public LinearBurstModifier(DynamicInt depth, 
+		                           DynamicFloat deltaSpeed, 
+		                           DynamicFloat deltaAngularSpeed) {
+			this.depth = depth;
+			this.deltaSpeed = deltaSpeed;
+			this.deltaAngularSpeed = deltaAngularSpeed;
 		}
 
 		#region implemented abstract members of FireModifier
 
-		public override void Fire (Vector2 position, DynamicFloat rotation) {
-			DynamicFloat deltaV = DeltaVelocity;
-			DynamicFloat deltaAV = DeltaAngularVelocity;
+		public override void OnFire (Vector2 position, DynamicFloat rotation) {
+			DynamicFloat deltaV = DeltaSpeed;
+			DynamicFloat deltaAV = DeltaAngularSpeed;
 			float depth = Depth.Value;
 			for(int i = 0; i < depth; i++) {
 				Speed += deltaV;
