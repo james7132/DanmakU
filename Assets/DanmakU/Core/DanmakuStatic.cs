@@ -112,12 +112,13 @@ namespace DanmakU {
 			colliderMap.Clear ();
 
 			//caches the change in time since the last frame
-			Danmaku.dt = TimeUtil.DeltaTime;
+			Danmaku danmaku;
+			dt = TimeUtil.DeltaTime;
 			Danmaku[] all = danmakuPool.all;
 			for (int i = 0; i < all.Length; i++) {
-				if(all[i] != null && all[i].is_active) {
-					all[i].Update();
-				}
+				danmaku = all[i];
+				if(danmaku != null && danmaku.is_active)
+					danmaku.Update();
 			}
 		}
 
@@ -125,10 +126,12 @@ namespace DanmakU {
 		/// Deactivates all currently active bullets.
 		/// </summary>
 		public static void DeactivateAll() {
+			Danmaku danmaku;
 			Danmaku[] all = danmakuPool.all;
 			for (int i = 0; i < all.Length; i++) {
-				if(all[i] != null && all[i].is_active)
-					all[i].Deactivate();
+				danmaku = all[i];
+				if(danmaku != null && danmaku.is_active)
+					danmaku.Deactivate();
 			}
 		}
 		
@@ -145,40 +148,38 @@ namespace DanmakU {
 
 		public static void DeactivateInCircle(Vector2 center, float radius, int layerMask = ~0) {
 			Danmaku[] all = danmakuPool.all;
-			Danmaku target;
+			Danmaku current;
 			float sqrRadius = radius * radius;
 			for (int i = 0; i < all.Length; i++) {
-				target = all[i];
-				if((layerMask & (1 << target.layer)) != 0) {
-					if(sqrRadius >= (target.Position - center).sqrMagnitude) {
-						target.Deactivate();
-					}
-				}
+				current = all[i];
+				if((layerMask & (1 << current.layer)) != 0 && 
+				   sqrRadius >= (current.Position - center).sqrMagnitude)
+				   current.Deactivate();
 			}
 		}
 
 		public static void DeactivateInCircleImmediate (Vector2 center, float radius, int layerMask = ~0) {
 			Danmaku[] all = danmakuPool.all;
-			Danmaku target;
+			Danmaku current;
 			float sqrRadius = radius * radius;
 			for (int i = 0; i < all.Length; i++) {
-				target = all[i];
-				if((layerMask & (1 << target.layer)) != 0) {
-					if(sqrRadius >= (target.Position - center).sqrMagnitude) {
-						target.DeactivateImmediate();
-					}
-				}
+				current = all[i];
+				if((layerMask & (1 << current.layer)) != 0 && 
+				   sqrRadius >= (current.Position - center).sqrMagnitude)
+					current.DeactivateImmediate();
 			}
 		}
 
 		public static Danmaku FindByTag (string tag) {
-			if (tag == null) {
+			if (tag == null)
 				throw new System.ArgumentNullException("Tag cannot be null!");
-			}
+
+			Danmaku current;
 			Danmaku[] all = danmakuPool.all;
 			for(int i = 0; i < all.Length; i++) {
-				if(all[i].is_active && all[i].Tag == tag) {
-					return all[i];
+				current = all[i];
+				if(current.is_active && current.Tag == tag) {
+					return current;
 				}
 			}
 			return null;
@@ -188,28 +189,35 @@ namespace DanmakU {
 			if (tag == null) {
 				throw new System.ArgumentNullException("Tag cannot be null!");
 			}
+			Danmaku current;
 			List<Danmaku> matches = new List<Danmaku> ();
 			Danmaku[] all = danmakuPool.all;
 			for (int i = 0; i < all.Length; i++) {
-				if(all[i].is_active && all[i].Tag == tag) {
-					matches.Add (all[i]);
+				current = all[i];
+				if(current.is_active && current.Tag == tag) {
+					matches.Add (current);
 				}
 			}
 			return matches.ToArray ();
 		}
 
-		public static int FindAllByTagNoAlloc (string tag, IList<Danmaku> danmaku) {
+		public static int FindAllByTagNoAlloc (string tag, IList<Danmaku> danmaku, int start = 0) {
 			if (tag == null) {
 				throw new System.ArgumentNullException ("Tag cannot be null!");
 			} else if (danmaku == null) {
 				throw new System.ArgumentNullException ("Danmaku Array cannot be null!");
 			}
-			int count = -1;
+			Danmaku current;
+			int index = start, count = -1, size = danmaku.Count;
 			Danmaku[] all = danmakuPool.all;
 			for (int i = 0; i < all.Length; i++) {
-				if(all[i].is_active && all[i].Tag == tag) {
+				current = all[i];
+				if(current.is_active && current.Tag == tag) {
+					index++;
 					count++;
-					danmaku[count] = all[i];
+					danmaku[index] = current;
+					if(index >= size)
+						break;
 				}
 			}
 			return count;
@@ -222,11 +230,12 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ("Danmaku container cannot be null!");
 			}
 			int count = -1;
+			Danmaku current;
 			Danmaku[] all = danmakuPool.all;
 			for (int i = 0; i < all.Length; i++) {
-				if(all[i].is_active && all[i].Tag == tag) {
-					collection.Add(all[i]);
-				}
+				current = all[i];
+				if(current.is_active && current.Tag == tag)
+					collection.Add(current);
 			}
 			return count;
 		}

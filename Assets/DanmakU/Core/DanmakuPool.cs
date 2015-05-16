@@ -133,18 +133,22 @@ namespace DanmakU {
 			int endCount = totalCount + count;
 			if(all.Length < endCount) {
 				size = all.Length;
-				while (size <= endCount) {
-					size = Mathf.NextPowerOfTwo(size + 1);
-				}
+				if (size <= endCount)
+					size = Mathf.NextPowerOfTwo(endCount);
 				
 				Danmaku[] temp = new Danmaku[size];
+
 				Array.Copy(all, temp, all.Length);
 				all = temp;
 				
 				int[] tempQueue = new int[size];
-				if(currentIndex < endIndex) {
+
+				// if the queue's current index is less than the end index, the queue has not wrapped around
+				// simply copy it as needed
+				if(currentIndex < endIndex)
 					Array.Copy(queue, currentIndex, tempQueue, 0, endIndex - currentIndex);
-				} else {
+				else {
+					// otherwise the queue has wrapped around and needs to be copied in two seperate chunks
 					int initial = 0;
 					initial = queue.Length - currentIndex - 1;
 					Array.Copy(queue, currentIndex, tempQueue, 0, initial);
@@ -167,31 +171,29 @@ namespace DanmakU {
 			inactiveCount += count;
 		}
 		
-		public void Get(Danmaku[] projectiles) {
-			if (projectiles == null)
+		public void Get(Danmaku[] danmakus) {
+			if (danmakus == null)
 				throw new ArgumentNullException ("Projectiles can't be null");
-			int count = projectiles.Length;
-			while (inactiveCount < count)
-				Spawn (spawnCount);
+			int count = danmakus.Length;
+			if (inactiveCount < count)
+				Spawn (count - inactiveCount);
 			inactiveCount -= count;
-			for (int i = 0; i < projectiles.Length; i++) {
-				projectiles[i] = all[queue[currentIndex]];
+			for (int i = 0; i < danmakus.Length; i++) {
+				danmakus[i] = all[queue[currentIndex]];
 				currentIndex = (currentIndex + 1) % size;
 			}
 		}
 		
-		public void Return(Danmaku[] projectiles) {
-			if(projectiles == null)
+		public void Return(Danmaku[] danmakus) {
+			if(danmakus == null)
 				throw new ArgumentNullException ("Projectiles can't be null");
-			int count = projectiles.Length;
+			int count = danmakus.Length;
 			inactiveCount += count;
 			for(int i = 0; i < count; i++) {
-				queue[endIndex] = projectiles[i].poolIndex;
+				queue[endIndex] = danmakus[i].poolIndex;
 				endIndex = (endIndex + 1) % size;
 			}
 		}
-		
-		#region IPool implementation
 		
 		public Danmaku Get () {
 			if(inactiveCount <= 0) {
@@ -208,8 +210,6 @@ namespace DanmakU {
 			endIndex = (endIndex + 1) % size;
 			inactiveCount++;
 		}
-		
-		#endregion
 	}
 }
 
