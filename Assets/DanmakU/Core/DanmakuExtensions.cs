@@ -6,6 +6,58 @@ namespace DanmakU {
 	
 	public static class DanmakuExtensions {
 
+		#region IDanmakuController Enumerable Extensions
+
+		public static DanmakuController Compress(this IEnumerable<IDanmakuController> controllers) {
+			if(controllers == null)
+				throw new System.NullReferenceException();
+
+			DanmakuController controller = null;
+			var list = controllers as IList<IDanmakuController>;
+			if(list != null) {
+				int count = list.Count;
+				for(int i = 0; i < count; i++) {
+					IDanmakuController current = list[i];
+					if(current != null)
+						controller += current.Update;
+				}
+			} else {
+				foreach(var current in controllers) {
+					if(current != null)
+						controller += current.Update;
+				}
+			}
+			return controller;
+		}
+
+		#endregion
+
+		#region DanmakuController Enumerable Functions
+
+		public static DanmakuController Compress (IEnumerable<DanmakuController> controllers) {
+			if(controllers == null)
+				throw new System.NullReferenceException();
+			
+			DanmakuController controller = null;
+			var list = controllers as IList<DanmakuController>;
+			if(list != null) {
+				int count = list.Count;
+				for(int i = 0; i < count; i++) {
+					DanmakuController current = list[i];
+					if(current != null)
+						controller += current;
+				}
+			} else {
+				foreach(var current in controllers) {
+					if(current != null)
+						controller += current;
+				}
+			}
+			return controller;
+		}
+
+		#endregion
+
 		#region Position Functions
 
 		/// <summary>

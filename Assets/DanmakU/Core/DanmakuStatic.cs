@@ -178,17 +178,16 @@ namespace DanmakU {
 			Danmaku[] all = danmakuPool.all;
 			for(int i = 0; i < all.Length; i++) {
 				current = all[i];
-				if(current.is_active && current.Tag == tag) {
+				if(current.is_active && current.Tag == tag)
 					return current;
-				}
 			}
 			return null;
 		}
 
 		public static Danmaku[] FindAllByTag (string tag) {
-			if (tag == null) {
+			if (tag == null)
 				throw new System.ArgumentNullException("Tag cannot be null!");
-			}
+
 			Danmaku current;
 			List<Danmaku> matches = new List<Danmaku> ();
 			Danmaku[] all = danmakuPool.all;
@@ -202,11 +201,10 @@ namespace DanmakU {
 		}
 
 		public static int FindAllByTagNoAlloc (string tag, IList<Danmaku> danmaku, int start = 0) {
-			if (tag == null) {
+			if (tag == null)
 				throw new System.ArgumentNullException ("Tag cannot be null!");
-			} else if (danmaku == null) {
+			else if (danmaku == null)
 				throw new System.ArgumentNullException ("Danmaku Array cannot be null!");
-			}
 			Danmaku current;
 			int index = start, count = -1, size = danmaku.Count;
 			Danmaku[] all = danmakuPool.all;
@@ -393,6 +391,12 @@ namespace DanmakU {
 				danmaku.AddController (data.Controller);
 				danmaku.Damage = data.Damage.Value;
 			}
+		}
+
+		public static FireBuilder Fire (DanmakuPrefab prefab) {
+			var builder = new FireBuilder (prefab);
+			builder.Fire ();
+			return builder;
 		}
 	}
 }

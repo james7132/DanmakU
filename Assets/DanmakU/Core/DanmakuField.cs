@@ -339,6 +339,10 @@ namespace DanmakU {
 			return danmaku;
 		}
 
+		public FireBuilder Fire(DanmakuPrefab prefab) {
+			return new FireBuilder (prefab, this);
+		}
+
 		#if UNITY_EDITOR
 		void OnDrawGizmos() {
 			Gizmos.color = Color.yellow;
