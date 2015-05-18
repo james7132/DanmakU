@@ -9,52 +9,84 @@ namespace DanmakU.Controllers {
 
 	[System.Serializable]
 	public class SpeedLimitController : IDanmakuController {
-
-		public enum LimitType { Maximum, Minimum }
 		
 		[SerializeField, Show]
-		private LimitType type;
-		public LimitType Type {
+		private float min;
+		public float Min {
 			get {
-				return type;
+				return min;
 			}
 			set {
-				type = value;
+				min = value;
+				if(min > max) {
+					float temp = max;
+					max = min;
+					min = temp;
+				}
 			}
 		}
-		
+
 		[SerializeField, Show]
-		private float limit;
-		public float Limit {
+		private float max;
+		public float Max {
 			get {
-				return limit;
+				return max;
 			}
 			set {
-				limit = value;
+				max = value;
+				if(min > max) {
+					float temp = max;
+					max = min;
+					min = temp;
+				}
 			}
 		}
 
 		public SpeedLimitController () {
-			Limit = float.NaN;
+			min = float.NegativeInfinity;
+			max = float.PositiveInfinity;
 		}
 
-		public SpeedLimitController(float limit, LimitType type) {
-			this.limit = limit;
-			this.type = type;
+		public SpeedLimitController(float minimum,
+		                            float maximum) {
+			min = minimum;
+			max = maximum;
+			if(min > max) {
+				float temp = max;
+				max = min;
+				min = temp;
+			}
+		}
+
+		public SpeedLimitController (float value) {
+			float absValue = Mathf.Abs(value);
+			min = -absValue;
+			max = absValue;
+		}
+
+		public SpeedLimitController(float value, bool max) {
+			if(max) {
+				this.max = value;
+				min = float.NegativeInfinity;
+			} else {
+				this.max = float.PositiveInfinity;
+				min = value;
+			}
 		}
 
 		#region IDanmakuController implementation
 
+		/// <summary>
+		/// Updates the Danmaku controlled by the controller instance.
+		/// </summary>
+		/// <param name="danmaku">the bullet to update.</param>
+		/// <param name="dt">the change in time since the last update</param>
 		public void Update (Danmaku danmaku, float dt) {
-			if(float.IsNaN(limit))
-				return;
-			if(type == LimitType.Maximum) {
-				if(danmaku.Speed > limit)
-					danmaku.Speed = limit;
-			} else {
-				if(danmaku.Speed < limit)
-					danmaku.Speed = limit;
-			}
+			float speed = danmaku.Speed;
+			if(speed < min)
+				danmaku.Speed = min;
+			if(speed > max)
+				danmaku.Speed = max;
 		}
 
 		#endregion
