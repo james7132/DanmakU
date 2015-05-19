@@ -34,7 +34,7 @@ namespace DanmakU {
 
 		#region DanmakuController Enumerable Functions
 
-		public static DanmakuController Compress (IEnumerable<DanmakuController> controllers) {
+		public static DanmakuController Compress (this IEnumerable<DanmakuController> controllers) {
 			if(controllers == null)
 				throw new System.NullReferenceException();
 			
@@ -578,7 +578,15 @@ namespace DanmakU {
 				}
 			}
 		}
-		
+
+		public static void AddControllers (this IEnumerable<Danmaku> danmakus, IEnumerable<IDanmakuController> controllers) {
+			danmakus.AddController(controllers.Compress());
+		}
+
+		public static void AddControllers (this IEnumerable<Danmaku> danmakus, IEnumerable<DanmakuController> controllers) {
+			danmakus.AddController(controllers.Compress());
+		}
+
 		public static void RemoveController(this IEnumerable<Danmaku> danmakus, IDanmakuController controller) {
 			if (danmakus == null)
 				throw new System.NullReferenceException ();
@@ -596,6 +604,14 @@ namespace DanmakU {
 						danmaku.RemoveController(controlleDelegate);
 				}
 			}
+		}
+		
+		public static void RemoveControllers (this IEnumerable<Danmaku> danmakus, IEnumerable<IDanmakuController> controllers) {
+			danmakus.RemoveController(controllers.Compress());
+		}
+		
+		public static void RemoveControllers (this IEnumerable<Danmaku> danmakus, IEnumerable<DanmakuController> controllers) {
+			danmakus.RemoveController(controllers.Compress());
 		}
 
 		public static void AddController(this IEnumerable<Danmaku> danmakus, DanmakuController controller) {

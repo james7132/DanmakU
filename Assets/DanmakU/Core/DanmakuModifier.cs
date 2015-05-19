@@ -151,6 +151,11 @@ namespace DanmakU {
 			}
 		}
 
+		public void Fire(FireData data) {
+			Initialize(data);
+
+		}
+
 		public abstract void OnFire(Vector2 position, DynamicFloat rotation);
 
 		#region IEnumerable implementation
