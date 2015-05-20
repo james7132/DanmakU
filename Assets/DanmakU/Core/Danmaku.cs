@@ -61,8 +61,6 @@ namespace DanmakU {
 
 		internal List<DanmakuGroup> groups;
 
-		private DanmakuField field;
-
 		//Preallocated variables to avoid allocation in Update
 		private Vector2 originalPosition;
 		private RaycastHit2D[] raycastHits;
@@ -498,7 +496,7 @@ namespace DanmakU {
 				}
 			}
 
-			if (!is_active || (BoundsCheck && field != null && !field.bounds.Contains (position))) {
+			if (!is_active || (BoundsCheck && Field != null && !Field.bounds.Contains (position))) {
 				DeactivateImmediate();
 				return;
 			}
@@ -614,7 +612,7 @@ namespace DanmakU {
 			ControllerUpdate = null;
 			OnActivate = null;
 			OnDeactivate = null;
-			field = null;
+			Field = null;
 			controllerCheck = false;
 			Damage = 0;
 			runtime.Remove(this);
