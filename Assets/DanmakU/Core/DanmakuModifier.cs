@@ -86,7 +86,7 @@ namespace DanmakU {
 			}
 			set {
 				subModifier = value;
-				if(subModifier == null)
+				if(subModifier != null)
 					subModifier.Initialize(data);
 			}
 		}
@@ -153,7 +153,7 @@ namespace DanmakU {
 
 		public void Fire(FireData data) {
 			Initialize(data);
-
+			OnFire(data.Position, data.Rotation);
 		}
 
 		public abstract void OnFire(Vector2 position, DynamicFloat rotation);

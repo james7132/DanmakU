@@ -393,9 +393,8 @@ namespace DanmakU {
 			}
 		}
 
-		public static FireBuilder Fire (DanmakuPrefab prefab) {
+		public static FireBuilder ConstructFire (DanmakuPrefab prefab) {
 			var builder = new FireBuilder (prefab);
-			builder.Fire ();
 			return builder;
 		}
 	}

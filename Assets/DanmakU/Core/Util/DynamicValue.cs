@@ -9,10 +9,15 @@ namespace DanmakU {
 	[System.Serializable]
 	public struct DynamicInt {
 			
-		public enum Type { Constant, Random }
+		public enum ValueType { Constant, Random }
 
 		[SerializeField]
-		private Type type;
+		private ValueType type;
+		public ValueType Type {
+			get {
+				return type;
+			}
+		}
 		
 		[SerializeField]
 		private int min;
@@ -48,7 +53,7 @@ namespace DanmakU {
 		
 		public int Value {
 			get {
-				if(type == Type.Constant || max == min)
+				if(type == ValueType.Constant || max == min)
 					return min;
 				else {
 					return Random.Range(min, max);
@@ -59,13 +64,13 @@ namespace DanmakU {
 		public DynamicInt(int value) {
 			min = value;
 			max = value;
-			type = Type.Constant;
+			type = ValueType.Constant;
 		}
 		
 		public DynamicInt(int min, int max) {
 			Min = min;
 			Max = max;
-			type = (min == max) ? Type.Constant : Type.Random;
+			type = (min == max) ? ValueType.Constant : ValueType.Random;
 		}
 		
 		public static implicit operator int(DynamicInt df) {
@@ -93,7 +98,7 @@ namespace DanmakU {
 		}
 		
 		public static bool operator ==(DynamicInt di1, DynamicInt di2) {
-			if(di1.type == Type.Constant && di2.type == Type.Constant)
+			if(di1.type == ValueType.Constant && di2.type == ValueType.Constant)
 				return di1.min == di2.min;
 			return (di1.min == di2.min) && (di1.max == di2.max);
 		}
@@ -118,10 +123,15 @@ namespace DanmakU {
 	[System.Serializable]
 	public struct DynamicFloat {
 
-		public enum Type { Constant, Random }
+		public enum ValueType { Constant, Random }
 
 		[SerializeField]
-		private Type type;
+		private ValueType type;
+		public ValueType Type {
+			get {
+				return type;
+			}
+		}
 		
 		[SerializeField]
 		private float min;
@@ -157,7 +167,7 @@ namespace DanmakU {
 
 		public float Value {
 			get {
-				if(type == Type.Constant || max == min)
+				if(type == ValueType.Constant || max == min)
 					return min;
 				else {
 					return Random.Range(min, max);
@@ -168,13 +178,18 @@ namespace DanmakU {
 		public DynamicFloat(float value) {
 			min = value;
 			max = value;
-			type = Type.Constant;
+			type = ValueType.Constant;
 		}
 		
 		public DynamicFloat(float min, float max) {
-			Min = min;
-			Max = max;
-			type = (min == max) ? Type.Constant : Type.Random;
+			if(min > max) {
+				this.max = min;
+				this.min = max;
+			} else {
+				this.max = max;
+				this.min = min;
+			}
+			type = (min == max) ? ValueType.Constant : ValueType.Random;
 		}
 
 		public static implicit operator float(DynamicFloat df) {
@@ -189,8 +204,32 @@ namespace DanmakU {
 			return new DynamicInt((int)df.min, (int)df.max);
 		}
 
+		public static DynamicFloat operator +(DynamicFloat df, float f) {
+			return new DynamicFloat(df.min + f, df.max + f);
+		}
+
+		public static DynamicFloat operator +(float f, DynamicFloat df) {
+			return new DynamicFloat(df.min + f, df.max + f);
+		}
+		
+		public static DynamicFloat operator +(DynamicFloat df, int i) {
+			return new DynamicFloat(df.min + i, df.max + i);
+		}
+		
+		public static DynamicFloat operator +(int i, DynamicFloat df) {
+			return new DynamicFloat(df.min + i, df.max + i);
+		}
+
 		public static DynamicFloat operator +(DynamicFloat df1, DynamicFloat df2) {
 			return new DynamicFloat(df1.min + df2.min, df1.max + df2.max);
+		}
+
+		public static DynamicFloat operator -(DynamicFloat df, int i) {
+			return new DynamicFloat(df.min - i, df.max - i);
+		}
+
+		public static DynamicFloat operator -(int i, DynamicFloat df) {
+			return new DynamicFloat(i - df.min, i - df.max);
 		}
 
 		public static DynamicFloat operator -(DynamicFloat df1, DynamicFloat df2) {
