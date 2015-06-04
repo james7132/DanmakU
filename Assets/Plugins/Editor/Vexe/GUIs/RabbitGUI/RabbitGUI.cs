@@ -16,6 +16,8 @@ namespace Vexe.Editor.GUIs
 {
     public class RabbitGUI : BaseGUI, IDisposable
     {
+        public Action OnFinishedLayoutReserve, OnRepaint;
+
         public float Height { private set; get; }
 
         public float Width  { private set; get; }
@@ -59,39 +61,34 @@ namespace Vexe.Editor.GUIs
         private int _id;
         private static BetterPrefs _prefs;
 
-        static MethodCaller<object, object> _scrollableTextArea;
+        static MethodCaller<object, string> _scrollableTextArea;
         static MethodCaller<object, Gradient> _gradientField;
-
-#if dbg_level_1
-            private bool _pendingReset;
-            private bool pendingResetRequest
-            {
-                get { return _pendingReset; }
-                set
-                {
-                    if (value)
-                    {
-                        Debug.Log("Setting pending reset to true");
-                        LogCallStack();
-                    }
-                    _pendingReset = value;
-                }
-            }
-#else
-        private bool _pendingReset;
-        #endif
 
         #if dbg_level_1
         private int dbgMaxDepth;
         public static void LogCallStack()
         {
-            var stack = new System.Diagnostics.StackTrace();
-            foreach (var frame in stack.GetFrames())
-            {
-                Debug.Log("Call stack: " + frame.GetMethod().Name);
-            }
+            string stack = RuntimeHelper.GetCallStack();
+            Debug.Log("Call stack: " + stack);
         }
         #endif
+
+
+#if dbg_level_2
+        private bool m_pendingReset;
+        private bool _pendingReset
+        {
+            get { return m_pendingReset; }
+            set
+            {
+                if (value)
+                    Debug.Log("Setting Reset Request to True! Came from: " + RuntimeHelper.GetCallStack());
+                m_pendingReset = value;
+            }
+        }
+#else
+        private bool _pendingReset;
+#endif
 
         public RabbitGUI()
         {
@@ -116,7 +113,7 @@ namespace Vexe.Editor.GUIs
                     new Type[] { typeof(Rect), typeof(string), typeof(Vector2).MakeByRefType(), typeof(GUIStyle) },
                     Flags.StaticAnyVisibility);
 
-                _scrollableTextArea = method.DelegateForCall();
+                _scrollableTextArea = method.DelegateForCall<object, string>();
             }
             // GradientField
             {
@@ -190,6 +187,8 @@ namespace Vexe.Editor.GUIs
             }
 
             GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth - 35f, Height);
+
+            OnFinishedLayoutReserve.SafeInvoke();
         }
 
         public RabbitGUI Begin(Rect start)
@@ -208,7 +207,7 @@ namespace Vexe.Editor.GUIs
 
             _nextControlIdx = 0;
             _nextBlockIdx   = 0;
-            BeginVertical(Styles.None);
+            BeginVertical(GUIStyles.None);
 
             return this;
         }
@@ -241,6 +240,7 @@ namespace Vexe.Editor.GUIs
                 if (_pendingRepaint)
                 {
                     EditorHelper.RepaintAllInspectors();
+                    OnRepaint.SafeInvoke();
                     _pendingRepaint = false;
                 }
 
@@ -254,7 +254,7 @@ namespace Vexe.Editor.GUIs
                 if (_pendingReset || _nextControlIdx != _controls.Count || _nextBlockIdx != _blocks.Count)
                 {
                     #if dbg_level_1
-                    if (pendingResetRequest)
+                    if (_pendingReset)
                         Debug.Log("Resetting - Theres a reset request pending");
                     else Debug.Log("Resetting -  The number of controls/blocks drawn doesn't match the total number of controls/blocks");
                     #endif
@@ -327,7 +327,7 @@ namespace Vexe.Editor.GUIs
                 }
 
                 #if dbg_level_1
-                    Debug.Log("Created new block of type {0}. Blocks count {1}. Is pending reset? {2}".FormatWith(typeof(T).Name, _blocks.Count, pendingResetRequest));
+                    Debug.Log("Created new block of type {0}. Blocks count {1}. Is pending reset? {2}".FormatWith(typeof(T).Name, _blocks.Count, _pendingReset));
                 #endif
             }
             else
@@ -357,16 +357,12 @@ namespace Vexe.Editor.GUIs
                     #if dbg_level_1
                         Debug.Log("Result block is null. Count {0}, Idx {1}, Request type {2}".FormatWith(_blocks.Count, _nextBlockIdx, typeof(T).Name));
                         for (int i = 0; i < _blocks.Count; i++)
-                        {
                             Debug.Log("Block {0} at {1} has {2} controls".FormatWith(_blocks[i].data.type.ToString(), i, _blocks[i].controls.Count));
-                        }
 
                         Debug.Log("Block Stack count " + _blockStack.Count);
                         var array = _blockStack.ToArray();
                         for (int i = 0; i < array.Length; i++)
-                        {
                             Debug.Log("Block {0} at {1} has {2} controls".FormatWith(array[i].data.type.ToString(), i, array[i].controls.Count));
-                        }
                     #endif
 
                     throw new NullReferenceException("result");
@@ -455,7 +451,7 @@ namespace Vexe.Editor.GUIs
 
         public override Bounds BoundsField(GUIContent content, Bounds value, Layout option)
         {
-            var bounds = new ControlData(content, Styles.None, option, ControlType.Bounds);
+            var bounds = new ControlData(content, GUIStyles.None, option, ControlType.Bounds);
 
             Rect position;
             if (CanDrawControl(out position, bounds))
@@ -468,7 +464,7 @@ namespace Vexe.Editor.GUIs
 
         public override Rect Rect(GUIContent content, Rect value, Layout option)
         {
-            var data = new ControlData(content, Styles.None, option, ControlType.RectField);
+            var data = new ControlData(content, GUIStyles.None, option, ControlType.RectField);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -481,7 +477,7 @@ namespace Vexe.Editor.GUIs
 
 		public override AnimationCurve Curve (GUIContent content, AnimationCurve value, Layout option)
 		{
-			var data = new ControlData (content, Styles.None, option, ControlType.CurveField);
+			var data = new ControlData (content, GUIStyles.None, option, ControlType.CurveField);
 
 			Rect position;
 			if (CanDrawControl (out position, data))
@@ -496,7 +492,7 @@ namespace Vexe.Editor.GUIs
 
         public override Gradient GradientField(GUIContent content, Gradient value, Layout option)
         {
-            var data = new ControlData(content, Styles.None, option, ControlType.GradientField);
+            var data = new ControlData(content, GUIStyles.None, option, ControlType.GradientField);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -523,9 +519,9 @@ namespace Vexe.Editor.GUIs
         public override void HelpBox(string message, MessageType type)
         {
             var content = GetContent(message);
-            var height  = Styles.HelpBox.CalcHeight(content, Width);
+            var height  = GUIStyles.HelpBox.CalcHeight(content, Width);
             var layout  = Layout.sHeight(height);
-            var data    = new ControlData(content, Styles.HelpBox, layout, ControlType.HelpBox);
+            var data    = new ControlData(content, GUIStyles.HelpBox, layout, ControlType.HelpBox);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -557,7 +553,7 @@ namespace Vexe.Editor.GUIs
 
         public override Color Color(GUIContent content, Color value, Layout option)
         {
-            var data = new ControlData(content, Styles.ColorField, option, ControlType.ColorField);
+            var data = new ControlData(content, GUIStyles.ColorField, option, ControlType.ColorField);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -583,7 +579,7 @@ namespace Vexe.Editor.GUIs
 
         public override float Float(GUIContent content, float value, Layout option)
         {
-            var data = new ControlData(content, Styles.NumberField, option, ControlType.Float);
+            var data = new ControlData(content, GUIStyles.NumberField, option, ControlType.Float);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -609,7 +605,7 @@ namespace Vexe.Editor.GUIs
 
         public override int Int(GUIContent content, int value, Layout option)
         {
-            var data = new ControlData(content, Styles.NumberField, option, ControlType.IntField);
+            var data = new ControlData(content, GUIStyles.NumberField, option, ControlType.IntField);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -646,7 +642,7 @@ namespace Vexe.Editor.GUIs
 
         public override UnityObject Object(GUIContent content, UnityObject value, Type type, bool allowSceneObjects, Layout option)
         {
-            var data = new ControlData(content, Styles.ObjectField, option, ControlType.ObjectField);
+            var data = new ControlData(content, GUIStyles.ObjectField, option, ControlType.ObjectField);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -683,7 +679,7 @@ namespace Vexe.Editor.GUIs
 
         public override float FloatSlider(GUIContent content, float value, float leftValue, float rightValue, Layout option)
         {
-            var data = new ControlData(content, Styles.HorizontalSlider, option, ControlType.Slider);
+            var data = new ControlData(content, GUIStyles.HorizontalSlider, option, ControlType.Slider);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -737,7 +733,7 @@ namespace Vexe.Editor.GUIs
 
         public override string ToolbarSearch(string value, Layout option)
         {
-            var data = new ControlData(GetContent(value), Styles.TextField, option, ControlType.TextField);
+            var data = new ControlData(GetContent(value), GUIStyles.TextField, option, ControlType.TextField);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -803,7 +799,7 @@ namespace Vexe.Editor.GUIs
             if (!option.height.HasValue)
                 option.height = 50f;
 
-            var data = new ControlData(GetContent(value), Styles.TextArea, option, ControlType.TextArea);
+            var data = new ControlData(GetContent(value), GUIStyles.TextArea, option, ControlType.TextArea);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -816,7 +812,7 @@ namespace Vexe.Editor.GUIs
 
         public override bool InspectorTitlebar(bool foldout, UnityObject target)
         {
-            var data = new ControlData(GUIContent.none, Styles.None, null, ControlType.Foldout);
+            var data = new ControlData(GUIContent.none, GUIStyles.None, null, ControlType.Foldout);
 
             Rect position;
             if (CanDrawControl(out position, data))
@@ -870,7 +866,7 @@ namespace Vexe.Editor.GUIs
         public override string ScrollableTextArea(string value, ref Vector2 scrollPos, GUIStyle style, Layout option)
         {
             if (option == null)
-                option = new Layout();
+                option = Layout.None;
 
             if (!option.height.HasValue)
                 option.height = 50f;
@@ -882,11 +878,74 @@ namespace Vexe.Editor.GUIs
             if (CanDrawControl(out position, data))
             {
                 var args = new object[] { position, value, scrollPos, style };
-                var newValue = _scrollableTextArea.Invoke(null, args) as string;
+                var newValue = _scrollableTextArea.Invoke(null, args);
                 scrollPos = (Vector2)args[2];
                 return newValue;
             }
 
+            return value;
+        }
+
+        static bool hoveringOnPopup;
+        static readonly string[] emptyStringArray = new string[0];
+
+        public override string TextFieldDropDown(GUIContent label, string value, string[] dropDownElements, Layout option)
+        {
+            var data = new ControlData(label, GUIStyles.TextFieldDropDown, option, ControlType.TextFieldDropDown);
+
+            Rect totalRect;
+            if (CanDrawControl(out totalRect, data))
+            {
+                Rect textRect = new Rect(totalRect.x, totalRect.y, totalRect.width - GUIStyles.TextFieldDropDown.fixedWidth, totalRect.height);
+                Rect popupRect = new Rect(textRect.xMax, textRect.y, GUIStyles.TextFieldDropDown.fixedWidth, totalRect.height);
+
+                value = EditorGUI.TextField(textRect, "", value, GUIStyles.TextFieldDropDownText);
+
+                string[] displayedOptions;
+                if (dropDownElements.Length > 0)
+                    displayedOptions = dropDownElements;
+                else
+                    (displayedOptions = new string[1])[0] = "--empty--";
+
+                if (popupRect.Contains(Event.current.mousePosition))
+                    hoveringOnPopup = true;
+
+                // if there were a lot of options to be displayed, we don't need to always invoke
+                // Popup cause Unity does a lot of allocation inside and it would have a huge negative impact
+                // on editor performance so we only display the options when we're hoving over it
+                if (!hoveringOnPopup)
+                    EditorGUI.Popup(popupRect, string.Empty, -1, emptyStringArray, GUIStyles.TextFieldDropDown);
+                else
+                {
+                    EditorGUI.BeginChangeCheck();
+                    int selection = EditorGUI.Popup(popupRect, string.Empty, -1, displayedOptions, GUIStyles.TextFieldDropDown);
+                    if (EditorGUI.EndChangeCheck() && displayedOptions.Length > 0)
+                    {
+                        hoveringOnPopup = false;
+                        value = displayedOptions[selection];
+                    }
+                }
+            }
+            return value;
+        }
+
+        public override double Double(GUIContent content, double value, Layout option)
+        {
+            var data = new ControlData(content, GUIStyles.NumberField, option, ControlType.Double);
+
+            Rect position;
+            if (CanDrawControl(out position, data))
+                return EditorGUI.DoubleField(position, content, value);
+            return value;
+        }
+
+        public override long Long(GUIContent content, long value, Layout option)
+        {
+            var data = new ControlData(content, GUIStyles.NumberField, option, ControlType.Long);
+
+            Rect position;
+            if (CanDrawControl(out position, data))
+                return EditorGUI.LongField(position, content, value);
             return value;
         }
     }

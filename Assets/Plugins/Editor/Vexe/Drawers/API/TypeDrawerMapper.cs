@@ -60,6 +60,7 @@ namespace Vexe.Editor
                     .Add<uint, UIntDrawer>()
                     .Add<float, FloatDrawer>()
                     .Add<double, DoubleDrawer>()
+                    .Add<long, LongDrawer>()
                     .Add<bool, BoolDrawer>()
                     .Add<Color, ColorDrawer>()
                     .Add<Color32, Color32Drawer>()
@@ -84,20 +85,23 @@ namespace Vexe.Editor
             {
                 this.Add(typeof(List<>), typeof(ListDrawer<>), true, BakeTypeArgsInDrawer)
                     .Add(typeof(Array), typeof(ArrayDrawer<>), true, (a, d) => d.MakeGenericType(a.GetElementType()))
-                    .Add(typeof(IDictionary<,>), typeof(IDictionaryDrawer<,,>), true, (a, d) =>
+                    .Add(typeof(IDictionary<,>), typeof(IDictionaryDrawer<,>), true, (a, d) =>
                     {
+                        if (a.IsAbstract)
+                        {
+                            Debug.LogError("Mapping error: IDictionary type {0} is abstract thus the drawer can't instantiate an instance of it. " +
+                                           "Falling back to RecursiveDrawer".FormatWith(a));
+                            return typeof(RecursiveDrawer);
+                        }
+
                         if (a.GetConstructor(Type.EmptyTypes) == null)
                         {
                             Debug.LogError("Mapping error: IDictionary type {0} must have a public empty constructor in order for it to be mapped with {1}. " +
-                                "Falling back to RecursiveDrawer".FormatWith(a, d));
+                                           "Falling back to RecursiveDrawer".FormatWith(a, d));
                             return typeof(RecursiveDrawer);
                         }
-                        var typeArgs = a.GetGenericArgsInThisOrAbove();
-                        var drawerArgs = new Type[typeArgs.Length + 1];
-                        drawerArgs[0] = a;
-                        for (int i = 0; i < typeArgs.Length; i++)
-                            drawerArgs[i + 1] = typeArgs[i];
-                        return d.MakeGenericType(drawerArgs);
+
+                        return BakeTypeArgsInDrawer(a, d);
                     });
             }
             // Nullable
@@ -143,7 +147,8 @@ namespace Vexe.Editor
                         .Add<ShowTypeAttribute, ShowTypeDrawer>()
                         .Add<fSliderAttribute, fSliderDrawer>()
                         .Add<iSliderAttribute, iSliderDrawer>()
-                        .Add<ParagraphAttribute, ParagraphDrawer>();
+                        .Add<ParagraphAttribute, ParagraphDrawer>()
+                        .Add<ButtonAttribute, ButtonDrawer>();
                 }
                 // Popups
                 {
@@ -221,7 +226,18 @@ namespace Vexe.Editor
         /// </summary>
         public Type BakeTypeInDrawer(Type type, Type drawerType)
         {
-            return drawerType.MakeGenericType(type);
+            try
+            {
+                if (type.IsSubclassOfRawGeneric(typeof(Nullable<>)))
+                    type = type.GetGenericArguments()[0];
+
+                return drawerType.MakeGenericType(type);
+            }
+            catch(ArgumentException e)
+            {
+                Debug.LogError("Failed to bake drawer ({0}) for type ({1}): {2} at {3}".FormatWith(drawerType.GetNiceName(), type.GetNiceName(), e.Message, e.StackTrace));
+                return typeof(RecursiveDrawer);
+            }
         }
 
         /// <summary>
@@ -237,7 +253,7 @@ namespace Vexe.Editor
         /// </summary>
         public Type BakeTypeArgsInDrawer(Type type, Type drawerType)
         {
-            return drawerType.MakeGenericType(type.GetGenericArguments());
+            return drawerType.MakeGenericType(type.GetGenericArgsInThisOrAbove());
         }
     }
 }

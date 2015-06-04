@@ -92,6 +92,11 @@ namespace Vexe.Runtime.Helpers
             return members;
         }
 
+        public static Type[] GetUnityEngineTypes()
+        {
+            return GetUnityEngineAssembly().GetTypes();
+        }
+
         /// <summary>
         /// Returns the types of the specified members
         /// </summary>
@@ -162,6 +167,14 @@ namespace Vexe.Runtime.Helpers
         public static Type[] GetAllTypesOf(Type wantedType)
         {
             return GetAllUserTypesOf(wantedType).Concat(GetAllUnityEngineTypesOf(wantedType)).ToArray();
+        }
+
+        /// <summary>
+        /// Returns all types in all assemblies in the current domain
+        /// </summary>
+        public static IEnumerable<Type> GetAllTypes()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes());
         }
     }
 }

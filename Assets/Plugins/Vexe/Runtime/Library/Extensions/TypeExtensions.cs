@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using UnityEngine;
 
 namespace Vexe.Runtime.Extensions
 {
@@ -54,6 +55,21 @@ namespace Vexe.Runtime.Extensions
 
             var result = method.DeclaringType == src;
             return result;
+        }
+
+        public static MemberInfo GetMemberFromAll(this Type type, string memberName, Type peak, BindingFlags flags)
+        {
+            var result = GetAllMembers(type, peak, flags).FirstOrDefault(x => x.Name == memberName);
+            return result;
+        }
+
+        public static MemberInfo GetMemberFromAll(this Type type, string memberName, BindingFlags flags)
+        {
+            var peak = type.IsA<MonoBehaviour>() ? typeof(MonoBehaviour)
+                     : type.IsA<ScriptableObject>() ? typeof(ScriptableObject)
+                     : typeof(object);
+
+            return GetMemberFromAll(type, memberName, peak, flags);
         }
 
         /// <summary>

@@ -66,7 +66,7 @@ namespace Vexe.Editor.Drawers
 
         public override void OnGUI()
         {
-            foldout = gui.Foldout(kHeaderStr, foldout, Layout.sExpandWidth());
+            foldout = gui.Foldout(kHeaderStr, foldout, Layout.Auto);
             if (!foldout) return;
 
             if (memberValue == null)
@@ -110,6 +110,17 @@ namespace Vexe.Editor.Drawers
                         var handler = handlers[i];
                         var target = handler.target;
                         var removed = false;
+
+                        if (handler.method == null)
+                        {
+                            Debug.Log("One of the handlers' method was null! This shouldn't happen under normal circumstances. " +
+                                      "Removing that handler from the handlers list. " +
+                                      "If you keep getting this message please report it");
+
+                            handlers.RemoveAt(i);
+                            continue;
+                        }
+
                         using (gui.Horizontal())
                         {
                             var obj = target as UnityObject;
@@ -319,7 +330,7 @@ namespace Vexe.Editor.Drawers
 
         public override void OnGUI()
         {
-            foldout = gui.Foldout(kHeaderStr, foldout, Layout.sExpandWidth());
+            foldout = gui.Foldout(kHeaderStr, foldout, Layout.Auto);
             if (!foldout) return;
 
             if (memberValue == null)

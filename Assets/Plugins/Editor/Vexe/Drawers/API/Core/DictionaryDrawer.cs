@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEngine;
+using Vexe.Editor.Extensions;
+using Vexe.Editor.Helpers;
 using Vexe.Editor.Types;
 using Vexe.Runtime.Extensions;
 using Vexe.Runtime.Helpers;
@@ -14,14 +17,23 @@ using UnityObject = UnityEngine.Object;
 
 namespace Vexe.Editor.Drawers
 {
-    public class IDictionaryDrawer<TD, TK, TV> : ObjectDrawer<TD> where TD : class, IDictionary<TK, TV>, new()
+    public class IDictionaryDrawer<TK, TV> : ObjectDrawer<IDictionary<TK, TV>>
     {
-        private List<EditorMember> _keyElements;
-        private List<EditorMember> _valueElements;
+        private EditorMember _tempKeyMember;
+        private List<EditorMember> _keyElements, _valueElements;
         private KVPList<TK, TV> _kvpList;
+        private Attribute[] _perKeyAttributes, _perValueAttributes;
+        private DictionaryOptions _options;
         private string _formatPairPattern;
-        private bool _perKeyDrawing, _perValueDrawing;
-        private bool _invalidKeyType, _isReadonly;
+        private bool _invalidKeyType;
+        private TextFilter _filter;
+        private string _originalDisplay;
+        private int _lastUpdatedCount = -1;
+        private bool _dirty;
+
+        private TK _tempKey;
+
+        public bool UpdateCount = true;
 
         protected override void Initialize()
         {
@@ -32,31 +44,55 @@ namespace Vexe.Editor.Drawers
             _keyElements   = new List<EditorMember>();
             _valueElements = new List<EditorMember>();
 
-            _perKeyDrawing   = attributes.AnyIs<PerKeyAttribute>();
-            _perValueDrawing = attributes.AnyIs<PerValueAttribute>();
+            var perKey = attributes.GetAttribute<PerKeyAttribute>();
+            if (perKey != null)
+            {
+                if (perKey.ExplicitAttributes == null)
+                    _perKeyAttributes = attributes.Where(x => !(x is PerKeyAttribute)).ToArray();
+                else _perKeyAttributes = attributes.Where(x => perKey.ExplicitAttributes.Contains(x.GetType().Name.Replace("Attribute", ""))).ToArray();
+            }
+
+            var perValue = attributes.GetAttribute<PerValueAttribute>();
+            if (perValue != null)
+            {
+                if (perValue.ExplicitAttributes == null)
+                    _perValueAttributes = attributes.Where(x => !(x is PerValueAttribute)).ToArray();
+                else _perValueAttributes = attributes.Where(x => perValue.ExplicitAttributes.Contains(x.GetType().Name.Replace("Attribute", ""))).ToArray();
+            }
 
             var displayAttr = attributes.GetAttribute<DisplayAttribute>();
             if (displayAttr != null)
-            { 
                 _formatPairPattern = displayAttr.FormatKVPair;
-                _isReadonly = (displayAttr.DictOpt & Dict.Readonly) != 0;
-            }
+
+			_options = new DictionaryOptions(displayAttr != null ? displayAttr.DictOpt : Dict.None);
 
             if (_formatPairPattern.IsNullOrEmpty())
                 _formatPairPattern = "[$key, $value]";
 
-            if (_isReadonly)
+            if (_options.Readonly)
                 displayText += " (Readonly)";
+
+            _originalDisplay = displayText;
+
+            if (_options.Filter)
+                _filter = new TextFilter(null, id, true, null);
+
+            if (memberValue == null)
+                memberValue = memberType.Instance<IDictionary<TK, TV>>();
+
+            member.CollectionCount = memberValue.Count;
+
+            if (_options.TempKey)
+            {
+                _tempKeyMember = EditorMember.WrapMember(GetType().GetField("_tempKey", Flags.InstanceAnyVisibility),
+                        this, unityTarget, RuntimeHelper.CombineHashCodes(id, "temp"), null);
+                _tempKeyMember.DisplayText = string.Empty;
+                _tempKey = GetNewKey(memberValue);
+            }
 
             #if DBG
             Log("Dictionary drawer Initialized (" + dictionaryName + ")");
             #endif
-        }
-
-        public class AddInfo
-        {
-            public TK key;
-            public TV value;
         }
 
         public override void OnGUI()
@@ -69,7 +105,15 @@ namespace Vexe.Editor.Drawers
             }
 
             if (memberValue == null)
-                memberValue = new TD();
+                memberValue = memberType.Instance<IDictionary<TK, TV>>();
+
+            member.CollectionCount = memberValue.Count;
+
+            if (UpdateCount && _lastUpdatedCount != memberValue.Count)
+            {
+                _lastUpdatedCount = memberValue.Count;
+                displayText = Regex.Replace(_originalDisplay, @"\$count", _lastUpdatedCount.ToString());
+            }
 
             if (_kvpList == null)
                 _kvpList = new KVPList<TK, TV>();
@@ -90,33 +134,66 @@ namespace Vexe.Editor.Drawers
             Profiler.BeginSample("DictionaryDrawer Header");
             #endif
 
-            using (gui.Horizontal())
+            // header
+            if (!_options.HideHeader)
             {
-                foldout = gui.Foldout(displayText, foldout, Layout.sExpandWidth());
-
-                if (!_isReadonly)
+                using (gui.Horizontal())
                 {
-                    gui.FlexibleSpace();
+                    if (_options.ForceExpand)
+                        gui.Label(displayText);
+                    else
+                        foldout = gui.Foldout(displayText, foldout, Layout.Auto);
 
-                    using (gui.State(_kvpList.Count > 0))
+                    if (_options.Filter)
+                        _filter.Field(gui, 70f);
+
+                    if (!_options.Readonly)
                     {
-                        if (gui.ClearButton("dictionary"))
-                            _kvpList.Clear();
+                        if (_options.TempKey)
+                        {
+                            string controlName = "TempKey";
+                            GUI.SetNextControlName(controlName);
+                            gui.Member(_tempKeyMember);
+                            var e = Event.current;
+                            if (e.isKey && e.keyCode == KeyCode.Return && GUI.GetNameOfFocusedControl() == controlName)
+                            {
+                                AddNewPair();
+                                EditorGUI.FocusTextInControl(controlName);
+                            }
+                        }
+                        else gui.FlexibleSpace();
 
-                        if (gui.RemoveButton("last dictionary pair"))
-                            _kvpList.RemoveFirst();
+                        using (gui.State(_kvpList.Count > 0))
+                        {
+                            if (gui.ClearButton("dictionary"))
+                            { 
+                                _kvpList.Clear();
+                                _dirty = true;
+                            }
+
+                            if (gui.RemoveButton("last added dictionary pair"))
+                            {
+                                if (_options.AddToLast)
+                                    _kvpList.RemoveLast();
+                                else
+                                    _kvpList.RemoveFirst();
+
+                                _dirty = true;
+                            }
+                        }
+
+                        if (gui.AddButton("pair", MiniButtonStyle.ModRight))
+                            AddNewPair();
                     }
-
-                    if (gui.AddButton("pair", MiniButtonStyle.ModRight))
-                        AddNewPair();
                 }
+                gui.Space(3f);
             }
 
             #if PROFILE
             Profiler.EndSample();
             #endif
 
-            if (!foldout)
+            if (!foldout && !_options.ForceExpand)
                 return;
 
             if (memberValue.Count == 0)
@@ -125,7 +202,7 @@ namespace Vexe.Editor.Drawers
                     gui.HelpBox("Dictionary is empty");
             }
             else
-            { 
+            {
                 #if PROFILE
                 Profiler.BeginSample("DictionaryDrawer Pairs");
                 #endif
@@ -140,28 +217,56 @@ namespace Vexe.Editor.Drawers
                         Profiler.BeginSample("DictionaryDrawer KVP assignments");
                         #endif
 
-                        var pairStr        = FormatPair(dKey, dValue);
-                        var entryKey       = RuntimeHelper.CombineHashCodes(id, i, "entry");
-                        foldouts[entryKey] = gui.Foldout(pairStr, foldouts[entryKey], Layout.sExpandWidth());
+                        int entryKey = RuntimeHelper.CombineHashCodes(id, i, "entry");
+
+                        string pairStr = null;
+
+                        if (_filter != null)
+                        {
+
+                            pairStr = FormatPair(dKey, dValue);
+                            #if PROFILE
+                            Profiler.BeginSample("DictionaryDrawer Filter");
+                            #endif
+                            bool match = _filter.IsMatch(pairStr);
+                            #if PROFILE
+                            Profiler.EndSample();
+                            #endif
+                            if (!match)
+                                continue;
+                        }
+
+                        if (!_options.HorizontalPairs)
+                        {
+                            if (pairStr == null)
+                                pairStr = FormatPair(dKey, dValue);
+                            foldouts[entryKey] = gui.Foldout(pairStr, foldouts[entryKey], Layout.Auto);
+                        }
 
                         #if PROFILE
                         Profiler.EndSample();
                         #endif
 
-                        if (!foldouts[entryKey])
+                        if (!foldouts[entryKey] && !_options.HorizontalPairs)
                             continue;
 
                         #if PROFILE
                         Profiler.BeginSample("DictionaryDrawer SinglePair");
                         #endif
-                        using (gui.Indent())
+                        if (_options.HorizontalPairs)
                         {
-                            var keyMember = GetElement(_keyElements, _kvpList.Keys, i, entryKey + 1);
-                            gui.Member(keyMember, !_perKeyDrawing);
-
-                            var valueMember = GetElement(_valueElements, _kvpList.Values, i, entryKey + 2);
-                            gui.Member(valueMember, !_perValueDrawing);
+                            using (gui.Horizontal())
+                            {
+                                DrawKey(i, entryKey + 1);
+                                DrawValue(i, entryKey + 2);
+                            }
                         }
+                        else
+                            using (gui.Indent())
+                            {
+                                DrawKey(i, entryKey + 1);
+                                DrawValue(i, entryKey + 2);
+                            }
                         #if PROFILE
                         Profiler.EndSample();
                         #endif
@@ -171,6 +276,9 @@ namespace Vexe.Editor.Drawers
                 Profiler.EndSample();
                 #endif
 
+                #if PROFILE
+                Profiler.BeginSample("DictionaryDrawer Write");
+                #endif
                 // Write
                 {
                     memberValue.Clear();
@@ -182,24 +290,52 @@ namespace Vexe.Editor.Drawers
                         {
                             memberValue.Add(key, value);
                         }
-                        catch (ArgumentException)
+                        catch (ArgumentException) //@Todo: figure out a more forgiveful way to handle this
                         {
                             Log("Key already exists: " + key);
                         }
                     }
                 }
+                #if PROFILE
+                Profiler.EndSample();
+                #endif
+
+                if (_dirty)
+                {
+                    var vfw = unityTarget as IVFWObject;
+                    if (vfw != null)
+                        vfw.MarkChanged();
+                }
             }
+        }
+
+        public void DrawKey(int index, int id)
+        {
+            var keyMember = GetElement(_keyElements, _kvpList.Keys, index, id + 1);
+            gui.Member(keyMember, @ignoreComposition: _perKeyAttributes == null);
+        }
+
+        public void DrawValue(int index, int id)
+        {
+            var valueMember = GetElement(_valueElements, _kvpList.Values, index, id + 2);
+            gui.Member(valueMember, @ignoreComposition: _perValueAttributes == null);
         }
 
         private EditorMember GetElement<T>(List<EditorMember> elements, List<T> source, int index, int id)
         {
             if (index >= elements.Count)
             {
+                Attribute[] attrs;
+                if (typeof(T) == typeof(TK))
+                    attrs = _perKeyAttributes;
+                else
+                    attrs = _perValueAttributes;
+
                 var element = EditorMember.WrapIListElement(
                     @elementName : string.Empty,
                     @elementType : typeof(T),
                     @elementId   : RuntimeHelper.CombineHashCodes(id, index),
-                    @attributes  : attributes
+                    @attributes  : attrs
                 );
                 element.InitializeIList(source, index, rawTarget, unityTarget);
                 elements.Add(element);
@@ -221,7 +357,14 @@ namespace Vexe.Editor.Drawers
 
         private string FormatPair(TK key, TV value)
         {
-            return formatPair(new KeyValuePair<TK, TV>(key, value));
+            #if PROFILE
+            Profiler.BeginSample("DictionaryDrawer: FormatPair");
+            #endif
+            string format = formatPair(new KeyValuePair<TK, TV>(key, value));
+            #if PROFILE
+            Profiler.EndSample();
+            #endif
+            return format;
         }
 
         private Func<KeyValuePair<TK, TV>, string> _formatPair;
@@ -239,6 +382,7 @@ namespace Vexe.Editor.Drawers
                     result = Regex.Replace(result, @"\$valuetype", value == null ? "null" : value.GetType().GetNiceName());
                     result = Regex.Replace(result, @"\$key", GetObjectString(key));
                     result = Regex.Replace(result, @"\$value", GetObjectString(value));
+                    //Debug.Log("New format: " + result);
                     return result;
                 }).Memoize());
             }
@@ -252,46 +396,104 @@ namespace Vexe.Editor.Drawers
             return (obj != null) ? (obj.name + " (" + obj.GetType().Name + ")") : from.ToString();
         }
 
-        private void AddNewPair()
+        TK GetNewKey(IDictionary<TK, TV> from)
         {
-            TK defKey;
+            TK key;
 
             if (typeof(TK) == typeof(string))
             {
-                var x = "New Key ";
-                var n = 0;
-                while(_kvpList.Keys.Contains((TK)(object)(x + n))) n++;
-                defKey = (TK)(object)(x + n);
+                string prefix;
+                int postfix;
+                if (from.Count > 0)
+                {
+                    prefix = from.Last().Key as string;
+                    string postfixStr = "";
+                    int i = prefix.Length - 1; 
+                    for (; i >= 0; i--)
+                    {
+                        char c = prefix[i];
+                        if (!char.IsDigit(c))
+                            break;
+                        postfixStr = postfixStr.Insert(0, c.ToString());
+                    }
+                    if (int.TryParse(postfixStr, out postfix))
+                        prefix = prefix.Remove(i + 1, postfixStr.Length);
+                }
+                else
+                { 
+                    prefix = "New Key ";
+                    postfix = 0;
+                }
+                while(from.Keys.Contains((TK)(object)(prefix + postfix))) postfix++;
+                key = (TK)(object)(prefix + postfix);
             }
             else if (typeof(TK) == typeof(int))
             {
                 var n = 0;
-                while (_kvpList.Keys.Contains((TK)(object)(n))) n++;
-                defKey = (TK)(object)n;
+                while (from.Keys.Contains((TK)(object)(n))) n++;
+                key = (TK)(object)n;
             }
             else if (typeof(TK).IsEnum)
             {
                 var values = Enum.GetValues(typeof(TK)) as TK[];
-                var result = values.Except(_kvpList.Keys).ToList();
+                var result = values.Except(from.Keys).ToList();
                 if (result.Count == 0)
-                    return;
-                defKey = (TK)result[0];
+                    return default(TK);
+                key = (TK)result[0];
             }
-            else defKey = default(TK);
+            else key = default(TK);
 
+            return key;
+        }
+
+        private void AddNewPair()
+        {
+            var key = _options.TempKey ? _tempKey : GetNewKey(_kvpList);
             try
             {
-                var defValue = default(TV); 
-                _kvpList.Insert(0, defKey, defValue);
-                memberValue.Add(defKey, defValue);
+                var value = default(TV);
+                if (_options.AddToLast)
+                    _kvpList.Add(key, value);
+                else
+                    _kvpList.Insert(0, key, value);
+
+                memberValue.Add(key, value);
 
                 var eKey = RuntimeHelper.CombineHashCodes(id, (_kvpList.Count - 1), "entry");
                 foldouts[eKey] = true;
+                foldout = true;
+
+                if (_options.TempKey)
+                    _tempKey = GetNewKey(_kvpList);
+
+                _dirty = true;
             }
             catch (ArgumentException)
             {
-                Log("Key already exists: " + defKey);
+                Log("Key already exists: " + key);
             }
         }
+
+		private struct DictionaryOptions
+		{
+            public readonly bool Readonly;
+            public readonly bool ForceExpand;
+            public readonly bool HideHeader;
+            public readonly bool HorizontalPairs;
+            public readonly bool Filter;
+            public readonly bool AddToLast;
+            public readonly bool TempKey;
+
+			public DictionaryOptions(Dict options)
+			{
+                Readonly        = options.HasFlag(Dict.Readonly);
+                ForceExpand     = options.HasFlag(Dict.ForceExpand);
+                HideHeader      = options.HasFlag(Dict.HideHeader);
+                HorizontalPairs = options.HasFlag(Dict.HorizontalPairs);
+                Filter          = options.HasFlag(Dict.Filter);
+                AddToLast       = options.HasFlag(Dict.AddToLast);
+                TempKey         = options.HasFlag(Dict.TempKey);
+			}
+		}
     }
 }

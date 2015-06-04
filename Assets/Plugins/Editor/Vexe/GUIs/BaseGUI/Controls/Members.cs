@@ -15,6 +15,8 @@ namespace Vexe.Editor.GUIs
 {
     public abstract partial class BaseGUI
     {
+        static readonly Attribute[] Empty = new Attribute[0];
+
         public bool Member(MemberInfo info, object rawTarget, UnityObject unityTarget, int id, bool ignoreComposition)
         {
             EditorMember member;
@@ -53,8 +55,14 @@ namespace Vexe.Editor.GUIs
             return Member(member, member.Attributes, ignoreComposition);
         }
 
+        public bool Member(EditorMember member, BaseDrawer memberDrawer)
+        {
+            return Member(member, member.Attributes, memberDrawer, false);
+        }
+
         public bool Member(EditorMember member, Attribute[] attributes, bool ignoreComposition)
         {
+            attributes = attributes ?? Empty;
             var memberDrawer = MemberDrawersHandler.GetMemberDrawer(member, attributes, ignoreComposition);
             memberDrawer.Initialize(member, attributes, this);
             return Member(member, attributes, memberDrawer, ignoreComposition);

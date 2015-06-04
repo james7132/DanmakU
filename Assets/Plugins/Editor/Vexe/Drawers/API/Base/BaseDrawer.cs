@@ -1,6 +1,7 @@
 ﻿//#define DBG
 
 using System;
+using System.Reflection;
 using UnityEngine;
 using Vexe.Editor.GUIs;
 using Vexe.Editor.Types;
@@ -27,7 +28,10 @@ namespace Vexe.Editor.Drawers
         protected static BetterPrefs prefs;
         protected static Foldouts foldouts;
 
-        private bool initialized;
+        private bool _hasInit;
+        private MethodCaller<object, string> _dynamicFormatter;
+        private static Attribute[] Empty = new Attribute[0];
+        private static object[] _formatArgs = new object[1];
 
         protected bool foldout
         {
@@ -54,11 +58,20 @@ namespace Vexe.Editor.Drawers
 
         public BaseDrawer Initialize(EditorMember member, Attribute[] attributes, BaseGUI gui)
         {
+            if (attributes == null)
+                attributes = Empty;
+
             this.member     = member;
             this.attributes = attributes;
             this.gui        = gui;
 
-            if (initialized)
+            if (_dynamicFormatter != null)
+            { 
+                _formatArgs[0] = member.Value;
+                displayText = _dynamicFormatter(rawTarget, _formatArgs);
+            }
+
+            if (_hasInit)
             {
 #if DBG
                 Log(this + " is Already initialized");
@@ -68,7 +81,31 @@ namespace Vexe.Editor.Drawers
 #if DBG
             Log("Initializing: " + this);
 #endif
-            initialized = true;
+            var displayAttr = attributes.GetAttribute<DisplayAttribute>();
+            if (displayAttr != null && MemberDrawersHandler.IsApplicableAttribute(memberType, displayAttr, attributes))
+            {
+                var hasCustomFormat = !string.IsNullOrEmpty(displayAttr.FormatMethod);
+                var formatMethod = hasCustomFormat ? displayAttr.FormatMethod : ("Format" + member.Name);
+                var method = targetType.GetMemberFromAll(formatMethod, Flags.StaticInstanceAnyVisibility) as MethodInfo;
+                if (method == null)
+                {
+                    if (hasCustomFormat)
+                        Debug.Log("Couldn't find format method: " + displayAttr.FormatMethod);
+                }
+                else
+                {
+                    if (method.ReturnType != typeof(string) && method.GetParameters().Length > 0)
+                        Debug.Log("Format Method should return a string and take no parameters: " + method);
+                    else
+                    { 
+                        _dynamicFormatter = method.DelegateForCall<object, string>();
+                        _formatArgs[0] = member.Value;
+                        displayText = _dynamicFormatter(rawTarget, _formatArgs);
+                    }
+                }
+            }
+
+            _hasInit = true;
             InternalInitialize();
             Initialize();
             return this;

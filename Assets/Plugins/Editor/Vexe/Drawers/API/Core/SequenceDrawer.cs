@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using Vexe.Editor.Types;
@@ -17,12 +18,18 @@ namespace Vexe.Editor.Drawers
 	public abstract class SequenceDrawer<TSequence, TElement> : ObjectDrawer<TSequence> where TSequence : IList<TElement>
 	{
 		private readonly Type _elementType;
-		private int _advancedKey;
 		private List<EditorMember> _elements;
 		private SequenceOptions _options;
-		private bool _perItemDrawing;
 		private bool _shouldDrawAddingArea;
 		private int _newSize;
+		private int _advancedKey;
+        private int _lastUpdatedCount = -1;
+        private Attribute[] _perItemAttributes;
+        private TextFilter _filter;
+        private string _originalDisplay;
+        private bool _dirty;
+
+        public bool UpdateCount = true;
 
 		private bool isAdvancedChecked
 		{
@@ -41,14 +48,31 @@ namespace Vexe.Editor.Drawers
 		protected override void Initialize()
 		{
 			var displayAttr = attributes.GetAttribute<DisplayAttribute>();
-			_options        = new SequenceOptions(displayAttr != null ? displayAttr.SeqOpt : Seq.None);
+			_options = new SequenceOptions(displayAttr != null ? displayAttr.SeqOpt : Seq.None);
 
             if (_options.Readonly)
                 displayText += " (Readonly)";
 
-			_advancedKey          = RuntimeHelper.CombineHashCodes(id, "advanced");
-			_perItemDrawing       = attributes.AnyIs<PerItemAttribute>();
+			_advancedKey = RuntimeHelper.CombineHashCodes(id, "advanced");
 			_shouldDrawAddingArea = !_options.Readonly && _elementType.IsA<UnityObject>();
+
+            var perItem = attributes.GetAttribute<PerItemAttribute>();
+            if (perItem != null)
+            {
+                if (perItem.ExplicitAttributes == null)
+                    _perItemAttributes = attributes.Where(x => !(x is PerItemAttribute)).ToArray();
+                else _perItemAttributes = attributes.Where(x => perItem.ExplicitAttributes.Contains(x.GetType().Name.Replace("Attribute", ""))).ToArray();
+            }
+
+            if (_options.Filter)
+                _filter = new TextFilter(null, id, true, null);
+
+            _originalDisplay = displayText;
+
+			if (memberValue == null)
+				memberValue = GetNew();
+
+            member.CollectionCount = memberValue.Count;
 		}
 
 		public override void OnGUI()
@@ -56,14 +80,25 @@ namespace Vexe.Editor.Drawers
 			if (memberValue == null)
 				memberValue = GetNew();
 
+            member.CollectionCount = memberValue.Count;
+
+            if (UpdateCount && _lastUpdatedCount != memberValue.Count)
+            {
+                _lastUpdatedCount = memberValue.Count;
+                displayText = Regex.Replace(_originalDisplay, @"\$count", _lastUpdatedCount.ToString());
+            }
+
 			bool showAdvanced = _options.Advanced && !_options.Readonly;
 
 			// header
 			using (gui.Horizontal())
 			{
-				foldout = gui.Foldout(displayText, foldout, Layout.sExpandWidth());
+				foldout = gui.Foldout(displayText, foldout, Layout.Auto);
 
-				gui.FlexibleSpace();
+                if (_options.Filter)
+                    _filter.Field(gui, 70f);
+
+                gui.FlexibleSpace();
 
 				if (showAdvanced)
 					isAdvancedChecked = gui.CheckButton(isAdvancedChecked, "advanced mode");
@@ -73,16 +108,26 @@ namespace Vexe.Editor.Drawers
 					using (gui.State(memberValue.Count > 0))
 					{
 						if (gui.ClearButton("elements"))
-							Clear();
-						if (gui.RemoveButton("last element"))
-							RemoveLast();
-					}
-					if (gui.AddButton("element", MiniButtonStyle.ModRight))
-						AddValue();
+                        { 
+                            Clear();
+                            _dirty = true;
+                        }
+                        if (gui.RemoveButton("last element"))
+                        { 
+                            RemoveLast();
+                            _dirty = true;
+                        }
+                    }
+                    if (gui.AddButton("element", MiniButtonStyle.ModRight))
+                    { 
+                        AddValue();
+                        _dirty = true;
+                    }
 				}
 			}
 
-			if (!foldout) return;
+			if (!foldout)
+                return;
 
 			if (memberValue.IsEmpty())
 			{
@@ -90,6 +135,8 @@ namespace Vexe.Editor.Drawers
 				    gui.HelpBox("Sequence is empty");
 				return;
 			}
+
+            _dirty = false;
 
 			// body
 			using (gui.Vertical(_options.GuiBox ? GUI.skin.box : GUIStyle.none))
@@ -142,12 +189,17 @@ namespace Vexe.Editor.Drawers
 						var i = iLoop;
 						var elementValue = memberValue[i];
 
+                        if (_filter != null && elementValue != null)
+                        {
+                            string elemStr = elementValue.ToString();
+                            if (!_filter.IsMatch(elemStr))
+                                continue;
+                        }
+
 						using (gui.Horizontal())
 						{
 							if (_options.LineNumbers)
-							{
 								gui.NumericLabel(i);
-							}
 
 							var previous = elementValue;
 
@@ -156,7 +208,7 @@ namespace Vexe.Editor.Drawers
 								using (gui.Vertical())
 								{
 									var element = GetElement(i);
-									gui.Member(element, attributes, !_perItemDrawing);
+									gui.Member(element, @ignoreComposition: _perItemAttributes == null);
 								}
 							}
 
@@ -165,6 +217,7 @@ namespace Vexe.Editor.Drawers
 								if (_options.Readonly)
 								{
 									memberValue[i] = previous;
+                                    _dirty = true;
 								}
 								else if (_options.UniqueItems)
 								{
@@ -177,6 +230,7 @@ namespace Vexe.Editor.Drawers
 											if (occurances > 1)
 											{
 												memberValue[i] = previous;
+                                                _dirty = true;
 												break;
 											}
 										}
@@ -194,16 +248,23 @@ namespace Vexe.Editor.Drawers
 								if (showAdvanced)
 								{
 									if (gui.MoveDownButton())
+                                    { 
 										MoveElementDown(i);
+                                        _dirty = true;
+                                    }
 									if (gui.MoveUpButton())
+                                    { 
 										MoveElementUp(i);
+                                        _dirty = true;
+                                    }
 								}
 							}
 
 							if (!_options.Readonly && _options.PerItemRemove && gui.RemoveButton("element", MiniButtonStyle.ModRight))
-							{
+                            { 
 								RemoveAt(i);
-							}
+                                _dirty = true;
+                            }
 						}
 					}
 #if PROFILE
@@ -261,6 +322,13 @@ namespace Vexe.Editor.Drawers
 				}
 				gui.Space(3f);
 			}
+
+            if (_dirty)
+            {
+                var vfw = unityTarget as IVFWObject;
+                if (vfw != null)
+                    vfw.MarkChanged();
+            }
 		}
 
 		private EditorMember GetElement(int index)
@@ -268,7 +336,7 @@ namespace Vexe.Editor.Drawers
 			if (index >= _elements.Count)
 			{
 				var element = EditorMember.WrapIListElement(
-					@attributes  : attributes,
+					@attributes  : _perItemAttributes,
 					@elementName : string.Empty,
                     @elementType : typeof(TElement),
 					@elementId   : RuntimeHelper.CombineHashCodes(id, index)
@@ -310,15 +378,10 @@ namespace Vexe.Editor.Drawers
 			RemoveAt(memberValue.Count - 1);
 		}
 
-		private void SetAt(int index, TElement value)
-		{
-			if (!memberValue[index].GenericEquals(value))
-				memberValue[index] = value;
-		}
-
 		private void AddValue(TElement value)
 		{
 			Insert(memberValue.Count, value);
+            _dirty = true;
 		}
 
 		private void AddValue()
@@ -329,24 +392,23 @@ namespace Vexe.Editor.Drawers
 
 		private struct SequenceOptions
 		{
-			public bool Readonly;
-			public bool Advanced;
-			public bool LineNumbers;
-			public bool PerItemRemove;
-			public bool GuiBox;
-			public bool UniqueItems;
+			public readonly bool Readonly;
+			public readonly bool Advanced;
+			public readonly bool LineNumbers;
+			public readonly bool PerItemRemove;
+			public readonly bool GuiBox;
+			public readonly bool UniqueItems;
+            public readonly bool Filter;
 
 			public SequenceOptions(Seq options)
 			{
-				Func<Seq, bool> contains = value =>
-					(options & value) != 0;
-
-				Readonly      = contains(Seq.Readonly);
-				Advanced      = contains(Seq.Advanced);
-				LineNumbers   = contains(Seq.LineNumbers);
-				PerItemRemove = contains(Seq.PerItemRemove);
-				GuiBox        = contains(Seq.GuiBox);
-				UniqueItems   = contains(Seq.UniqueItems);
+				Readonly      = options.HasFlag(Seq.Readonly);
+				Advanced      = options.HasFlag(Seq.Advanced);
+				LineNumbers   = options.HasFlag(Seq.LineNumbers);
+				PerItemRemove = options.HasFlag(Seq.PerItemRemove);
+				GuiBox        = options.HasFlag(Seq.GuiBox);
+				UniqueItems   = options.HasFlag(Seq.UniqueItems);
+                Filter        = options.HasFlag(Seq.Filter);
 			}
 		}
 	}
