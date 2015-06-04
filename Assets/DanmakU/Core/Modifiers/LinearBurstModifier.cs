@@ -55,6 +55,8 @@ namespace DanmakU.Modifiers {
 		#region implemented abstract members of FireModifier
 
 		public override void OnFire (Vector2 position, DynamicFloat rotation) {
+			DynamicFloat tempSpeed = Speed;
+			DynamicFloat tempASpeed = AngularSpeed;
 			DynamicFloat deltaV = DeltaSpeed;
 			DynamicFloat deltaAV = DeltaAngularSpeed;
 			float depth = Depth.Value;
@@ -63,7 +65,8 @@ namespace DanmakU.Modifiers {
 				AngularSpeed += deltaAV;
 				FireSingle(position, rotation);
 			}
-
+			Speed = tempSpeed;
+			AngularSpeed = tempASpeed;
 		}
 
 		#endregion

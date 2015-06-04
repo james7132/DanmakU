@@ -6,7 +6,7 @@ using UnityEngine;
 using DanmakU;
 using DanmakU.Modifiers;
 
-public class CircularBurstTest : MonoBehaviour {
+public class ModifierTest : MonoBehaviour {
 	
 	[SerializeField]
 	private FrameCounter delay;
@@ -15,11 +15,17 @@ public class CircularBurstTest : MonoBehaviour {
 	private DanmakuPrefab prefab;
 	
 	[SerializeField]
-	private CircularBurstModifier burst;
+	private CircularBurstModifier circleBurst;
+
+	[SerializeField]
+	private LinearBurstModifier lineBurst;
 	
 	void Update() {
 		if(delay.Tick()) {
-			Danmaku.ConstructFire(prefab).WithModifier(burst).Fire();
+			Danmaku.ConstructFire(prefab)
+				   .WithModifier(circleBurst)
+				   .WithModifier(lineBurst)
+				   .Fire();
 		}
 	}
 	
