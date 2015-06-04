@@ -11,8 +11,13 @@ namespace Vexe.Editor.GUIs
 
 		public string Text(string label, string value)
 		{
-			return Text(label, value, (Layout)null);
+			return Text(label, value, Layout.Auto);
 		}
+
+		public string Text(string value, Layout option)
+        {
+            return Text(GUIContent.none, value, option);
+        }
 
 		public string Text(string label, string value, Layout option)
 		{
@@ -21,7 +26,7 @@ namespace Vexe.Editor.GUIs
 
 		public string Text(string label, string value, string tooltip)
 		{
-			return Text(label, value, tooltip, null);
+			return Text(label, value, tooltip, Layout.Auto);
 		}
 
 		public string Text(string label, string value, string tooltip, Layout option)
@@ -31,7 +36,7 @@ namespace Vexe.Editor.GUIs
 
 		public string Text(GUIContent content, string value, Layout option)
 		{
-			return Text(content, value, Styles.TextField, option);
+			return Text(content, value, GUIStyles.TextField, option);
 		}
 
 		public abstract string Text(GUIContent content, string value, GUIStyle style, Layout option);
@@ -52,7 +57,7 @@ namespace Vexe.Editor.GUIs
 
 		public string ScrollableTextArea(string value, ref Vector2 scrollPos, Layout option)
 		{
-			return ScrollableTextArea(value, ref scrollPos, Styles.TextArea, option);
+			return ScrollableTextArea(value, ref scrollPos, GUIStyles.TextArea, option);
 		}
 
 		public abstract string ScrollableTextArea(string value, ref Vector2 scrollPos, GUIStyle style, Layout option);

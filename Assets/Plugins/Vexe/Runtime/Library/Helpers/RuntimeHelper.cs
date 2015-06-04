@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -13,15 +14,62 @@ namespace Vexe.Runtime.Helpers
 {
     public static class RuntimeHelper
     {
+        public static string GetCallStack()
+        {
+            return GetCallStack(false);
+        }
+
+        public static string GetCallStack(bool verbose)
+        {
+            if (verbose)
+            {
+                return string.Join(" -> \r\n", new StackTrace()
+                             .GetFrames()
+                             .Select(x =>
+                             {
+                                 var method = x.GetMethod();
+                                 return string.Format("{0}.{1}",
+                                     method.DeclaringType.GetNiceName(),
+                                     x.GetMethod().GetNiceName());
+                             })
+                             .ToArray());
+            }
+
+            return string.Join(" -> ", new StackTrace()
+                         .GetFrames()
+                         .Select(x => x.GetMethod().Name)
+                         .ToArray());
+        }
+
+        public static void Swap<T>(ref T value0, ref T value1)
+        {
+            T tmp = value0;
+            value0 = value1;
+            value1 = tmp;
+        }
+
+        public static string GetCurrentSceneName()
+        {
+            string sceneName;
+
+#if UNITY_EDITOR
+            sceneName = Application.isPlaying ? Application.loadedLevelName : System.IO.Path.GetFileNameWithoutExtension(UnityEditor.EditorApplication.currentScene);
+            if ( string.IsNullOrEmpty(sceneName) )
+            {
+                sceneName = "Unnamed";
+            }
+#else
+            sceneName = Application.loadedLevelName;
+#endif
+
+            return sceneName;
+        }
+
         public static int GetTargetID(object target)
         {
-            var bb = target as BetterBehaviour;
-            if (bb != null)
-                return bb.Id;
-
-            var bso = target as BetterScriptableObject;
-            if (bso != null)
-                return bso.Id;
+            var obj = target as IVFWObject;
+            if (obj != null)
+                return obj.GetPersistentId();
 
             return target.GetHashCode();
         }
@@ -29,7 +77,7 @@ namespace Vexe.Runtime.Helpers
         public static bool IsModified(UnityObject target, SerializerBackend serializer, SerializationData data)
         {
             var members = serializer.Logic.CachedGetSerializableMembers(target.GetType());
-            for (int i = 0; i < members.Count; i++)
+            for (int i = 0; i < members.Length; i++)
             {
                 var member    = members[i];
                 var memberKey = SerializerBackend.GetMemberKey(member);
@@ -37,11 +85,11 @@ namespace Vexe.Runtime.Helpers
                 var value = member.Value;
 
                 string prevState;
-                if (!data.serializedStrings.TryGetValue(memberKey, out prevState))// && !value.IsObjectNull())
+                if (!data.serializedStrings.TryGetValue(memberKey, out prevState))
                     return true;
 
-                if (value.IsObjectNull())
-                    return prevState != "null";
+                if (value.IsObjectNull() && prevState == "null")
+                    return true;
 
                 string curState = serializer.Serialize(member.Type, value, data.serializedObjects);
 
@@ -54,36 +102,36 @@ namespace Vexe.Runtime.Helpers
 
         public static void ResetTarget(object target)
         {
-            Func<Type, bool> IsTypeSerializedByUnity = type =>
-            {
-                // Might be forgetting something here...
-                return (type.IsPrimitive || type.IsEnum || type == typeof(string)
-                    || type.IsA<UnityObject>()
-                    || VFWSerializationLogic.UnityStructs.ContainsValue(type)
-                    || type == typeof(AnimationCurve)
-                    || type == typeof(Gradient));
-            };
+            //Func<Type, bool> IsTypeSerializedByUnity = type =>
+            //{
+            //    // Might be forgetting something here...
+            //    return (type.IsPrimitive || type.IsEnum || type == typeof(string)
+            //        || type.IsA<UnityObject>()
+            //        || VFWSerializationLogic.UnityStructs.ContainsValue(type)
+            //        || type == typeof(AnimationCurve)
+            //        || type == typeof(Gradient));
+            //};
 
-            Func<FieldInfo, bool> IsFieldSerializedByUnity = field =>
-            {
-                var type = field.FieldType;
-                if (!IsTypeSerializedByUnity(type))
-                    return false;
+            //Func<FieldInfo, bool> IsFieldSerializedByUnity = field =>
+            //{
+            //    var type = field.FieldType;
+            //    if (!IsTypeSerializedByUnity(type))
+            //        return false;
 
-                if (!field.IsPublic && !field.IsDefined<SerializeField>())
-                    return false;
+            //    if (!field.IsPublic && !field.IsDefined<SerializeField>())
+            //        return false;
 
-                if (type.IsArray)
-                    return type.GetArrayRank() == 1 && IsTypeSerializedByUnity(type.GetElementType());
+            //    if (type.IsArray)
+            //        return type.GetArrayRank() == 1 && IsTypeSerializedByUnity(type.GetElementType());
 
-                if (type.IsGenericType)
-                    return type.GetGenericTypeDefinition() == typeof(List<>) && IsTypeSerializedByUnity(type.GetGenericArguments()[0]);
+            //    if (type.IsGenericType)
+            //        return type.GetGenericTypeDefinition() == typeof(List<>) && IsTypeSerializedByUnity(type.GetGenericArguments()[0]);
 
-                if (type.IsAbstract)
-                    return false;
+            //    if (type.IsAbstract)
+            //        return false;
 
-                return type.IsDefined<SerializableAttribute>();
-            };
+            //    return type.IsDefined<SerializableAttribute>();
+            //};
 
             var members = RuntimeMember.CachedWrapMembers(target.GetType());
             for (int i = 0; i < members.Count; i++)
@@ -96,9 +144,9 @@ namespace Vexe.Runtime.Helpers
                     // if a field is not serializable by Unity, then Unity won't be able to set it to whatever we initialized it with,
                     // so we will reset it to its default value and unfortunately ignore the field initialization because it's very
                     // hard to obtain that value
-                    var field = member.Info as FieldInfo;
-                    if (field != null && !IsFieldSerializedByUnity(field) || member.Info is PropertyInfo)
-                        member.Value = member.Type.GetDefaultValue();
+                    //var field = member.Info as FieldInfo;
+                    //if (field != null && !IsFieldSerializedByUnity(field) || member.Info is PropertyInfo)
+                    //    member.Value = member.Type.GetDefaultValue();
                 }
 				else
 				{ 

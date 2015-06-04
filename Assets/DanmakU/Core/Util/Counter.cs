@@ -2,6 +2,8 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using UnityEngine;
+
 namespace DanmakU {
 
 	[System.Serializable]
@@ -42,7 +44,10 @@ namespace DanmakU {
 		
 		//Made it a public variable to remove the computation time needed to access/edit it externally
 		public int MaxCount;
+
+		[SerializeField]
 		private int count;
+
 		public int Count {
 			get {
 				return count;

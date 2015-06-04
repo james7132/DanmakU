@@ -313,10 +313,6 @@ namespace DanmakU {
 		}
 
 		public void Fire () {
-			DanmakuGameController.Instance.QueueFire (this);
-		}
-
-		internal void Execute () {
 			DanmakuModifier modifier = DanmakuModifier.Construct(modifiers);
 			Vector2 actualPosition = position;
 			DynamicFloat actualRotation = rotation;

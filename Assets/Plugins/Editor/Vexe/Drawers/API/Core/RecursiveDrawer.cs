@@ -7,11 +7,14 @@ using UnityEngine;
 using Vexe.Editor.Extensions;
 using Vexe.Editor.GUIs;
 using Vexe.Editor.Helpers;
+using Vexe.Editor.Internal;
 using Vexe.Editor.Types;
 using Vexe.Editor.Visibility;
 using Vexe.Editor.Windows;
 using Vexe.Runtime.Extensions;
 using Vexe.Runtime.Helpers;
+using Vexe.Runtime.Serialization;
+using Vexe.Runtime.Types;
 using UnityObject = UnityEngine.Object;
 
 namespace Vexe.Editor.Drawers
@@ -68,7 +71,7 @@ namespace Vexe.Editor.Drawers
                     @getValues: getValues,
                     @getCurrent: () => { var x = memberValue; return x == null ? null : x.GetType(); },
                     @setTarget: newType => { if (newType == null) memberValue = memberType.GetDefaultValueEmptyIfString(); else create(newType); },
-                    @getValueName: type => type.Name,
+                    @getValueName: type => type.GetNiceName(),
                     @title: title
                 );
 
@@ -77,7 +80,7 @@ namespace Vexe.Editor.Drawers
                     @getValues: getValues,
                     @getCurrent: member.As<UnityObject>,
                     @setTarget: member.Set,
-                    @getValueName: obj => obj.name + " (" + obj.GetType().Name + ")",
+                    @getValueName: obj => obj.name + " (" + obj.GetType().GetNiceName() + ")",
                     @title: title
                 );
 
@@ -99,10 +102,14 @@ namespace Vexe.Editor.Drawers
             }
             else _tabs = new Tab[1];
 
-            _tabs[idx] = _newTypeTab(() => ReflectionHelper.GetAllUserTypesOf(memberType)
-                                .Disinclude(memberType.IsAbstract ? memberType : null)
+            var systemTypes = ReflectionHelper.GetAllUserTypesOf(memberType)
                                 .Where(t => !t.IsA<UnityObject>() && !t.IsAbstract)
-                                .ToArray(), TryCreateInstance, "System Type");
+                                .ToArray();
+
+            if (memberType.IsGenericType && !systemTypes.Contains(memberType))
+                ArrayUtility.Add(ref systemTypes, memberType);
+
+            _tabs[idx] = _newTypeTab(() => systemTypes, TryCreateInstance, "System Type");
         }
 
         public override void OnGUI()
@@ -130,7 +137,7 @@ namespace Vexe.Editor.Drawers
                 var labelRect = gui.LastRect;
 
                 gui.Cursor(labelRect, MouseCursor.Link);
-                if (!isEmpty && labelRect.ContainsMouse() && e.IsLMBDown())
+                if (!isEmpty && e.IsMouseContained(labelRect) && e.IsLMBDown())
                     foldout = !foldout;
 
                 gui.Space(2.3f);
@@ -138,10 +145,10 @@ namespace Vexe.Editor.Drawers
                 if (unityObj != null)
                 {
                     var icon = AssetPreview.GetMiniThumbnail(unityObj);
-                    gui.Label(new GUIContent(field, icon), Styles.ObjectField);
+                    gui.Label(new GUIContent(field, icon), GUIStyles.ObjectField);
                 }
                 else
-                    gui.Label(field, Styles.ObjectField);
+                    gui.Label(field, GUIStyles.ObjectField);
 
                 var totalRect = gui.LastRect;
                 var fieldRect = totalRect;
@@ -187,7 +194,7 @@ namespace Vexe.Editor.Drawers
 
                 // Selection/thumb button
                 { 
-                    if (thumbRect.ContainsMouse() && e.IsMouseDown())
+                    if (e.IsMouseContained(thumbRect) && e.IsMouseDown())
                     {
                         if (e.IsLMB())
                         {
@@ -201,7 +208,7 @@ namespace Vexe.Editor.Drawers
                             }
                             catch(Exception ex)
                             {
-                                Debug.Log("Error creating instance new instance of type `{0}`: {1}".FormatWith(memberType.GetNiceName(), ex.Message));
+                                Debug.Log("Error creating new instance of type `{0}`: {1}".FormatWith(memberType.GetNiceName(), ex.Message));
                             }
                         }
                     }
@@ -225,7 +232,7 @@ namespace Vexe.Editor.Drawers
             }
             else
             {
-                var drawer = MemberDrawersHandler.GetCachedObjectDrawer.Invoke(_polymorphicType);
+                var drawer = MemberDrawersHandler.CachedGetObjectDrawer(_polymorphicType);
                 var drawerType = drawer.GetType();
                 if (drawerType == typeof(RecursiveDrawer) || drawerType == typeof(UnityObjectDrawer))
                 {
@@ -252,11 +259,16 @@ namespace Vexe.Editor.Drawers
 
         public static bool DrawRecursive(ref object target, BaseGUI gui, int id, UnityObject unityTarget, params string[] memberNames)
         {
+            RuntimeMember[] serialized = null;
+            var vfwObj = target as IVFWObject;
+            if (vfwObj != null)
+                serialized = vfwObj.GetSerializedMembers();
+
             List<MemberInfo> members;
             var targetType = target.GetType();
             if (memberNames.IsNullOrEmpty())
             {
-                members = VFWVisibilityLogic.CachedGetVisibleMembers(targetType);
+                members = VisibilityLogic.CachedGetVisibleMembers(targetType, serialized);
             }
             else
             {
@@ -270,7 +282,7 @@ namespace Vexe.Editor.Drawers
                         LogFormat("RecursiveDrawer: Couldn't find member {0} in {1}", name, targetType.Name);
                         continue;
                     }
-                    if (VFWVisibilityLogic.IsVisibleMember(member))
+                    if (VisibilityLogic.IsVisibleMember(member, serialized))
                         members.Add(member);
                 }
             }
@@ -287,9 +299,14 @@ namespace Vexe.Editor.Drawers
                 for (int i = 0; i < members.Count; i++)
                 {
                     MemberInfo member = members[i];
+
+                    if (!ConditionalVisibility.IsVisible(member, target))
+                        continue;
+
                     EditorMember em;
                     changed |= gui.Member(member, target, unityTarget, id, false, out em);
-                    target = em.RawTarget;
+                    if (em != null)
+                        target = em.RawTarget;
                 }
             }
 
@@ -298,7 +315,7 @@ namespace Vexe.Editor.Drawers
 
         private void TryCreateInstanceInGO(Type newType)
         {
-            TryCreateInstance(() => new GameObject("(new) " + newType.Name).AddComponent(newType));
+            TryCreateInstance(() => new GameObject("(new) " + newType.GetNiceName()).AddComponent(newType));
         }
 
         private void TryCreateInstance(Type newType)

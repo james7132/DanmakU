@@ -21,8 +21,9 @@ namespace Vexe.Editor.Drawers
 
     public class InlineDrawer : CompositeDrawer<UnityObject, InlineAttribute>
     {
-        private bool hideTarget;
         private List<bool> expandValues;
+
+        public bool GuiBox;
 
         // Add the types you want to support here...
         private Dictionary<Type, Action<UnityObject, BaseGUI>> customEditors;
@@ -116,21 +117,6 @@ namespace Vexe.Editor.Drawers
             };
         }
 
-        public bool GuiBox { get; set; }
-
-        public bool HideTarget
-        {
-            get { return hideTarget; }
-            set
-            {
-                if (hideTarget != value)
-                {
-                    SetVisibility(memberValue, !value);
-                    hideTarget = value;
-                }
-            }
-        }
-
         static void SetVisibility(UnityObject target, bool visible)
         {
             if (visible)
@@ -147,11 +133,17 @@ namespace Vexe.Editor.Drawers
             }
         }
 
+        static bool IsHidden(UnityObject target)
+        {
+            if (target is GameObject)
+                return target.hideFlags.HasFlag(HideFlags.HideInHierarchy);
+            return target.hideFlags.HasFlag(HideFlags.HideInInspector);
+        }
+
         protected override void Initialize()
         {
             expandValues = new List<bool>();
             GuiBox       = attribute.GuiBox;
-            HideTarget   = attribute.HideTarget;
 #if DBG
             Log("Initialized InlineDrawer " + niceName);
 #endif
@@ -161,6 +153,20 @@ namespace Vexe.Editor.Drawers
         {
             Foldout();
             gui.Space(-10f);
+        }
+
+        public override void OnRightGUI()
+        {
+            if (!attribute.HideButton)
+                return;
+
+            var value = memberValue;
+            if (value == null)
+                return;
+
+            var hidden = IsHidden(value);
+            if (gui.Button(hidden ? "Show" : "Hide", GUIStyles.MiniRight, Layout.sWidth(40f)))
+                SetVisibility(value, hidden);
         }
 
         public override void OnLowerGUI()
