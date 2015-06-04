@@ -68,16 +68,17 @@ namespace DanmakU.Modifiers {
 
 		public override void OnFire (Vector2 position, DynamicFloat rotation) {
 
-			int burstCount = count.Value;
+			Debug.Log(rotation.Value);
+			Debug.Log(rotation.Type);
 
-			burstCount = Mathf.Abs (burstCount);
+			int burstCount = Mathf.Abs(count.Value);
 
 			if (burstCount == 1) {
 				FireSingle (position, rotation);
 			} else {
 				float burstRange = range.Value;
 				float start = rotation - burstRange * 0.5f;
-				float delta = burstRange / (burstCount - 1);
+				float delta = burstRange / burstCount;
 				
 				float deltaV = deltaSpeed.Value;
 				float deltaAV = deltaAngularSpeed.Value;

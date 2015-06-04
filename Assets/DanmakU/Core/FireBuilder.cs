@@ -20,7 +20,7 @@ namespace DanmakU {
 		public DanmakuField Field;
 		public Vector2 Position = Vector2.zero;
 		public DynamicFloat Rotation = 0f;
-		public DynamicFloat Speed = 0f;
+		public DynamicFloat Speed = 5f;
 		public DynamicFloat AngularSpeed = 0f;
 		public DanmakuController Controller;
 		public DynamicInt Damage = 0;
@@ -443,7 +443,6 @@ namespace DanmakU {
 		#endregion
 
 		public void Fire () {
-			DanmakuModifier modifier = DanmakuModifier.Construct(modifiers);
 			Vector2 actualPosition = Position;
 			DynamicFloat actualRotation = Rotation;
 
@@ -460,14 +459,22 @@ namespace DanmakU {
 					actualRotation += DanmakuUtil.AngleBetween2D(actualPosition, targetObject.position);
 			}
 			
-			Vector2 tempPos = data.Position;
-			DynamicFloat tempRotation = data.Rotation;
-			data.Position = actualPosition;
-			data.Rotation = actualRotation;
+			Vector2 tempPos = Position;
+			DynamicFloat tempRotation = Rotation;
+			Position = actualPosition;
+			Rotation = actualRotation;
 
 			if(modifiers.Count <= 0) {
-				data.Fire(); 
-			} else {
+				Debug.Log("hello");
+				data.Fire();
+			} else if(modifiers.Count == 1) {
+				DanmakuModifier singleModifier = modifiers[0];
+				if(singleModifier == null) {
+					data.Fire(); 
+				} else {
+					singleModifier.Fire(data);
+				}
+		    } else {
 				DanmakuModifier[] oldSubModifiers = new DanmakuModifier[modifiers.Count];
 				DanmakuModifier previous = null, current, initial = null;
 				for(int i = 0; i < oldSubModifiers.Length; i++) {
@@ -492,8 +499,6 @@ namespace DanmakU {
 					if(current != null)
 						current.SubModifier = oldSubModifiers[i];
 				}
-				modifier.Initialize (data);
-				modifier.OnFire(actualPosition, actualRotation);
 			}
 			
 			data.Position = tempPos;
