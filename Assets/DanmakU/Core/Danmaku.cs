@@ -61,9 +61,6 @@ namespace DanmakU {
 
 		internal List<DanmakuGroup> groups;
 
-		private DanmakuField field;
-		private Bounds2D fieldBounds;
-
 		//Preallocated variables to avoid allocation in Update
 		private Vector2 originalPosition;
 		private RaycastHit2D[] raycastHits;
@@ -240,25 +237,11 @@ namespace DanmakU {
 
 		#endregion
 
-		#region IDanmakuObject implementation
-
 		/// <summary>
 		/// Gets the DanmakuField this instance was fired from.
 		/// </summary>
 		/// <value>The field the projectile was fired from.</value>
-		public DanmakuField Field {
-			get {
-				return field;
-			}
-			set {
-				field = value;
-				if(field != null) {
-					fieldBounds = field.bounds;
-				}
-			}
-		}
-
-		#endregion
+		public DanmakuField Field;
 
 		public void StartTask(IEnumerator task) {
 			if (tasks == null)
@@ -513,7 +496,7 @@ namespace DanmakU {
 				}
 			}
 
-			if (!is_active || (BoundsCheck && !fieldBounds.Contains (position))) {
+			if (!is_active || (BoundsCheck && Field != null && !Field.bounds.Contains (position))) {
 				DeactivateImmediate();
 				return;
 			}
@@ -599,12 +582,12 @@ namespace DanmakU {
 		/// </summary>
 		public void Activate () {
 			to_deactivate = false;
-			BoundsCheck = true;
-			CollisionCheck = true;
 			runtime.Add(this);
 			if (!is_active && OnActivate != null)
 				OnActivate (this);
 			is_active = true;
+			frames = 0;
+			time = 0f;
 		}
 		
 		/// <summary>
@@ -613,30 +596,6 @@ namespace DanmakU {
 		/// </summary>
 		public void Deactivate()  {
 			to_deactivate = true;
-		}
-
-		/// <summary>
-		/// Adds this projectile to the given DanmakuGroup.
-		/// </summary>
-		/// <param name="group">the group this Danmaku is to be added to</param>
-		/// <seealso cref="DanmakuGroup.Add"/>
-		public void AddToGroup(DanmakuGroup group) {
-			if (!group.Contains (this)) {
-				groups.Add (group);
-				group.Add (this);
-			}
-		}
-
-		/// <summary>
-		/// Removes this projectile from the given DanmakuGroup
-		/// </summary>
-		/// <param name="group">the group this Danmaku is to be removed from</param>
-		/// <seealso cref="DanmakuGroup.Remove"/>
-		public void RemoveFromGroup(DanmakuGroup group) {
-			if (group.Contains (this)) {
-				groups.Remove (group);
-				group.Remove (this);
-			}
 		}
 
 		/// <summary>
@@ -653,10 +612,12 @@ namespace DanmakU {
 			ControllerUpdate = null;
 			OnActivate = null;
 			OnDeactivate = null;
+			Field = null;
 			controllerCheck = false;
 			Damage = 0;
-			frames = 0;
 			runtime.Remove(this);
+			BoundsCheck = true;
+			CollisionCheck = true;
 			is_active = false;
 			danmakuPool.Return (this);
 		}

@@ -9,48 +9,63 @@ namespace DanmakU {
 	[System.Serializable]
 	public struct DynamicInt {
 			
-		public enum ValueMode { Constant, Random }
+		public enum Type { Constant, Random }
 
-		public ValueMode Mode;
+		[SerializeField]
+		private Type type;
 		
 		[SerializeField]
-		private float centerValue;
-		
-		[SerializeField]
-		private float range;
-		
-		public int Value {
+		private int min;
+		public int Min {
 			get {
-				if(Mode == ValueMode.Constant)
-					return (int)centerValue;
-				else {
-					return (int)Random.Range(centerValue - range, centerValue + range);
+				return min;
+			}
+			set {
+				min = value;
+				if(min > max) {
+					int temp = max;
+					max = min;
+					min = temp;
 				}
 			}
 		}
 		
-		private DynamicInt(float value) {
-			centerValue = value;
-			range = 0f;
-			Mode = ValueMode.Constant;
+		[SerializeField]
+		private int max;
+		public int Max {
+			get {
+				return max;
+			}
+			set {
+				max = value;
+				if(min > max) {
+					int temp = max;
+					max = min;
+					min = temp;
+				}
+			}
 		}
 		
-		private DynamicInt(float min, float max) {
-			centerValue = (min + max) / 2;
-			range = Mathf.Abs(centerValue - min);
-			Mode = ValueMode.Random;
+		public int Value {
+			get {
+				if(type == Type.Constant || max == min)
+					return min;
+				else {
+					return Random.Range(min, max);
+				}
+			}
 		}
 		
 		public DynamicInt(int value) {
-			centerValue = value;
-			range = 0f;
-			Mode = ValueMode.Constant;
+			min = value;
+			max = value;
+			type = Type.Constant;
 		}
 		
 		public DynamicInt(int min, int max) {
-			centerValue = (min + max) / 2;
-			range = Mathf.Abs(centerValue - min);
-			Mode = ValueMode.Random;
+			Min = min;
+			Max = max;
+			type = (min == max) ? Type.Constant : Type.Random;
 		}
 		
 		public static implicit operator int(DynamicInt df) {
@@ -60,23 +75,27 @@ namespace DanmakU {
 		public static implicit operator DynamicInt(int f) {
 			return new DynamicInt (f);
 		}
-		
-		public static DynamicInt operator +(DynamicInt df1, DynamicInt df2) {
-			if (df1.Mode == ValueMode.Constant && df2.Mode == ValueMode.Constant)
-				return new DynamicInt (df1.centerValue + df2.centerValue);
-			else 
-				return new DynamicInt (df1.centerValue + df2.centerValue, df1.range + df2.range);
+
+		public static implicit operator DynamicFloat(DynamicInt di) {
+			return new DynamicFloat(di.min, di.max);
 		}
 		
-		public static DynamicInt operator -(DynamicInt df1, DynamicInt df2) {
-			if (df1.Mode == ValueMode.Constant && df2.Mode == ValueMode.Constant)
-				return new DynamicInt (df1.centerValue - df2.centerValue);
-			else 
-				return new DynamicInt (df1.centerValue - df2.centerValue, df1.range + df2.range);
+		public static DynamicInt operator +(DynamicInt di1, DynamicInt di2) {
+			return new DynamicInt (di1.min + di2.min, di1.max + di2.max);
 		}
 		
-		public static bool operator ==(DynamicInt df1, DynamicInt df2) {
-			return (System.Math.Abs (df1.centerValue - df2.centerValue) < float.Epsilon) && (System.Math.Abs (df1.range - df2.range) < float.Epsilon);
+		public static DynamicInt operator -(DynamicInt di1, DynamicInt di2) {
+			return new DynamicInt (di1.min - di2.min, di1.max - di2.max);
+		}
+
+		public static DynamicInt operator *(DynamicInt di1, DynamicInt di2) {
+			return new DynamicInt (di1.min * di2.min, di1.max * di2.max);
+		}
+		
+		public static bool operator ==(DynamicInt di1, DynamicInt di2) {
+			if(di1.type == Type.Constant && di2.type == Type.Constant)
+				return di1.min == di2.min;
+			return (di1.min == di2.min) && (di1.max == di2.max);
 		}
 		
 		public static bool operator !=(DynamicInt df1, DynamicInt df2) {
@@ -92,7 +111,7 @@ namespace DanmakU {
 		}
 		
 		public override int GetHashCode () {
-			return (int)(centerValue * range);
+			return 193 * min + 389 * max;
 		}
 	}
 
@@ -105,31 +124,57 @@ namespace DanmakU {
 		private Type type;
 		
 		[SerializeField]
-		private float centerValue;
+		private float min;
+		public float Min {
+			get {
+				return min;
+			}
+			set {
+				min = value;
+				if(min > max) {
+					float temp = max;
+					max = min;
+					min = temp;
+				}
+			}
+		}
 		
 		[SerializeField]
-		private float range;
+		private float max;
+		public float Max {
+			get {
+				return max;
+			}
+			set {
+				max = value;
+				if(min > max) {
+					float temp = max;
+					max = min;
+					min = temp;
+				}
+			}
+		}
 
 		public float Value {
 			get {
-				if(type == Type.Constant)
-					return centerValue;
+				if(type == Type.Constant || max == min)
+					return min;
 				else {
-					return Random.Range(centerValue - range, centerValue + range);
+					return Random.Range(min, max);
 				}
 			}
 		}
 		
 		public DynamicFloat(float value) {
-			centerValue = value;
-			range = 0f;
+			min = value;
+			max = value;
 			type = Type.Constant;
 		}
 		
 		public DynamicFloat(float min, float max) {
-			centerValue = (min + max) / 2;
-			range = Mathf.Abs(centerValue - min);
-			type = Type.Random;
+			Min = min;
+			Max = max;
+			type = (min == max) ? Type.Constant : Type.Random;
 		}
 
 		public static implicit operator float(DynamicFloat df) {
@@ -140,22 +185,24 @@ namespace DanmakU {
 			return new DynamicFloat (f);
 		}
 
+		public static explicit operator DynamicInt (DynamicFloat df) {
+			return new DynamicInt((int)df.min, (int)df.max);
+		}
+
 		public static DynamicFloat operator +(DynamicFloat df1, DynamicFloat df2) {
-			if (df1.type == Type.Constant && df2.type == Type.Constant)
-				return new DynamicFloat (df1.centerValue + df2.centerValue);
-			else 
-				return new DynamicFloat (df1.centerValue + df2.centerValue, df1.range + df2.range);
+			return new DynamicFloat(df1.min + df2.min, df1.max + df2.max);
 		}
 
 		public static DynamicFloat operator -(DynamicFloat df1, DynamicFloat df2) {
-			if (df1.type == Type.Constant && df2.type == Type.Constant)
-				return new DynamicFloat (df1.centerValue - df2.centerValue);
-			else 
-				return new DynamicFloat (df1.centerValue - df2.centerValue, df1.range - df2.range);
+			return new DynamicFloat(df1.min - df2.min, df1.max - df2.max);
+		}
+
+		public static DynamicFloat operator *(DynamicFloat df1, DynamicFloat df2) {
+			return new DynamicFloat (df1.min * df2.min, df1.min * df2.max);
 		}
 
 		public static bool operator ==(DynamicFloat df1, DynamicFloat df2) {
-			return (df1.centerValue == df2.centerValue) && (df1.range == df2.range);
+			return (df1.min == df2.min) && (df1.max == df2.max);
 		}
 
 		public static bool operator !=(DynamicFloat df1, DynamicFloat df2) {
@@ -171,7 +218,7 @@ namespace DanmakU {
 		}
 
 		public override int GetHashCode () {
-			return (int)(centerValue * range);
+			return 193 * min.GetHashCode() + 389 * min.GetHashCode();
 		}
 	}
 }
