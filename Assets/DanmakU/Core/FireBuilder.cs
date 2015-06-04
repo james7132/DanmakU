@@ -442,6 +442,18 @@ namespace DanmakU {
 
 		#endregion
 
+		#region Field Functions
+
+		public FireBuilder InField(DanmakuField field) {
+			if(field == null)
+				throw new ArgumentNullException("Field cannot be null!");
+
+			Field = field;
+			return this;
+		}
+
+		#endregion
+
 		public void Fire () {
 			Vector2 actualPosition = Position;
 			DynamicFloat actualRotation = Rotation;
@@ -465,15 +477,13 @@ namespace DanmakU {
 			Rotation = actualRotation;
 
 			if(modifiers.Count <= 0) {
-				Debug.Log("hello");
 				data.Fire();
 			} else if(modifiers.Count == 1) {
 				DanmakuModifier singleModifier = modifiers[0];
-				if(singleModifier == null) {
+				if(singleModifier == null)
 					data.Fire(); 
-				} else {
+				else
 					singleModifier.Fire(data);
-				}
 		    } else {
 				DanmakuModifier[] oldSubModifiers = new DanmakuModifier[modifiers.Count];
 				DanmakuModifier previous = null, current, initial = null;
