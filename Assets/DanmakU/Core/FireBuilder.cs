@@ -2,6 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using DanmakU.Modifiers;
@@ -32,11 +33,31 @@ namespace DanmakU {
 			return danmaku;
 		}
 
+		public void Copy(FireData other) {
+			Prefab = other.Prefab;
+			Field = other.Field;
+			Position = other.Position;
+			Rotation = other.Rotation;
+			Speed = other.Speed;
+			AngularSpeed = other.AngularSpeed;
+			Controller = other.Controller;
+			Damage = other.Damage;
+			Group = other.Group;
+		}
+
+		public FireData Clone() {
+			FireData copy = new FireData();
+			copy.Copy(this);
+			return copy;
+		}
+
 	}
 
-	public class FireBuilder {
+	public sealed class FireBuilder {
 
 		private FireData data;
+
+		#region Public Properties
 
 		public DanmakuPrefab Prefab {
 			get {
@@ -56,23 +77,21 @@ namespace DanmakU {
 			}
 		}
 
-		private Vector2 position;
 		public Vector2 Position {
 			get {
-				return position;
+				return data.Position;
 			}
 			set {
-				position = value;
+				data.Position = value;
 			}
 		}
 
-		private DynamicFloat rotation;
 		public DynamicFloat Rotation {
 			get {
-				return rotation;
+				return data.Rotation;
 			}
 			set {
-				rotation = value;
+				data.Rotation = value;
 			}
 		}
 
@@ -103,6 +122,26 @@ namespace DanmakU {
 			}
 		}
 
+		public DynamicInt Damage {
+			get {
+				return data.Damage;
+			}
+			set {
+				data.Damage = value;
+			}
+		}
+
+		public DanmakuGroup Group {
+			get {
+				return data.Group;
+			}
+			set {
+				data.Group = value;
+			}
+		}
+
+		#endregion
+
 		private List<DanmakuModifier> modifiers;
 
 		private Transform positionSource;
@@ -111,8 +150,33 @@ namespace DanmakU {
 		private bool targeted;
 		private Vector2? targetPosition;
 		private Transform targetObject;
+
+		public FireBuilder Copy (FireBuilder other) {
+			data.Copy(other.data);
+			modifiers.Clear();
+			modifiers.AddRange(other.modifiers);
+			positionSource = other.positionSource;
+			rotationSource = other.rotationSource;
+			targeted = other.targeted;
+			targetPosition = other.targetPosition;
+			targetObject = other.targetObject;
+			return this;
+		}
+
+		public FireBuilder Clone() {
+			return new FireBuilder(this);
+		}
+
+		internal FireBuilder(FireBuilder other) {
+			data = new FireData();
+			modifiers = new List<DanmakuModifier>();
+			Copy (other);
+		}
 		
-		protected internal FireBuilder(DanmakuPrefab prefab, DanmakuField field = null) {
+		internal FireBuilder(DanmakuPrefab prefab, DanmakuField field = null) {
+			if(prefab == null)
+				throw new ArgumentNullException();
+
 			data = new FireData() { 
 				Prefab = prefab,
 				Field = field
@@ -122,48 +186,77 @@ namespace DanmakU {
 
 		#region Position Functions
 
+		/// <summary>
+		/// Sets the firing origin position to a fixed point in space.
+		/// To move the origin of firing after calling this requries additional calls to this method.
+		/// This will also 'un-link' the instance from any GameObjects.
+		/// </summary>
+		/// <param name="position">the position in which </param>
 		public FireBuilder From (Vector2 position) {
-			this.position = position;
+			Position = position;
 			positionSource = null;
 			return this;
 		}
 
+		/// <summary>
+		/// Links the firing origin position to automatically track a GameObject.
+		/// After calling this, all calls to <c>Fire()</c> will automatically be fired from the absolute world
+		/// position of the specified. (i.e. as the GameObject moves over time. so does position the instance fires from).
+		/// Only one call is necessary to link the object.
+		/// 
+		/// Note that if the GameObject is destroyed, the bullets fired with the instance will originate from 
+		/// the previously specified absolute world position, which by default is (0,0).
+		/// 
+		/// If the given Transform is already null, this method does nothing.
+		/// </summary>
+		/// <param name="transform">the specified origin Transform to use.</param>
 		public FireBuilder From (Transform transform) {
-			if(transform == null)
-				throw new System.ArgumentNullException();
-
-			positionSource  = transform;
+			if(transform != null)
+				positionSource  = transform;
 			return this;
 		}
 
+		/// <summary>
+		/// Links the firing origin position to automatically track a GameObject.
+		/// After calling this, all calls to <c>Fire()</c> will automatically be fired from the absolute world
+		/// position of the specified. (i.e. as the GameObject moves over time. so does position the instance fires from).
+		/// Only one call is necessary to link the object.
+		/// 
+		/// Note that if the GameObject is destroyed, the bullets fired with the instance will originate from 
+		/// the previously specified absolute world position, which by default is (0,0).
+		/// 
+		/// If the given GameObject is already null, this method does nothing.
+		/// </summary>
+		/// <param name="gameObject">the specified origin GameObject to use.</param>
 		public FireBuilder From (GameObject gameObject) {
-			if(gameObject == null)
-				throw new System.ArgumentNullException();
-
-			positionSource = gameObject.transform;
+			if(gameObject != null)
+				positionSource = gameObject.transform;
 			return this;
 		}
 
+		/// <summary>
+		/// Links the firing origin position to automatically track a GameObject.
+		/// After calling this, all calls to <c>Fire()</c> will automatically be fired from the absolute world
+		/// position of the specified. (i.e. as the GameObject moves over time. so does position the instance fires from).
+		/// Only one call is necessary to link the object.
+		/// 
+		/// Note that if the GameObject is destroyed, the bullets fired with the instance will originate from 
+		/// the previously specified absolute world position, which by default is (0,0).
+		/// 
+		/// If the given Transform is already null, this method does nothing.
+		/// </summary>
+		/// <param name="component">the specified origin Component to use.</param>
 		public FireBuilder From (Component component) {
 			if(component == null)
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 
 			positionSource = component.transform;
 			return this;
 		}
 
-		public FireBuilder From (Vector2 position, 
-		                       DanmakuField field, 
-		                       DanmakuField.CoordinateSystem coordSys = DanmakuField.CoordinateSystem.View) {
-			if(field == null)
-				throw new System.ArgumentNullException();
-
-			this.Field = field;
-			this.position = field.WorldPoint(position, coordSys);
-			return this;
-		}
-
 		#endregion
+
+		#region Rotation Functions
 
 		public FireBuilder Facing (Vector2 direction) {
 			targeted = false;
@@ -180,142 +273,179 @@ namespace DanmakU {
 		}
 
 		public FireBuilder Towards (Transform transform) {
-			if (transform == null)
-				throw new System.ArgumentNullException ();
-
-			targeted = true;
-			targetPosition = null;
-			targetObject = transform;
+			if (transform == null) {
+				targeted = true;
+				targetPosition = null;
+				targetObject = transform;
+			}
 			return this;
 		}
 
 		public FireBuilder Towards (Component component) {
-			if (component == null)
-				throw new System.ArgumentNullException ();
-			
-			targeted = true;
-			targetPosition = null;
-			targetObject = component.transform;
+			if (component == null) {
+				targeted = true;
+				targetPosition = null;
+				targetObject = component.transform;
+			}
 			return this;
 		}
 
 		public FireBuilder Towards (GameObject gameObject) {
-			if (gameObject == null)
-				throw new System.ArgumentNullException ();
-			
-			targeted = true;
-			targetPosition = null;
-			targetObject = gameObject.transform;
+			if (gameObject == null) {
+				targeted = true;
+				targetPosition = null;
+				targetObject = gameObject.transform;
+			}
 			return this;
 		}
 
 		public FireBuilder WithRotation (DynamicFloat rotation) {
-			this.rotation = rotation;
+			Rotation = rotation;
+			return this;
+		}
+
+		public FireBuilder WithRotation (float min, float max) {
+			Rotation = new DynamicFloat(min, max);
 			return this;
 		}
 		
 		public FireBuilder WithRotation (Transform transform) {
-			if(transform == null)
-				throw new System.ArgumentNullException();
-			
-			rotationSource = transform;
+			if(transform != null)
+				rotationSource = transform;
 			return this;
 		}
 		
 		public FireBuilder WithRotation (GameObject gameObject) {
-			if(gameObject == null)
-				throw new System.ArgumentNullException();
-			
-			rotationSource = gameObject.transform;
+			if(gameObject != null)
+				rotationSource = gameObject.transform;
 			return this;
 		}
 		
 		public FireBuilder WithRotation (Component component) {
-			if(component == null)
-				throw new System.ArgumentNullException();
-			
-			rotationSource = component.transform;
+			if(component != null)
+				rotationSource = component.transform;
 			return this;
 		}
 
-		public FireBuilder Transform (Transform transform) {
-			return From (transform).WithRotation (transform);
-		}
+		#endregion
 
-		public FireBuilder Transform (GameObject gameObject) {
-			if(gameObject == null)
-				throw new System.ArgumentNullException();
+		#region Speed Functions
 
-			return Transform (gameObject.transform);
-		}
-
-		public FireBuilder Transform (Component component) {
-			if(component == null)
-				throw new System.ArgumentNullException();
-
-			return Transform (component.transform);
-		}
-
-		public FireBuilder WithModifier(DanmakuModifier modifier) {
-			modifiers.Add(modifier);
+		public FireBuilder WithSpeed (DynamicFloat speed) {
+			Speed = speed;
 			return this;
 		}
+
+		public FireBuilder WithSpeed (float min, float max) {
+			Speed = new DynamicFloat (min, max);
+			return this;
+		}
+
+		#endregion
+
+		#region Angular Speed Functions
+
+		public FireBuilder WithAngularSpeed (DynamicFloat angularSpeed) {
+			AngularSpeed = angularSpeed;
+			return this;
+		}
+
+		public FireBuilder WithAngularSpeed (float min, float max) {
+			AngularSpeed = new DynamicFloat(min, max);
+			return this;
+		}
+
+		#endregion
+
+		#region Modifier Functions
+
+		public FireBuilder WithModifier (DanmakuModifier modifier) {
+			if(modifier != null)
+				modifiers.Add(modifier);
+			return this;
+		}
+
+		public FireBuilder WithModifiers (IEnumerable<DanmakuModifier> modifiers) {
+			if(modifiers != null)
+				this.modifiers.AddRange(modifiers);
+			return this;
+		}
+
+		#endregion
+
+		#region Controller Functions
 
 		public FireBuilder WithController (IDanmakuController controller) {
-			this.Controller += controller.Update;
+			if(controller != null)
+				Controller += controller.Update;
 			return this;
 		}
 
 		public FireBuilder WithController (IEnumerable<IDanmakuController> controllers) {
-			var list = controllers as IList<IDanmakuController>;
-			if(list != null) {
-				int count = list.Count;
-				for(int i = 0; i < count; i++) {
-					IDanmakuController current = list[i];
-					if(current != null)
-						this.Controller += current.Update;
-				}
-			} else {
-				foreach(var controller in controllers) {
-					if(controller != null)
-						this.Controller += controller.Update;
-				}
-			}
+			if(controllers != null)
+				WithController(controllers.Compress());
 			return this;
 		}
 
 		public FireBuilder WithController (DanmakuController controller) {
-			this.Controller += controller;
+			Controller += controller;
 			return this;
 		}
 
-		public FireBuilder WithController (IEnumerable<DanmakuController> controllers) {
-			var list = controllers as IList<DanmakuController>;
-			if(list != null) {
-				int count = list.Count;
-				for(int i = 0; i < count; i++) {
-					DanmakuController current = list[i];
-					if(current != null)
-						this.Controller += current;
-				}
-			} else {
-				foreach(var controller in controllers) {
-					if(controller != null)
-						this.Controller += controller;
-				}
-			}
+		/// <summary>
+		/// Adds a set of DanmakuControllers to be added to all bullets fired by this instance.
+		/// Does nothing if the given collection of controllers is null.
+		/// </summary>
+		/// <returns>The FireBuilder that this method was called on. </returns>
+		/// <param name="controllers">the set of DanmakuControllers to add.</param>
+		public FireBuilder WithControllers (IEnumerable<DanmakuController> controllers) {
+			if(controllers != null)
+				WithController (controllers.Compress());
 			return this;
 		}
 
+		/// <summary>
+		/// Clears all of the non-prefab defined Danmaku Controllers from each of the fires created by this instance.
+		/// </summary>
 		public FireBuilder WithoutControllers () {
 			data.Controller = null;
 			return this;
 		}
 
+		#endregion
+
+		#region Damage Functions
+
+		public FireBuilder WithDamage (DynamicInt damage) {
+			Damage = damage;
+			return this;
+		}
+
+		public FireBuilder WithDamage (int min, int max) {
+			Damage = new DynamicInt(min, max);
+			return this;
+		}
+
+		#endregion
+
+		#region Group Functions
+
+		public FireBuilder InGroup (DanmakuGroup group) {
+			Group = group;
+			return this;
+		}
+
+		public FireBuilder WithoutGroup () {
+			Group = null;
+			return this;
+		}
+
+		#endregion
+
 		public void Fire () {
 			DanmakuModifier modifier = DanmakuModifier.Construct(modifiers);
-			Vector2 actualPosition = position;
-			DynamicFloat actualRotation = rotation;
+			Vector2 actualPosition = Position;
+			DynamicFloat actualRotation = Rotation;
 
 			if (positionSource != null)
 				actualPosition = positionSource.position;
@@ -325,13 +455,49 @@ namespace DanmakU {
 
 			if (targeted) {
 				if(targetPosition != null)
-					actualRotation += DanmakuUtil.AngleBetween2D(position, (Vector2)targetPosition);
+					actualRotation += DanmakuUtil.AngleBetween2D(actualPosition, (Vector2)targetPosition);
 				else if (targetObject != null)
-					actualRotation += DanmakuUtil.AngleBetween2D(position, targetObject.position);
+					actualRotation += DanmakuUtil.AngleBetween2D(actualPosition, targetObject.position);
 			}
+			
+			Vector2 tempPos = data.Position;
+			DynamicFloat tempRotation = data.Rotation;
+			data.Position = actualPosition;
+			data.Rotation = actualRotation;
 
-			modifier.Initialize (data);
-			modifier.OnFire(actualPosition, actualRotation);
+			if(modifiers.Count <= 0) {
+				data.Fire(); 
+			} else {
+				DanmakuModifier[] oldSubModifiers = new DanmakuModifier[modifiers.Count];
+				DanmakuModifier previous = null, current, initial = null;
+				for(int i = 0; i < oldSubModifiers.Length; i++) {
+					current = modifiers[i];
+					if(current != null) {
+						oldSubModifiers[i] = current.SubModifier;
+						if(previous != null)
+							previous.SubModifier = current;
+						else
+							initial = current;
+						previous = current;
+					}
+				}
+				
+				if(initial != null)
+					initial.Fire(data);
+				else
+					data.Fire();
+				
+				for(int i = 0; i < oldSubModifiers.Length; i++) {
+					current = modifiers[i];
+					if(current != null)
+						current.SubModifier = oldSubModifiers[i];
+				}
+				modifier.Initialize (data);
+				modifier.OnFire(actualPosition, actualRotation);
+			}
+			
+			data.Position = tempPos;
+			data.Rotation = tempRotation;
 		}
 	}
 }
