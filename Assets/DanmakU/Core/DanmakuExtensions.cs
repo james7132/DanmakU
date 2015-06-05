@@ -851,7 +851,7 @@ namespace DanmakU {
 
 		#region Fire Functions 
 
-		public static T Fire<T>(this T danmakus, FireData data, bool useRotation  = true) where T : IEnumerable<Danmaku> {
+		public static T Fire<T>(this T danmakus, FireData data, bool useRotation  = true) where T : class, IEnumerable<Danmaku>{
 			if (danmakus == null)
 				return null;
 			if (data == null)
@@ -884,7 +884,7 @@ namespace DanmakU {
 			return danmakus;
 		}
 
-		public static T Fire<T>(this T danmakus, FireBuilder builder, bool useRotation  = true) where T : IEnumerable<Danmaku> {
+		public static T Fire<T>(this T danmakus, FireBuilder builder, bool useRotation  = true) where T : class, IEnumerable<Danmaku> {
 			if (danmakus == null)
 				return null;
 			if (builder == null)
