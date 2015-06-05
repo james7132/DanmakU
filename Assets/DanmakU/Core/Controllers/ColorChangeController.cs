@@ -10,6 +10,8 @@ namespace DanmakU.Controllers {
 	[System.Serializable]
 	public class ColorChangeController : IDanmakuController {
 		
+		//TODO Document
+
 		[SerializeField, Show]
 		private Gradient colorGradient;
 		public Gradient ColorGradient {
@@ -45,6 +47,12 @@ namespace DanmakU.Controllers {
 
 		#region IDanmakuController implementation
 
+		/// <summary>
+		/// Updates the Danmaku controlled by the controller instance.
+		/// </summary>
+		/// <param name="danmaku">the bullet to update.</param>
+		/// <param name="dt">the change in time since the last update</param>
+		/// <param name="projectile">Projectile.</param>
 		public void Update (Danmaku projectile, float dt) {
 			Gradient gradient = ColorGradient;
 			if (gradient == null)

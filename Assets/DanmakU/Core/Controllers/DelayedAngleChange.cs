@@ -9,7 +9,8 @@ namespace DanmakU.Controllers {
 
 	[System.Serializable]
 	public class DelayedAngleChange : IDanmakuController {
-
+		
+		//TODO Document
 		//TODO Find a better solution to than this
 		
 		[SerializeField, Show]
@@ -58,6 +59,11 @@ namespace DanmakU.Controllers {
 
 		#region implemented abstract members of IDanmakuController
 
+		/// <summary>
+		/// Updates the Danmaku controlled by the controller instance.
+		/// </summary>
+		/// <param name="danmaku">the bullet to update.</param>
+		/// <param name="dt">the change in time since the last update</param>
 		public void Update (Danmaku danmaku, float dt) {
 			float time = danmaku.Time;
 			if(time >= Delay && time - dt <= Delay) {

@@ -5,10 +5,15 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
+/// <summary>
+/// A set of pre-created Danmaku Colliders that can be used
+/// </summary>
 namespace DanmakU.Collider {
 	
 	[AddComponentMenu("DanmakU/Colliders/Prefab Change Collider")]
 	public class PrefabChangeCollider : DanmakuCollider {
+		
+		//TODO Document
 
 		[SerializeField, Show]
 		private DanmakuPrefab prefab;
@@ -39,7 +44,8 @@ namespace DanmakU.Collider {
 			if (affected.Contains (danmaku))
 				return;
 
-			danmaku.MatchPrefab (prefab);
+			if(prefab != null)
+				danmaku.MatchPrefab (prefab);
 
 			affected.Add (danmaku);
 

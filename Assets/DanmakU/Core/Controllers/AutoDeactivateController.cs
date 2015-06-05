@@ -12,6 +12,8 @@ namespace DanmakU.Controllers {
 	/// </summary>
 	[System.Serializable]
 	public class AutoDeactivateController : IDanmakuController {
+		
+		//TODO Document
 
 		[SerializeField, Show]
 		private int frames;
@@ -42,11 +44,18 @@ namespace DanmakU.Controllers {
 		}
 
 		#region IDanmakuController implementation
+
+		/// <summary>
+		/// Updates the Danmaku controlled by the controller instance.
+		/// </summary>
+		/// <param name="danmaku">the bullet to update.</param>
+		/// <param name="dt">the change in time since the last update</param>
 		public void Update (Danmaku danmaku, float dt) {
 			if (danmaku.frames > frames) {
 				danmaku.Deactivate();
 			}
 		}
+
 		#endregion
 		
 	}

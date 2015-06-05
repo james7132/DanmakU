@@ -20,7 +20,7 @@ namespace DanmakU.Collider {
 		private float acceleration;
 
 		/// <summary>
-		/// Gets or sets the acceleration.
+		/// Gets or sets the acceleration applied to affected bullets. Measured in units per second per second.
 		/// </summary>
 		/// <value>The acceleration applied to bullets, in absolute world units/second^2.</value>
 		public float Acceleration {
