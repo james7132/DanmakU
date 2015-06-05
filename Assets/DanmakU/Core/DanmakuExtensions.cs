@@ -417,7 +417,7 @@ namespace DanmakU {
 						danmaku.AngularSpeed = angularSpeed.Value;
 				}
 			}
-			return null;
+			return danmakus;
 		}
 		
 		public static T AngularSpeed<T> (this T danmakus, IList<DynamicFloat> angularSpeeds) where T : class, IEnumerable<Danmaku> {
@@ -809,25 +809,6 @@ namespace DanmakU {
 			return danmakus;
 		}
 		
-		public static T BoundsCheck<T> (this T danmakus, bool boundsCheck) where T : class, IEnumerable<Danmaku> {
-			if (danmakus == null)
-				return null;
-			var arrayTest = danmakus as Danmaku[];
-			if (arrayTest != null) {
-				for(int i = 0; i < arrayTest.Length; i++) {
-					Danmaku danmaku = arrayTest[i];
-					if(danmaku != null)
-						danmaku.BoundsCheck = boundsCheck;
-				}
-			} else {
-				foreach(var danmaku in danmakus) {
-					if(danmaku != null)
-						danmaku.BoundsCheck = boundsCheck;
-				}
-			}
-			return danmakus;
-		}
-		
 		public static T CollisionCheck<T> (this T danmakus, bool collisionCheck) where T : class, IEnumerable<Danmaku> {
 			if (danmakus == null)
 				return null;
@@ -868,6 +849,76 @@ namespace DanmakU {
 		
 		#endregion
 
+		#region Fire Functions 
+
+		public static T Fire<T>(this T danmakus, FireData data, bool useRotation  = true) where T : IEnumerable<Danmaku> {
+			if (danmakus == null)
+				return null;
+			if (data == null)
+				throw new System.ArgumentNullException("Fire Data cannot be null!");
+			var arrayTest = danmakus as Danmaku[];
+			Vector2 tempPos = data.Position;
+			DynamicFloat tempRot = data.Rotation;
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null) {
+						data.Position = danmaku.Position;
+						if(useRotation)
+							data.Rotation = danmaku.Rotation;
+						data.Fire();
+					}
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null) {
+						data.Position = danmaku.Position;
+						if(useRotation)
+							data.Rotation = danmaku.Rotation;
+						data.Fire();
+					}
+				}
+			}
+			data.Position = tempPos;
+			data.Rotation = tempRot;
+			return danmakus;
+		}
+
+		public static T Fire<T>(this T danmakus, FireBuilder builder, bool useRotation  = true) where T : IEnumerable<Danmaku> {
+			if (danmakus == null)
+				return null;
+			if (builder == null)
+				throw new System.ArgumentNullException("Fire Builder cannot be null!");
+			var arrayTest = danmakus as Danmaku[];
+			Vector2 tempPos = builder.Position;
+			DynamicFloat tempRot = builder.Rotation;
+			if (arrayTest != null) {
+				for(int i = 0; i < arrayTest.Length; i++) {
+					Danmaku danmaku = arrayTest[i];
+					if(danmaku != null) {
+						builder.Position = danmaku.Position;
+						if(useRotation)
+							builder.Rotation = danmaku.Rotation;
+						builder.Fire();
+					}
+				}
+			} else {
+				foreach(var danmaku in danmakus) {
+					if(danmaku != null) {
+						builder.Position = danmaku.Position;
+						if(useRotation)
+							builder.Rotation = danmaku.Rotation;
+						builder.Fire();
+					}
+				}
+			}
+			builder.Position = tempPos;
+			builder.Rotation = tempRot;
+			return danmakus;
+		}
+
+
+		#endregion
 	}
 }
 

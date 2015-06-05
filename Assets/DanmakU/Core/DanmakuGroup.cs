@@ -325,8 +325,7 @@ namespace DanmakU {
 	}
 	
 	public class DanmakuList : DanmakuGroup<List<Danmaku>>, IList<Danmaku> {
-		
-		//TODO Add additional list functions here
+
 		//TODO Document
 		
 		private List<Danmaku> danmakuList;
@@ -456,7 +455,6 @@ namespace DanmakU {
 
 	public class DanmakuSet : DanmakuGroup<HashSet<Danmaku>> {
 
-		//TODO Add additional HashSet functions here
 		//TODO Document
 
 		private HashSet<Danmaku> danmakuSet;

@@ -3,6 +3,9 @@
 // See the LISCENSE file for copying permission.
 using UnityEngine;
 
+/// <summary>
+/// A set of pre-created Danmaku Colliders that can be used
+/// </summary>
 namespace DanmakU.Collider {
 
 	/// <summary>

@@ -4,13 +4,22 @@
 
 using UnityEngine;
 
+/// <summary>
+/// A set of pre-created Danmaku Colliders that can be used
+/// </summary>
 namespace DanmakU.Collider {
 
+	/// <summary>
+	/// A DanmakuCollider implementation that removes all DanmakuControllers from the bullets that come into contact with it.
+	/// </summary>
 	[AddComponentMenu("DanmakU/Colliders/Clear Controllers Collider")]
 	public class ClearControllersCollider : DanmakuCollider {
 		
 		private DanmakuGroup affected;
 
+		/// <summary>
+		/// Called on Component instantiation
+		/// </summary>
 		public override void Awake () {
 			base.Awake ();
 			affected = new DanmakuSet ();

@@ -188,6 +188,8 @@ namespace DanmakU {
 		}
 		#endregion
 
+		//private MaterialPropertyBlock mpb;
+
 		internal DanmakuController ExtraControllers {
 			get {
 				return controllerAggregate;
@@ -203,6 +205,10 @@ namespace DanmakU {
 		}
 
 		void Update() {
+			//runtimeRenderer.GetPropertyBlock(mpb);
+			//mpb.SetTexture("_MainTexture", cachedSprite.texture);
+			//runtimeRenderer.SetPropertyBlock(mpb);
+
 			danmakuCount = currentDanmaku.Count;
 			int count = runtimeSystem.particleCount;
 			if (danmakuCount > count) {
@@ -258,6 +264,8 @@ namespace DanmakU {
 		}
 
 		public void Awake() {
+
+			//mpb = new MaterialPropertyBlock();
 			Vector3[] vertexes;
 
 			Renderer singleRenderer = GetComponent<Renderer> ();
@@ -315,6 +323,8 @@ namespace DanmakU {
 				cachedMaterial = spriteRenderer.sharedMaterial;
 				cachedSortingLayer = spriteRenderer.sortingLayerID;
 				cachedSortingOrder = spriteRenderer.sortingOrder;
+
+				//renderMaterial = cachedMaterial;
 
 				renderMaterial = new Material(cachedMaterial);
 				renderMaterial.mainTexture = Sprite.texture;
@@ -413,6 +423,9 @@ namespace DanmakU {
 			runtimeRenderer.receiveShadows = false;
 			runtimeRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 			runtimeRenderer.useLightProbes = false;
+
+			gameObject.hideFlags = HideFlags.HideInHierarchy;
+			runtimeSystem.gameObject.hideFlags = HideFlags.HideInHierarchy;
 		}
 
 		#if UNITY_EDITOR

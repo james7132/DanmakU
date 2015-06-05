@@ -5,22 +5,17 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
+/// <summary>
+/// A set of pre-created Danmaku Colliders that can be used
+/// </summary>
 namespace DanmakU.Collider {
 	
 	public class ColorChangeCollider : DanmakuCollider {
 
-		public enum ColorType { Constant, Random, Gradient }
+		//TODO Make a proper custom editor for this class
+		//TODO Document
 
-		[SerializeField, Show]
-		private Color[] colors;
-		public Color[] Colors {
-			get {
-				return colors;
-			}
-			set {
-				colors = value;
-			}
-		}
+		public enum ColorType { Constant, Random, Gradient }
 
 		[SerializeField, Show]
 		private ColorType type;
@@ -30,6 +25,29 @@ namespace DanmakU.Collider {
 			}
 			set {
 				type = value;
+			}
+		}
+
+		[SerializeField, Show]
+		private Color color;
+
+		public Color Color {
+			get {
+				return color;
+			}
+			set {
+				color = value;
+			}
+		}
+
+		[SerializeField, Show]
+		private Color[] colors;
+		public Color[] Colors {
+			get {
+				return colors;
+			}
+			set {
+				colors = value;
 			}
 		}
 
@@ -46,6 +64,9 @@ namespace DanmakU.Collider {
 
 		private DanmakuGroup affected;
 
+		/// <summary>
+		/// Called on Component instantiation
+		/// </summary>
 		public override void Awake () {
 			base.Awake ();
 			affected = new DanmakuSet ();

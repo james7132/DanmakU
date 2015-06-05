@@ -95,7 +95,6 @@ namespace DanmakU {
 		/// <value>The damage this projectile does.</value>
 		public int Damage;
 
-		public bool BoundsCheck;
 		public bool CollisionCheck;
 
 		public float Speed;
@@ -496,7 +495,7 @@ namespace DanmakU {
 				}
 			}
 
-			if (!is_active || (BoundsCheck && Field != null && !Field.bounds.Contains (position))) {
+			if (!is_active || (Field != null && !Field.bounds.Contains (position))) {
 				DeactivateImmediate();
 				return;
 			}
@@ -575,6 +574,52 @@ namespace DanmakU {
 			}
 		}
 
+		public static implicit operator FireData(Danmaku danmaku) {
+			FireData data = new FireData();
+			data.Position = danmaku.Position;
+			data.Rotation = danmaku.Rotation;
+			data.AngularSpeed = danmaku.AngularSpeed;
+			data.Speed = danmaku.Speed;
+			data.Prefab = danmaku.Prefab;
+			data.Controller = danmaku.ControllerUpdate;
+			data.Damage = danmaku.Damage;
+			data.Field = danmaku.Field;
+			return data;
+		}
+
+		/// <summary>
+		/// Fires a single bullet from the bullet's current position.
+		/// </summary>
+		/// 
+		/// <remarks>
+		/// By default, firing using this method also uses the rotation of the bullet to fire the bullet.
+		/// Set <c>useRotation</c> to false to disable this.
+		/// </remarks>
+		/// <param name="data">the data used to create the .</param>
+		/// <param name="useRotation">If set to <c>true</c>, the bullet will use the current rotation of the bullet to fire with.</param>
+		public Danmaku Fire (FireData data, bool useRotation = true) {
+			Vector2 tempPos = data.Position;
+			DynamicFloat tempRot = data.Rotation;
+			data.Position = Position;
+			if(useRotation)
+				data.Rotation = Rotation;
+			Danmaku danmaku = data.Fire();
+			data.Position = tempPos;
+			data.Rotation = tempRot;
+			return danmaku;
+		}
+
+		public void Fire (FireBuilder builder, bool useRotation = true) {
+			Vector2 tempPos = builder.Position;
+			DynamicFloat tempRot = builder.Rotation;
+			builder.Position = Position;
+			if(useRotation)
+				builder.Rotation = Rotation;
+			builder.Fire();
+			builder.Position = tempPos;
+			builder.Rotation = tempRot;
+		}
+
 		/// <summary>
 		/// Activates this instance.
 		/// Calling this on a already fired projectile does nothing.
@@ -616,7 +661,6 @@ namespace DanmakU {
 			controllerCheck = false;
 			Damage = 0;
 			runtime.Remove(this);
-			BoundsCheck = true;
 			CollisionCheck = true;
 			is_active = false;
 			danmakuPool.Return (this);

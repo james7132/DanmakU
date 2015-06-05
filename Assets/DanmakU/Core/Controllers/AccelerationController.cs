@@ -14,6 +14,8 @@ namespace DanmakU.Controllers {
 	/// A Danmaku Controller that makes Danmaku speed up or slow down over time.
 	/// </summary>
 	public class AccelerationController : IDanmakuController {
+		
+		//TODO Document
 
 		[SerializeField, Show]
 		private float acceleration;

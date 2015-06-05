@@ -188,9 +188,12 @@ namespace DanmakU {
 
 		/// <summary>
 		/// Sets the firing origin position to a fixed point in space.
+		/// </summary>
+		/// 
+		/// <remarks>
 		/// To move the origin of firing after calling this requries additional calls to this method.
 		/// This will also 'un-link' the instance from any GameObjects.
-		/// </summary>
+		/// </remarks>
 		/// <param name="position">the position in which </param>
 		public FireBuilder From (Vector2 position) {
 			Position = position;
@@ -199,7 +202,25 @@ namespace DanmakU {
 		}
 
 		/// <summary>
-		/// Links the firing origin position to automatically track a GameObject.
+		/// Sets the firing origin to the current position of a bullet.
+		/// </summary>
+		/// 
+		/// <remarks>
+		/// To move the origin of firing after calling this requries additional calls to this method.
+		/// This will also 'un-link' the instance from any GameObjects.
+		/// </remarks>
+		/// <param name="danmaku">Danmaku.</param>
+		public FireBuilder From (Danmaku danmaku) {
+			Position = danmaku.Position;
+			positionSource = null;
+			return this;
+		}
+
+		/// <summary>
+		/// Links the firing origin position to automatically track a Transform and its GameObject.
+		/// </summary>
+		/// 
+		/// <remarks>
 		/// After calling this, all calls to <c>Fire()</c> will automatically be fired from the absolute world
 		/// position of the specified. (i.e. as the GameObject moves over time. so does position the instance fires from).
 		/// Only one call is necessary to link the object.
@@ -208,7 +229,7 @@ namespace DanmakU {
 		/// the previously specified absolute world position, which by default is (0,0).
 		/// 
 		/// If the given Transform is already null, this method does nothing.
-		/// </summary>
+		/// </remarks>
 		/// <param name="transform">the specified origin Transform to use.</param>
 		public FireBuilder From (Transform transform) {
 			if(transform != null)
@@ -218,6 +239,9 @@ namespace DanmakU {
 
 		/// <summary>
 		/// Links the firing origin position to automatically track a GameObject.
+		/// </summary>
+		/// 
+		/// <remarks>
 		/// After calling this, all calls to <c>Fire()</c> will automatically be fired from the absolute world
 		/// position of the specified. (i.e. as the GameObject moves over time. so does position the instance fires from).
 		/// Only one call is necessary to link the object.
@@ -226,7 +250,7 @@ namespace DanmakU {
 		/// the previously specified absolute world position, which by default is (0,0).
 		/// 
 		/// If the given GameObject is already null, this method does nothing.
-		/// </summary>
+		/// </remarks>
 		/// <param name="gameObject">the specified origin GameObject to use.</param>
 		public FireBuilder From (GameObject gameObject) {
 			if(gameObject != null)
@@ -235,7 +259,10 @@ namespace DanmakU {
 		}
 
 		/// <summary>
-		/// Links the firing origin position to automatically track a GameObject.
+		/// Links the firing origin position to automatically track a Component and its GameObject.
+		/// </summary>
+		/// 
+		/// <remarks>
 		/// After calling this, all calls to <c>Fire()</c> will automatically be fired from the absolute world
 		/// position of the specified. (i.e. as the GameObject moves over time. so does position the instance fires from).
 		/// Only one call is necessary to link the object.
@@ -244,7 +271,7 @@ namespace DanmakU {
 		/// the previously specified absolute world position, which by default is (0,0).
 		/// 
 		/// If the given Transform is already null, this method does nothing.
-		/// </summary>
+		/// </remarks>
 		/// <param name="component">the specified origin Component to use.</param>
 		public FireBuilder From (Component component) {
 			if(component == null)
