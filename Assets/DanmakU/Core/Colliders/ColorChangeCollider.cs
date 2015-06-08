@@ -9,7 +9,8 @@ using Vexe.Runtime.Types;
 /// A set of pre-created Danmaku Colliders that can be used
 /// </summary>
 namespace DanmakU.Collider {
-	
+
+	[AddComponentMenu("DanmakU/Colliders/Color Change Collider")]
 	public class ColorChangeCollider : DanmakuCollider {
 
 		//TODO Make a proper custom editor for this class
@@ -30,7 +31,6 @@ namespace DanmakU.Collider {
 
 		[SerializeField, Show]
 		private Color color;
-
 		public Color Color {
 			get {
 				return color;
@@ -67,7 +67,7 @@ namespace DanmakU.Collider {
 		/// <summary>
 		/// Called on Component instantiation
 		/// </summary>
-		public override void Awake () {
+		protected override void Awake () {
 			base.Awake ();
 			affected = new DanmakuSet ();
 		}

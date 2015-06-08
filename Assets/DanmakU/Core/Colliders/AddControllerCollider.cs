@@ -24,9 +24,9 @@ namespace DanmakU.Collider {
 		private DanmakuGroup affected;
 
 		/// <summary>
-		/// Called on Component instantiation
+		/// Called on Component instantiation.
 		/// </summary>
-		public override void Awake () {
+		protected override void Awake () {
 			base.Awake ();
 			affected = new DanmakuSet ();
 			if (controllers == null)

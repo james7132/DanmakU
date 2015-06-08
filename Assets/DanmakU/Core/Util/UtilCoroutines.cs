@@ -15,20 +15,26 @@ namespace DanmakU {
 
 		internal class NullBehaviour : MonoBehaviour {
 
-			public HashSet<Task> latentTasks = new HashSet<Task> ();
+			private HashSet<Task> latentTasks;
 
 			void Awake() {
+				latentTasks = new HashSet<Task>();
+				DontDestroyOnLoad(this);
 				StartCoroutine (StartTasks ());
+			}
+
+			public void QueueTask(Task task) {
+				latentTasks.Add(task);
 			}
 
 			IEnumerator StartTasks() {
 				while (true) {
 					if (latentTasks.Count > 0) {
-						foreach(var task in latentTasks.ToArray()) {
+						foreach(var task in latentTasks) {
 							if(!task.started)
 								task.Start();
-							latentTasks.Remove(task);
 						}
+						latentTasks.Clear();
 					}
 					yield return new WaitForEndOfFrame();
 				}
@@ -36,7 +42,6 @@ namespace DanmakU {
 
 		}
 
-		private static WaitForEndOfFrame wfeof = new WaitForEndOfFrame();
 		private static NullBehaviour utilBehavior;
 		internal static NullBehaviour UtilityBehaviour {
 			get {
@@ -71,37 +76,5 @@ namespace DanmakU {
                 yield return null;
             }
         }
-
-		/// <summary>
-		/// A useful utility function for Coroutines in implementors of IPausable.
-		/// If the instance is not paused, it will wait return a WaitForEndOfFrame instance.
-		/// If the instance is paused, it will wait until the object becomes AbstractDanmakuControllerd before continuing.
-		/// <example>
-		/// This is standard usage for this function:
-		/// <code>
-		/// yield return AbstractDanmakuController()
-		/// </code>
-		/// </example>
-		/// <see href="http://docs.unity3d.com/Manual/Coroutines.html">Unity Manual: Coroutines</see>
-		/// </summary>
-		/// <returns> The approriate YieldInstruction for the situation.</returns>
-		public static YieldInstruction WaitForUnpause(IPausable pausableObject, YieldInstruction value = null) {
-			if (pausableObject.Paused) {
-				return UtilityBehaviour.StartCoroutine (PauseWait (pausableObject));
-			} else {
-				return value;
-			}
-		}
-
-		/// <summary>
-		/// Coroutine to wait for the object to become AbstractDanmakuControllerd
-		/// <see href="http://docs.unity3d.com/Manual/Coroutines.html">Unity Manual: Coroutines</see>
-		/// </summary>
-		/// <returns> The Coroutine IEnumerator </returns>
-		private static IEnumerator PauseWait(IPausable pausable) {
-			while (pausable.Paused) {
-				yield return wfeof;
-			}
-		}
     }
 }

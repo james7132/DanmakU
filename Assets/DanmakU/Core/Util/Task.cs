@@ -30,7 +30,7 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ();
 			this.task = task;
 			this.context = context;
-			UtilCoroutines.UtilityBehaviour.latentTasks.Add (this);
+			UtilCoroutines.UtilityBehaviour.QueueTask(this);
 			enumerable = false;
 		}
 
@@ -39,7 +39,7 @@ namespace DanmakU {
 				throw new System.ArgumentNullException ();
 			taskE = task;
 			this.context = context;
-			UtilCoroutines.UtilityBehaviour.latentTasks.Add (this);
+			UtilCoroutines.UtilityBehaviour.QueueTask(this);
 			enumerable = true;
 		}
 

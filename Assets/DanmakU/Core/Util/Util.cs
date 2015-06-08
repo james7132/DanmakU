@@ -175,10 +175,6 @@ namespace DanmakU {
 			return matches.ToArray ();
 		}
 
-		public static Vector2 Abs(Vector2 v) {
-			return new Vector2 (Math.Abs (v.x), Math.Abs (v.y));
-		}
-
 		/// <summary>
 		/// Finds the closest described component to the given point
 		/// </summary>

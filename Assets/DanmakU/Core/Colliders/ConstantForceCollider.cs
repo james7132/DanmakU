@@ -18,8 +18,13 @@ namespace DanmakU.Collider {
 		[SerializeField, Show]
 		private Vector2 force;
 
-		private Vector2 actual;
-		
+		/// <summary>
+		/// Gets or sets the force applied to contacting Danmaku.
+		/// </summary>
+		/// <remarks>
+		/// Since Danmaku have no mass. The force applied in in terms of a constant displacement (units per second).
+		/// </remarks>
+		/// <value>The force applied.</value>
 		public Vector2 Force {
 			get {
 				return force;
@@ -29,9 +34,6 @@ namespace DanmakU.Collider {
 			}
 		}
 
-		private void Update() {
-			actual = force * TimeUtil.DeltaTime;
-		}
 
 		#region implemented abstract members of DanmakuCollider
 
@@ -41,7 +43,7 @@ namespace DanmakU.Collider {
 		/// <param name="danmaku">the danmaku that hit the collider.</param>
 		/// <param name="info">additional information about the collision</param>
 		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
-			danmaku.Position += actual;
+			danmaku.Position += force * Dt;
 		}
 
 		#endregion

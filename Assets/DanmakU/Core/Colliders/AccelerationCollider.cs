@@ -40,7 +40,7 @@ namespace DanmakU.Collider {
 		/// <param name="danmaku">the danmaku that hit the collider.</param>
 		/// <param name="info">additional information about the collision</param>
 		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
-			danmaku.Speed += acceleration * TimeUtil.DeltaTime;
+			danmaku.Speed += acceleration * Dt;
 		}
 
 		#endregion
