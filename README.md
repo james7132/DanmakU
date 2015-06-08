@@ -1,14 +1,17 @@
 # DanmakU
-DanmakU is an open source danmaku development kit for Unity3D.
+DanmakU is an high performance, open source development kit for Unity3D focused on simplifying the  development of 2D danmaku games.
 
-# Getting Started
+### What is Danmaku?
+Danmaku (弾幕, lit: "barrage" or "bullet curtain"), called "bullet hell" in the western world, is a subset of shoot 'em ups in which the majority of the screen is occupied by bullets. Some famous examples from this genre include: Ikaruga, Jamestown, Gundemonium, DoDonPachi, and the Touhou Project games.
+
+### Overview
+DanmakU is focused on creating, manipulating, and interacting with, for lack of a better word, Danmaku objects. Traditional Unity GameObjects and Components are very versatile and powerful; however, instantiating and controlling hundreds of GameObjects, even with design patterns like object pooling, is incredibly computationally expensive. 
+
+### Getting Started
 See the [wiki](https://github.com/rhythmia/DanmakU/wiki) on a number of tutorials on how to get started.  
 See the [scripting documentation](http://rhythmia.org/DanmakU/Docs/html/annotated.html) to see a scripting reference.
 
-# Contributing
-DanmakU is open source under the MIT license. While using it, and find a bug that you fixed? See an issue in the issue tracker (of which there are many)? Have a new idea for a good feature for the development kit? Simply fork this repo, make your changes and submit a pull request. They will be merged in once it is confirmed that the changes indeed do help.
-
-# Installation
+### Installation
 
 To get DanmakU running in your Unity project, follow these instructions:
 
@@ -20,11 +23,11 @@ To get DanmakU running in your Unity project, follow these instructions:
 6. It will then prompt you which assets to add. Select all of them, and click Import.
 7. Restart Unity. (this refreshes Unity, and pulls up all of the Unity Editor extensions created for this dev kit).
 
-# Source Code Installation/Setup
+### Source Code Installation/Setup
 
 1. Clone this repository using your prefered form of git (GUI, command line, etc).
 2. Add the code to any Unity project, via drag/drop or copy/paste.
 
-# Extensions
+### Extensions
 
 There are extensions that expand upon the base functionality in this repository. [See more here](https://github.com/Rhythmia/DanmakU/wiki/Extensions). 
