@@ -258,8 +258,6 @@ namespace DanmakU {
 				TargetField = this;
 			Quaternion rotation = prefab.transform.rotation;
 			T clone = Instantiate (prefab, TargetField.WorldPoint (location, coordSys), rotation) as T;
-			if (clone is IDanmakuObject)
-				(clone as IDanmakuObject).Field = this;
 			return clone;
 		}
 		

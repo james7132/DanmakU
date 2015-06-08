@@ -53,7 +53,7 @@ namespace DanmakU.Collider {
 		/// <summary>
 		/// Called on Component instantiation
 		/// </summary>
-		public override void Awake () {
+		protected override void Awake () {
 			base.Awake ();
 			affected = new DanmakuSet ();
 		}

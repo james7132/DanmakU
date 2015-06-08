@@ -28,7 +28,7 @@ namespace DanmakU.Collider {
 
 		private DanmakuGroup affected;
 
-		public override void Awake () {
+		protected override void Awake () {
 			base.Awake ();
 			affected = new DanmakuSet ();
 		}

@@ -21,5 +21,7 @@ sysinfo.txt
 #There shouldn't be any prefabs/scenes saved with MonoBehaviour references
 *.cs.meta
 
+!Assets/Test/*.cs.meta
+
 *Clipboard.asset*
 *BetterEditorPrefs.asset*

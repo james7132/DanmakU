@@ -7,6 +7,8 @@ using UnityEngine;
 namespace DanmakU {
 
 	[ExecuteInEditMode]
+	[RequireComponent(typeof(BoxCollider2D))]
+	[AddComponentMenu("DanmakU/Misc/Field Boundary")]
 	public sealed class FieldBoundary : MonoBehaviour {
 
 		private enum Edge { Top = 0, Bottom = 1, Left = 2, Right = 3}

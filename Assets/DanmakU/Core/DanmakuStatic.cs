@@ -16,13 +16,17 @@ namespace DanmakU {
 	/// </summary>
 	public sealed partial class Danmaku {
 
+		static Danmaku() {
+			Setup();
+		}
+
 		/// <summary>
-		/// The standard number of bullets pre-spawned in if no Danmaku Game Controller is present
+		/// The standard number of bullets pre-spawned in if no DanmakuGameController is present
 		/// </summary>
 		internal const int standardStart = 1000;
 
 		/// <summary>
-		/// The standard number of bullets that is spawned used if a DanmakuGameController is not present
+		/// The standard number of Danmaku objects that is spawned used if a DanmakuGameController is not present
 		/// </summary>
 		internal const int standardSpawn = 100;
 
@@ -101,6 +105,9 @@ namespace DanmakU {
 		}
 
 		internal static float Tan(float angle) {
+			float sin = Sin (angle);
+			if(sin == 0f)
+				return float.NaN;
 			return Cos (angle) / Sin (angle);
 		}
 
@@ -238,29 +245,59 @@ namespace DanmakU {
 			return count;
 		}
 
+		/// <summary>
+		/// Retrieves an inactive Danmaku object.
+		/// </summary>
+		/// <remarks>
+		/// The returned Danmaku object does not have any of its properties altered, and its state is likely to be completely randomized.
+		/// The returned Danmaku object also is not active and must be activated before it actually appears or does anything.
+		/// This method does not allocate any memory.
+		/// </remarks>
+		/// <returns>The inactive Danmaku.</returns>
 		public static Danmaku GetInactive () {
 			return danmakuPool.Get ();
 		}
 
+		/// <summary>
+		/// Retrieves a number of inactive Danmaku objects.
+		/// </summary>
+		/// <remarks>
+		/// The returned Danmaku objects does not have any of its properties altered, and their state is likely to be completely randomized.
+		/// The returned Danmaku objects also is not active and must be activated before it actually appears or does anything.
+		/// This method allocates memory for array.
+		/// </remarks>
+		/// <returns>The inactive Danmaku objects in an array.</returns>
+		/// <param name="count">the number of inactive Danmaku objects to retrieve.</param>
 		public static Danmaku[] GetInactive (DynamicInt count) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			Danmaku[] array = new Danmaku[count];
 			danmakuPool.Get (array);
 			return array;
 		}
 
+		/// <summary>
+		/// Retrieves a number of inactive Danmaku objects.
+		/// </summary>
+		/// <remarks>
+		/// This method fills an existing array of Danmaku with inactive instances.
+		/// The returned Danmaku objects does not have any of its properties altered, and their state is likely to be completely randomized.
+		/// The returned Danmaku objects also is not active and must be activated before it actually appears or does anything.
+		/// This method does not allocate any memory.
+		/// </remarks>
+		/// <exception cref="ArgumentNullException">thrown if the preallocated array is null.</exception>
+		/// <param name="prealloc">the preallocated array to fill.</param>
 		public static void GetInactive (Danmaku[] prealloc) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			if (prealloc == null)
 				throw new System.ArgumentNullException ();
 			danmakuPool.Get (prealloc);
 		}
 
+		/// <summary>
+		/// Retreives an inactive Danmaku object, and places it 
+		/// </summary>
+		/// <returns>The inactive.</returns>
+		/// <param name="position">Position.</param>
+		/// <param name="rotation">Rotation.</param>
 		public static Danmaku GetInactive (Vector2 position, DynamicFloat rotation) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			Danmaku danmaku = danmakuPool.Get ();
 			danmaku.position.x = position.x;
 			danmaku.position.y = position.y;
@@ -269,35 +306,19 @@ namespace DanmakU {
 		}
 
 		public static Danmaku[] GetInactive (Vector2 position, DynamicFloat rotation, DynamicInt count) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			Danmaku[] array = new Danmaku[count];
 			GetInactive (position, rotation, array);
 			danmakuPool.Get (array);
-			for (int i = 0; i < array.Length; i++) {
-				Danmaku danmaku = array[i];
-				danmaku.position.x = position.x;
-				danmaku.position.y = position.y;
-				danmaku.Rotation = rotation.Value;
-			}
+			array.MoveTo(position).RotateTo(rotation);
 			return array;
 		}
 
 		public static void GetInactive (Vector2 position, DynamicFloat rotation, Danmaku[] prealloc) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			danmakuPool.Get (prealloc);
-			for (int i = 0; i < prealloc.Length; i++) {
-				Danmaku danmaku = prealloc[i];
-				danmaku.position.x = position.x;
-				danmaku.position.y = position.y;
-				danmaku.Rotation = rotation.Value;
-			}
+			prealloc.MoveTo(position).RotateTo(rotation);
 		}
 		
 		public static Danmaku GetInactive (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			Danmaku danmaku = danmakuPool.Get ();
 			danmaku.MatchPrefab (danmakuType);
 			danmaku.position.x = position.x;
@@ -307,8 +328,6 @@ namespace DanmakU {
 		}
 		
 		public static Danmaku[] GetInactive (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation, DynamicInt count) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			Danmaku[] array = new Danmaku[count];
 			danmakuPool.Get (array);
 			for (int i = 0; i < array.Length; i++) {
@@ -322,8 +341,6 @@ namespace DanmakU {
 		}
 		
 		public static void GetInactive (DanmakuPrefab danmakuType, Vector2 position, DynamicFloat rotation, Danmaku[] prealloc) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			danmakuPool.Get (prealloc);
 			for (int i = 0; i < prealloc.Length; i++) {
 				Danmaku danmaku = prealloc[i];
@@ -334,43 +351,29 @@ namespace DanmakU {
 			}
 		}
 
+		private void Match(FireData data) {
+			MatchPrefab (data.Prefab);
+			Position = data.Position;
+			Rotation = data.Rotation;
+			Speed = data.Speed;
+			AngularSpeed = data.AngularSpeed;
+			AddController (data.Controller);
+			Damage = data.Damage.Value;
+			if (data.Group != null)
+				data.Group.Add (this);
+		}
+
 		public static Danmaku GetInactive (FireData data) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
 			if (data == null)
 				throw new System.ArgumentNullException ();
 			Danmaku danmaku = danmakuPool.Get ();
-			danmaku.MatchPrefab (data.Prefab);
-			danmaku.position.x = data.Position.x;
-			danmaku.position.y = data.Position.y;
-			danmaku.Rotation = data.Rotation.Value;
-			danmaku.Speed = data.Speed.Value;
-			danmaku.AngularSpeed = data.AngularSpeed.Value;
-			danmaku.AddController (data.Controller);
-			danmaku.Damage = data.Damage.Value;
-			if (data.Group != null)
-				data.Group.Add (danmaku);
+			danmaku.Match(data);
 			return danmaku;
 		}
 
 		public static Danmaku[] GetInactive(FireData data, DynamicInt count) {
-			if (danmakuPool == null)
-				new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
-			if (data == null)
-				throw new System.ArgumentNullException ();
-			Danmaku[] danmakus = new Danmaku[count];
-			danmakuPool.Get (danmakus);
-			for (int i = 0; i < danmakus.Length; i++) {
-				Danmaku danmaku = danmakus[i];
-				danmaku.MatchPrefab (data.Prefab);
-				danmaku.position.x = data.Position.x;
-				danmaku.position.y = data.Position.y;
-				danmaku.Rotation = data.Rotation.Value;
-				danmaku.Speed = data.Speed.Value;
-				danmaku.AngularSpeed = data.AngularSpeed.Value;
-				danmaku.AddController (data.Controller);
-				danmaku.Damage = data.Damage.Value;
-			}
+			var danmakus = new Danmaku[count];
+			GetInactive(data, danmakus);
 			return danmakus;
 		}
 
@@ -380,17 +383,8 @@ namespace DanmakU {
 			if (data == null)
 				throw new System.ArgumentNullException ();
 			danmakuPool.Get (prealloc);
-			for (int i = 0; i < prealloc.Length; i++) {
-				Danmaku danmaku = prealloc[i];
-				danmaku.MatchPrefab (data.Prefab);
-				danmaku.position.x = data.Position.x;
-				danmaku.position.y = data.Position.y;
-				danmaku.Rotation = data.Rotation.Value;
-				danmaku.Speed = data.Speed.Value;
-				danmaku.AngularSpeed = data.AngularSpeed.Value;
-				danmaku.AddController (data.Controller);
-				danmaku.Damage = data.Damage.Value;
-			}
+			for (int i = 0; i < prealloc.Length; i++)
+				prealloc[i].Match(data);
 		}
 
 		public static FireBuilder ConstructFire (DanmakuPrefab prefab) {

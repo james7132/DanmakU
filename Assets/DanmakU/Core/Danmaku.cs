@@ -11,18 +11,16 @@ using System.Collections.Generic;
 /// </summary>
 namespace DanmakU {
 
-	public delegate IEnumerator DanmakuTask(Danmaku danmaku);
-
 	public delegate void DanmakuEvent (Danmaku danmaku);
 
 	/// <summary>
 	/// A single projectile fired.
-	/// The base object that represents a single bullet in a Danmaku game
+	/// The base object that represents a single bullet in a bullet hell game.
 	/// </summary>
 	public sealed partial class Danmaku {
 
 		/// <summary>
-		/// The supported collider shapes used by danmaku
+		/// The supported collider shapes used by danmaku.
 		/// </summary>
 		public enum ColliderType { 
 			Circle, 
@@ -34,7 +32,7 @@ namespace DanmakU {
 		#region Private and Internal Fields
 
 		/// <summary>
-		/// The index of the pool.
+		/// The Danmaku instance's index within the DanmakuPool.
 		/// </summary>
 		internal int poolIndex;
 		//internal int renderIndex;
@@ -59,7 +57,10 @@ namespace DanmakU {
 
 		private bool to_deactivate;
 
-		internal List<DanmakuGroup> groups;
+		internal HashSet<DanmakuGroup> groups;
+
+		internal Vector3 position;
+		internal float rotation;
 
 		//Preallocated variables to avoid allocation in Update
 		private Vector2 originalPosition;
@@ -69,61 +70,80 @@ namespace DanmakU {
 		//Cached check for controllers to avoid needing to calculate them in Update
 		private bool controllerCheck;
 
-		private List<IEnumerator> tasks;
-
 		#endregion
-		
-		#region Public Fields
-		
+
+		/// <summary>
+		/// Occurs when the Danmaku instance is activated.
+		/// </summary>
 		public event DanmakuEvent OnActivate;
 
+		/// <summary>
+		/// Occurs when the Danmaku instance is deactivated.
+		/// </summary>
 		public event DanmakuEvent OnDeactivate;
 
-		public event DanmakuController ControllerUpdate;
+		private DanmakuController onUpdate;
 
-		/// <summary>
-		/// The renderer color of the projectile.
-		/// <see href="http://docs.unity3d.com/ScriptReference/SpriteRenderer-color.html">SpriteRenderer.color</see>
-		/// </summary>
-		/// <value>The renderer color.</value>
-		public Color32 Color;
-
-		/// <summary>
-		/// Gets or sets the damage this projectile does to entities.
-		/// Generally speaking, this is only used for projectiles fired by the player at enemies
-		/// </summary>
-		/// <value>The damage this projectile does.</value>
-		public int Damage;
-
-		public bool CollisionCheck;
-
-		public float Speed;
-		public float AngularSpeed;
-
-		#endregion
-
+		public event DanmakuController ControllerUpdate {
+			add {
+				onUpdate += value;
+				controllerCheck = onUpdate != null;
+			}
+			remove {
+				onUpdate -= value;
+				controllerCheck = onUpdate != null;
+			}
+		}
+		
 		#region Public Properties
+
+		/// <summary>
+		/// The vertex color to use when rendering
+		/// </summary>
+		public Color32 Color {
+			get;
+			set;
+		}
+
+		public int Damage {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Whether or not to perform collision detection with the Danmaku instance.
+		/// </summary>
+		public bool CollisionCheck {
+			get;
+			set;
+		}
+
+		public float Speed {
+			get;
+			set;
+		}
+
+		public float AngularSpeed {
+			get;
+			set;
+		}
 
 		public DanmakuPrefab Prefab {
 			get {
 				return runtime;
 			}
 		}
-		
-		/// <summary>
-		/// Gets the renderer sprite of the projectile.
-		/// <see href="http://docs.unity3d.com/ScriptReference/SpriteRenderer-sprite.html">SpriteRenderer.sprite</see>
-		/// </summary>
-		/// <value>The sprite.</value>
+
 		public Sprite Sprite {
 			get {
-				//return sprite;
 				return runtime.Sprite;
 			}
-			//set {
-			//	sprite = value;
-			//	renderer.sprite = value;
-			//}
+		}
+
+		public Mesh Mesh {
+			get {
+				return runtime.Mesh;
+			}
 		}
 
 		public Material Material {
@@ -131,13 +151,7 @@ namespace DanmakU {
 				//return material;
 				return runtime.Material;
 			}
-			//set {
-			//	material = value;
-			//	renderer.material = value;
-			//}
 		}
-
-		internal Vector3 position;
 
 		/// <summary>
 		/// Gets or sets the position, in world space, of the projectile.
@@ -153,16 +167,16 @@ namespace DanmakU {
 			}
 		}
 
-		internal float rotation;
-
 		/// <summary>
 		/// Gets or sets the rotation of the projectile, in degrees.
+		/// </summary>
+		/// <remarks>
 		/// If viewed from a unrotated orthographic camera:
 		/// 0 - Straight up
 		/// 90 - Straight Left
 		/// 180 - Straight Down
 		/// 270 -  Straight Right
-		/// </summary>
+		/// </remarks>
 		/// <value>The rotation of the bullet in degrees.</value>
 		public float Rotation {
 			get {
@@ -176,9 +190,11 @@ namespace DanmakU {
 		
 		/// <summary>
 		/// Gets the direction vector the projectile is facing.
-		/// It is a unit vector.
-		/// Changing <see cref="RfieldBoundsn"/> will change this vector.
 		/// </summary>
+		/// <remarks>
+		/// It is a unit vector.
+		/// Changing <see cref="Rotation"/> will change this vector.
+		/// </remarks>
 		/// <value>The direction vector the projectile is facing toward.</value>
 		public Vector2 Direction {
 			get {
@@ -190,14 +206,15 @@ namespace DanmakU {
 			}
 		}
 
-		public float Scale;
+		public float Scale {
+			get;
+			set;
+		}
 
 		/// <summary>
-		/// The amount of time, in seconds,that has passed since this bullet has been fired.
-		/// This is calculated based on the number of AbstractDanmakuControllerd frames that has passed since the bullet has fired
-		/// Pausing will cause this value to stop increasing
+		/// The amount of time that has passed since this bullet has been fired.
 		/// </summary>
-		/// <value>The time since the projectile has been fired.</value>
+		/// <value>The time since the projectile has been fired, in seconds.</value>
 		public float Time {
 			get {
 				return time;
@@ -207,7 +224,7 @@ namespace DanmakU {
 		/// <summary>
 		/// The number of framesfieldBoundshave passed since this bullet has been fired.
 		/// </summary>
-		/// <value>The frame count since this bullet has been fired.</value>
+		/// <value>The number of frames that have passed since this bullet has been fired.</value>
 		public int Frames {
 			get {
 				return frames;
@@ -215,15 +232,24 @@ namespace DanmakU {
 		}
 		
 		/// <summary>
-		/// Gets the projectile's tag.
+		/// Gets the instance's tag.
 		/// </summary>
+		/// <remarks>
+		/// This is initialzied to the tag on the DanmakuPrefab, but can be changed to any string.
+		/// </remarks>
 		/// <value>The tag of the projectile.</value>
-		public string Tag;
-		
+		public string Tag {
+			get;
+			set;
+		}
+
 		/// <summary>
-		/// Gets the projectile's layer.
+		/// Gets or sets the instance's layer.
 		/// </summary>
-		/// <value>The layer of the projectile.</value>
+		/// <remarks>
+		/// Unlike GameObject's layers, this layer value only affects collision behavior.
+		/// </remarks>
+		/// <value>The layer used for collision detection.</value>
 		public int Layer {
 			get {
 				return layer;
@@ -233,69 +259,33 @@ namespace DanmakU {
 				colliderMask = collisionMask[layer];
 			}
 		}
+		
+		public DanmakuField Field {
+			get;
+			set;
+		}
 
 		#endregion
 
-		/// <summary>
-		/// Gets the DanmakuField this instance was fired from.
-		/// </summary>
-		/// <value>The field the projectile was fired from.</value>
-		public DanmakuField Field;
-
-		public void StartTask(IEnumerator task) {
-			if (tasks == null)
-				tasks = new List<IEnumerator> ();
-			if (task != null)
-				tasks.Add (task);
-			else
-				Debug.LogError ("Attempted to start a null task");
-		}
-
-		public void StartTask(IEnumerable task) {
-			StartTask (task.GetEnumerator ());
-		}
-
-		public void StartTask(DanmakuTask task) {
-			if(tasks == null)
-				tasks = new List<IEnumerator>();
-			if (task != null) {
-				IEnumerator newTask = task (this);
-				if (newTask != null)
-					tasks.Add (newTask);
-				else
-					Debug.LogError ("Attempted to start a null task");
-			} else {
-				Debug.LogError ("Attempted to start a null task");
-			}
-		}
-
 		public void AddController(IDanmakuController controller) {
-			if(controller != null) {
-				ControllerUpdate += controller.Update;
-				controllerCheck = ControllerUpdate != null;
-			}
+			ControllerUpdate += controller.Update;
 		}
 
 		public void AddController(DanmakuController controller) {
 			ControllerUpdate += controller;
-			controllerCheck = ControllerUpdate != null;
 		}
 
 		public void RemoveController(IDanmakuController controller) {
-			if(controller != null) {
-				ControllerUpdate -= controller.Update;
-				controllerCheck = ControllerUpdate != null;
-			}
+			ControllerUpdate -= controller.Update;
 		}
 
 		public void RemoveController(DanmakuController controller) {
 			ControllerUpdate -= controller;
-			controllerCheck = ControllerUpdate != null;
 		}
 
 		public void ClearControllers() {
 			controllerCheck = true;
-			ControllerUpdate = null;
+			onUpdate = null;
 		}
 
 		#region Position Functions
@@ -367,8 +357,27 @@ namespace DanmakU {
 
 		#endregion
 
+		#region Speed Functions
+
+		public void Accelerate(DynamicFloat dv) {
+			Speed += dv;
+		}
+
+		#endregion
+
+		#region Angular Speed Functions 
+
+		public void AngularAcclerate(DynamicFloat dav) {
+			AngularSpeed += dav;
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
+		/// </summary>
 		internal Danmaku() {
-			groups = new List<DanmakuGroup> ();
+			groups = new HashSet<DanmakuGroup> ();
 			raycastHits = new RaycastHit2D[5];
 		}
 
@@ -380,18 +389,7 @@ namespace DanmakU {
 			Vector2 movementVector;
 
 			if (controllerCheck) {
-				ControllerUpdate(this, dt);
-			}
-
-			if(tasks != null) {
-				count = tasks.Count;
-				i = 0;
-				while(i < count) {
-					if(!tasks[i].MoveNext())
-						tasks.RemoveAt(i);
-					else
-						i++;
-				}
+				onUpdate(this, dt);
 			}
 
 			if(AngularSpeed != 0f) {
@@ -554,9 +552,11 @@ namespace DanmakU {
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is active.
-		/// Setting ti to true while inactive is equal to calling Activate.
-		/// Setting it to false while active is equal to calling DeactivateImmediate.
 		/// </summary>
+		/// <remarks>
+		/// Setting it to true while inactive is equal to calling Activate.
+		/// Setting it to false while active is equal to calling DeactivateImmediate.
+		/// </remarks>
 		/// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
 		public bool IsActive {
 			get {
@@ -581,7 +581,7 @@ namespace DanmakU {
 			data.AngularSpeed = danmaku.AngularSpeed;
 			data.Speed = danmaku.Speed;
 			data.Prefab = danmaku.Prefab;
-			data.Controller = danmaku.ControllerUpdate;
+			data.Controller = danmaku.onUpdate;
 			data.Damage = danmaku.Damage;
 			data.Field = danmaku.Field;
 			return data;
@@ -590,7 +590,6 @@ namespace DanmakU {
 		/// <summary>
 		/// Fires a single bullet from the bullet's current position.
 		/// </summary>
-		/// 
 		/// <remarks>
 		/// By default, firing using this method also uses the rotation of the bullet to fire the bullet.
 		/// Set <c>useRotation</c> to false to disable this.
@@ -621,10 +620,12 @@ namespace DanmakU {
 		}
 
 		/// <summary>
-		/// Activates this instance.
-		/// Calling this on a already fired projectile does nothing.
-		/// Calling this on a projectile marked for deactivation will unmark the projectile and keep it from deactivating.
+		/// Activates the Danmaku instance.
 		/// </summary>
+		/// <remarks>
+		/// Calling this on a already active instance does nothing.
+		/// Calling this on a instance marked for deactivation will unmark the projectile and keep it from deactivating.
+		/// </remarks>
 		public void Activate () {
 			to_deactivate = false;
 			runtime.Add(this);
@@ -636,9 +637,13 @@ namespace DanmakU {
 		}
 		
 		/// <summary>
-		/// Marks the bullet for deactivation. The bullet removed from the active set and all bullet functionality will cease after current 
-		/// If Danmaku needs to be deactivated in a moment when it is not being updated (i.e. when the game is paused), use <see cref="DeactivateImmediate"/> instead.
+		/// Marks the instance for deactivation.
 		/// </summary>
+		/// <remarks>
+		/// Deactivated bullets are removed from the active set, and all 
+		/// The instance  removed from the active set and all bullet functionality will cease after current 
+		/// If Danmaku needs to be deactivated in a moment when it is not being updated (i.e. when the game is paused), use <see cref="DeactivateImmediate"/> instead.
+		/// </remarks>
 		public void Deactivate()  {
 			to_deactivate = true;
 		}
@@ -652,9 +657,7 @@ namespace DanmakU {
 			if (is_active && OnDeactivate != null)
 				OnDeactivate (this);
 
-			if(tasks != null)
-				tasks.Clear ();
-			ControllerUpdate = null;
+			onUpdate = null;
 			OnActivate = null;
 			OnDeactivate = null;
 			Field = null;
@@ -666,8 +669,12 @@ namespace DanmakU {
 			danmakuPool.Return (this);
 		}
 
+		/// <summary>
+		/// Serves as a hash function for a <see cref="DanmakU.Danmaku"/> object.
+		/// </summary>
+		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode () {
-			return poolIndex;;
+			return poolIndex;
 		}
 	}
 }

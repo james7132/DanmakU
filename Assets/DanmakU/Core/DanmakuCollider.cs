@@ -12,7 +12,7 @@ using Vexe.Runtime.Types;
 namespace DanmakU {
 
 	[RequireComponent(typeof(Collider2D))]
-	public abstract class DanmakuCollider : BetterBehaviour, IDanmakuCollider {
+	public abstract class DanmakuCollider : DanmakuBehaviour, IDanmakuCollider {
 
 		/// <summary>
 		/// A filter for a set of tags, delimited by "|" for selecting which bullets to affect
@@ -26,7 +26,7 @@ namespace DanmakU {
 		/// <summary>
 		/// Called on Component instantiation
 		/// </summary>
-		public virtual void Awake() {
+		protected virtual void Awake() {
 			if (string.IsNullOrEmpty (tagFilter))
 				validTags = null;
 			else
