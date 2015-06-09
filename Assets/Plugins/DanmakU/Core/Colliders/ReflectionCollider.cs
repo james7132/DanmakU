@@ -4,8 +4,8 @@
 
 using UnityEngine;
 
-namespace DanmakU.Collider
-{
+namespace DanmakU.Collider {
+
     /// <summary>
     /// A DanmakuCollider implementation that uses vector reflection to redirect bullets.
     /// </summary>
@@ -15,15 +15,14 @@ namespace DanmakU.Collider
     /// on the vector reflection calculated from the incoming direction of the bullet and the normal to the collider at the point of collision.
     /// </remarks>
     [AddComponentMenu("DanmakU/Colliders/Reflection Collider")]
-    public class ReflectionCollider : DanmakuCollider
-    {
+    public class ReflectionCollider : DanmakuCollider {
+
         private DanmakuGroup affected;
 
         /// <summary>
         /// Called on Component instantiation
         /// </summary>
-        protected override void Awake()
-        {
+        protected override void Awake() {
             base.Awake();
             affected = new DanmakuSet();
         }
@@ -35,17 +34,19 @@ namespace DanmakU.Collider
         /// </summary>
         /// <param name="danmaku">the danmaku that hit the collider.</param>
         /// <param name="info">additional information about the collision</param>
-        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
-        {
+        protected override void DanmakuCollision(Danmaku danmaku,
+                                                 RaycastHit2D info) {
             if (affected.Contains(danmaku))
                 return;
             Vector2 normal = info.normal;
             Vector2 direction = danmaku.direction;
-            danmaku.Direction = direction - 2*Vector2.Dot(normal, direction)*normal;
+            danmaku.Direction = direction -
+                                2*Vector2.Dot(normal, direction)*normal;
             danmaku.position = info.point;
             affected.Add(danmaku);
         }
 
         #endregion
     }
+
 }

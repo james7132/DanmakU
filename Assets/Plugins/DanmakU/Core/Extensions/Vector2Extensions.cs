@@ -5,12 +5,11 @@
 using System;
 using UnityEngine;
 
-namespace DanmakU
-{
-    public static class Vector2Extensions
-    {
-        public static float ManhattanMagnitude(this Vector2 v)
-        {
+namespace DanmakU {
+
+    public static class Vector2Extensions {
+
+        public static float ManhattanMagnitude(this Vector2 v) {
             float dist = 0f;
             if (v.x > 0)
                 dist += v.x;
@@ -29,8 +28,7 @@ namespace DanmakU
         /// </summary>
         /// <param name="v1">the first vector.</param>
         /// <param name="v2">the second vector.</param>
-        public static float Cross(this Vector2 v1, Vector2 v2)
-        {
+        public static float Cross(this Vector2 v1, Vector2 v2) {
             return v1.x*v2.y - v1.y*v2.x;
         }
 
@@ -40,8 +38,7 @@ namespace DanmakU
         /// <returns>The Hadamard product between the two vectors.</returns>
         /// <param name="v1">the first vector</param>
         /// <param name="v2">the second vector</param>
-        public static Vector2 Hadamard2(this Vector2 v1, Vector2 v2)
-        {
+        public static Vector2 Hadamard2(this Vector2 v1, Vector2 v2) {
             return new Vector2(v1.x*v2.x, v1.y*v2.y);
         }
 
@@ -50,8 +47,7 @@ namespace DanmakU
         /// </summary>
         /// <returns> the value of the smallest component</returns>
         /// <param name="v">the vector to evaluate</param>
-        public static float Max(this Vector2 v)
-        {
+        public static float Max(this Vector2 v) {
             return (v.x > v.y) ? v.x : v.y;
         }
 
@@ -60,8 +56,7 @@ namespace DanmakU
         /// </summary>
         /// <returns> the value of the smallest component</returns>
         /// <param name="v">the vector to evaluate</param>
-        public static float Min(this Vector2 v)
-        {
+        public static float Min(this Vector2 v) {
             return (v.x < v.y) ? v.x : v.y;
         }
 
@@ -70,14 +65,15 @@ namespace DanmakU
         /// </summary>
         /// <returns>the random vector</returns>
         /// <param name="v">the maximum component values</param>
-        public static Vector2 Random(this Vector2 v)
-        {
-            return new Vector2(UnityEngine.Random.value*v.x, UnityEngine.Random.value*v.y);
+        public static Vector2 Random(this Vector2 v) {
+            return new Vector2(UnityEngine.Random.value*v.x,
+                               UnityEngine.Random.value*v.y);
         }
 
-        public static Vector2 Abs(this Vector2 v)
-        {
+        public static Vector2 Abs(this Vector2 v) {
             return new Vector2(Math.Abs(v.x), Math.Abs(v.y));
         }
+
     }
+
 }

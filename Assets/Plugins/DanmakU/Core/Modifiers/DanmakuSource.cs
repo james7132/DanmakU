@@ -2,57 +2,59 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
+namespace DanmakU.Modifiers {
 
-namespace DanmakU.Modifiers
-{
-    public class SourcePoint
-    {
-        public Vector2 Position;
+    public class SourcePoint {
+
         public DynamicFloat BaseRotation;
+        public Vector2 Position;
 
-        public SourcePoint(Vector2 location, DynamicFloat rotation)
-        {
-            this.Position = location;
-            this.BaseRotation = rotation;
+        public SourcePoint(Vector2 location, DynamicFloat rotation) {
+            Position = location;
+            BaseRotation = rotation;
         }
+
     }
 
     [System.Serializable]
-    public abstract class DanmakuSource : DanmakuModifier
-    {
+    public abstract class DanmakuSource : DanmakuModifier {
+
         protected List<SourcePoint> SourcePoints;
 
-        public DanmakuSource()
-        {
+        public DanmakuSource() {
             SourcePoints = new List<SourcePoint>();
         }
 
-        protected abstract void UpdateSourcePoints(Vector2 position, float rotation);
+        protected abstract void UpdateSourcePoints(Vector2 position,
+                                                   float rotation);
 
-        public override sealed void OnFire(Vector2 position, DynamicFloat rotation)
-        {
+        public override sealed void OnFire(Vector2 position,
+                                           DynamicFloat rotation) {
             UpdateSourcePoints(position, rotation);
-            for (int i = 0; i < SourcePoints.Count; i++)
-            {
-                FireSingle(SourcePoints[i].Position, SourcePoints[i].BaseRotation);
+            for (int i = 0; i < SourcePoints.Count; i++) {
+                FireSingle(SourcePoints[i].Position,
+                           SourcePoints[i].BaseRotation);
             }
         }
 
-        private void DrawGizmos()
-        {
+        private void DrawGizmos() {
             //			UpdatePoints(transform.position, transform.rotation.eulerAngles.z);
-            for (int i = 0; i < SourcePoints.Count; i++)
-            {
+            for (int i = 0; i < SourcePoints.Count; i++) {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawWireSphere(SourcePoints[i].Position, 1f);
                 Gizmos.color = Color.red;
                 Vector3 endRay = SourcePoints[i].Position +
-                                 5*Util.OnUnitCircle(SourcePoints[i].BaseRotation + 90f).normalized;
+                                 5*
+                                 Util.OnUnitCircle(
+                                                   SourcePoints[i].BaseRotation + 90f)
+                                     .normalized;
                 Gizmos.DrawLine(SourcePoints[i].Position, endRay);
             }
         }
+
     }
+
 }

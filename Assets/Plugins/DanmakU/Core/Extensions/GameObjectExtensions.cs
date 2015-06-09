@@ -2,8 +2,8 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DanmakU
 {

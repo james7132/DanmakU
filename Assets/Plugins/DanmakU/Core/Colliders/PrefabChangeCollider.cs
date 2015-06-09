@@ -5,25 +5,24 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider
-{
+namespace DanmakU.Collider {
+
     [AddComponentMenu("DanmakU/Colliders/Prefab Change Collider")]
-    public class PrefabChangeCollider : DanmakuCollider
-    {
+    public class PrefabChangeCollider : DanmakuCollider {
+
+        private DanmakuGroup affected;
+
         //TODO Document
 
-        [SerializeField, Show] private DanmakuPrefab prefab;
+        [SerializeField, Show]
+        private DanmakuPrefab prefab;
 
-        public DanmakuPrefab Prefab
-        {
+        public DanmakuPrefab Prefab {
             get { return prefab; }
             set { prefab = value; }
         }
 
-        private DanmakuGroup affected;
-
-        protected override void Awake()
-        {
+        protected override void Awake() {
             base.Awake();
             affected = new DanmakuSet();
         }
@@ -35,8 +34,8 @@ namespace DanmakU.Collider
         /// </summary>
         /// <param name="danmaku">the danmaku that hit the collider.</param>
         /// <param name="info">additional information about the collision</param>
-        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
-        {
+        protected override void DanmakuCollision(Danmaku danmaku,
+                                                 RaycastHit2D info) {
             if (affected.Contains(danmaku))
                 return;
 
@@ -48,4 +47,5 @@ namespace DanmakU.Collider
 
         #endregion
     }
+
 }

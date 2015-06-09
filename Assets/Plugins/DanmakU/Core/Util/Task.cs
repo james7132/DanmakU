@@ -2,29 +2,20 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 namespace DanmakU
 {
     public sealed class Task : IEnumerable
     {
         private MonoBehaviour context;
-        private IEnumerator task;
-        private IEnumerable taskE;
-        internal bool started;
         private bool enumerable;
         private bool isFinished;
         private bool paused;
-
-        #region IEnumerable implementation
-
-        public IEnumerator GetEnumerator()
-        {
-            return Wrapper(context);
-        }
-
-        #endregion
+        internal bool started;
+        private IEnumerator task;
+        private IEnumerable taskE;
 
         public Task(MonoBehaviour context, IEnumerator task)
         {
@@ -45,6 +36,15 @@ namespace DanmakU
             UtilCoroutines.UtilityBehaviour.QueueTask(this);
             enumerable = true;
         }
+
+        #region IEnumerable implementation
+
+        public IEnumerator GetEnumerator()
+        {
+            return Wrapper(context);
+        }
+
+        #endregion
 
         private IEnumerator Wrapper(MonoBehaviour currentContext)
         {

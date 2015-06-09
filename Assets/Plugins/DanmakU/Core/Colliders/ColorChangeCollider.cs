@@ -5,60 +5,60 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider
-{
+namespace DanmakU.Collider {
+
     [AddComponentMenu("DanmakU/Colliders/Color Change Collider")]
-    public class ColorChangeCollider : DanmakuCollider
-    {
+    public class ColorChangeCollider : DanmakuCollider {
+
         //TODO Make a proper custom editor for this class
         //TODO Document
 
-        public enum ColorType
-        {
+        public enum ColorType {
+
             Constant,
             Random,
             Gradient
-        }
 
-        [SerializeField, Show] private ColorType type;
-
-        public ColorType Type
-        {
-            get { return type; }
-            set { type = value; }
-        }
-
-        [SerializeField, Show] private Color color;
-
-        public Color Color
-        {
-            get { return color; }
-            set { color = value; }
-        }
-
-        [SerializeField, Show] private Color[] colors;
-
-        public Color[] Colors
-        {
-            get { return colors; }
-            set { colors = value; }
-        }
-
-        [SerializeField, Show] private Gradient gradient;
-
-        public Gradient Gradient
-        {
-            get { return gradient; }
-            set { gradient = value; }
         }
 
         private DanmakuGroup affected;
 
+        [SerializeField, Show]
+        private Color color;
+
+        [SerializeField, Show]
+        private Color[] colors;
+
+        [SerializeField, Show]
+        private Gradient gradient;
+
+        [SerializeField, Show]
+        private ColorType type;
+
+        public ColorType Type {
+            get { return type; }
+            set { type = value; }
+        }
+
+        public Color Color {
+            get { return color; }
+            set { color = value; }
+        }
+
+        public Color[] Colors {
+            get { return colors; }
+            set { colors = value; }
+        }
+
+        public Gradient Gradient {
+            get { return gradient; }
+            set { gradient = value; }
+        }
+
         /// <summary>
         /// Called on Component instantiation
         /// </summary>
-        protected override void Awake()
-        {
+        protected override void Awake() {
             base.Awake();
             affected = new DanmakuSet();
         }
@@ -70,13 +70,12 @@ namespace DanmakU.Collider
         /// </summary>
         /// <param name="danmaku">the danmaku that hit the collider.</param>
         /// <param name="info">additional information about the collision</param>
-        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
-        {
+        protected override void DanmakuCollision(Danmaku danmaku,
+                                                 RaycastHit2D info) {
             if (affected.Contains(danmaku))
                 return;
 
-            switch (type)
-            {
+            switch (type) {
                 case ColorType.Constant:
                     if (colors.Length > 0)
                         danmaku.Color = colors[0];
@@ -96,4 +95,5 @@ namespace DanmakU.Collider
 
         #endregion
     }
+
 }

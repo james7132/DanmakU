@@ -13,6 +13,10 @@ namespace DanmakU
 {
     internal class DanmakuPool
     {
+        internal Danmaku[] all;
+        private int currentIndex;
+        private int endIndex;
+        internal int inactiveCount;
         //FIXME: Currently not working: optimized version of pool, need to debug
 
         //			internal Danmaku[] all;
@@ -109,19 +113,13 @@ namespace DanmakU
         //			#endregion
 
         internal int[] queue;
-        internal Danmaku[] all;
-
-        private int currentIndex;
-        private int endIndex;
         private int size;
-
-        internal int totalCount;
-        internal int inactiveCount;
         internal int spawnCount;
+        internal int totalCount;
 
         public DanmakuPool(int initial, int spawn)
         {
-            this.spawnCount = spawn;
+            spawnCount = spawn;
             totalCount = 0;
             inactiveCount = 0;
             Spawn(initial);

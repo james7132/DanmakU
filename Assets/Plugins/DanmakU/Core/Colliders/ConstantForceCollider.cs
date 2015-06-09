@@ -5,14 +5,15 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider
-{
+namespace DanmakU.Collider {
+
     [AddComponentMenu("DanmakU/Colliders/Constant Force Collider")]
-    public class ConstantForceCollider : DanmakuCollider
-    {
+    public class ConstantForceCollider : DanmakuCollider {
+
         //TODO Document
 
-        [SerializeField, Show] private Vector2 force;
+        [SerializeField, Show]
+        private Vector2 force;
 
         /// <summary>
         /// Gets or sets the force applied to contacting Danmaku.
@@ -21,8 +22,7 @@ namespace DanmakU.Collider
         /// Since Danmaku have no mass. The force applied in in terms of a constant displacement (units per second).
         /// </remarks>
         /// <value>The force applied.</value>
-        public Vector2 Force
-        {
+        public Vector2 Force {
             get { return force; }
             set { force = value; }
         }
@@ -34,11 +34,12 @@ namespace DanmakU.Collider
         /// </summary>
         /// <param name="danmaku">the danmaku that hit the collider.</param>
         /// <param name="info">additional information about the collision</param>
-        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
-        {
+        protected override void DanmakuCollision(Danmaku danmaku,
+                                                 RaycastHit2D info) {
             danmaku.Position += force*Dt;
         }
 
         #endregion
     }
+
 }
