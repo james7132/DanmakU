@@ -5,76 +5,70 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Controllers {
+namespace DanmakU.Controllers
+{
+    [System.Serializable]
+    public class ColorChangeController : IDanmakuController
+    {
+        //TODO Document
 
-	[System.Serializable]
-	public class ColorChangeController : IDanmakuController {
-		
-		//TODO Document
+        [SerializeField, Show] private Gradient _colorGradient;
 
-		[SerializeField, Show]
-		private Gradient colorGradient;
-		public Gradient ColorGradient {
-			get {
-				return colorGradient;
-			}
-			set {
-				colorGradient = value;
-			}
-		}
-		
-		[SerializeField, Show]
-		private float startTime;
-		public float StartTime {
-			get {
-				return startTime;
-			}
-			set {
-				startTime = value;
-			}
-		}
-		
-		[SerializeField, Show]
-		private float endTime;
-		public float EndTime {
-			get {
-				return endTime;
-			}
-			set {
-				endTime = value;
-			}
-		}
+        public Gradient ColorGradient
+        {
+            get { return _colorGradient; }
+            set { _colorGradient = value; }
+        }
 
-		#region IDanmakuController implementation
+        [SerializeField, Show] private float _startTime;
 
-		/// <summary>
-		/// Updates the Danmaku controlled by the controller instance.
-		/// </summary>
-		/// <param name="danmaku">the bullet to update.</param>
-		/// <param name="dt">the change in time since the last update</param>
-		/// <param name="projectile">Projectile.</param>
-		public void Update (Danmaku projectile, float dt) {
-			Gradient gradient = ColorGradient;
-			if (gradient == null)
-				return;
-			
-			float start = StartTime;
-			float end = EndTime;
-			float bulletTime = projectile.Time;
-			Color endColor = gradient.Evaluate (1f);
+        public float StartTime
+        {
+            get { return _startTime; }
+            set { _startTime = value; }
+        }
 
-			if (bulletTime < start) {
-				projectile.Color = projectile.Prefab.Color;
-			} else if (bulletTime > end)
-				projectile.Color = endColor;
-			else {
-				if (EndTime <= start)
-					projectile.Color = endColor;
-				else
-					projectile.Color = gradient.Evaluate ((bulletTime - start) / (end - start));
-			}
-		}
+        [SerializeField, Show] private float _endTime;
 
-		#endregion
-	}
+        public float EndTime
+        {
+            get { return _endTime; }
+            set { _endTime = value; }
+        }
+
+        #region IDanmakuController implementation
+
+        /// <summary>
+        /// Updates the Danmaku controlled by the controller instance.
+        /// </summary>
+        /// <param name="danmaku">the bullet to update.</param>
+        /// <param name="dt">the change in time since the last update</param>
+        public void Update(Danmaku danmaku, float dt)
+        {
+            Gradient gradient = ColorGradient;
+            if (gradient == null)
+                return;
+
+            float start = StartTime;
+            float end = EndTime;
+            float bulletTime = danmaku.Time;
+            Color endColor = gradient.Evaluate(1f);
+
+            if (bulletTime < start)
+            {
+                danmaku.Color = danmaku.Prefab.Color;
+            }
+            else if (bulletTime > end)
+                danmaku.Color = endColor;
+            else
+            {
+                if (EndTime <= start)
+                    danmaku.Color = endColor;
+                else
+                    danmaku.Color = gradient.Evaluate((bulletTime - start)/(end - start));
+            }
+        }
+
+        #endregion
+    }
 }

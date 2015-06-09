@@ -5,103 +5,95 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-/// <summary>
-/// A set of pre-created Danmaku Colliders that can be used
-/// </summary>
-namespace DanmakU.Collider {
+namespace DanmakU.Collider
+{
+    [AddComponentMenu("DanmakU/Colliders/Color Change Collider")]
+    public class ColorChangeCollider : DanmakuCollider
+    {
+        //TODO Make a proper custom editor for this class
+        //TODO Document
 
-	[AddComponentMenu("DanmakU/Colliders/Color Change Collider")]
-	public class ColorChangeCollider : DanmakuCollider {
+        public enum ColorType
+        {
+            Constant,
+            Random,
+            Gradient
+        }
 
-		//TODO Make a proper custom editor for this class
-		//TODO Document
+        [SerializeField, Show] private ColorType type;
 
-		public enum ColorType { Constant, Random, Gradient }
+        public ColorType Type
+        {
+            get { return type; }
+            set { type = value; }
+        }
 
-		[SerializeField, Show]
-		private ColorType type;
-		public ColorType Type {
-			get {
-				return type;
-			}
-			set {
-				type = value;
-			}
-		}
+        [SerializeField, Show] private Color color;
 
-		[SerializeField, Show]
-		private Color color;
-		public Color Color {
-			get {
-				return color;
-			}
-			set {
-				color = value;
-			}
-		}
+        public Color Color
+        {
+            get { return color; }
+            set { color = value; }
+        }
 
-		[SerializeField, Show]
-		private Color[] colors;
-		public Color[] Colors {
-			get {
-				return colors;
-			}
-			set {
-				colors = value;
-			}
-		}
+        [SerializeField, Show] private Color[] colors;
 
-		[SerializeField, Show]
-		private Gradient gradient;
-		public Gradient Gradient {
-			get {
-				return gradient;
-			}
-			set {
-				gradient = value;
-			}
-		}
+        public Color[] Colors
+        {
+            get { return colors; }
+            set { colors = value; }
+        }
 
-		private DanmakuGroup affected;
+        [SerializeField, Show] private Gradient gradient;
 
-		/// <summary>
-		/// Called on Component instantiation
-		/// </summary>
-		protected override void Awake () {
-			base.Awake ();
-			affected = new DanmakuSet ();
-		}
+        public Gradient Gradient
+        {
+            get { return gradient; }
+            set { gradient = value; }
+        }
 
-		#region implemented abstract members of DanmakuCollider
+        private DanmakuGroup affected;
 
-		/// <summary>
-		/// Handles a Danmaku collision. Only ever called with Danmaku that pass the filter.
-		/// </summary>
-		/// <param name="danmaku">the danmaku that hit the collider.</param>
-		/// <param name="info">additional information about the collision</param>
-		protected override void DanmakuCollision (Danmaku danmaku, RaycastHit2D info) {
-			if (affected.Contains (danmaku))
-				return;
+        /// <summary>
+        /// Called on Component instantiation
+        /// </summary>
+        protected override void Awake()
+        {
+            base.Awake();
+            affected = new DanmakuSet();
+        }
 
-			switch (type) {
-				case ColorType.Constant:
-					if(colors.Length > 0)
-						danmaku.Color = colors[0];
-					break;
-				case ColorType.Random:
-					if(colors.Length > 0)
-						danmaku.Color = colors.Random();
-					break;
-				case ColorType.Gradient:
-					if(gradient != null)
-						danmaku.Color = gradient.Evaluate(Random.value);
-					break;
-			}
-			
-			affected.Add (danmaku);
-		}
+        #region implemented abstract members of DanmakuCollider
 
-		#endregion
-	}
+        /// <summary>
+        /// Handles a Danmaku collision. Only ever called with Danmaku that pass the filter.
+        /// </summary>
+        /// <param name="danmaku">the danmaku that hit the collider.</param>
+        /// <param name="info">additional information about the collision</param>
+        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
+        {
+            if (affected.Contains(danmaku))
+                return;
 
+            switch (type)
+            {
+                case ColorType.Constant:
+                    if (colors.Length > 0)
+                        danmaku.Color = colors[0];
+                    break;
+                case ColorType.Random:
+                    if (colors.Length > 0)
+                        danmaku.Color = colors.Random();
+                    break;
+                case ColorType.Gradient:
+                    if (gradient != null)
+                        danmaku.Color = gradient.Evaluate(Random.value);
+                    break;
+            }
+
+            affected.Add(danmaku);
+        }
+
+        #endregion
+    }
 }

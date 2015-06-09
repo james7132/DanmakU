@@ -5,26 +5,21 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Controllers {
+namespace DanmakU.Controllers
+{
+    public class HomingController : IDanmakuController
+    {
+        [SerializeField, Show]
+        public Transform Target { get; set; }
 
-	public class HomingController : IDanmakuController {
+        #region IDanmakuController implementation
 
-		[SerializeField, Show]
-		public Transform Target {
-			get;
-			set;
-		}
+        public void Update(Danmaku danmaku, float dt)
+        {
+            danmaku.AngularSpeed = 0f;
+            danmaku.Rotation = DanmakuUtil.AngleBetween2D(danmaku.position, Target.position);
+        }
 
-		#region IDanmakuController implementation
-
-		public void Update (Danmaku danmaku, float dt) {
-			danmaku.AngularSpeed = 0f;
-			danmaku.Rotation = DanmakuUtil.AngleBetween2D(danmaku.position, Target.position);
-		}
-
-		#endregion
-
-	}
-
-
+        #endregion
+    }
 }
