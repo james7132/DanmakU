@@ -3,62 +3,56 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
-/// <summary>
-/// A development kit for quick development of 2D Danmaku games
-/// </summary>
-namespace DanmakU {
+namespace DanmakU
+{
+    /// <summary>
+    /// A GameController implementation for 2D Danmaku games.
+    /// </summary>
+    [AddComponentMenu("DanmakU/Danmaku Game Controller")]
+    public sealed class DanmakuGameController : MonoBehaviour
+    {
+        public bool FrameRateIndependent = true;
 
-	/// <summary>
-	/// A GameController implementation for 2D Danmaku games.
-	/// </summary>
-	[AddComponentMenu("DanmakU/Danmaku Game Controller")]
-	public sealed class DanmakuGameController : MonoBehaviour {
-		
-		public bool FrameRateIndependent = true;
+        [SerializeField] private int danmakuInitialCount = Danmaku.standardStart;
 
-		[SerializeField]
-		private int danmakuInitialCount = Danmaku.standardStart;
-		
-		[SerializeField]
-		private int danmakuSpawnOnEmpty = Danmaku.standardSpawn;
+        [SerializeField] private int danmakuSpawnOnEmpty = Danmaku.standardSpawn;
 
-		[SerializeField]
-		private float angleResolution = 0.1f;
+        [SerializeField] private float angleResolution = 0.1f;
 
+        private static DanmakuGameController instance;
 
-		private static DanmakuGameController instance;
-		
-		public static DanmakuGameController Instance {
-			get { 
-				if(instance == null) {
-					instance = FindObjectOfType<DanmakuGameController>();
-					if(instance == null) {
-						instance = new GameObject(typeof(DanmakuGameController).Name).AddComponent<DanmakuGameController>();
-					}
-				}
-				return instance; 
-			}
-		}
+        public static DanmakuGameController Instance
+        {
+            get
+            {
+                if (instance != null) return instance;
+                instance = FindObjectOfType<DanmakuGameController>() ??
+                           new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+                return instance;
+            }
+        }
 
-		void Awake () {
-			DontDestroyOnLoad (gameObject);
-			if(instance != null) {
-				Destroy (this);
-				return;
-			}
-			instance = this;
-			Danmaku.Setup (danmakuInitialCount, danmakuSpawnOnEmpty, angleResolution);
-		}
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+            if (instance != null)
+            {
+                Destroy(this);
+                return;
+            }
+            instance = this;
+            Danmaku.Setup(danmakuInitialCount, danmakuSpawnOnEmpty, angleResolution);
+        }
 
-		void Update() {
-			Danmaku.UpdateAll ();
-		}
+        private void Update()
+        {
+            Danmaku.UpdateAll();
+        }
 
-		void OnLevelWasLoaded(int level) {
-			Danmaku.DeactivateAll ();
-		}
-	}
+        private void OnLevelWasLoaded(int level)
+        {
+            Danmaku.DeactivateAll();
+        }
+    }
 }

@@ -5,182 +5,198 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace DanmakU {
+namespace DanmakU
+{
+    [System.Serializable]
+    public abstract class DanmakuModifier : IEnumerable<DanmakuModifier>
+    {
+        [SerializeField] private DanmakuModifier _subModifier;
+        private FireData _data;
 
-	[System.Serializable]
-	public abstract class DanmakuModifier : IEnumerable<DanmakuModifier> {
+        protected DynamicFloat Speed
+        {
+            get { return _data.Speed; }
+            set
+            {
+                _data.Speed = value;
+                if (_subModifier != null)
+                    _subModifier.Speed = value;
+            }
+        }
 
-		[SerializeField]
-		private DanmakuModifier subModifier;
-		private FireData data;
+        protected DynamicFloat AngularSpeed
+        {
+            get { return _data.AngularSpeed; }
+            set
+            {
+                _data.AngularSpeed = value;
+                if (_subModifier != null)
+                    _subModifier.AngularSpeed = value;
+            }
+        }
 
-		protected DynamicFloat Speed {
-			get {
-				return data.Speed;
-			}
-			set {
-				data.Speed = value;
-				if(subModifier != null)
-					subModifier.Speed = value;
-			}
-		}
+        protected DanmakuField Field
+        {
+            get { return _data.Field; }
+            set
+            {
+                _data.Field = value;
+                if (_subModifier != null)
+                    _subModifier.Field = value;
+            }
+        }
 
-		protected DynamicFloat AngularSpeed {
-			get {
-				return data.AngularSpeed;
-			}
-			set {
-				data.AngularSpeed = value;
-				if(subModifier != null)
-					subModifier.AngularSpeed = value;
-			}
-		}
+        protected DanmakuController Controller
+        {
+            get { return _data.Controller; }
+            set
+            {
+                _data.Controller = value;
+                if (_subModifier != null)
+                    _subModifier.Controller = value;
+            }
+        }
 
-		protected DanmakuField Field {
-			get {
-				return data.Field;
-			}
-			set {
-				data.Field = value;
-				if (subModifier != null)
-					subModifier.Field = value;
-			}
-		}
+        protected DanmakuPrefab Prefab
+        {
+            get { return _data.Prefab; }
+            set
+            {
+                _data.Prefab = value;
+                if (_subModifier != null)
+                    _subModifier.Prefab = value;
+            }
+        }
 
-		protected DanmakuController Controller {
-			get {
-				return data.Controller;
-			}
-			set {
-				data.Controller = value;
-				if (subModifier != null)
-					subModifier.Controller = value;
-			}
-		}
+        protected DanmakuGroup Group
+        {
+            get { return _data.Group; }
+            set
+            {
+                _data.Group = value;
+                if (_subModifier != null)
+                    _subModifier.Group = value;
+            }
+        }
 
-		protected DanmakuPrefab Prefab {
-			get {
-				return data.Prefab;
-			}
-			set {
-				data.Prefab = value;
-				if (subModifier != null)
-					subModifier.Prefab = value;
-			}
-		}
+        public DanmakuModifier SubModifier
+        {
+            get { return _subModifier; }
+            set
+            {
+                _subModifier = value;
+                if (_subModifier != null)
+                    _subModifier.Initialize(_data);
+            }
+        }
 
-		protected DanmakuGroup Group {
-			get {
-				return data.Group;
-			}
-			set {
-				data.Group = value;
-				if (subModifier != null)
-					subModifier.Group = value;
-			}
-		}
+        internal void Initialize(FireData data)
+        {
+            this._data = data;
+            if (_subModifier != null)
+                _subModifier.Initialize(data);
+            OnInitialize();
+        }
 
-		public DanmakuModifier SubModifier {
-			get {
-				return subModifier;
-			}
-			set {
-				subModifier = value;
-				if(subModifier != null)
-					subModifier.Initialize(data);
-			}
-		}
+        protected virtual void OnInitialize()
+        {
+        }
 
-		internal void Initialize(FireData data) {
-			this.data = data;
-			if (subModifier != null)
-				subModifier.Initialize (data);
-			OnInitialize ();
-		}
+        public static DanmakuModifier Construct(IEnumerable<DanmakuModifier> enumerable)
+        {
+            if (enumerable == null)
+                throw new System.ArgumentNullException();
+            if (enumerable is DanmakuModifier)
+                return enumerable as DanmakuModifier;
+            DanmakuModifier top = null;
+            DanmakuModifier current = null;
+            foreach (var next in enumerable)
+            {
+                if (next != null)
+                {
+                    if (top == null)
+                        top = next;
+                    else
+                        current._subModifier = next;
+                    current = next;
+                }
+            }
+            return top;
+        }
 
-		protected virtual void OnInitialize() {
-		}
+        public void Insert(DanmakuModifier newModifier)
+        {
+            if (newModifier == null)
+                throw new System.ArgumentNullException();
+            if (_subModifier == null)
+                _subModifier = newModifier;
+            else
+            {
+                newModifier._subModifier = _subModifier;
+                _subModifier = newModifier;
+            }
+        }
 
-		public static DanmakuModifier Construct (IEnumerable<DanmakuModifier> enumerable) {
-			if (enumerable == null)
-				throw new System.ArgumentNullException ();
-			if (enumerable is DanmakuModifier)
-				return enumerable as DanmakuModifier;
-			DanmakuModifier top = null;
-			DanmakuModifier current = null;
-			foreach (var next in enumerable) {
-				if(next != null) {
-					if(top == null)
-						top = next;
-					else
-						current.subModifier = next;
-					current = next;
-				}
-			}
-			return top;
-		}
+        public void Append(DanmakuModifier newModifier)
+        {
+            DanmakuModifier parent = this;
+            DanmakuModifier current = _subModifier;
+            while (current != null)
+            {
+                current = current._subModifier;
+            }
+            parent.SubModifier = newModifier;
+        }
 
-		public void Insert (DanmakuModifier newModifier) {
-			if (newModifier == null)
-				throw new System.ArgumentNullException ();
-			if (subModifier == null)
-				subModifier = newModifier;
-			else {
-				newModifier.subModifier = subModifier;
-				subModifier = newModifier;
-			}
-		}
+        protected void FireSingle(Vector2 position,
+            DynamicFloat rotation)
+        {
+            if (SubModifier == null)
+            {
+                _data.Position = position;
+                _data.Rotation = rotation;
+                _data.Fire();
+            }
+            else
+            {
+                SubModifier.OnFire(position, rotation);
+            }
+        }
 
-		public void Append(DanmakuModifier newModifier) {
-			DanmakuModifier parent = this;
-			DanmakuModifier current = subModifier;
-			while (current != null) {
-				current = current.subModifier;
-			}
-			parent.SubModifier = newModifier;
-		}
+        public void Fire(FireData data)
+        {
+            Initialize(data);
+            OnFire(data.Position, data.Rotation);
+        }
 
-		protected void FireSingle(Vector2 position,
-		                          DynamicFloat rotation) {
-			if (SubModifier == null) {
-				data.Position = position;
-				data.Rotation = rotation;
-				data.Fire();
-			} else {
-				SubModifier.OnFire (position, rotation);
-			}
-		}
+        public abstract void OnFire(Vector2 position, DynamicFloat rotation);
 
-		public void Fire(FireData data) {
-			Initialize(data);
-			OnFire(data.Position, data.Rotation);
-		}
+        #region IEnumerable implementation
 
-		public abstract void OnFire(Vector2 position, DynamicFloat rotation);
+        public IEnumerator<DanmakuModifier> GetEnumerator()
+        {
+            DanmakuModifier current = this;
+            while (current != null)
+            {
+                yield return current;
+                current = current._subModifier;
+            }
+        }
 
-		#region IEnumerable implementation
+        #endregion
 
-		public IEnumerator<DanmakuModifier> GetEnumerator () {
-			DanmakuModifier current = this;
-			while (current != null) {
-				yield return current;
-				current = current.subModifier;
-			}
-		}
+        #region IEnumerable implementation
 
-		#endregion
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            DanmakuModifier current = this;
+            while (current != null)
+            {
+                yield return current;
+                current = current._subModifier;
+            }
+        }
 
-		#region IEnumerable implementation
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator () {
-			DanmakuModifier current = this;
-			while (current != null) {
-				yield return current;
-				current = current.subModifier;
-			}
-		}
-
-		#endregion
-	}
-
+        #endregion
+    }
 }

@@ -8,7 +8,7 @@ namespace Vexe.Runtime.Types
 	/// Composite attributes are used by CompositeDrawers
 	/// Note that in your composite drawers you should only add decorations and modify the member value
 	/// you shouldn't manipulate the way the member is drawn, this is what the DrawnAttribute is for
-	/// Example of composite attributes: Comment, Whitespace, Min, Max, Regex, etc
+	/// Example of composite attributes: Comment, Whitespace, MinSpeed, maxSpeed, Regex, etc
 	/// </summary>
 	public abstract class CompositeAttribute : Attribute
 	{

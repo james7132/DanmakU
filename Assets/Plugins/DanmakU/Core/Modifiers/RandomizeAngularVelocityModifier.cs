@@ -5,37 +5,35 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Modifiers {
-	
-	[System.Serializable]
-	public class RandomizeAngularVelocityModifier : DanmakuModifier {
-		
-		[SerializeField, Show]
-		DynamicFloat range;
-		public DynamicFloat Range {
-			get {
-				return range;
-			}
-			set {
-				range = value;
-			}
-		}
-		
-		public RandomizeAngularVelocityModifier (DynamicFloat range) {
-			this.range = range;
-		}
+namespace DanmakU.Modifiers
+{
+    [System.Serializable]
+    public class RandomizeAngularVelocityModifier : DanmakuModifier
+    {
+        [SerializeField, Show] private DynamicFloat range;
 
-		#region implemented abstract members of FireModifier
+        public DynamicFloat Range
+        {
+            get { return range; }
+            set { range = value; }
+        }
 
-		public override void OnFire (Vector2 position, DynamicFloat rotation) {
-			float oldAV = AngularSpeed;
-			float rangeValue = Range.Value;
-			AngularSpeed = oldAV + 0.5f *  Random.Range (-rangeValue, rangeValue);
-			FireSingle (position, rotation);
-			AngularSpeed = oldAV;
-		}
+        public RandomizeAngularVelocityModifier(DynamicFloat range)
+        {
+            this.range = range;
+        }
 
-		#endregion
-		
-	}
+        #region implemented abstract members of FireModifier
+
+        public override void OnFire(Vector2 position, DynamicFloat rotation)
+        {
+            float oldAV = AngularSpeed;
+            float rangeValue = Range.Value;
+            AngularSpeed = oldAV + 0.5f*Random.Range(-rangeValue, rangeValue);
+            FireSingle(position, rotation);
+            AngularSpeed = oldAV;
+        }
+
+        #endregion
+    }
 }

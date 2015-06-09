@@ -4,21 +4,18 @@
 
 using UnityEngine;
 
-namespace DanmakU.Modifiers {
-	
-	public class ClearControllersModifier : DanmakuModifier {
+namespace DanmakU.Modifiers
+{
+    public class ClearControllersModifier : DanmakuModifier
+    {
+        #region implemented abstract members of DanmakuModifier
 
-		#region implemented abstract members of DanmakuModifier
+        public override void OnFire(Vector2 position, DynamicFloat rotation)
+        {
+            Controller = null;
+            FireSingle(position, rotation);
+        }
 
-		public override void OnFire (Vector2 position, DynamicFloat rotation) {
-
-			Controller = null;
-			FireSingle (position, rotation);
-
-		}
-
-		#endregion
-
-	}
-
+        #endregion
+    }
 }
