@@ -4,88 +4,75 @@
 
 using UnityEngine;
 
-namespace DanmakU
-{
+namespace DanmakU {
+
     [ExecuteInEditMode]
     [RequireComponent(typeof (BoxCollider2D))]
     [AddComponentMenu("DanmakU/Misc/Field Boundary")]
-    public sealed class FieldBoundary : MonoBehaviour
-    {
-        private enum Edge
-        {
-            Top = 0,
-            Bottom = 1,
-            Left = 2,
-            Right = 3
-        }
+    public sealed class FieldBoundary : MonoBehaviour {
 
-        private static Vector2[] fixedPoints = new Vector2[]
-        {
+        private static Vector2[] fixedPoints = {
             new Vector2(0, 1f),
             new Vector2(0, -1f),
             new Vector2(-1f, 0f),
             new Vector2(1f, 0f)
         };
 
-        [SerializeField] private DanmakuField field;
-
-        [SerializeField] private Edge location;
-
-        [SerializeField] private float bufferRatio = 0.1f;
-
-        [SerializeField] private float hangoverRatio = 0f;
-
-        [SerializeField] private float spaceRatio = 0;
-
         private BoxCollider2D boundary;
-        private Bounds2D oldBounds;
-        private Bounds2D newBounds;
 
-        private void Awake()
-        {
+        [SerializeField]
+        private float bufferRatio = 0.1f;
+
+        [SerializeField]
+        private DanmakuField field;
+
+        [SerializeField]
+        private float hangoverRatio = 0f;
+
+        [SerializeField]
+        private Edge location;
+
+        private Bounds2D newBounds;
+        private Bounds2D oldBounds;
+
+        [SerializeField]
+        private float spaceRatio = 0;
+
+        private void Awake() {
             boundary = GetComponent<BoxCollider2D>();
-            if (field == null)
-            {
+            if (field == null) {
                 print("No field provided, searching in ancestor GameObjects...");
                 field = GetComponentInParent<DanmakuField>();
             }
             if (field == null)
-            {
                 Debug.LogError("Field Boundary without a DanmakuField");
-            }
             else
-            {
                 UpdatePosition();
-            }
         }
 
-        private void Update()
-        {
+        private void Update() {
             if (field != null && field.MovementBounds != oldBounds)
-            {
                 UpdatePosition();
-            }
         }
 
-        private void OnDrawGizmos()
-        {
+        private void OnDrawGizmos() {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(boundary.bounds.center, boundary.bounds.size);
         }
 
-        private void UpdatePosition()
-        {
+        private void UpdatePosition() {
             oldBounds = field.MovementBounds;
 
             float size = oldBounds.Size.Max();
-            Vector2 newPosition = (Vector2) oldBounds.Center + fixedPoints[(int) location].Hadamard2(oldBounds.Extents);
+            Vector2 newPosition = oldBounds.Center +
+                                  fixedPoints[(int) location].Hadamard2(
+                                                                        oldBounds.Extents);
             float buffer = bufferRatio*size;
             float space = spaceRatio*size;
             float hangover = hangoverRatio*size;
 
             Vector2 area = boundary.size;
-            switch (location)
-            {
+            switch (location) {
                 case Edge.Top:
                 case Edge.Bottom:
                     area.y = buffer;
@@ -100,8 +87,7 @@ namespace DanmakU
             boundary.size = area;
 
             oldBounds = boundary.bounds;
-            switch (location)
-            {
+            switch (location) {
                 case Edge.Top:
                     newPosition.y += oldBounds.Extents.y + space;
                     break;
@@ -118,5 +104,16 @@ namespace DanmakU
 
             transform.position = newPosition;
         }
+
+        private enum Edge {
+
+            Top = 0,
+            Bottom = 1,
+            Left = 2,
+            Right = 3
+
+        }
+
     }
+
 }

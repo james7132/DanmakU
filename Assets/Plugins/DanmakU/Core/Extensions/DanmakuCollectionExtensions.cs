@@ -2,13 +2,12 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace DanmakU
-{
-    public static class DanmakuCollectionExtensions
-    {
+namespace DanmakU {
+
+    public static class DanmakuCollectionExtensions {
         #region Position Functions
 
         /// <summary>
@@ -21,23 +20,18 @@ namespace DanmakU
         /// </remarks>
         /// <param name="danmakus">The enumerable collection of Danmaku. Will throw System.NullReferenceException if null.</param>
         /// <param name="position">the position to move the contained danmaku to, in absolute world coordinates.</param>
-        public static T MoveTo<T>(this T danmakus, Vector2 position) where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTo<T>(this T danmakus, Vector2 position)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Position = position;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Position = position;
                 }
@@ -57,26 +51,21 @@ namespace DanmakU
         /// <exception cref="System.ArgumentNullException">Thrown if the position array is null.</exception>
         /// <param name="danmakus">The enumerable collection of Danmaku. Will throw System.NullReferenceException if null.</param>
         /// <param name="position">the potential positions to move the contained danmaku to, in absolute world coordinates.</param>
-        public static T MoveTo<T>(this T danmakus, IList<Vector2> positions) where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTo<T>(this T danmakus, IList<Vector2> positions)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             if (positions == null)
                 throw new System.ArgumentNullException();
             int max = positions.Count;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Position = positions[Random.Range(0, max)];
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Position = positions[Random.Range(0, max)];
                 }
@@ -96,8 +85,8 @@ namespace DanmakU
         /// <exception cref="System.ArgumentNullException">Thrown if the transform is null.</exception>
         /// <param name="danmakus">The enumerable collection of Danmaku. Function does nothing if this is null.</param>
         /// <param name="transform">The Transform to move to.</param>
-        public static T MoveTo<T>(this T danmakus, Transform transform) where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTo<T>(this T danmakus, Transform transform)
+            where T : class, IEnumerable<Danmaku> {
             if (transform != null)
                 MoveTo(danmakus, transform.position);
             return danmakus;
@@ -115,8 +104,8 @@ namespace DanmakU
         /// <exception cref="System.ArgumentNullException">Thrown if the Component is null.</exception>
         /// <param name="danmakus">The enumerable collection of Danmaku. Function does nothing if this is null.</param>
         /// <param name="component">The Component to move to.</param>
-        public static T MoveTo<T>(this T danmakus, Component component) where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTo<T>(this T danmakus, Component component)
+            where T : class, IEnumerable<Danmaku> {
             if (component == null)
                 throw new System.ArgumentNullException();
             if (danmakus != null)
@@ -136,8 +125,8 @@ namespace DanmakU
         /// <exception cref="System.ArgumentNullException">Thrown if the position array is null.</exception>
         /// <param name="danmakus">The enumerable collection of Danmaku. Does nothing if it is null.</param>
         /// <param name="gameObject">The GameObject to move to. Will throw System.ArgumentNullException if null.</param>
-        public static T MoveTo<T>(this T danmakus, GameObject gameObject) where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTo<T>(this T danmakus, GameObject gameObject)
+            where T : class, IEnumerable<Danmaku> {
             if (gameObject == null)
                 throw new System.ArgumentNullException();
             if (danmakus != null)
@@ -156,23 +145,18 @@ namespace DanmakU
         /// </remarks>
         /// <param name="danmakus">The enumerable collection of Danmaku. This function does nothing if it is null.</param>
         /// <param name="area">The rectangular area to move the contained Danmaku to.</param>
-        public static T MoveTo<T>(this T danmakus, Rect area) where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTo<T>(this T danmakus, Rect area)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (Danmaku danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (Danmaku danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Position = area.RandomPoint();
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Position = area.RandomPoint();
                 }
@@ -187,24 +171,20 @@ namespace DanmakU
         /// <param name="target">The target point in space to move towards, in absolute world coordinates.</param>
         /// <param name="maxDistanceDelta">The maximum distance to move.</param>
         /// <typeparam name="T">The type of the collection.</typeparam>
-        public static T MoveTowards<T>(this T danmakus, Vector2 target, float maxDistanceDelta)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTowards<T>(this T danmakus,
+                                       Vector2 target,
+                                       float maxDistanceDelta)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (Danmaku danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (Danmaku danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.MoveTowards(target, maxDistanceDelta);
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.MoveTowards(target, maxDistanceDelta);
                 }
@@ -212,28 +192,33 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T MoveTowards<T>(this T danmakus, Transform target, float maxDistanceDelta)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTowards<T>(this T danmakus,
+                                       Transform target,
+                                       float maxDistanceDelta)
+            where T : class, IEnumerable<Danmaku> {
             if (target == null)
                 throw new System.ArgumentNullException();
             return danmakus.MoveTowards(target.position, maxDistanceDelta);
         }
 
-        public static T MoveTowards<T>(this T danmakus, Component target, float maxDistanceDelta)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTowards<T>(this T danmakus,
+                                       Component target,
+                                       float maxDistanceDelta)
+            where T : class, IEnumerable<Danmaku> {
             if (target == null)
                 throw new System.ArgumentNullException();
-            return danmakus.MoveTowards(target.transform.position, maxDistanceDelta);
+            return danmakus.MoveTowards(target.transform.position,
+                                        maxDistanceDelta);
         }
 
-        public static T MoveTowards<T>(this T danmakus, GameObject target, float maxDistanceDelta)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T MoveTowards<T>(this T danmakus,
+                                       GameObject target,
+                                       float maxDistanceDelta)
+            where T : class, IEnumerable<Danmaku> {
             if (target == null)
                 throw new System.ArgumentNullException();
-            return danmakus.MoveTowards(target.transform.position, maxDistanceDelta);
+            return danmakus.MoveTowards(target.transform.position,
+                                        maxDistanceDelta);
         }
 
         /// <summary>
@@ -242,8 +227,8 @@ namespace DanmakU
         /// </summary>
         /// <param name="danmakus">The enumerable collection of Danmaku. Does nothing if it is null.</param>
         /// <param name="deltaPos">The change in position.</param>
-        public static T Translate<T>(this T danmakus, Vector2 deltaPos) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Translate<T>(this T danmakus, Vector2 deltaPos)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
 
@@ -252,18 +237,13 @@ namespace DanmakU
                 return danmakus;
 
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Position += deltaPos;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Position += deltaPos;
                 }
@@ -275,23 +255,18 @@ namespace DanmakU
 
         #region Rotation Functions
 
-        public static T RotateTo<T>(this T danmakus, DynamicFloat rotation) where T : class, IEnumerable<Danmaku>
-        {
+        public static T RotateTo<T>(this T danmakus, DynamicFloat rotation)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Rotation = rotation.Value;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Rotation = rotation.Value;
                 }
@@ -299,27 +274,22 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T RotateTo<T>(this T danmakus, IList<DynamicFloat> rotations)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T RotateTo<T>(this T danmakus,
+                                    IList<DynamicFloat> rotations)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             if (rotations == null)
                 throw new System.ArgumentNullException("rotations");
             int max = rotations.Count;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Rotation = rotations[Random.Range(0, max)];
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Rotation = rotations[Random.Range(0, max)];
                 }
@@ -327,23 +297,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Rotate<T>(this T danmakus, DynamicFloat delta) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Rotate<T>(this T danmakus, DynamicFloat delta)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Rotation += delta;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Rotation += delta;
                 }
@@ -355,23 +320,18 @@ namespace DanmakU
 
         #region Speed Functions
 
-        public static T Speed<T>(this T danmakus, DynamicFloat velocity) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Speed<T>(this T danmakus, DynamicFloat velocity)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Speed = velocity.Value;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Speed = velocity.Value;
                 }
@@ -379,26 +339,21 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Speed<T>(this T danmakus, IList<DynamicFloat> speeds) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Speed<T>(this T danmakus, IList<DynamicFloat> speeds)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             if (speeds == null)
                 throw new System.ArgumentNullException("speeds");
             int max = speeds.Count;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Speed = speeds[Random.Range(0, max)];
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Speed = speeds[Random.Range(0, max)];
                 }
@@ -406,23 +361,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Accelerate<T>(this T danmakus, DynamicFloat deltaSpeed) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Accelerate<T>(this T danmakus, DynamicFloat deltaSpeed)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Speed += deltaSpeed.Value;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Speed += deltaSpeed.Value;
                 }
@@ -434,24 +384,19 @@ namespace DanmakU
 
         #region Angular Speed Functions
 
-        public static T AngularSpeed<T>(this T danmakus, DynamicFloat angularSpeed)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T AngularSpeed<T>(this T danmakus,
+                                        DynamicFloat angularSpeed)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.AngularSpeed = angularSpeed.Value;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.AngularSpeed = angularSpeed.Value;
                 }
@@ -459,52 +404,46 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T AngularSpeed<T>(this T danmakus, IList<DynamicFloat> angularSpeeds)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T AngularSpeed<T>(this T danmakus,
+                                        IList<DynamicFloat> angularSpeeds)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             if (angularSpeeds == null)
                 throw new System.ArgumentNullException();
             int max = angularSpeeds.Count;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
-                    if (danmaku != null)
-                        danmaku.AngularSpeed = angularSpeeds[Random.Range(0, max)];
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
+                    if (danmaku != null) {
+                        danmaku.AngularSpeed =
+                            angularSpeeds[Random.Range(0, max)];
+                    }
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
-                    if (danmaku != null)
-                        danmaku.AngularSpeed = angularSpeeds[Random.Range(0, max)];
+            } else {
+                foreach (var danmaku in danmakus) {
+                    if (danmaku != null) {
+                        danmaku.AngularSpeed =
+                            angularSpeeds[Random.Range(0, max)];
+                    }
                 }
             }
             return danmakus;
         }
 
-        public static T AngularAccelerate<T>(this T danmakus, DynamicFloat deltaSpeed)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T AngularAccelerate<T>(this T danmakus,
+                                             DynamicFloat deltaSpeed)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.AngularSpeed += deltaSpeed.Value;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.AngularSpeed += deltaSpeed.Value;
                 }
@@ -516,23 +455,18 @@ namespace DanmakU
 
         #region Damage Functions
 
-        public static T Damage<T>(this T danmakus, DynamicInt damage) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Damage<T>(this T danmakus, DynamicInt damage)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Damage = damage.Value;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Damage = damage.Value;
                 }
@@ -540,26 +474,21 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Damage<T>(this T danmakus, IList<DynamicInt> damages) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Damage<T>(this T danmakus, IList<DynamicInt> damages)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             if (damages == null)
                 throw new System.ArgumentNullException("damages");
             int max = damages.Count;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Damage = damages[Random.Range(0, max)].Value;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Damage = damages[Random.Range(0, max)].Value;
                 }
@@ -571,23 +500,18 @@ namespace DanmakU
 
         #region Color Functions
 
-        public static T Color<T>(this T danmakus, Color color) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Color<T>(this T danmakus, Color color)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Color = color;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Color = color;
                 }
@@ -595,26 +519,21 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Color<T>(this T danmakus, IList<Color> colors) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Color<T>(this T danmakus, IList<Color> colors)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             if (colors == null)
                 throw new System.ArgumentNullException();
             int max = colors.Count;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Color = colors[Random.Range(0, max)];
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Color = colors[Random.Range(0, max)];
                 }
@@ -622,23 +541,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Color<T>(this T danmakus, Gradient colors) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Color<T>(this T danmakus, Gradient colors)
+            where T : class, IEnumerable<Danmaku> {
             if (colors == null)
                 throw new System.ArgumentNullException("colors");
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Color = colors.Evaluate(Random.value);
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Color = colors.Evaluate(Random.value);
                 }
@@ -650,25 +564,20 @@ namespace DanmakU
 
         #region Controller Functions
 
-        public static T AddController<T>(this T danmakus, IDanmakuController controller)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T AddController<T>(this T danmakus,
+                                         IDanmakuController controller)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
             DanmakuController controlleDelegate = controller.Update;
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.AddController(controlleDelegate);
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.AddController(controlleDelegate);
                 }
@@ -676,37 +585,32 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T AddControllers<T>(this T danmakus, IEnumerable<IDanmakuController> controllers)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T AddControllers<T>(this T danmakus,
+                                          IEnumerable<IDanmakuController> controllers)
+            where T : class, IEnumerable<Danmaku> {
             return danmakus.AddController(controllers.Compress());
         }
 
-        public static T AddControllers<T>(this T danmakus, IEnumerable<DanmakuController> controllers)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T AddControllers<T>(this T danmakus,
+                                          IEnumerable<DanmakuController> controllers)
+            where T : class, IEnumerable<Danmaku> {
             return danmakus.AddController(controllers.Compress());
         }
 
-        public static T RemoveController<T>(this T danmakus, IDanmakuController controller)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T RemoveController<T>(this T danmakus,
+                                            IDanmakuController controller)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
             DanmakuController controlleDelegate = controller.Update;
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.RemoveController(controlleDelegate);
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.RemoveController(controlleDelegate);
                 }
@@ -714,36 +618,31 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T RemoveControllers<T>(this T danmakus, IEnumerable<IDanmakuController> controllers)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T RemoveControllers<T>(this T danmakus,
+                                             IEnumerable<IDanmakuController> controllers)
+            where T : class, IEnumerable<Danmaku> {
             return danmakus.RemoveController(controllers.Compress());
         }
 
-        public static T RemoveControllers<T>(this T danmakus, IEnumerable<DanmakuController> controllers)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T RemoveControllers<T>(this T danmakus,
+                                             IEnumerable<DanmakuController> controllers)
+            where T : class, IEnumerable<Danmaku> {
             return danmakus.RemoveController(controllers.Compress());
         }
 
-        public static T AddController<T>(this T danmakus, DanmakuController controller)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T AddController<T>(this T danmakus,
+                                         DanmakuController controller)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.AddController(controller);
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.AddController(controller);
                 }
@@ -751,24 +650,19 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T RemoveController<T>(this T danmakus, DanmakuController controller)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T RemoveController<T>(this T danmakus,
+                                            DanmakuController controller)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.RemoveController(controller);
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.RemoveController(controller);
                 }
@@ -776,23 +670,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T ClearControllers<T>(this T danmakus) where T : class, IEnumerable<Danmaku>
-        {
+        public static T ClearControllers<T>(this T danmakus)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.ClearControllers();
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.ClearControllers();
                 }
@@ -804,23 +693,18 @@ namespace DanmakU
 
         #region General Functions
 
-        public static T Active<T>(this T danmakus, bool value) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Active<T>(this T danmakus, bool value)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.IsActive = value;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.IsActive = value;
                 }
@@ -828,23 +712,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Activate<T>(this T danmakus) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Activate<T>(this T danmakus)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Activate();
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Activate();
                 }
@@ -852,23 +731,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Deactivate<T>(this T danmakus) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Deactivate<T>(this T danmakus)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Deactivate();
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Deactivate();
                 }
@@ -876,23 +750,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T DeactivateImmediate<T>(this T danmakus) where T : class, IEnumerable<Danmaku>
-        {
+        public static T DeactivateImmediate<T>(this T danmakus)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.DeactivateImmediate();
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.DeactivateImmediate();
                 }
@@ -904,23 +773,18 @@ namespace DanmakU
 
         #region Misc Functions
 
-        public static T Tag<T>(this T danmakus, string tag) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Tag<T>(this T danmakus, string tag)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Tag = tag;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Tag = tag;
                 }
@@ -928,23 +792,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Layer<T>(this T danmakus, int layer) where T : class, IEnumerable<Danmaku>
-        {
+        public static T Layer<T>(this T danmakus, int layer)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.Layer = layer;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.Layer = layer;
                 }
@@ -952,23 +811,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T CollisionCheck<T>(this T danmakus, bool collisionCheck) where T : class, IEnumerable<Danmaku>
-        {
+        public static T CollisionCheck<T>(this T danmakus, bool collisionCheck)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.CollisionCheck = collisionCheck;
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.CollisionCheck = collisionCheck;
                 }
@@ -976,23 +830,18 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T MatchPrefab<T>(this T danmakus, DanmakuPrefab prefab) where T : class, IEnumerable<Danmaku>
-        {
+        public static T MatchPrefab<T>(this T danmakus, DanmakuPrefab prefab)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             var arrayTest = danmakus as Danmaku[];
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
                     if (danmaku != null)
                         danmaku.MatchPrefab(prefab);
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
+            } else {
+                foreach (var danmaku in danmakus) {
                     if (danmaku != null)
                         danmaku.MatchPrefab(prefab);
                 }
@@ -1004,9 +853,10 @@ namespace DanmakU
 
         #region Fire Functions 
 
-        public static T Fire<T>(this T danmakus, FireData data, bool useRotation = true)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T Fire<T>(this T danmakus,
+                                FireData data,
+                                bool useRotation = true)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             if (data == null)
@@ -1014,25 +864,18 @@ namespace DanmakU
             var arrayTest = danmakus as Danmaku[];
             Vector2 tempPos = data.Position;
             DynamicFloat tempRot = data.Rotation;
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
-                    if (danmaku != null)
-                    {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
+                    if (danmaku != null) {
                         data.Position = danmaku.Position;
                         if (useRotation)
                             data.Rotation = danmaku.Rotation;
                         data.Fire();
                     }
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
-                    if (danmaku != null)
-                    {
+            } else {
+                foreach (var danmaku in danmakus) {
+                    if (danmaku != null) {
                         data.Position = danmaku.Position;
                         if (useRotation)
                             data.Rotation = danmaku.Rotation;
@@ -1045,9 +888,10 @@ namespace DanmakU
             return danmakus;
         }
 
-        public static T Fire<T>(this T danmakus, FireBuilder builder, bool useRotation = true)
-            where T : class, IEnumerable<Danmaku>
-        {
+        public static T Fire<T>(this T danmakus,
+                                FireBuilder builder,
+                                bool useRotation = true)
+            where T : class, IEnumerable<Danmaku> {
             if (danmakus == null)
                 return null;
             if (builder == null)
@@ -1055,25 +899,18 @@ namespace DanmakU
             var arrayTest = danmakus as Danmaku[];
             Vector2 tempPos = builder.Position;
             DynamicFloat tempRot = builder.Rotation;
-            if (arrayTest != null)
-            {
-                foreach (var danmaku in arrayTest)
-                {
-                    if (danmaku != null)
-                    {
+            if (arrayTest != null) {
+                foreach (var danmaku in arrayTest) {
+                    if (danmaku != null) {
                         builder.Position = danmaku.Position;
                         if (useRotation)
                             builder.Rotation = danmaku.Rotation;
                         builder.Fire();
                     }
                 }
-            }
-            else
-            {
-                foreach (var danmaku in danmakus)
-                {
-                    if (danmaku != null)
-                    {
+            } else {
+                foreach (var danmaku in danmakus) {
+                    if (danmaku != null) {
                         builder.Position = danmaku.Position;
                         if (useRotation)
                             builder.Rotation = danmaku.Rotation;
@@ -1088,4 +925,5 @@ namespace DanmakU
 
         #endregion
     }
+
 }

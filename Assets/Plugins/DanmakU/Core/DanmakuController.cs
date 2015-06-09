@@ -2,8 +2,8 @@
 //	
 // See the LISCENSE file for copying permission.
 
-namespace DanmakU
-{
+namespace DanmakU {
+
     /// <summary>
     /// Delegate form of IDanmakuController
     /// </summary>
@@ -12,8 +12,8 @@ namespace DanmakU
     /// <summary>
     /// An interface for defining any controller of Danmaku behavior.
     /// </summary>
-    public interface IDanmakuController
-    {
+    public interface IDanmakuController {
+
         /// <summary>
         /// Updates the Danmaku controlled by the controller instance.
         /// </summary>
@@ -21,5 +21,7 @@ namespace DanmakU
         /// <param name="danmaku">the Danmaku object being updated</param>
         /// <param name="dt">the change in time since the last update</param>
         void Update(Danmaku danmaku, float dt);
+
     }
+
 }

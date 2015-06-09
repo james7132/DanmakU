@@ -5,33 +5,33 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Controllers
-{
+namespace DanmakU.Controllers {
+
     [System.Serializable]
-    public class ColorChangeController : IDanmakuController
-    {
+    public class ColorChangeController : IDanmakuController {
+
         //TODO Document
 
-        [SerializeField, Show] private Gradient _colorGradient;
+        [SerializeField, Show]
+        private Gradient _colorGradient;
 
-        public Gradient ColorGradient
-        {
+        [SerializeField, Show]
+        private float _endTime;
+
+        [SerializeField, Show]
+        private float _startTime;
+
+        public Gradient ColorGradient {
             get { return _colorGradient; }
             set { _colorGradient = value; }
         }
 
-        [SerializeField, Show] private float _startTime;
-
-        public float StartTime
-        {
+        public float StartTime {
             get { return _startTime; }
             set { _startTime = value; }
         }
 
-        [SerializeField, Show] private float _endTime;
-
-        public float EndTime
-        {
+        public float EndTime {
             get { return _endTime; }
             set { _endTime = value; }
         }
@@ -43,8 +43,7 @@ namespace DanmakU.Controllers
         /// </summary>
         /// <param name="danmaku">the bullet to update.</param>
         /// <param name="dt">the change in time since the last update</param>
-        public void Update(Danmaku danmaku, float dt)
-        {
+        public void Update(Danmaku danmaku, float dt) {
             Gradient gradient = ColorGradient;
             if (gradient == null)
                 return;
@@ -55,20 +54,20 @@ namespace DanmakU.Controllers
             Color endColor = gradient.Evaluate(1f);
 
             if (bulletTime < start)
-            {
                 danmaku.Color = danmaku.Prefab.Color;
-            }
             else if (bulletTime > end)
                 danmaku.Color = endColor;
-            else
-            {
+            else {
                 if (EndTime <= start)
                     danmaku.Color = endColor;
-                else
-                    danmaku.Color = gradient.Evaluate((bulletTime - start)/(end - start));
+                else {
+                    danmaku.Color =
+                        gradient.Evaluate((bulletTime - start)/(end - start));
+                }
             }
         }
 
         #endregion
     }
+
 }

@@ -5,33 +5,33 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider
-{
+namespace DanmakU.Collider {
+
     /// <summary>
     /// A DanmakuCollider that changes the direction of motion for all valid bullets that come into contact with it.
     /// </summary>
     [AddComponentMenu("DanmakU/Colliders/Redirection Collider")]
-    public class RedirectionCollider : DanmakuCollider
-    {
-        //TODO Document
-
-        [SerializeField] private RotationMode rotationMode;
-
-        [SerializeField] private DynamicFloat angle;
+    public class RedirectionCollider : DanmakuCollider {
 
         private DanmakuGroup affected;
+
+        [SerializeField]
+        private DynamicFloat angle;
+
+        //TODO Document
+
+        [SerializeField]
+        private RotationMode rotationMode;
 
         [Serialize]
         public Transform Target { get; set; }
 
-        public RotationMode RotationMode
-        {
+        public RotationMode RotationMode {
             get { return rotationMode; }
             set { rotationMode = value; }
         }
 
-        public DynamicFloat Angle
-        {
+        public DynamicFloat Angle {
             get { return angle; }
             set { angle = value; }
         }
@@ -39,8 +39,7 @@ namespace DanmakU.Collider
         /// <summary>
         /// Called on Component instantiation
         /// </summary>
-        protected override void Awake()
-        {
+        protected override void Awake() {
             base.Awake();
             affected = new DanmakuSet();
         }
@@ -52,21 +51,24 @@ namespace DanmakU.Collider
         /// </summary>
         /// <param name="danmaku">the danmaku that hit the collider.</param>
         /// <param name="info">additional information about the collision</param>
-        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
-        {
+        protected override void DanmakuCollision(Danmaku danmaku,
+                                                 RaycastHit2D info) {
             if (affected.Contains(danmaku))
                 return;
             float baseAngle = angle.Value;
-            switch (rotationMode)
-            {
+            switch (rotationMode) {
                 case RotationMode.Relative:
                     baseAngle += danmaku.Rotation;
                     break;
                 case RotationMode.Object:
-                    if (Target != null)
-                        baseAngle += DanmakuUtil.AngleBetween2D(danmaku.Position, Target.position);
-                    else
-                        Debug.LogWarning("Trying to direct at an object but no Target object assinged");
+                    if (Target != null) {
+                        baseAngle += DanmakuUtil.AngleBetween2D(
+                                                                danmaku.Position,
+                                                                Target.position);
+                    } else {
+                        Debug.LogWarning(
+                                         "Trying to direct at an object but no Target object assinged");
+                    }
                     break;
                 case RotationMode.Absolute:
                     break;
@@ -77,4 +79,5 @@ namespace DanmakU.Collider
 
         #endregion
     }
+
 }

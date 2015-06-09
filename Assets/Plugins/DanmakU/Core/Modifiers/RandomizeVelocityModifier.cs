@@ -12,15 +12,15 @@ namespace DanmakU.Modifiers
     {
         [SerializeField, Show] private DynamicFloat range;
 
+        public RandomizeVelocityModifier(DynamicFloat range)
+        {
+            this.range = range;
+        }
+
         public DynamicFloat Range
         {
             get { return range; }
             set { range = value; }
-        }
-
-        public RandomizeVelocityModifier(DynamicFloat range)
-        {
-            this.range = range;
         }
 
         #region implemented abstract members of FireModifier

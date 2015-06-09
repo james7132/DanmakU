@@ -2,9 +2,8 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
@@ -31,49 +30,45 @@ namespace DanmakU
             Line
         }
 
-        #region Private and Internal Fields
+        private bool _isActive;
+        private DanmakuController _onUpdate;
 
         /// <summary>
-        /// The Danmaku instance's index within the DanmakuPool.
+        /// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
         /// </summary>
-        internal readonly int PoolIndex;
+        internal Danmaku(int poolIndex)
+        {
+            PoolIndex = poolIndex;
+            groups = new HashSet<DanmakuGroup>();
+            _raycastHits = new RaycastHit2D[5];
+        }
 
-        //internal int renderIndex;
-
-        internal Vector2 direction;
-
-        //Cached information about the Danmaku from its prefab
-        internal ColliderType colliderType = ColliderType.Circle;
-        internal Vector2 colliderOffset = Vector2.zero;
-        internal Vector2 colliderSize = Vector2.zero;
-        private float sizeSquared;
-        internal int layer;
-        internal int frames;
-        internal float time;
-
-        //Prefab information
-        private DanmakuPrefab prefab;
-        private DanmakuPrefab runtime;
-
-        //Collision related variables
-        private int colliderMask;
-
-        private bool to_deactivate;
-
-        internal HashSet<DanmakuGroup> groups;
-
-        internal Vector3 position;
-        internal float rotation;
-
-        //Preallocated variables to avoid allocation in Update
-        private Vector2 _originalPosition;
-        private readonly RaycastHit2D[] _raycastHits;
-        private Vector2 _collisionCenter;
-
-        //Cached check for controllers to avoid needing to calculate them in Update
-        private bool _controllerCheck;
-
-        #endregion
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is active.
+        /// </summary>
+        /// <remarks>
+        /// Setting it to true while inactive is equal to calling Activate.
+        /// Setting it to false while active is equal to calling DeactivateImmediate.
+        /// </remarks>
+        /// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                if (_isActive)
+                {
+                    if (!value)
+                        DeactivateImmediate();
+                }
+                else
+                {
+                    if (value)
+                        Activate();
+                }
+                _isActive = value;
+            }
+        }
 
         /// <summary>
         /// Occurs when the Danmaku instance is activated.
@@ -84,8 +79,6 @@ namespace DanmakU
         /// Occurs when the Danmaku instance is deactivated.
         /// </summary>
         public event DanmakuEvent OnDeactivate;
-
-        private DanmakuController _onUpdate;
 
         public event DanmakuController ControllerUpdate
         {
@@ -101,151 +94,6 @@ namespace DanmakU
                 _controllerCheck = _onUpdate != null;
             }
         }
-
-        #region Public Properties
-
-        /// <summary>
-        /// The vertex color to use when rendering
-        /// </summary>
-        public Color32 Color { get; set; }
-
-        public int Damage { get; set; }
-
-        /// <summary>
-        /// Whether or not to perform collision detection with the Danmaku instance.
-        /// </summary>
-        public bool CollisionCheck { get; set; }
-
-        public float Speed { get; set; }
-
-        public float AngularSpeed { get; set; }
-
-        public DanmakuPrefab Prefab
-        {
-            get { return runtime; }
-        }
-
-        public Sprite Sprite
-        {
-            get { return runtime.Sprite; }
-        }
-
-        public Mesh Mesh
-        {
-            get { return runtime.Mesh; }
-        }
-
-        public Material Material
-        {
-            get
-            {
-                //return material;
-                return runtime.Material;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the position, in world space, of the projectile.
-        /// </summary>
-        /// <value>The position of the projectile.</value>
-        public Vector2 Position
-        {
-            get { return position; }
-            set
-            {
-                position.x = value.x;
-                position.y = value.y;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the rotation of the projectile, in degrees.
-        /// </summary>
-        /// <remarks>
-        /// If viewed from a unrotated orthographic camera:
-        /// 0 - Straight up
-        /// 90 - Straight Left
-        /// 180 - Straight Down
-        /// 270 -  Straight Right
-        /// </remarks>
-        /// <value>The rotation of the bullet in degrees.</value>
-        public float Rotation
-        {
-            get { return rotation; }
-            set
-            {
-                rotation = value;
-                direction = UnitCircle(value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the direction vector the projectile is facing.
-        /// </summary>
-        /// <remarks>
-        /// It is a unit vector.
-        /// Changing <see cref="Rotation"/> will change this vector.
-        /// </remarks>
-        /// <value>The direction vector the projectile is facing toward.</value>
-        public Vector2 Direction
-        {
-            get { return direction; }
-            set
-            {
-                direction = value.normalized;
-                rotation = Mathf.Atan2(direction.y, direction.x)*Mathf.Rad2Deg - 90f;
-            }
-        }
-
-        public float Scale { get; set; }
-
-        /// <summary>
-        /// The amount of time that has passed since this bullet has been fired.
-        /// </summary>
-        /// <value>The time since the projectile has been fired, in seconds.</value>
-        public float Time
-        {
-            get { return time; }
-        }
-
-        /// <summary>
-        /// The number of framesfieldBoundshave passed since this bullet has been fired.
-        /// </summary>
-        /// <value>The number of frames that have passed since this bullet has been fired.</value>
-        public int Frames
-        {
-            get { return frames; }
-        }
-
-        /// <summary>
-        /// Gets the instance's tag.
-        /// </summary>
-        /// <remarks>
-        /// This is initialzied to the tag on the DanmakuPrefab, but can be changed to any string.
-        /// </remarks>
-        /// <value>The tag of the projectile.</value>
-        public string Tag { get; set; }
-
-        /// <summary>
-        /// Gets or sets the instance's layer.
-        /// </summary>
-        /// <remarks>
-        /// Unlike GameObject's layers, this layer value only affects collision behavior.
-        /// </remarks>
-        /// <value>The layer used for collision detection.</value>
-        public int Layer
-        {
-            get { return layer; }
-            set
-            {
-                layer = value;
-                colliderMask = collisionMask[layer];
-            }
-        }
-
-        public DanmakuField Field { get; set; }
-
-        #endregion
 
         public void AddController(IDanmakuController controller)
         {
@@ -273,72 +121,6 @@ namespace DanmakU
             _onUpdate = null;
         }
 
-        #region Position Functions
-
-        /// <summary>
-        /// Moves the bullet closer to the specified target point.
-        /// 
-        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
-        /// </summary>
-        /// <param name="target">The target position to move towards in absolute world coordinates.</param>
-        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Vector2 target, float maxDistanceDelta)
-        {
-            Position = Vector2.MoveTowards(position, target, maxDistanceDelta);
-        }
-
-        /// <summary>
-        /// Moves the bullet closer to the specified target Transform's position.
-        /// 
-        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown if the target Transform is null.</exception>
-        /// <param name="target">The Transform of the object to move towards.</param>
-        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Transform target, float maxDistanceDelta)
-        {
-            if (target == null)
-                throw new System.ArgumentNullException();
-            Position = Vector2.MoveTowards(position, target.position, maxDistanceDelta);
-        }
-
-        /// <summary>
-        /// Moves the bullet closer to the specified target Component's position.
-        /// 
-        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown if the target Component is null.</exception>
-        /// <param name="target">The Component of the object to move towards.</param>
-        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Component target, float maxDistanceDelta)
-        {
-            if (target == null)
-                throw new System.ArgumentNullException();
-            Position = Vector2.MoveTowards(position, target.transform.position, maxDistanceDelta);
-        }
-
-        /// <summary>
-        /// Moves the bullet closer to the specified target GameObject's position.
-        /// 
-        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown if the target GameObject is null.</exception>
-        /// <param name="target">The GameObject of the object to move towards.</param>
-        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(GameObject target, float maxDistanceDelta)
-        {
-            if (target == null)
-                throw new System.ArgumentNullException();
-            Position = Vector2.MoveTowards(position, target.transform.position, maxDistanceDelta);
-        }
-
-        public void Translate(Vector2 deltaPos)
-        {
-            Position += deltaPos;
-        }
-
-        #endregion
-
         #region Rotation Functions
 
         public void Rotate(float deltaTheta)
@@ -365,16 +147,6 @@ namespace DanmakU
         }
 
         #endregion
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
-        /// </summary>
-        internal Danmaku(int poolIndex)
-        {
-            PoolIndex = poolIndex;
-            groups = new HashSet<DanmakuGroup>();
-            _raycastHits = new RaycastHit2D[5];
-        }
 
         internal void Update()
         {
@@ -573,35 +345,6 @@ namespace DanmakU
             AddController(runtime.ExtraControllers);
         }
 
-        private bool _isActive;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is active.
-        /// </summary>
-        /// <remarks>
-        /// Setting it to true while inactive is equal to calling Activate.
-        /// Setting it to false while active is equal to calling DeactivateImmediate.
-        /// </remarks>
-        /// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
-        public bool IsActive
-        {
-            get { return _isActive; }
-            set
-            {
-                if (_isActive)
-                {
-                    if (!value)
-                        DeactivateImmediate();
-                }
-                else
-                {
-                    if (value)
-                        Activate();
-                }
-                _isActive = value;
-            }
-        }
-
         public static implicit operator FireData(Danmaku danmaku)
         {
             return new FireData
@@ -712,5 +455,260 @@ namespace DanmakU
         {
             return PoolIndex;
         }
+
+        #region Private and Internal Fields
+
+        /// <summary>
+        /// The Danmaku instance's index within the DanmakuPool.
+        /// </summary>
+        internal readonly int PoolIndex;
+
+        //internal int renderIndex;
+
+        internal Vector2 direction;
+
+        //Cached information about the Danmaku from its prefab
+        internal ColliderType colliderType = ColliderType.Circle;
+        internal Vector2 colliderOffset = Vector2.zero;
+        internal Vector2 colliderSize = Vector2.zero;
+        private float sizeSquared;
+        internal int layer;
+        internal int frames;
+        internal float time;
+
+        //Prefab information
+        private DanmakuPrefab prefab;
+        private DanmakuPrefab runtime;
+
+        //Collision related variables
+        private int colliderMask;
+
+        private bool to_deactivate;
+
+        internal HashSet<DanmakuGroup> groups;
+
+        internal Vector3 position;
+        internal float rotation;
+
+        //Preallocated variables to avoid allocation in Update
+        private Vector2 _originalPosition;
+        private readonly RaycastHit2D[] _raycastHits;
+        private Vector2 _collisionCenter;
+
+        //Cached check for controllers to avoid needing to calculate them in Update
+        private bool _controllerCheck;
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// The vertex color to use when rendering
+        /// </summary>
+        public Color32 Color { get; set; }
+
+        public int Damage { get; set; }
+
+        /// <summary>
+        /// Whether or not to perform collision detection with the Danmaku instance.
+        /// </summary>
+        public bool CollisionCheck { get; set; }
+
+        public float Speed { get; set; }
+
+        public float AngularSpeed { get; set; }
+
+        public DanmakuPrefab Prefab
+        {
+            get { return runtime; }
+        }
+
+        public Sprite Sprite
+        {
+            get { return runtime.Sprite; }
+        }
+
+        public Mesh Mesh
+        {
+            get { return runtime.Mesh; }
+        }
+
+        public Material Material
+        {
+            get
+            {
+                //return material;
+                return runtime.Material;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the position, in world space, of the projectile.
+        /// </summary>
+        /// <value>The position of the projectile.</value>
+        public Vector2 Position
+        {
+            get { return position; }
+            set
+            {
+                position.x = value.x;
+                position.y = value.y;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the rotation of the projectile, in degrees.
+        /// </summary>
+        /// <remarks>
+        /// If viewed from a unrotated orthographic camera:
+        /// 0 - Straight up
+        /// 90 - Straight Left
+        /// 180 - Straight Down
+        /// 270 -  Straight Right
+        /// </remarks>
+        /// <value>The rotation of the bullet in degrees.</value>
+        public float Rotation
+        {
+            get { return rotation; }
+            set
+            {
+                rotation = value;
+                direction = UnitCircle(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the direction vector the projectile is facing.
+        /// </summary>
+        /// <remarks>
+        /// It is a unit vector.
+        /// Changing <see cref="Rotation"/> will change this vector.
+        /// </remarks>
+        /// <value>The direction vector the projectile is facing toward.</value>
+        public Vector2 Direction
+        {
+            get { return direction; }
+            set
+            {
+                direction = value.normalized;
+                rotation = Mathf.Atan2(direction.y, direction.x)*Mathf.Rad2Deg - 90f;
+            }
+        }
+
+        public float Scale { get; set; }
+
+        /// <summary>
+        /// The amount of time that has passed since this bullet has been fired.
+        /// </summary>
+        /// <value>The time since the projectile has been fired, in seconds.</value>
+        public float Time
+        {
+            get { return time; }
+        }
+
+        /// <summary>
+        /// The number of framesfieldBoundshave passed since this bullet has been fired.
+        /// </summary>
+        /// <value>The number of frames that have passed since this bullet has been fired.</value>
+        public int Frames
+        {
+            get { return frames; }
+        }
+
+        /// <summary>
+        /// Gets the instance's tag.
+        /// </summary>
+        /// <remarks>
+        /// This is initialzied to the tag on the DanmakuPrefab, but can be changed to any string.
+        /// </remarks>
+        /// <value>The tag of the projectile.</value>
+        public string Tag { get; set; }
+
+        /// <summary>
+        /// Gets or sets the instance's layer.
+        /// </summary>
+        /// <remarks>
+        /// Unlike GameObject's layers, this layer value only affects collision behavior.
+        /// </remarks>
+        /// <value>The layer used for collision detection.</value>
+        public int Layer
+        {
+            get { return layer; }
+            set
+            {
+                layer = value;
+                colliderMask = collisionMask[layer];
+            }
+        }
+
+        public DanmakuField Field { get; set; }
+
+        #endregion
+
+        #region Position Functions
+
+        /// <summary>
+        /// Moves the bullet closer to the specified target point.
+        /// 
+        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
+        /// </summary>
+        /// <param name="target">The target position to move towards in absolute world coordinates.</param>
+        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
+        public void MoveTowards(Vector2 target, float maxDistanceDelta)
+        {
+            Position = Vector2.MoveTowards(position, target, maxDistanceDelta);
+        }
+
+        /// <summary>
+        /// Moves the bullet closer to the specified target Transform's position.
+        /// 
+        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
+        /// </summary>
+        /// <exception cref="System.ArgumentNullException">Thrown if the target Transform is null.</exception>
+        /// <param name="target">The Transform of the object to move towards.</param>
+        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
+        public void MoveTowards(Transform target, float maxDistanceDelta)
+        {
+            if (target == null)
+                throw new System.ArgumentNullException();
+            Position = Vector2.MoveTowards(position, target.position, maxDistanceDelta);
+        }
+
+        /// <summary>
+        /// Moves the bullet closer to the specified target Component's position.
+        /// 
+        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
+        /// </summary>
+        /// <exception cref="System.ArgumentNullException">Thrown if the target Component is null.</exception>
+        /// <param name="target">The Component of the object to move towards.</param>
+        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
+        public void MoveTowards(Component target, float maxDistanceDelta)
+        {
+            if (target == null)
+                throw new System.ArgumentNullException();
+            Position = Vector2.MoveTowards(position, target.transform.position, maxDistanceDelta);
+        }
+
+        /// <summary>
+        /// Moves the bullet closer to the specified target GameObject's position.
+        /// 
+        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
+        /// </summary>
+        /// <exception cref="System.ArgumentNullException">Thrown if the target GameObject is null.</exception>
+        /// <param name="target">The GameObject of the object to move towards.</param>
+        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
+        public void MoveTowards(GameObject target, float maxDistanceDelta)
+        {
+            if (target == null)
+                throw new System.ArgumentNullException();
+            Position = Vector2.MoveTowards(position, target.transform.position, maxDistanceDelta);
+        }
+
+        public void Translate(Vector2 deltaPos)
+        {
+            Position += deltaPos;
+        }
+
+        #endregion
     }
 }

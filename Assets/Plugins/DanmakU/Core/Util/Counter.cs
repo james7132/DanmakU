@@ -2,25 +2,22 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
+namespace DanmakU {
 
-namespace DanmakU
-{
     [System.Serializable]
-    public struct CountdownDelay
-    {
-        //Made it a public variable to remove the computation time needed to access/edit it externally
-        public float MaxDelay;
+    public struct CountdownDelay {
+
         public float CurrentDelay;
 
-        public CountdownDelay(float maxDelay)
-        {
+        //Made it a public variable to remove the computation time needed to access/edit it externally
+        public float MaxDelay;
+
+        public CountdownDelay(float maxDelay) {
             MaxDelay = maxDelay;
             CurrentDelay = maxDelay;
         }
 
-        public bool Tick(float dt)
-        {
+        public bool Tick(float dt) {
             CurrentDelay -= dt;
             bool ready = CurrentDelay <= 0f;
             if (ready)
@@ -28,121 +25,102 @@ namespace DanmakU
             return ready;
         }
 
-        public bool Ready()
-        {
+        public bool Ready() {
             return CurrentDelay <= 0f;
         }
 
-        public void ForceReady()
-        {
+        public void ForceReady() {
             CurrentDelay = 0f;
         }
 
-        public void Reset()
-        {
+        public void Reset() {
             CurrentDelay = MaxDelay;
         }
+
     }
 
     [System.Serializable]
-    public struct Counter
-    {
-        //Made it a public variable to remove the computation time needed to access/edit it externally
-        public int MaxCount;
+    public struct Counter {
+
         public int Count;
 
-        public Counter(int maxCount)
-        {
+        //Made it a public variable to remove the computation time needed to access/edit it externally
+        public int MaxCount;
+
+        public Counter(int maxCount) {
             MaxCount = maxCount;
             Count = maxCount;
         }
 
-        public bool Ready()
-        {
+        public bool Ready() {
             return Count <= 0;
         }
 
-        public bool Tick(bool reset = true)
-        {
+        public bool Tick(bool reset = true) {
             Count--;
             bool ready = Count < 0;
             if (ready && reset)
-            {
                 Count = MaxCount;
-            }
             return ready;
         }
 
-        public void Reset()
-        {
+        public void Reset() {
             Count = MaxCount;
         }
 
-        public void ForceReady()
-        {
+        public void ForceReady() {
             Count = 0;
         }
 
-        public static implicit operator int(Counter counter)
-        {
+        public static implicit operator int(Counter counter) {
             return counter.MaxCount;
         }
+
     }
 
     [System.Serializable]
-    public class FrameCounter
-    {
+    public class FrameCounter {
+
+        private int count;
+        private bool init;
+        private int maxCount;
         public float Time;
 
-        private int maxCount;
+        public FrameCounter(float maxDelay) {
+            Time = maxDelay;
+            maxCount = TimeUtil.TimeToFrames(Time);
+            count = maxCount;
+        }
 
-        public int MaxCount
-        {
-            get
-            {
+        public int MaxCount {
+            get {
                 if (!init)
                     Init();
                 return maxCount;
             }
         }
 
-        private int count;
-
-        public int Count
-        {
-            get
-            {
+        public int Count {
+            get {
                 if (!init)
                     Init();
                 return count;
             }
         }
 
-        private bool init = false;
-
-        public FrameCounter(float maxDelay)
-        {
-            this.Time = maxDelay;
-            maxCount = TimeUtil.TimeToFrames(Time);
-            count = maxCount;
-        }
-
-        public void Init()
-        {
+        public void Init() {
             maxCount = TimeUtil.TimeToFrames(Time);
             count = maxCount;
             init = true;
         }
 
-        public bool Ready()
-        {
+        public bool Ready() {
             if (!init)
                 Init();
             return count <= 0;
         }
 
-        public bool Tick(bool reset = true)
-        {
+        public bool Tick(bool reset = true) {
             if (!init)
                 Init();
             count--;
@@ -152,22 +130,21 @@ namespace DanmakU
             return ready;
         }
 
-        public void Reset()
-        {
+        public void Reset() {
             if (!init)
                 Init();
             maxCount = TimeUtil.TimeToFrames(Time);
             count = maxCount;
         }
 
-        public void ForceReady()
-        {
+        public void ForceReady() {
             count = 0;
         }
 
-        public static implicit operator int(FrameCounter counter)
-        {
+        public static implicit operator int(FrameCounter counter) {
             return counter.maxCount;
         }
+
     }
+
 }

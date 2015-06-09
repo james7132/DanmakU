@@ -5,66 +5,61 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Modifiers
-{
+namespace DanmakU.Modifiers {
+
     [System.Serializable]
-    public class CircularBurstModifier : DanmakuModifier
-    {
-        [SerializeField, Show] private DynamicFloat range = 360f;
+    public class CircularBurstModifier : DanmakuModifier {
 
-        public DynamicFloat Range
-        {
-            get { return range; }
-            set { range = value; }
-        }
+        [SerializeField, Show]
+        private DynamicInt count = 1;
 
-        [SerializeField, Show] private DynamicInt count = 1;
+        [SerializeField, Show]
+        private DynamicFloat deltaAngularSpeed = 0f;
 
-        public DynamicInt Count
-        {
-            get { return count; }
-            set { count = value; }
-        }
+        [SerializeField, Show]
+        private DynamicFloat deltaSpeed = 0f;
 
-        [SerializeField, Show] private DynamicFloat deltaSpeed = 0f;
-
-        public DynamicFloat DeltaSpeed
-        {
-            get { return deltaSpeed; }
-            set { deltaSpeed = value; }
-        }
-
-        [SerializeField, Show] private DynamicFloat deltaAngularSpeed = 0f;
-
-        public DynamicFloat DeltaAngularSpeed
-        {
-            get { return deltaAngularSpeed; }
-            set { deltaAngularSpeed = value; }
-        }
+        [SerializeField, Show]
+        private DynamicFloat range = 360f;
 
         public CircularBurstModifier(DynamicFloat range,
-            DynamicInt count,
-            DynamicFloat deltaSpeed,
-            DynamicFloat deltaAngularSpeed)
-        {
+                                     DynamicInt count,
+                                     DynamicFloat deltaSpeed,
+                                     DynamicFloat deltaAngularSpeed) {
             this.range = range;
             this.count = count;
             this.deltaSpeed = deltaSpeed;
             this.deltaAngularSpeed = deltaAngularSpeed;
         }
 
+        public DynamicFloat Range {
+            get { return range; }
+            set { range = value; }
+        }
+
+        public DynamicInt Count {
+            get { return count; }
+            set { count = value; }
+        }
+
+        public DynamicFloat DeltaSpeed {
+            get { return deltaSpeed; }
+            set { deltaSpeed = value; }
+        }
+
+        public DynamicFloat DeltaAngularSpeed {
+            get { return deltaAngularSpeed; }
+            set { deltaAngularSpeed = value; }
+        }
+
         #region implemented abstract members of FireModifier
 
-        public override void OnFire(Vector2 position, DynamicFloat rotation)
-        {
+        public override void OnFire(Vector2 position, DynamicFloat rotation) {
             int burstCount = Mathf.Abs(count.Value);
 
             if (burstCount == 1)
-            {
                 FireSingle(position, rotation);
-            }
-            else
-            {
+            else {
                 float burstRange = range.Value;
                 float start = rotation - burstRange*0.5f;
                 float delta = burstRange/(burstCount - 1);
@@ -75,8 +70,7 @@ namespace DanmakU.Modifiers
                 DynamicFloat tempSpeed = Speed;
                 DynamicFloat tempASpeed = AngularSpeed;
 
-                for (int i = 0; i < burstCount; i++)
-                {
+                for (int i = 0; i < burstCount; i++) {
                     Speed += deltaV;
                     AngularSpeed += deltaAV;
                     FireSingle(position, start + i*delta);
@@ -89,4 +83,5 @@ namespace DanmakU.Modifiers
 
         #endregion
     }
+
 }

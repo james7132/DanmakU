@@ -5,25 +5,24 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider
-{
+namespace DanmakU.Collider {
+
     /// <summary>
     /// A DanmakuCollider implementation that adds controllers to valid bullets that contact it.
     /// </summary>
     [AddComponentMenu("DanmakU/Colliders/Add Controller Collider")]
-    public class AddControllerCollider : DanmakuCollider
-    {
-        [SerializeField, Show] private IDanmakuController[] controllers;
-
-        private DanmakuController controllerAggregate;
+    public class AddControllerCollider : DanmakuCollider {
 
         private DanmakuGroup affected;
+        private DanmakuController controllerAggregate;
+
+        [SerializeField, Show]
+        private IDanmakuController[] controllers;
 
         /// <summary>
         /// Called on Component instantiation.
         /// </summary>
-        protected override void Awake()
-        {
+        protected override void Awake() {
             base.Awake();
             affected = new DanmakuSet();
             if (controllers == null)
@@ -42,8 +41,7 @@ namespace DanmakU.Collider
         /// to bullets.
         /// </remarks>
         /// <param name="controller">The controller to be added.</param>
-        public void AddController(IDanmakuController controller)
-        {
+        public void AddController(IDanmakuController controller) {
             controllerAggregate += controller.Update;
         }
 
@@ -57,8 +55,7 @@ namespace DanmakU.Collider
         /// If the list contains more than one copy of the controller, this method only removes one copy.
         /// </remarks>
         /// <param name="controller">The controller to be removed.</param>
-        public void RemoveController(IDanmakuController controller)
-        {
+        public void RemoveController(IDanmakuController controller) {
             controllerAggregate -= controller.Update;
         }
 
@@ -72,8 +69,7 @@ namespace DanmakU.Collider
         /// to bullets.
         /// </remarks>
         /// <param name="controller">The controller(s) to be added.</param>
-        public void AddController(DanmakuController controller)
-        {
+        public void AddController(DanmakuController controller) {
             controllerAggregate += controller;
         }
 
@@ -88,8 +84,7 @@ namespace DanmakU.Collider
         /// If the supplied controller is multicast and contains multiple controllers, all of the contained controllers will be removed.
         /// </remarks>
         /// <param name="controller">Controller.</param>
-        public void RemoveController(DanmakuController controller)
-        {
+        public void RemoveController(DanmakuController controller) {
             controllerAggregate -= controller;
         }
 
@@ -97,8 +92,7 @@ namespace DanmakU.Collider
         /// Clears the controllers.
         /// All of the currently included contrrollers are removed.
         /// </summary>
-        public void ClearControllers()
-        {
+        public void ClearControllers() {
             controllerAggregate = null;
         }
 
@@ -109,8 +103,8 @@ namespace DanmakU.Collider
         /// </summary>
         /// <param name="danmaku">the danmaku that hit the collider.</param>
         /// <param name="info">additional information about the collision</param>
-        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
-        {
+        protected override void DanmakuCollision(Danmaku danmaku,
+                                                 RaycastHit2D info) {
             if (affected.Contains(danmaku))
                 return;
 
@@ -121,4 +115,5 @@ namespace DanmakU.Collider
 
         #endregion
     }
+
 }

@@ -5,22 +5,22 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider
-{
+namespace DanmakU.Collider {
+
     /// <summary>
     /// A Danmaku Controller that speeds up or slows down danmaku so long as bullets are contacting it.
     /// </summary>
     [AddComponentMenu("DanmakU/Colliders/Acceleration Collider")]
-    public class AccelerationCollider : DanmakuCollider
-    {
-        [SerializeField, Show] private float _acceleration;
+    public class AccelerationCollider : DanmakuCollider {
+
+        [SerializeField, Show]
+        private float _acceleration;
 
         /// <summary>
         /// Gets or sets the acceleration applied to affected bullets. Measured in units per second per second.
         /// </summary>
         /// <value>The acceleration applied to bullets, in absolute world units/second^2.</value>
-        public float Acceleration
-        {
+        public float Acceleration {
             get { return _acceleration; }
             set { _acceleration = value; }
         }
@@ -32,11 +32,12 @@ namespace DanmakU.Collider
         /// </summary>
         /// <param name="danmaku">the danmaku that hit the collider.</param>
         /// <param name="info">additional information about the collision</param>
-        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
-        {
+        protected override void DanmakuCollision(Danmaku danmaku,
+                                                 RaycastHit2D info) {
             danmaku.Speed += _acceleration*Dt;
         }
 
         #endregion
     }
+
 }

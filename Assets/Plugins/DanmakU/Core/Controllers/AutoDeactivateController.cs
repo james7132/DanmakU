@@ -5,38 +5,35 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Controllers
-{
+namespace DanmakU.Controllers {
+
     /// <summary>
     /// An Danmaku Controller that automatically deactivates Danmaku after a certain time after being fired.
     /// </summary>
     [System.Serializable]
-    public class AutoDeactivateController : IDanmakuController
-    {
+    public class AutoDeactivateController : IDanmakuController {
+
         //TODO Document
 
-        [SerializeField, Show] private int _frames;
+        [SerializeField, Show]
+        private int _frames;
 
-        public int Frames
-        {
+        public AutoDeactivateController(int frames = -1) {
+            Frames = frames;
+        }
+
+        public AutoDeactivateController(float time) {
+            Frames = TimeUtil.TimeToFrames(time);
+        }
+
+        public int Frames {
             get { return _frames; }
             set { _frames = value; }
         }
 
-        public float Time
-        {
+        public float Time {
             get { return TimeUtil.FramesToTime(Frames); }
             set { Frames = TimeUtil.TimeToFrames(value); }
-        }
-
-        public AutoDeactivateController(int frames = -1)
-        {
-            this.Frames = frames;
-        }
-
-        public AutoDeactivateController(float time)
-        {
-            Frames = TimeUtil.TimeToFrames(time);
         }
 
         #region IDanmakuController implementation
@@ -46,12 +43,12 @@ namespace DanmakU.Controllers
         /// </summary>
         /// <param name="danmaku">the bullet to update.</param>
         /// <param name="dt">the change in time since the last update</param>
-        public void Update(Danmaku danmaku, float dt)
-        {
+        public void Update(Danmaku danmaku, float dt) {
             if (danmaku.frames > _frames)
                 danmaku.Deactivate();
         }
 
         #endregion
     }
+
 }

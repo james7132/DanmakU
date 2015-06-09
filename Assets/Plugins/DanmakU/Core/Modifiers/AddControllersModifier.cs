@@ -2,119 +2,99 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Modifiers
-{
-    public class AddControllersModifier : DanmakuModifier
-    {
-        [Serialize, Show] private IDanmakuController[] controllers;
+namespace DanmakU.Modifiers {
+
+    public class AddControllersModifier : DanmakuModifier {
 
         private DanmakuController controllerAggregate;
 
-        public AddControllersModifier()
-        {
+        [Serialize, Show]
+        private IDanmakuController[] controllers;
+
+        public AddControllersModifier() {
             controllers = null;
         }
 
-        public AddControllersModifier(IDanmakuController controller)
-        {
+        public AddControllersModifier(IDanmakuController controller) {
             controllers = null;
             controllerAggregate = controller.Update;
         }
 
-        public AddControllersModifier(IEnumerable<IDanmakuController> controllers)
-        {
+        public AddControllersModifier(
+            IEnumerable<IDanmakuController> controllers) {
             this.controllers = null;
 
             if (controllers == null)
                 return;
 
             var colList = controllers as IList<IDanmakuController>;
-            if (colList != null)
-            {
-                for (int i = 0; i < colList.Count; i++)
-                {
+            if (colList != null) {
+                for (int i = 0; i < colList.Count; i++) {
                     IDanmakuController controller = colList[i];
                     if (controller != null)
                         controllerAggregate += controller.Update;
                 }
-            }
-            else
-            {
-                foreach (var controller in controllers)
-                {
+            } else {
+                foreach (var controller in controllers) {
                     if (controller != null)
                         controllerAggregate += controller.Update;
                 }
             }
         }
 
-        public AddControllersModifier(DanmakuController controller)
-        {
+        public AddControllersModifier(DanmakuController controller) {
             controllerAggregate = controller;
         }
 
-        public AddControllersModifier(IEnumerable<DanmakuController> controllers)
-        {
+        public AddControllersModifier(IEnumerable<DanmakuController> controllers) {
             this.controllers = null;
 
             if (controllers == null)
                 return;
 
             var colList = controllers as IList<DanmakuController>;
-            if (colList != null)
-            {
+            if (colList != null) {
                 for (int i = 0; i < colList.Count; i++)
                     controllerAggregate += colList[i];
-            }
-            else
-            {
+            } else {
                 foreach (var controller in controllers)
                     controllerAggregate += controller;
             }
         }
 
-        public void AddController(IDanmakuController controller)
-        {
+        public void AddController(IDanmakuController controller) {
             controllerAggregate += controller.Update;
         }
 
-        public void RemoveController(IDanmakuController controller)
-        {
+        public void RemoveController(IDanmakuController controller) {
             controllerAggregate -= controller.Update;
         }
 
-        public void AddController(DanmakuController controller)
-        {
+        public void AddController(DanmakuController controller) {
             controllerAggregate += controller;
         }
 
-        public void RemoveController(DanmakuController controller)
-        {
+        public void RemoveController(DanmakuController controller) {
             controllerAggregate -= controller;
         }
 
-        public void ClearControllers()
-        {
+        public void ClearControllers() {
             controllerAggregate = null;
             controllers = new IDanmakuController[0];
         }
 
         #region implemented abstract members of DanmakuModifier
 
-        public override void OnFire(Vector2 position, DynamicFloat rotation)
-        {
+        public override void OnFire(Vector2 position, DynamicFloat rotation) {
             DanmakuController temp = controllerAggregate;
 
-            if (controllers != null)
-            {
+            if (controllers != null) {
                 for (int i = 0; i < controllers.Length; i++)
-                {
                     temp += controllers[i].Update;
-                }
             }
 
             Controller += temp;
@@ -124,4 +104,5 @@ namespace DanmakU.Modifiers
 
         #endregion
     }
+
 }

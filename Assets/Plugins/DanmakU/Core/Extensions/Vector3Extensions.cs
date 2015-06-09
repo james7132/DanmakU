@@ -3,14 +3,12 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
-using System;
 
-namespace DanmakU
-{
-    public static class Vector3Extensions
-    {
-        public static float ManhattanMagnitude(this Vector3 v)
-        {
+namespace DanmakU {
+
+    public static class Vector3Extensions {
+
+        public static float ManhattanMagnitude(this Vector3 v) {
             float dist = 0f;
             if (v.x > 0)
                 dist += v.x;
@@ -35,9 +33,10 @@ namespace DanmakU
         /// </summary>
         /// <returns>the random vector</returns>
         /// <param name="v">the maximum component values</param>
-        public static Vector3 Random(this Vector3 v)
-        {
-            return new Vector3(UnityEngine.Random.value*v.x, UnityEngine.Random.value*v.y, UnityEngine.Random.value*v.z);
+        public static Vector3 Random(this Vector3 v) {
+            return new Vector3(UnityEngine.Random.value*v.x,
+                               UnityEngine.Random.value*v.y,
+                               UnityEngine.Random.value*v.z);
         }
 
         /// <summary>
@@ -46,8 +45,7 @@ namespace DanmakU
         /// <returns>The Hadamard product between the two vectors.</returns>
         /// <param name="v1">the first vector</param>
         /// <param name="v2">the second vector</param>
-        public static Vector3 Hadamard3(this Vector3 v1, Vector3 v2)
-        {
+        public static Vector3 Hadamard3(this Vector3 v1, Vector3 v2) {
             return new Vector3(v1.x*v2.x, v1.y*v2.y, v1.z*v2.z);
         }
 
@@ -56,12 +54,10 @@ namespace DanmakU
         /// </summary>
         /// <returns> the value of the smallest component</returns>
         /// <param name="v">the vector to evaluate</param>
-        public static float Max(this Vector3 v)
-        {
+        public static float Max(this Vector3 v) {
             if (v.x > v.y)
                 return (v.z > v.y) ? v.z : v.y;
-            else
-                return (v.z > v.x) ? v.z : v.x;
+            return (v.z > v.x) ? v.z : v.x;
         }
 
         /// <summary>
@@ -69,12 +65,12 @@ namespace DanmakU
         /// </summary>
         /// <returns> the value of the smallest component</returns>
         /// <param name="v">the vector to evaluate</param>
-        public static float Min(this Vector3 v)
-        {
+        public static float Min(this Vector3 v) {
             if (v.x < v.y)
                 return (v.z < v.y) ? v.z : v.y;
-            else
-                return (v.z < v.x) ? v.z : v.x;
+            return (v.z < v.x) ? v.z : v.x;
         }
+
     }
+
 }

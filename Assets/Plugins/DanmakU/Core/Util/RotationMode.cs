@@ -1,9 +1,11 @@
-namespace DanmakU
-{
-    public enum RotationMode
-    {
+namespace DanmakU {
+
+    public enum RotationMode {
+
         Absolute,
         Relative,
         Object
+
     }
+
 }
