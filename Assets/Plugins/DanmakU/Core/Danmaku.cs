@@ -2,6 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,25 +10,26 @@ using UnityEngine;
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
 
-namespace DanmakU
-{
+namespace DanmakU {
+
     public delegate void DanmakuEvent(Danmaku danmaku);
 
     /// <summary>
     /// A single projectile fired.
     /// The base object that represents a single bullet in a bullet hell game.
     /// </summary>
-    public sealed partial class Danmaku
-    {
+    public sealed partial class Danmaku {
+
         /// <summary>
         /// The supported collider shapes used by danmaku.
         /// </summary>
-        public enum ColliderType
-        {
+        public enum ColliderType {
+
             Circle,
             Box,
             Point,
             Line
+
         }
 
         private bool _isActive;
@@ -36,8 +38,7 @@ namespace DanmakU
         /// <summary>
         /// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
         /// </summary>
-        internal Danmaku(int poolIndex)
-        {
+        internal Danmaku(int poolIndex) {
             PoolIndex = poolIndex;
             groups = new HashSet<DanmakuGroup>();
             _raycastHits = new RaycastHit2D[5];
@@ -51,18 +52,13 @@ namespace DanmakU
         /// Setting it to false while active is equal to calling DeactivateImmediate.
         /// </remarks>
         /// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
-        public bool IsActive
-        {
+        public bool IsActive {
             get { return _isActive; }
-            set
-            {
-                if (_isActive)
-                {
+            set {
+                if (_isActive) {
                     if (!value)
                         DeactivateImmediate();
-                }
-                else
-                {
+                } else {
                     if (value)
                         Activate();
                 }
@@ -80,51 +76,44 @@ namespace DanmakU
         /// </summary>
         public event DanmakuEvent OnDeactivate;
 
-        public event DanmakuController ControllerUpdate
-        {
-            add
-            {
+        public event DanmakuController ControllerUpdate {
+            add {
                 _onUpdate += value;
                 _controllerCheck = _onUpdate != null;
             }
-            remove
-            {
-                //TODO Deal with subtraction issues
-                _onUpdate -= value;
-                _controllerCheck = _onUpdate != null;
+            remove {
+/*                Delegate[] elements = value.GetInvocationList();
+                foreach (Delegate element in elements) {
+                    _onUpdate ;
+                }
+                _controllerCheck = _onUpdate != null;*/
             }
         }
 
-        public void AddController(IDanmakuController controller)
-        {
+        public void AddController(IDanmakuController controller) {
             ControllerUpdate += controller.Update;
         }
 
-        public void AddController(DanmakuController controller)
-        {
+        public void AddController(DanmakuController controller) {
             ControllerUpdate += controller;
         }
 
-        public void RemoveController(IDanmakuController controller)
-        {
+/*        public void RemoveController(IDanmakuController controller) {
             ControllerUpdate -= controller.Update;
         }
 
-        public void RemoveController(DanmakuController controller)
-        {
+        public void RemoveController(DanmakuController controller) {
             ControllerUpdate -= controller;
-        }
+        }*/
 
-        public void ClearControllers()
-        {
+        public void ClearControllers() {
             _controllerCheck = true;
             _onUpdate = null;
         }
 
         #region Rotation Functions
 
-        public void Rotate(float deltaTheta)
-        {
+        public void Rotate(float deltaTheta) {
             Rotation += deltaTheta;
         }
 
@@ -132,8 +121,7 @@ namespace DanmakU
 
         #region Speed Functions
 
-        public void Accelerate(DynamicFloat dv)
-        {
+        public void Accelerate(DynamicFloat dv) {
             Speed += dv;
         }
 
@@ -141,34 +129,28 @@ namespace DanmakU
 
         #region Angular Speed Functions 
 
-        public void AngularAcclerate(DynamicFloat dav)
-        {
+        public void AngularAcclerate(DynamicFloat dav) {
             AngularSpeed += dav;
         }
 
         #endregion
 
-        internal void Update()
-        {
+        internal void Update() {
             int j;
             _originalPosition.x = position.x;
             _originalPosition.y = position.y;
             Vector2 movementVector;
 
             if (_controllerCheck)
-            {
                 _onUpdate(this, dt);
-            }
 
-            if (AngularSpeed != 0f)
-            {
+            if (AngularSpeed != 0f) {
                 float rotationChange = AngularSpeed*dt;
                 rotation += rotationChange;
                 direction = UnitCircle(rotation);
             }
 
-            if (Speed != 0)
-            {
+            if (Speed != 0) {
                 float movementChange = Speed*dt;
                 position.x += direction.x*movementChange;
                 position.y += direction.y*movementChange;
@@ -179,74 +161,73 @@ namespace DanmakU
 
             //Debug.DrawRay(originalPosition, movementVector);
 
-            if (CollisionCheck)
-            {
+            if (CollisionCheck) {
                 float sqrDistance = movementVector.sqrMagnitude;
                 float cx = colliderOffset.x;
                 float cy = colliderOffset.y;
                 if (cx == 0 && cy == 0)
-                {
                     _collisionCenter = _originalPosition;
-                }
-                else
-                {
+                else {
                     float c = direction.x;
                     float s = direction.y;
                     _collisionCenter.x = _originalPosition.x + c*cx - s*cy;
                     _collisionCenter.y = _originalPosition.y + s*cx + c*cy;
                 }
+
                 //Check if the collision detection should be continuous or not
                 var count = 0;
-                switch (colliderType)
-                {
+                switch (colliderType) {
                     default:
                     case ColliderType.Point:
-                        if (sqrDistance > sizeSquared || Physics2D.OverlapPoint(_collisionCenter, colliderMask) != null)
-                        {
+                        if (sqrDistance > sizeSquared ||
+                            Physics2D.OverlapPoint(_collisionCenter,
+                                                   colliderMask) != null) {
                             count = Physics2D.RaycastNonAlloc(_collisionCenter,
-                                movementVector,
-                                _raycastHits,
-                                Mathf.Sqrt(sqrDistance),
-                                colliderMask);
+                                                              movementVector,
+                                                              _raycastHits,
+                                                              Mathf.Sqrt(sqrDistance),
+                                                              colliderMask);
                         }
                         break;
                     case ColliderType.Line:
                         float length = Mathf.Sqrt(sqrDistance) + colliderSize.x;
                         if (sqrDistance > sizeSquared ||
-                            Physics2D.Raycast(_collisionCenter, movementVector, length, colliderMask).collider != null)
-                        {
+                            Physics2D.Raycast(_collisionCenter,
+                                              movementVector,
+                                              length,
+                                              colliderMask).collider != null) {
                             count = Physics2D.RaycastNonAlloc(_collisionCenter,
-                                movementVector,
-                                _raycastHits,
-                                Mathf.Sqrt(sqrDistance) + colliderSize.x,
-                                colliderMask);
+                                                              movementVector,
+                                                              _raycastHits,
+                                                              Mathf.Sqrt(sqrDistance) + colliderSize.x,
+                                                              colliderMask);
                         }
                         break;
                     case ColliderType.Circle:
                         if (sqrDistance > sizeSquared ||
-                            Physics2D.OverlapCircle(_collisionCenter, colliderSize.x, colliderMask) != null)
-                        {
-                            count = Physics2D.CircleCastNonAlloc(_collisionCenter,
-                                colliderSize.x,
-                                movementVector,
-                                _raycastHits,
-                                sqrDistance,
-                                colliderMask);
+                            Physics2D.OverlapCircle(_collisionCenter,
+                                                    colliderSize.x,
+                                                    colliderMask) != null) {
+                            count =
+                                Physics2D.CircleCastNonAlloc(_collisionCenter,
+                                                             colliderSize.x,
+                                                             movementVector,
+                                                             _raycastHits,
+                                                             sqrDistance,
+                                                             colliderMask);
                         }
                         break;
                     case ColliderType.Box:
                         count = Physics2D.BoxCastNonAlloc(_collisionCenter,
-                            colliderSize,
-                            rotation,
-                            movementVector,
-                            _raycastHits,
-                            colliderMask);
+                                                          colliderSize,
+                                                          rotation,
+                                                          movementVector,
+                                                          _raycastHits,
+                                                          colliderMask);
                         break;
                 }
-                if (count > 0)
-                {
-                    for (var i = 0; i < count; i++)
-                    {
+                if (count > 0) {
+                    for (var i = 0; i < count; i++) {
                         RaycastHit2D hit = _raycastHits[i];
                         Collider2D collider = hit.collider;
 
@@ -254,18 +235,17 @@ namespace DanmakU
                             continue;
 
                         IDanmakuCollider[] scripts;
-                        if (colliderMap.ContainsKey(collider))
-                        {
+                        if (colliderMap.ContainsKey(collider)) {
                             scripts = colliderMap[collider];
-                            if (scripts == null)
-                            {
-                                scripts = Util.GetComponents<IDanmakuCollider>(collider);
+                            if (scripts == null) {
+                                scripts =
+                                    Util.GetComponents<IDanmakuCollider>(
+                                                                         collider);
                                 colliderMap[collider] = scripts;
                             }
-                        }
-                        else
-                        {
-                            scripts = Util.GetComponents<IDanmakuCollider>(collider);
+                        } else {
+                            scripts =
+                                Util.GetComponents<IDanmakuCollider>(collider);
                             colliderMap[collider] = scripts;
                         }
 
@@ -283,8 +263,8 @@ namespace DanmakU
                 }
             }
 
-            if (!_isActive || (Field != null && !Field.bounds.Contains(position)))
-            {
+            if (!_isActive ||
+                (Field != null && !Field.bounds.Contains(position))) {
                 DeactivateImmediate();
                 return;
             }
@@ -293,32 +273,24 @@ namespace DanmakU
             time += dt;
         }
 
-        public void MatchPrefab(DanmakuPrefab prefab)
-        {
-            if (prefab == null)
-            {
+        public void MatchPrefab(DanmakuPrefab prefab) {
+            if (prefab == null) {
                 Debug.LogError("Tried to match a null prefab");
                 return;
             }
-            if (this.prefab != prefab)
-            {
+            if (this.prefab != prefab) {
                 this.prefab = prefab;
 
-                if (_isActive)
-                {
+                if (_isActive) {
                     runtime.Remove(this);
                     runtime = prefab.GetRuntime();
                     runtime.Add(this);
-                }
-                else
-                {
+                } else
                     runtime = prefab.GetRuntime();
-                }
 
                 Vector2 scale = runtime.cachedScale;
                 colliderType = runtime.collisionType;
-                switch (colliderType)
-                {
+                switch (colliderType) {
                     default:
                     case ColliderType.Point:
                         colliderSize = Vector2.zero;
@@ -345,10 +317,8 @@ namespace DanmakU
             AddController(runtime.ExtraControllers);
         }
 
-        public static implicit operator FireData(Danmaku danmaku)
-        {
-            return new FireData
-            {
+        public static implicit operator FireData(Danmaku danmaku) {
+            return new FireData {
                 Position = danmaku.Position,
                 Rotation = danmaku.Rotation,
                 AngularSpeed = danmaku.AngularSpeed,
@@ -369,8 +339,7 @@ namespace DanmakU
         /// </remarks>
         /// <param name="data">the data used to create the .</param>
         /// <param name="useRotation">If set to <c>true</c>, the bullet will use the current rotation of the bullet to fire with.</param>
-        public Danmaku Fire(FireData data, bool useRotation = true)
-        {
+        public Danmaku Fire(FireData data, bool useRotation = true) {
             Vector2 tempPos = data.Position;
             DynamicFloat tempRot = data.Rotation;
             data.Position = Position;
@@ -382,8 +351,7 @@ namespace DanmakU
             return danmaku;
         }
 
-        public void Fire(FireBuilder builder, bool useRotation = true)
-        {
+        public void Fire(FireBuilder builder, bool useRotation = true) {
             Vector2 tempPos = builder.Position;
             DynamicFloat tempRot = builder.Rotation;
             builder.Position = Position;
@@ -401,8 +369,7 @@ namespace DanmakU
         /// Calling this on a already active instance does nothing.
         /// Calling this on a instance marked for deactivation will unmark the projectile and keep it from deactivating.
         /// </remarks>
-        public void Activate()
-        {
+        public void Activate() {
             to_deactivate = false;
             runtime.Add(this);
             if (!_isActive && OnActivate != null)
@@ -420,8 +387,7 @@ namespace DanmakU
         /// The instance  removed from the active set and all bullet functionality will cease after current 
         /// If Danmaku needs to be deactivated in a moment when it is not being updated (i.e. when the game is paused), use <see cref="DeactivateImmediate"/> instead.
         /// </remarks>
-        public void Deactivate()
-        {
+        public void Deactivate() {
             to_deactivate = true;
         }
 
@@ -430,8 +396,7 @@ namespace DanmakU
         /// Calling this generally unadvised. Use <see cref="Deactivate"/> whenever possible.
         /// This method should only be used when dealing with Projectiles while the game is paused or when ProjectileManager is not enabled
         /// </summary>
-        public void DeactivateImmediate()
-        {
+        public void DeactivateImmediate() {
             if (_isActive && OnDeactivate != null)
                 OnDeactivate(this);
 
@@ -451,8 +416,7 @@ namespace DanmakU
         /// Serves as a hash function for a <see cref="DanmakU.Danmaku"/> object.
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return PoolIndex;
         }
 
@@ -518,25 +482,20 @@ namespace DanmakU
 
         public float AngularSpeed { get; set; }
 
-        public DanmakuPrefab Prefab
-        {
+        public DanmakuPrefab Prefab {
             get { return runtime; }
         }
 
-        public Sprite Sprite
-        {
+        public Sprite Sprite {
             get { return runtime.Sprite; }
         }
 
-        public Mesh Mesh
-        {
+        public Mesh Mesh {
             get { return runtime.Mesh; }
         }
 
-        public Material Material
-        {
-            get
-            {
+        public Material Material {
+            get {
                 //return material;
                 return runtime.Material;
             }
@@ -546,11 +505,9 @@ namespace DanmakU
         /// Gets or sets the position, in world space, of the projectile.
         /// </summary>
         /// <value>The position of the projectile.</value>
-        public Vector2 Position
-        {
+        public Vector2 Position {
             get { return position; }
-            set
-            {
+            set {
                 position.x = value.x;
                 position.y = value.y;
             }
@@ -567,11 +524,9 @@ namespace DanmakU
         /// 270 -  Straight Right
         /// </remarks>
         /// <value>The rotation of the bullet in degrees.</value>
-        public float Rotation
-        {
+        public float Rotation {
             get { return rotation; }
-            set
-            {
+            set {
                 rotation = value;
                 direction = UnitCircle(value);
             }
@@ -585,13 +540,12 @@ namespace DanmakU
         /// Changing <see cref="Rotation"/> will change this vector.
         /// </remarks>
         /// <value>The direction vector the projectile is facing toward.</value>
-        public Vector2 Direction
-        {
+        public Vector2 Direction {
             get { return direction; }
-            set
-            {
+            set {
                 direction = value.normalized;
-                rotation = Mathf.Atan2(direction.y, direction.x)*Mathf.Rad2Deg - 90f;
+                rotation = Mathf.Atan2(direction.y, direction.x)*Mathf.Rad2Deg -
+                           90f;
             }
         }
 
@@ -601,8 +555,7 @@ namespace DanmakU
         /// The amount of time that has passed since this bullet has been fired.
         /// </summary>
         /// <value>The time since the projectile has been fired, in seconds.</value>
-        public float Time
-        {
+        public float Time {
             get { return time; }
         }
 
@@ -610,8 +563,7 @@ namespace DanmakU
         /// The number of framesfieldBoundshave passed since this bullet has been fired.
         /// </summary>
         /// <value>The number of frames that have passed since this bullet has been fired.</value>
-        public int Frames
-        {
+        public int Frames {
             get { return frames; }
         }
 
@@ -631,11 +583,9 @@ namespace DanmakU
         /// Unlike GameObject's layers, this layer value only affects collision behavior.
         /// </remarks>
         /// <value>The layer used for collision detection.</value>
-        public int Layer
-        {
+        public int Layer {
             get { return layer; }
-            set
-            {
+            set {
                 layer = value;
                 colliderMask = collisionMask[layer];
             }
@@ -654,8 +604,7 @@ namespace DanmakU
         /// </summary>
         /// <param name="target">The target position to move towards in absolute world coordinates.</param>
         /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Vector2 target, float maxDistanceDelta)
-        {
+        public void MoveTowards(Vector2 target, float maxDistanceDelta) {
             Position = Vector2.MoveTowards(position, target, maxDistanceDelta);
         }
 
@@ -667,11 +616,12 @@ namespace DanmakU
         /// <exception cref="System.ArgumentNullException">Thrown if the target Transform is null.</exception>
         /// <param name="target">The Transform of the object to move towards.</param>
         /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Transform target, float maxDistanceDelta)
-        {
+        public void MoveTowards(Transform target, float maxDistanceDelta) {
             if (target == null)
                 throw new System.ArgumentNullException();
-            Position = Vector2.MoveTowards(position, target.position, maxDistanceDelta);
+            Position = Vector2.MoveTowards(position,
+                                           target.position,
+                                           maxDistanceDelta);
         }
 
         /// <summary>
@@ -682,11 +632,12 @@ namespace DanmakU
         /// <exception cref="System.ArgumentNullException">Thrown if the target Component is null.</exception>
         /// <param name="target">The Component of the object to move towards.</param>
         /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Component target, float maxDistanceDelta)
-        {
+        public void MoveTowards(Component target, float maxDistanceDelta) {
             if (target == null)
                 throw new System.ArgumentNullException();
-            Position = Vector2.MoveTowards(position, target.transform.position, maxDistanceDelta);
+            Position = Vector2.MoveTowards(position,
+                                           target.transform.position,
+                                           maxDistanceDelta);
         }
 
         /// <summary>
@@ -697,18 +648,19 @@ namespace DanmakU
         /// <exception cref="System.ArgumentNullException">Thrown if the target GameObject is null.</exception>
         /// <param name="target">The GameObject of the object to move towards.</param>
         /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(GameObject target, float maxDistanceDelta)
-        {
+        public void MoveTowards(GameObject target, float maxDistanceDelta) {
             if (target == null)
                 throw new System.ArgumentNullException();
-            Position = Vector2.MoveTowards(position, target.transform.position, maxDistanceDelta);
+            Position = Vector2.MoveTowards(position,
+                                           target.transform.position,
+                                           maxDistanceDelta);
         }
 
-        public void Translate(Vector2 deltaPos)
-        {
+        public void Translate(Vector2 deltaPos) {
             Position += deltaPos;
         }
 
         #endregion
     }
+
 }

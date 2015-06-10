@@ -5,26 +5,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// A development kit for quick development of 2D Danmaku games
-/// </summary>
-
 namespace DanmakU {
+
     [ExecuteInEditMode]
     [DisallowMultipleComponent]
     [AddComponentMenu("DanmakU/Danmaku Field")]
     public class DanmakuField : MonoBehaviour {
+
         public enum CoordinateSystem {
+
             View,
             ViewRelative,
             Relative,
             World
+
         }
 
         private static List<DanmakuField> _fields;
 
-        private static readonly Vector2 infiniteSize =
-            new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+        private static readonly Vector2 InfiniteSize = float.PositiveInfinity*
+                                                       Vector2.one;
 
         internal Bounds2D bounds;
 
@@ -81,9 +81,7 @@ namespace DanmakU {
                     camera2DTransform = camera2D.transform;
                 return camera2DTransform.eulerAngles.z;
             }
-            set {
-                camera2DTransform.rotation = Quaternion.Euler(0f, 0f, value);
-            }
+            set { camera2DTransform.rotation = Quaternion.Euler(0f, 0f, value); }
         }
 
         public Bounds2D Bounds {
@@ -136,14 +134,13 @@ namespace DanmakU {
                 return _fields[0];
             DanmakuField closest = null;
             float minDist = float.MaxValue;
-            for (int i = 0; i < _fields.Count; i++) {
-                DanmakuField field = _fields[i];
+            foreach (var field in _fields) {
                 Vector2 diff = field.bounds.Center - position;
                 float distance = diff.sqrMagnitude;
-                if (distance < minDist) {
-                    closest = field;
-                    minDist = distance;
-                }
+                if (distance >= minDist)
+                    continue;
+                closest = field;
+                minDist = distance;
             }
             return closest;
         }
@@ -163,9 +160,9 @@ namespace DanmakU {
                     bounds.Center = camera2DTransform.position;
                 float size = camera2D.orthographicSize;
                 movementBounds.Extents = new Vector2(camera2D.aspect*size, size);
-                for (int i = 0; i < otherCameras.Count; i++) {
-                    if (otherCameras[i] != null)
-                        otherCameras[i].rect = camera2D.rect;
+                foreach (Camera t in otherCameras) {
+                    if (t != null)
+                        t.rect = camera2D.rect;
                 }
             } else {
                 camera2DTransform = null;
@@ -177,7 +174,7 @@ namespace DanmakU {
                                  Vector2.one*clipBoundary*
                                  movementBounds.Extents.Max();
             } else
-                bounds.Extents = infiniteSize;
+                bounds.Extents = InfiniteSize;
         }
 
         private void OnDestroy() {
@@ -186,7 +183,7 @@ namespace DanmakU {
         }
 
         public Vector2 WorldPoint(Vector2 point,
-            CoordinateSystem coordSys = CoordinateSystem.View) {
+                                  CoordinateSystem coordSys = CoordinateSystem.View) {
             switch (coordSys) {
                 case CoordinateSystem.World:
                     return point;
@@ -202,7 +199,7 @@ namespace DanmakU {
         }
 
         public Vector2 RelativePoint(Vector2 point,
-            CoordinateSystem coordSys = CoordinateSystem.View) {
+                                     CoordinateSystem coordSys = CoordinateSystem.View) {
             switch (coordSys) {
                 case CoordinateSystem.World:
                     return point - movementBounds.Min;
@@ -211,13 +208,13 @@ namespace DanmakU {
                 default:
                 case CoordinateSystem.View:
                     Vector2 size = movementBounds.Size;
-                    Vector2 inverse = new Vector2(1/size.x, 1/size.y);
+                    var inverse = new Vector2(1/size.x, 1/size.y);
                     return (point - movementBounds.Min).Hadamard2(inverse);
             }
         }
 
         public Vector2 ViewPoint(Vector2 point,
-            CoordinateSystem coordSys = CoordinateSystem.World) {
+                                 CoordinateSystem coordSys = CoordinateSystem.World) {
             Vector2 size = bounds.Size;
             switch (coordSys) {
                 default:
@@ -232,51 +229,50 @@ namespace DanmakU {
         }
 
         public GameObject SpawnGameObject(GameObject prefab,
-            Vector2 location,
-            CoordinateSystem coordSys = CoordinateSystem.View) {
+                                          Vector2 location,
+                                          CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;
             Quaternion rotation = prefab.transform.rotation;
             return
                 Instantiate(gameObject,
-                    TargetField.WorldPoint(location, coordSys),
-                    rotation) as GameObject;
+                            TargetField.WorldPoint(location, coordSys),
+                            rotation) as GameObject;
         }
 
         public T SpawnObject<T>(T prefab,
-            Vector2 location,
-            CoordinateSystem coordSys = CoordinateSystem.View)
+                                Vector2 location,
+                                CoordinateSystem coordSys = CoordinateSystem.View)
             where T : Component {
             if (TargetField == null)
                 TargetField = this;
             Quaternion rotation = prefab.transform.rotation;
-            T clone =
-                Instantiate(prefab,
-                    TargetField.WorldPoint(location, coordSys),
-                    rotation) as T;
+            T clone = Instantiate(prefab,
+                                  TargetField.WorldPoint(location, coordSys),
+                                  rotation) as T;
             return clone;
         }
 
         public Danmaku SpawnDanmaku(DanmakuPrefab bulletType,
-            Vector2 location,
-            DynamicFloat rotation,
-            CoordinateSystem coordSys = CoordinateSystem.View) {
+                                    Vector2 location,
+                                    DynamicFloat rotation,
+                                    CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;
             Danmaku bullet = Danmaku.GetInactive(bulletType,
-                TargetField.WorldPoint(location, coordSys),
-                rotation);
+                                                 TargetField.WorldPoint(location, coordSys),
+                                                 rotation);
             bullet.Field = TargetField;
             bullet.Activate();
             return bullet;
         }
 
         public Danmaku FireLinear(DanmakuPrefab prefab,
-            Vector2 location,
-            DynamicFloat rotation,
-            DynamicFloat speed,
-            CoordinateSystem coordSys = CoordinateSystem.View,
-            DanmakuModifier modifier = null) {
+                                  Vector2 location,
+                                  DynamicFloat rotation,
+                                  DynamicFloat speed,
+                                  CoordinateSystem coordSys = CoordinateSystem.View,
+                                  DanmakuModifier modifier = null) {
             if (TargetField == null)
                 TargetField = this;
             Vector2 position = TargetField.WorldPoint(location, coordSys);
@@ -288,23 +284,24 @@ namespace DanmakU {
                 danmaku.AngularSpeed = 0f;
                 return danmaku;
             }
-            FireData temp = new FireData();
-            temp.Prefab = prefab;
-            temp.Speed = speed;
-            temp.AngularSpeed = 0f;
-            temp.Field = this;
+            var temp = new FireData {
+                Prefab = prefab,
+                Speed = speed,
+                AngularSpeed = 0f,
+                Field = this
+            };
             modifier.Initialize(temp);
             modifier.OnFire(position, rotation);
             return null;
         }
 
         public Danmaku FireCurved(DanmakuPrefab prefab,
-            Vector2 location,
-            DynamicFloat rotation,
-            DynamicFloat speed,
-            DynamicFloat angularSpeed,
-            CoordinateSystem coordSys = CoordinateSystem.View,
-            DanmakuModifier modifier = null) {
+                                  Vector2 location,
+                                  DynamicFloat rotation,
+                                  DynamicFloat speed,
+                                  DynamicFloat angularSpeed,
+                                  CoordinateSystem coordSys = CoordinateSystem.View,
+                                  DanmakuModifier modifier = null) {
             if (TargetField == null)
                 TargetField = this;
             Vector2 position = TargetField.WorldPoint(location, coordSys);
@@ -316,11 +313,12 @@ namespace DanmakU {
                 danmaku.AngularSpeed = angularSpeed;
                 return danmaku;
             }
-            FireData temp = new FireData();
-            temp.Prefab = prefab;
-            temp.Speed = speed;
-            temp.AngularSpeed = angularSpeed;
-            temp.Field = this;
+            var temp = new FireData {
+                Prefab = prefab,
+                Speed = speed,
+                AngularSpeed = angularSpeed,
+                Field = this
+            };
             modifier.Initialize(temp);
             modifier.OnFire(position, rotation);
             return null;
@@ -349,4 +347,5 @@ namespace DanmakU {
         }
 #endif
     }
+
 }

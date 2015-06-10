@@ -116,9 +116,8 @@ namespace DanmakU {
         }
 
         public override bool Equals(object obj) {
-            if (obj is DynamicInt) {
-                return (DynamicInt)obj == this;
-            }
+            if (obj is DynamicInt)
+                return (DynamicInt) obj == this;
             return false;
         }
 
