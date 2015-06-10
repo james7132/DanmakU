@@ -9,14 +9,15 @@ using UnityEngine;
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
 
-namespace DanmakU
-{
-    internal class DanmakuPool
-    {
+namespace DanmakU {
+
+    internal class DanmakuPool {
+
         internal Danmaku[] all;
         private int currentIndex;
         private int endIndex;
         internal int inactiveCount;
+
         //FIXME: Currently not working: optimized version of pool, need to debug
 
         //			internal Danmaku[] all;
@@ -117,24 +118,20 @@ namespace DanmakU
         internal int spawnCount;
         internal int totalCount;
 
-        public DanmakuPool(int initial, int spawn)
-        {
+        public DanmakuPool(int initial, int spawn) {
             spawnCount = spawn;
             totalCount = 0;
             inactiveCount = 0;
             Spawn(initial);
         }
 
-        protected void Spawn(int count)
-        {
-            if (all == null || queue == null)
-            {
+        protected void Spawn(int count) {
+            if (all == null || queue == null) {
                 all = new Danmaku[2];
                 queue = new int[2];
             }
             int endCount = totalCount + count;
-            if (all.Length < endCount)
-            {
+            if (all.Length < endCount) {
                 size = all.Length;
                 if (size <= endCount)
                     size = Mathf.NextPowerOfTwo(endCount);
@@ -150,8 +147,7 @@ namespace DanmakU
                 // simply copy it as needed
                 if (currentIndex < endIndex)
                     Array.Copy(queue, currentIndex, tempQueue, 0, endIndex - currentIndex);
-                else
-                {
+                else {
                     // otherwise the queue has wrapped around and needs to be copied in two seperate chunks
                     int initial = 0;
                     initial = queue.Length - currentIndex - 1;
@@ -162,8 +158,7 @@ namespace DanmakU
                 endIndex = inactiveCount;
                 queue = tempQueue;
             }
-            for (var i = totalCount; i < endCount; i++, endIndex++)
-            {
+            for (var i = totalCount; i < endCount; i++, endIndex++) {
                 var danmaku = new Danmaku(i);
                 all[i] = danmaku;
                 if (endIndex >= queue.Length)
@@ -174,51 +169,45 @@ namespace DanmakU
             inactiveCount += count;
         }
 
-        public void Get(Danmaku[] danmakus)
-        {
+        public void Get(Danmaku[] danmakus) {
             if (danmakus == null)
                 throw new ArgumentNullException("Projectiles can't be null");
             int count = danmakus.Length;
             if (inactiveCount < count)
                 Spawn(count - inactiveCount);
             inactiveCount -= count;
-            for (var i = 0; i < danmakus.Length; i++)
-            {
+            for (var i = 0; i < danmakus.Length; i++) {
                 danmakus[i] = all[queue[currentIndex]];
                 currentIndex = (currentIndex + 1)%size;
             }
         }
 
-        public void Return(Danmaku[] danmakus)
-        {
+        public void Return(Danmaku[] danmakus) {
             if (danmakus == null)
                 throw new ArgumentNullException("Projectiles can't be null");
             int count = danmakus.Length;
             inactiveCount += count;
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 queue[endIndex] = danmakus[i].PoolIndex;
                 endIndex = (endIndex + 1)%size;
             }
         }
 
-        public Danmaku Get()
-        {
+        public Danmaku Get() {
             if (inactiveCount <= 0)
-            {
                 Spawn(spawnCount);
-            }
             inactiveCount--;
             int index = queue[currentIndex];
             currentIndex = (currentIndex + 1)%size;
             return all[index];
         }
 
-        public void Return(Danmaku obj)
-        {
+        public void Return(Danmaku obj) {
             queue[endIndex] = obj.PoolIndex;
             endIndex = (endIndex + 1)%size;
             inactiveCount++;
         }
+
     }
+
 }

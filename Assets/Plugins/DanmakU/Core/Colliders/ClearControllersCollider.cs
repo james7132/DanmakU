@@ -4,21 +4,20 @@
 
 using UnityEngine;
 
-namespace DanmakU.Collider
-{
+namespace DanmakU.Collider {
+
     /// <summary>
     /// A DanmakuCollider implementation that removes all DanmakuControllers from the bullets that come into contact with it.
     /// </summary>
     [AddComponentMenu("DanmakU/Colliders/Clear Controllers Collider")]
-    public class ClearControllersCollider : DanmakuCollider
-    {
+    public class ClearControllersCollider : DanmakuCollider {
+
         private DanmakuGroup affected;
 
         /// <summary>
         /// Called on Component instantiation
         /// </summary>
-        protected override void Awake()
-        {
+        protected override void Awake() {
             base.Awake();
             affected = new DanmakuSet();
         }
@@ -30,8 +29,8 @@ namespace DanmakU.Collider
         /// </summary>
         /// <param name="danmaku">the danmaku that hit the collider.</param>
         /// <param name="info">additional information about the collision</param>
-        protected override void DanmakuCollision(Danmaku danmaku, RaycastHit2D info)
-        {
+        protected override void DanmakuCollision(Danmaku danmaku,
+                                                 RaycastHit2D info) {
             if (affected.Contains(danmaku))
                 return;
 
@@ -42,4 +41,5 @@ namespace DanmakU.Collider
 
         #endregion
     }
+
 }

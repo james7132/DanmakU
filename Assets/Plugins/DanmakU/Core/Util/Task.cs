@@ -5,10 +5,10 @@
 using System.Collections;
 using UnityEngine;
 
-namespace DanmakU
-{
-    public sealed class Task : IEnumerable
-    {
+namespace DanmakU {
+
+    public sealed class Task : IEnumerable {
+
         private MonoBehaviour context;
         private bool enumerable;
         private bool isFinished;
@@ -17,8 +17,7 @@ namespace DanmakU
         private IEnumerator task;
         private IEnumerable taskE;
 
-        public Task(MonoBehaviour context, IEnumerator task)
-        {
+        public Task(MonoBehaviour context, IEnumerator task) {
             if (context == null || task == null)
                 throw new System.ArgumentNullException();
             this.task = task;
@@ -27,8 +26,7 @@ namespace DanmakU
             enumerable = false;
         }
 
-        public Task(MonoBehaviour context, IEnumerable task)
-        {
+        public Task(MonoBehaviour context, IEnumerable task) {
             if (context == null || task == null)
                 throw new System.ArgumentNullException();
             taskE = task;
@@ -39,48 +37,36 @@ namespace DanmakU
 
         #region IEnumerable implementation
 
-        public IEnumerator GetEnumerator()
-        {
+        public IEnumerator GetEnumerator() {
             return Wrapper(context);
         }
 
         #endregion
 
-        private IEnumerator Wrapper(MonoBehaviour currentContext)
-        {
-            while (!isFinished)
-            {
-                if (!paused)
-                {
+        private IEnumerator Wrapper(MonoBehaviour currentContext) {
+            while (!isFinished) {
+                if (!paused) {
                     isFinished = !task.MoveNext();
                     object next = task.Current;
-                    if (next is YieldInstruction)
-                    {
+                    if (next is YieldInstruction) {
 //						Debug.Log("Yield: " + next);
                         yield return next;
-                    }
-                    else if (next is int)
-                    {
+                    } else if (next is int) {
 //						Debug.Log("Wait: " + next);
                         int frames = (int) next;
                         if (frames < 0)
                             frames = -frames;
                         for (int i = 0; i < frames - 1; i++)
                             yield return null;
-                    }
-                    else if (next is Task)
-                    {
+                    } else if (next is Task) {
 //						Debug.Log("Subtask: " + next);
                         yield return (next as Task).Start();
-                    }
-                    else
-                    {
+                    } else {
 //						Debug.Log("Other");
                         yield return null;
                     }
                 }
-                if (context != currentContext && context != null)
-                {
+                if (context != currentContext && context != null) {
                     Debug.Log("hello");
                     context.StartCoroutine(Wrapper(context));
                     break;
@@ -88,44 +74,37 @@ namespace DanmakU
             }
         }
 
-        internal YieldInstruction Start()
-        {
+        internal YieldInstruction Start() {
             started = true;
             return context.StartCoroutine(Wrapper(context));
         }
 
-        public void Restart()
-        {
-            if (enumerable)
-            {
+        public void Restart() {
+            if (enumerable) {
                 task = taskE.GetEnumerator();
                 isFinished = false;
-            }
-            else
-            {
+            } else {
                 throw new System.InvalidOperationException(
                     "Cannot reset a Task that was not started from a IEnumerable block");
             }
         }
 
-        public void ContextSwitch(MonoBehaviour newContext)
-        {
+        public void ContextSwitch(MonoBehaviour newContext) {
             context = newContext;
         }
 
-        public void Pause()
-        {
+        public void Pause() {
             paused = true;
         }
 
-        public void Resume()
-        {
+        public void Resume() {
             paused = false;
         }
 
-        public void Stop()
-        {
+        public void Stop() {
             isFinished = true;
         }
+
     }
+
 }
