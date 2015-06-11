@@ -6,13 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// A development kit for quick development of 2D Danmaku games
-/// </summary>
-
 namespace DanmakU {
-
-    public delegate void DanmakuEvent(Danmaku danmaku);
 
     /// <summary>
     /// A single projectile fired.
@@ -41,7 +35,6 @@ namespace DanmakU {
         internal Danmaku(int poolIndex) {
             PoolIndex = poolIndex;
             groups = new HashSet<DanmakuGroup>();
-            _raycastHits = new RaycastHit2D[5];
         }
 
         /// <summary>
@@ -69,24 +62,21 @@ namespace DanmakU {
         /// <summary>
         /// Occurs when the Danmaku instance is activated.
         /// </summary>
-        public event DanmakuEvent OnActivate;
+        public event Action<Danmaku> OnActivate;
 
         /// <summary>
         /// Occurs when the Danmaku instance is deactivated.
         /// </summary>
-        public event DanmakuEvent OnDeactivate;
+        public event Action<Danmaku> OnDeactivate;
 
-        public event DanmakuController ControllerUpdate {
+        private event DanmakuController ControllerUpdate {
             add {
                 _onUpdate += value;
                 _controllerCheck = _onUpdate != null;
             }
             remove {
-/*                Delegate[] elements = value.GetInvocationList();
-                foreach (Delegate element in elements) {
-                    _onUpdate ;
-                }
-                _controllerCheck = _onUpdate != null;*/
+                _onUpdate = _onUpdate.Remove(value);
+                _controllerCheck = _onUpdate != null;
             }
         }
 
@@ -98,13 +88,22 @@ namespace DanmakU {
             ControllerUpdate += controller;
         }
 
-/*        public void RemoveController(IDanmakuController controller) {
+        public void RemoveController(IDanmakuController controller) {
             ControllerUpdate -= controller.Update;
         }
 
         public void RemoveController(DanmakuController controller) {
             ControllerUpdate -= controller;
-        }*/
+        }
+
+        public void RemoveAllControllers(IDanmakuController controller) {
+            DanmakuController temp = controller.Update;
+            RemoveAllControllers(temp);
+        }
+
+        public void RemoveAllControllers(DanmakuController controller) {
+            _onUpdate = _onUpdate.RemoveAll(controller);
+        }
 
         public void ClearControllers() {
             _controllerCheck = true;
@@ -136,7 +135,6 @@ namespace DanmakU {
         #endregion
 
         internal void Update() {
-            int j;
             _originalPosition.x = position.x;
             _originalPosition.y = position.y;
             Vector2 movementVector;
@@ -161,7 +159,9 @@ namespace DanmakU {
 
             //Debug.DrawRay(originalPosition, movementVector);
 
-            if (CollisionCheck) {
+            if (CollisionCheck)
+            {
+                RaycastHit2D[] hits = null;
                 float sqrDistance = movementVector.sqrMagnitude;
                 float cx = colliderOffset.x;
                 float cy = colliderOffset.y;
@@ -175,18 +175,16 @@ namespace DanmakU {
                 }
 
                 //Check if the collision detection should be continuous or not
-                var count = 0;
                 switch (colliderType) {
                     default:
                     case ColliderType.Point:
                         if (sqrDistance > sizeSquared ||
                             Physics2D.OverlapPoint(_collisionCenter,
                                                    colliderMask) != null) {
-                            count = Physics2D.RaycastNonAlloc(_collisionCenter,
-                                                              movementVector,
-                                                              _raycastHits,
-                                                              Mathf.Sqrt(sqrDistance),
-                                                              colliderMask);
+                            hits = Physics2D.RaycastAll(_collisionCenter,
+                                                        movementVector,
+                                                        Mathf.Sqrt(sqrDistance),
+                                                        colliderMask);
                         }
                         break;
                     case ColliderType.Line:
@@ -195,12 +193,12 @@ namespace DanmakU {
                             Physics2D.Raycast(_collisionCenter,
                                               movementVector,
                                               length,
-                                              colliderMask).collider != null) {
-                            count = Physics2D.RaycastNonAlloc(_collisionCenter,
-                                                              movementVector,
-                                                              _raycastHits,
-                                                              Mathf.Sqrt(sqrDistance) + colliderSize.x,
-                                                              colliderMask);
+                                              colliderMask).collider != null)
+                        {
+                            hits = Physics2D.RaycastAll(_collisionCenter,
+                                                        movementVector,
+                                                        Mathf.Sqrt(sqrDistance) + colliderSize.x,
+                                                        colliderMask);
                         }
                         break;
                     case ColliderType.Circle:
@@ -208,27 +206,24 @@ namespace DanmakU {
                             Physics2D.OverlapCircle(_collisionCenter,
                                                     colliderSize.x,
                                                     colliderMask) != null) {
-                            count =
-                                Physics2D.CircleCastNonAlloc(_collisionCenter,
-                                                             colliderSize.x,
-                                                             movementVector,
-                                                             _raycastHits,
-                                                             sqrDistance,
-                                                             colliderMask);
+                            hits = Physics2D.CircleCastAll(_collisionCenter,
+                                                           colliderSize.x,
+                                                           movementVector,
+                                                           Mathf.Sqrt(sqrDistance),
+                                                           colliderMask);
                         }
                         break;
                     case ColliderType.Box:
-                        count = Physics2D.BoxCastNonAlloc(_collisionCenter,
-                                                          colliderSize,
-                                                          rotation,
-                                                          movementVector,
-                                                          _raycastHits,
-                                                          colliderMask);
+                        hits = Physics2D.BoxCastAll(_collisionCenter,
+                                                       colliderSize,
+                                                       rotation,
+                                                       movementVector,
+                                                       Mathf.Sqrt(sqrDistance),
+                                                       colliderMask);
                         break;
                 }
-                if (count > 0) {
-                    for (var i = 0; i < count; i++) {
-                        RaycastHit2D hit = _raycastHits[i];
+                if (hits != null && hits.Length > 0) {
+                    foreach (RaycastHit2D hit in hits) {
                         Collider2D collider = hit.collider;
 
                         if (collider == null)
@@ -249,8 +244,8 @@ namespace DanmakU {
                             colliderMap[collider] = scripts;
                         }
 
-                        for (j = 0; j < scripts.Length; j++)
-                            scripts[j].OnDanmakuCollision(this, hit);
+                        foreach (IDanmakuCollider script in scripts)
+                            script.OnDanmakuCollision(this, hit);
 
                         if (!to_deactivate)
                             continue;
@@ -456,7 +451,6 @@ namespace DanmakU {
 
         //Preallocated variables to avoid allocation in Update
         private Vector2 _originalPosition;
-        private readonly RaycastHit2D[] _raycastHits;
         private Vector2 _collisionCenter;
 
         //Cached check for controllers to avoid needing to calculate them in Update

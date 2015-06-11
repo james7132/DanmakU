@@ -27,6 +27,7 @@ namespace DanmakU {
 
         public Danmaku Fire() {
             Danmaku danmaku = Danmaku.GetInactive(this);
+            Debug.Log(Speed);
             danmaku.Field = Field;
             danmaku.Activate();
             return danmaku;

@@ -15,9 +15,9 @@ namespace DanmakU.Editor {
 		
 		override public void OnGUI (Rect position, SerializedProperty property, GUIContent label) {
 			EditorGUI.BeginProperty (position, label, property);
-			SerializedProperty maxProp = property.FindPropertyRelative ("max");
-			SerializedProperty minProp = property.FindPropertyRelative ("min");
-			SerializedProperty type = property.FindPropertyRelative ("type");
+			SerializedProperty maxProp = property.FindPropertyRelative ("_max");
+			SerializedProperty minProp = property.FindPropertyRelative ("_min");
+			SerializedProperty type = property.FindPropertyRelative ("_type");
 			Rect minRect = position;
 			Rect maxRect = position;
 			Rect combinedRect = position;
@@ -60,9 +60,9 @@ namespace DanmakU.Editor {
 		
 		override public void OnGUI (Rect position, SerializedProperty property, GUIContent label) {
 			EditorGUI.BeginProperty (position, label, property);
-			SerializedProperty minProp = property.FindPropertyRelative ("min");
-			SerializedProperty maxProp = property.FindPropertyRelative ("max");
-			SerializedProperty type = property.FindPropertyRelative ("type");
+			SerializedProperty minProp = property.FindPropertyRelative ("_min");
+			SerializedProperty maxProp = property.FindPropertyRelative ("_max");
+			SerializedProperty type = property.FindPropertyRelative ("_type");
 			Rect minRect = position;
 			Rect maxRect = position;
 			Rect combinedRect = position;
