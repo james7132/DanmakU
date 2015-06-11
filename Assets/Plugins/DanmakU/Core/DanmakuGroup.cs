@@ -29,8 +29,8 @@ namespace DanmakU {
 
         #endregion
 
-        public event DanmakuEvent OnAdd;
-        public event DanmakuEvent OnRemove;
+        public event Action<Danmaku> OnAdd;
+        public event Action<Danmaku> OnRemove;
 
         protected virtual void OnDanmakuDeactivate(Danmaku danmaku) {
             Remove(danmaku);
