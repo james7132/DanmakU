@@ -116,15 +116,15 @@ namespace DanmakU {
         /// </summary>
         internal static void UpdateAll() {
             colliderMap.Clear();
-
             //caches the change in time since the last frame
             Danmaku danmaku;
             dt = TimeUtil.DeltaTime;
             Danmaku[] all = danmakuPool.all;
             for (int i = 0; i < all.Length; i++) {
                 danmaku = all[i];
-                if (danmaku != null && danmaku._isActive)
-                    danmaku.Update();
+                if (danmaku != null && danmaku._isActive) {
+                    danmaku.Update();   
+                }
             }
         }
 
@@ -399,10 +399,6 @@ namespace DanmakU {
         }
 
         public static void GetInactive(FireData data, Danmaku[] prealloc) {
-            if (danmakuPool == null) {
-                new GameObject("Danmaku Game Controller")
-                    .AddComponent<DanmakuGameController>();
-            }
             if (data == null)
                 throw new System.ArgumentNullException();
             danmakuPool.Get(prealloc);
