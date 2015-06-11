@@ -152,6 +152,12 @@ namespace DanmakU {
             }
         }
 
+		/// <summary>
+		/// Deactivates all danmaku in 
+		/// </summary>
+		/// <param name="center">Center.</param>
+		/// <param name="radius">Radius.</param>
+		/// <param name="layerMask">Layer mask.</param>
         public static void DeactivateInCircle(Vector2 center,
                                               float radius,
                                               int layerMask = ~0) {
@@ -181,9 +187,6 @@ namespace DanmakU {
         }
 
         public static Danmaku FindByTag(string tag) {
-            if (tag == null)
-                throw new System.ArgumentNullException("Tag cannot be null!");
-
             Danmaku current;
             Danmaku[] all = danmakuPool.all;
             for (int i = 0; i < all.Length; i++) {
@@ -195,9 +198,6 @@ namespace DanmakU {
         }
 
         public static Danmaku[] FindAllByTag(string tag) {
-            if (tag == null)
-                throw new System.ArgumentNullException("Tag cannot be null!");
-
             Danmaku current;
             List<Danmaku> matches = new List<Danmaku>();
             Danmaku[] all = danmakuPool.all;
@@ -317,16 +317,17 @@ namespace DanmakU {
         public static Danmaku[] GetInactive(Vector2 position,
                                             DynamicFloat rotation,
                                             DynamicInt count) {
-            Danmaku[] array = new Danmaku[count];
+            var array = new Danmaku[count];
             GetInactive(position, rotation, array);
-            danmakuPool.Get(array);
-            array.MoveTo(position).RotateTo(rotation);
             return array;
         }
 
         public static void GetInactive(Vector2 position,
                                        DynamicFloat rotation,
                                        Danmaku[] prealloc) {
+			if(prealloc == null)
+				throw new System.ArgumentNullException("prealloc");
+
             danmakuPool.Get(prealloc);
             prealloc.MoveTo(position).RotateTo(rotation);
         }
@@ -399,12 +400,11 @@ namespace DanmakU {
         }
 
         public static void GetInactive(FireData data, Danmaku[] prealloc) {
-            if (danmakuPool == null) {
-                new GameObject("Danmaku Game Controller")
-                    .AddComponent<DanmakuGameController>();
-            }
             if (data == null)
-                throw new System.ArgumentNullException();
+                throw new System.ArgumentNullException("data");
+			if(prealloc == null)
+				throw new System.ArgumentNullException("prealloc");
+
             danmakuPool.Get(prealloc);
             for (int i = 0; i < prealloc.Length; i++)
                 prealloc[i].Match(data);

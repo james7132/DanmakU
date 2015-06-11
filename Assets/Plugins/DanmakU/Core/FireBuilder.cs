@@ -70,7 +70,7 @@ namespace DanmakU {
 
         internal FireBuilder(DanmakuPrefab prefab, DanmakuField field = null) {
             if (prefab == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("prefab");
 
             _data = new FireData {
                 Prefab = prefab,
@@ -228,7 +228,7 @@ namespace DanmakU {
         /// <summary>
         /// Sets the firing origin position to a fixed point in space.
         /// </summary>
-        /// 
+        ///
         /// <remarks>
         /// To move the origin of firing after calling this requries additional calls to this method.
         /// This will also 'un-link' the instance from any GameObjects.
