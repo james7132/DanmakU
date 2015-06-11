@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DanmakU {
 
@@ -134,7 +135,8 @@ namespace DanmakU {
 
         #endregion
 
-        internal void Update() {
+        internal void Update()
+        {
             _originalPosition.x = position.x;
             _originalPosition.y = position.y;
             Vector2 movementVector;
@@ -365,9 +367,13 @@ namespace DanmakU {
         /// Calling this on a instance marked for deactivation will unmark the projectile and keep it from deactivating.
         /// </remarks>
         public void Activate() {
+            if (DanmakuGameController.Instance == null)
+                new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
             to_deactivate = false;
             runtime.Add(this);
-            if (!_isActive && OnActivate != null)
+            if (_isActive)
+                return;
+            if(OnActivate != null)
                 OnActivate(this);
             _isActive = true;
             frames = 0;
