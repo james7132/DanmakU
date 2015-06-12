@@ -88,7 +88,7 @@ namespace DanmakU {
 
 		#region implemented abstract members of DanmakuModifier
 
-		public override void OnFire (Vector2 position, DynamicFloat rotation) {
+		public override void OnFire (Vector2 position, DFloat rotation) {
 			DanmakuModifier original = SubModifier;
 			int count = Count;
 			if(!(count > 0 && original == null))

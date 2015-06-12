@@ -16,7 +16,7 @@ namespace DanmakU.Collider {
         private DanmakuGroup affected;
 
         [SerializeField]
-        private DynamicFloat angle;
+        private DFloat angle;
 
         //TODO Document
 
@@ -31,7 +31,7 @@ namespace DanmakU.Collider {
             set { rotationMode = value; }
         }
 
-        public DynamicFloat Angle {
+        public DFloat Angle {
             get { return angle; }
             set { angle = value; }
         }

@@ -13,48 +13,46 @@ namespace DanmakU {
     /// For creating more complex firing. See FireBuilder.
     /// </summary>
     [Serializable]
-    public sealed class FireData {
+    public struct FireData {
 
-        public DynamicFloat AngularSpeed = 0f;
+        public DFloat AngularSpeed;
         public DanmakuController Controller;
-        public DynamicInt Damage = 0;
+        public Action<Danmaku> OnActivate;
+        public Action<Danmaku> OnDeactivate;
+        public DInt Damage;
         public DanmakuField Field;
-        public DanmakuGroup Group;
-        public Vector2 Position = Vector2.zero;
+        public Vector2 Position;
         public DanmakuPrefab Prefab;
-        public DynamicFloat Rotation = 0f;
-        public DynamicFloat Speed = 5f;
+        public DFloat Rotation;
+        public DFloat Speed;
 
-        public Danmaku Fire() {
+        public Danmaku Fire(Vector2? position = null, DFloat? rotation = null) {
             Danmaku danmaku = Danmaku.GetInactive(this);
+            danmaku.Position = position ?? Position;
+            danmaku.Rotation = rotation ?? Rotation;
             danmaku.Field = Field;
             danmaku.Activate();
             return danmaku;
         }
 
-        public void Copy(FireData other) {
-            Prefab = other.Prefab;
-            Field = other.Field;
-            Position = other.Position;
-            Rotation = other.Rotation;
-            Speed = other.Speed;
-            AngularSpeed = other.AngularSpeed;
-            Controller = other.Controller;
-            Damage = other.Damage;
-            Group = other.Group;
+        public void AddGroup(DanmakuGroup group) {
+            if(group == null)
+                throw new ArgumentNullException("group");
+            OnActivate += group.Add;
         }
 
-        public FireData Clone() {
-            FireData copy = new FireData();
-            copy.Copy(this);
-            return copy;
+        public void RemoveGroup(DanmakuGroup group)
+        {
+            if (group == null)
+                throw new ArgumentNullException("group");
+            OnActivate -= group.Add;
         }
 
     }
 
     public sealed class FireBuilder {
 
-        private readonly FireData _data;
+        private FireData _data;
         private readonly List<DanmakuModifier> _modifiers;
         private Transform _positionSource;
         private Transform _rotationSource;
@@ -76,11 +74,12 @@ namespace DanmakU {
                 Prefab = prefab,
                 Field = field
             };
+
             _modifiers = new List<DanmakuModifier>();
         }
 
         public FireBuilder Copy(FireBuilder other) {
-            _data.Copy(other._data);
+            _data = other._data;
             _modifiers.Clear();
             _modifiers.AddRange(other._modifiers);
             _positionSource = other._positionSource;
@@ -109,7 +108,7 @@ namespace DanmakU {
 
         public void Fire() {
             Vector2 actualPosition = Position;
-            DynamicFloat actualRotation = Rotation;
+            DFloat actualRotation = Rotation;
 
             if (_positionSource != null)
                 actualPosition = _positionSource.position;
@@ -130,7 +129,7 @@ namespace DanmakU {
             }
 
             Vector2 tempPos = Position;
-            DynamicFloat tempRotation = Rotation;
+            DFloat tempRotation = Rotation;
             Position = actualPosition;
             Rotation = actualRotation;
 
@@ -191,14 +190,14 @@ namespace DanmakU {
             set { _data.Position = value; }
         }
 
-        public DynamicFloat Rotation {
+        public DFloat Rotation {
             get { return _data.Rotation; }
             set { _data.Rotation = value; }
         }
 
         public event DanmakuController Controller {
             add { _data.Controller += value; }
-            remove { _data.Controller -= value; }
+            remove { _data.Controller.Remove(value); }
         }
 
         public float Speed {
@@ -211,14 +210,19 @@ namespace DanmakU {
             set { _data.AngularSpeed = value; }
         }
 
-        public DynamicInt Damage {
+        public DInt Damage {
             get { return _data.Damage; }
             set { _data.Damage = value; }
         }
 
-        public DanmakuGroup Group {
-            get { return _data.Group; }
-            set { _data.Group = value; }
+        public event Action<Danmaku> OnActivate {
+            add { _data.OnActivate += value; }
+            remove { _data.OnDeactivate -= value; }
+        }
+
+        public event Action<Danmaku> OnDeactivate {
+            add { _data.OnDeactivate += value; }
+            remove { _data.OnDeactivate -= value; }
         }
 
         #endregion
@@ -365,13 +369,13 @@ namespace DanmakU {
             return this;
         }
 
-        public FireBuilder WithRotation(DynamicFloat rotation) {
+        public FireBuilder WithRotation(DFloat rotation) {
             Rotation = rotation;
             return this;
         }
 
         public FireBuilder WithRotation(float min, float max) {
-            Rotation = new DynamicFloat(min, max);
+            Rotation = new DFloat(min, max);
             return this;
         }
 
@@ -397,13 +401,13 @@ namespace DanmakU {
 
         #region Speed Functions
 
-        public FireBuilder WithSpeed(DynamicFloat speed) {
+        public FireBuilder WithSpeed(DFloat speed) {
             Speed = speed;
             return this;
         }
 
         public FireBuilder WithSpeed(float min, float max) {
-            Speed = new DynamicFloat(min, max);
+            Speed = new DFloat(min, max);
             return this;
         }
 
@@ -411,13 +415,13 @@ namespace DanmakU {
 
         #region Angular Speed Functions
 
-        public FireBuilder WithAngularSpeed(DynamicFloat angularSpeed) {
+        public FireBuilder WithAngularSpeed(DFloat angularSpeed) {
             AngularSpeed = angularSpeed;
             return this;
         }
 
         public FireBuilder WithAngularSpeed(float min, float max) {
-            AngularSpeed = new DynamicFloat(min, max);
+            AngularSpeed = new DFloat(min, max);
             return this;
         }
 
@@ -482,33 +486,34 @@ namespace DanmakU {
 
         #endregion
 
-        #region Damage Functions
+#region Damage Functions
 
-        public FireBuilder WithDamage(DynamicInt damage) {
+        public FireBuilder WithDamage(DInt damage) {
             Damage = damage;
             return this;
         }
 
         public FireBuilder WithDamage(int min, int max) {
-            Damage = new DynamicInt(min, max);
+            Damage = new DInt(min, max);
             return this;
         }
 
-        #endregion
+#endregion
 
-        #region Group Functions
+#region Group Functions
 
-        public FireBuilder InGroup(DanmakuGroup group) {
-            Group = group;
+        public FireBuilder WithGroup(DanmakuGroup group) {
+            _data.AddGroup(group);
             return this;
         }
 
-        public FireBuilder WithoutGroup() {
-            Group = null;
+        public FireBuilder WithoutGroup(DanmakuGroup group) {
+            _data.RemoveGroup(group);
             return this;
         }
 
-        #endregion
+#endregion
+
     }
 
 }

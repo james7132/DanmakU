@@ -11,50 +11,50 @@ namespace DanmakU.Modifiers {
     public class CircularBurstModifier : DanmakuModifier {
 
         [SerializeField, Show]
-        private DynamicInt count = 1;
+        private DInt count = 1;
 
         [SerializeField, Show]
-        private DynamicFloat deltaAngularSpeed = 0f;
+        private DFloat deltaAngularSpeed = 0f;
 
         [SerializeField, Show]
-        private DynamicFloat deltaSpeed = 0f;
+        private DFloat deltaSpeed = 0f;
 
         [SerializeField, Show]
-        private DynamicFloat range = 360f;
+        private DFloat range = 360f;
 
-        public CircularBurstModifier(DynamicFloat range,
-                                     DynamicInt count,
-                                     DynamicFloat deltaSpeed,
-                                     DynamicFloat deltaAngularSpeed) {
+        public CircularBurstModifier(DFloat range,
+                                     DInt count,
+                                     DFloat deltaSpeed,
+                                     DFloat deltaAngularSpeed) {
             this.range = range;
             this.count = count;
             this.deltaSpeed = deltaSpeed;
             this.deltaAngularSpeed = deltaAngularSpeed;
         }
 
-        public DynamicFloat Range {
+        public DFloat Range {
             get { return range; }
             set { range = value; }
         }
 
-        public DynamicInt Count {
+        public DInt Count {
             get { return count; }
             set { count = value; }
         }
 
-        public DynamicFloat DeltaSpeed {
+        public DFloat DeltaSpeed {
             get { return deltaSpeed; }
             set { deltaSpeed = value; }
         }
 
-        public DynamicFloat DeltaAngularSpeed {
+        public DFloat DeltaAngularSpeed {
             get { return deltaAngularSpeed; }
             set { deltaAngularSpeed = value; }
         }
 
         #region implemented abstract members of FireModifier
 
-        public override void OnFire(Vector2 position, DynamicFloat rotation) {
+        public override void OnFire(Vector2 position, DFloat rotation) {
             int burstCount = Mathf.Abs(count.Value);
 
             if (burstCount == 1)
@@ -67,8 +67,8 @@ namespace DanmakU.Modifiers {
                 float deltaV = deltaSpeed.Value;
                 float deltaAV = deltaAngularSpeed.Value;
 
-                DynamicFloat tempSpeed = Speed;
-                DynamicFloat tempASpeed = AngularSpeed;
+                DFloat tempSpeed = Speed;
+                DFloat tempASpeed = AngularSpeed;
 
                 for (int i = 0; i < burstCount; i++) {
                     Speed += deltaV;

@@ -11,7 +11,7 @@ namespace DanmakU.Controllers {
     public class DelayedAngleChange : IDanmakuController {
 
         [SerializeField, Show]
-        private DynamicFloat _angle;
+        private DFloat _angle;
 
         [SerializeField, Show]
         private float _delay;
@@ -35,7 +35,7 @@ namespace DanmakU.Controllers {
             set { _delay = value; }
         }
 
-        public DynamicFloat Angle {
+        public DFloat Angle {
             get { return _angle; }
             set { _angle = value; }
         }

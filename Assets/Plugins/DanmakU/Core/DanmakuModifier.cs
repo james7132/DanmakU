@@ -15,7 +15,7 @@ namespace DanmakU {
         [SerializeField]
         private DanmakuModifier _subModifier;
 
-        protected DynamicFloat Speed {
+        protected DFloat Speed {
             get { return _data.Speed; }
             set {
                 _data.Speed = value;
@@ -24,7 +24,7 @@ namespace DanmakU {
             }
         }
 
-        protected DynamicFloat AngularSpeed {
+        protected DFloat AngularSpeed {
             get { return _data.AngularSpeed; }
             set {
                 _data.AngularSpeed = value;
@@ -57,15 +57,6 @@ namespace DanmakU {
                 _data.Prefab = value;
                 if (_subModifier != null)
                     _subModifier.Prefab = value;
-            }
-        }
-
-        protected DanmakuGroup Group {
-            get { return _data.Group; }
-            set {
-                _data.Group = value;
-                if (_subModifier != null)
-                    _subModifier.Group = value;
             }
         }
 
@@ -152,7 +143,7 @@ namespace DanmakU {
         }
 
         protected void FireSingle(Vector2 position,
-                                  DynamicFloat rotation) {
+                                  DFloat rotation) {
             if (SubModifier == null) {
                 _data.Position = position;
                 _data.Rotation = rotation;
@@ -166,7 +157,7 @@ namespace DanmakU {
             OnFire(data.Position, data.Rotation);
         }
 
-        public abstract void OnFire(Vector2 position, DynamicFloat rotation);
+        public abstract void OnFire(Vector2 position, DFloat rotation);
 
     }
 

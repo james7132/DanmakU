@@ -231,13 +231,13 @@ namespace DanmakU {
 
         #region Rotation Functions
 
-        public static T RotateTo<T>(this T danmakus, DynamicFloat rotation, Predicate<Danmaku> filter = null)
+        public static T RotateTo<T>(this T danmakus, DFloat rotation, Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.Rotation = rotation, filter);
         }
 
         public static T RotateTo<T>(this T danmakus,
-                                    ICollection<DynamicFloat> rotations,
+                                    ICollection<DFloat> rotations,
                                     Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             if (rotations == null)
@@ -245,7 +245,7 @@ namespace DanmakU {
             return danmakus.ForEach(x => x.Rotation = rotations.Random(), filter);
         }
 
-        public static T Rotate<T>(this T danmakus, DynamicFloat delta, Predicate<Danmaku> filter = null)
+        public static T Rotate<T>(this T danmakus, DFloat delta, Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.Rotation += delta, filter);
         }
@@ -254,19 +254,19 @@ namespace DanmakU {
 
         #region Speed Functions
 
-        public static T Speed<T>(this T danmakus, DynamicFloat speed, Predicate<Danmaku> filter = null)
+        public static T Speed<T>(this T danmakus, DFloat speed, Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.Speed = speed, filter);
         }
 
-        public static T Speed<T>(this T danmakus, ICollection<DynamicFloat> speeds, Predicate<Danmaku> filter = null)
+        public static T Speed<T>(this T danmakus, ICollection<DFloat> speeds, Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             if (speeds == null)
                 throw new ArgumentNullException("speeds");
             return danmakus.ForEach(x => x.Speed = speeds.Random(), filter);
         }
 
-        public static T Accelerate<T>(this T danmakus, DynamicFloat deltaSpeed, Predicate<Danmaku> filter = null)
+        public static T Accelerate<T>(this T danmakus, DFloat deltaSpeed, Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.Speed += deltaSpeed, filter);
         }
@@ -276,21 +276,21 @@ namespace DanmakU {
         #region Angular Speed Functions
 
         public static T AngularSpeed<T>(this T danmakus,
-                                        DynamicFloat angularSpeed,
+                                        DFloat angularSpeed,
                                         Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.AngularSpeed = angularSpeed, filter);
         }
 
         public static T AngularSpeed<T>(this T danmakus,
-                                        ICollection<DynamicFloat> angularSpeeds,
+                                        ICollection<DFloat> angularSpeeds,
                                         Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.AngularSpeed = angularSpeeds.Random(), filter);
         }
 
         public static T AngularAccelerate<T>(this T danmakus,
-                                             DynamicFloat deltaSpeed,
+                                             DFloat deltaSpeed,
                                              Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.AngularSpeed += deltaSpeed, filter);
@@ -300,12 +300,12 @@ namespace DanmakU {
 
         #region Damage Functions
 
-        public static T Damage<T>(this T danmakus, DynamicInt damage, Predicate<Danmaku> filter = null)
+        public static T Damage<T>(this T danmakus, DInt damage, Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.Damage = damage, filter);
         }
 
-        public static T Damage<T>(this T danmakus, ICollection<DynamicInt> damages, Predicate<Danmaku> filter = null)
+        public static T Damage<T>(this T danmakus, ICollection<DInt> damages, Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
             return danmakus.ForEach(x => x.AngularSpeed = damages.Random(), filter);
         }
@@ -444,10 +444,8 @@ namespace DanmakU {
                                 bool useRotation = true,
                                 Predicate<Danmaku> filter = null)
             where T : class, IEnumerable<Danmaku> {
-            if (data == null)
-                throw new ArgumentNullException("data");
             Vector2 tempPos = data.Position;
-            DynamicFloat tempRot = data.Rotation;
+            DFloat tempRot = data.Rotation;
             danmakus.ForEach(delegate(Danmaku danmaku) {
                                  data.Position = danmaku.Position;
                                  if (useRotation)
@@ -470,7 +468,7 @@ namespace DanmakU {
             if (builder == null)
                 throw new ArgumentNullException("builder");
             Vector2 tempPos = builder.Position;
-            DynamicFloat tempRot = builder.Rotation;
+            DFloat tempRot = builder.Rotation;
             danmakus.ForEach(delegate(Danmaku danmaku) {
                                  builder.Position = danmaku.Position;
                                  if (useRotation)

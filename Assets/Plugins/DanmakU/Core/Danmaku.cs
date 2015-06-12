@@ -121,7 +121,7 @@ namespace DanmakU {
 
         #region Speed Functions
 
-        public void Accelerate(DynamicFloat dv) {
+        public void Accelerate(DFloat dv) {
             Speed += dv;
         }
 
@@ -129,7 +129,7 @@ namespace DanmakU {
 
         #region Angular Speed Functions 
 
-        public void AngularAcclerate(DynamicFloat dav) {
+        public void AngularAcclerate(DFloat dav) {
             AngularSpeed += dav;
         }
 
@@ -338,7 +338,7 @@ namespace DanmakU {
         /// <param name="useRotation">If set to <c>true</c>, the bullet will use the current rotation of the bullet to fire with.</param>
         public Danmaku Fire(FireData data, bool useRotation = true) {
             Vector2 tempPos = data.Position;
-            DynamicFloat tempRot = data.Rotation;
+            DFloat tempRot = data.Rotation;
             data.Position = Position;
             if (useRotation)
                 data.Rotation = Rotation;
@@ -350,7 +350,7 @@ namespace DanmakU {
 
         public void Fire(FireBuilder builder, bool useRotation = true) {
             Vector2 tempPos = builder.Position;
-            DynamicFloat tempRot = builder.Rotation;
+            DFloat tempRot = builder.Rotation;
             builder.Position = Position;
             if (useRotation)
                 builder.Rotation = Rotation;

@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace DanmakU.Editor {
 	
-	[CustomPropertyDrawer(typeof(DynamicInt))]
+	[CustomPropertyDrawer(typeof(DInt))]
 	public class DynamicIntDrawer : PropertyDrawer {
 		
 		private const float typeWidth = 0.2f;
@@ -52,7 +52,7 @@ namespace DanmakU.Editor {
 		}
 	}
 	
-	[CustomPropertyDrawer(typeof(DynamicFloat))]
+	[CustomPropertyDrawer(typeof(DFloat))]
 	public class DynamicFloatDrawer : PropertyDrawer {
 		
 		private const float typeWidth = 0.2f;

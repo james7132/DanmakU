@@ -10,28 +10,28 @@ namespace DanmakU.Modifiers {
     public class CircleSource : DanmakuSource {
 
         [SerializeField, Show]
-        private DynamicInt count;
+        private DInt count;
 
         [SerializeField, Show]
         private bool normal;
 
         [SerializeField, Show]
-        private DynamicFloat radius;
+        private DFloat radius;
 
-        public CircleSource(DynamicFloat radius,
-                            DynamicInt count,
+        public CircleSource(DFloat radius,
+                            DInt count,
                             bool normal = false) {
             this.radius = radius;
             this.count = count;
             this.normal = normal;
         }
 
-        public DynamicInt Count {
+        public DInt Count {
             get { return count; }
             set { count = value; }
         }
 
-        public DynamicFloat Radius {
+        public DFloat Radius {
             get { return radius; }
             set { radius = value; }
         }
