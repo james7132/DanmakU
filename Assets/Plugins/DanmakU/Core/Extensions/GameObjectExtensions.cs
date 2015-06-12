@@ -34,7 +34,5 @@ namespace DanmakU {
     	            yield return tran.gameObject;
 			}
         }
-
     }
-
 }
