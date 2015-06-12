@@ -11,44 +11,44 @@ namespace DanmakU.Modifiers {
     public class LinearBurstModifier : DanmakuModifier {
 
         [SerializeField, Show]
-        private DynamicFloat deltaAngularSpeed;
+        private DFloat deltaAngularSpeed;
 
         [SerializeField, Show]
-        private DynamicFloat deltaSpeed;
+        private DFloat deltaSpeed;
 
         [SerializeField, Show]
-        private DynamicInt depth = 1;
+        private DInt depth = 1;
 
-        public LinearBurstModifier(DynamicInt depth,
-                                   DynamicFloat deltaSpeed,
-                                   DynamicFloat deltaAngularSpeed) {
+        public LinearBurstModifier(DInt depth,
+                                   DFloat deltaSpeed,
+                                   DFloat deltaAngularSpeed) {
             this.depth = depth;
             this.deltaSpeed = deltaSpeed;
             this.deltaAngularSpeed = deltaAngularSpeed;
         }
 
-        public DynamicInt Depth {
+        public DInt Depth {
             get { return depth; }
             set { depth = value; }
         }
 
-        public DynamicFloat DeltaSpeed {
+        public DFloat DeltaSpeed {
             get { return deltaSpeed; }
             set { deltaSpeed = value; }
         }
 
-        public DynamicFloat DeltaAngularSpeed {
+        public DFloat DeltaAngularSpeed {
             get { return deltaAngularSpeed; }
             set { deltaAngularSpeed = value; }
         }
 
         #region implemented abstract members of FireModifier
 
-        public override void OnFire(Vector2 position, DynamicFloat rotation) {
-            DynamicFloat tempSpeed = Speed;
-            DynamicFloat tempASpeed = AngularSpeed;
-            DynamicFloat deltaV = DeltaSpeed;
-            DynamicFloat deltaAV = DeltaAngularSpeed;
+        public override void OnFire(Vector2 position, DFloat rotation) {
+            DFloat tempSpeed = Speed;
+            DFloat tempASpeed = AngularSpeed;
+            DFloat deltaV = DeltaSpeed;
+            DFloat deltaAV = DeltaAngularSpeed;
             float depth = Depth.Value;
             for (int i = 0; i < depth; i++) {
                 Speed += deltaV;

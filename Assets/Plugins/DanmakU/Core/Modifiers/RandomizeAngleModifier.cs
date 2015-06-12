@@ -11,20 +11,20 @@ namespace DanmakU.Modifiers {
     public class RandomizeAngleModifier : DanmakuModifier {
 
         [SerializeField, Show]
-        private DynamicFloat range;
+        private DFloat range;
 
-        public RandomizeAngleModifier(DynamicFloat range) {
+        public RandomizeAngleModifier(DFloat range) {
             this.range = range;
         }
 
-        public DynamicFloat Range {
+        public DFloat Range {
             get { return range; }
             set { range = value; }
         }
 
         #region implemented abstract members of FireModifier
 
-        public override void OnFire(Vector2 position, DynamicFloat rotation) {
+        public override void OnFire(Vector2 position, DFloat rotation) {
             float rotationValue = rotation.Value;
             float rangeValue = Range.Value;
             FireSingle(position, rotationValue + 0.5f*Random.Range(-rangeValue, rangeValue));

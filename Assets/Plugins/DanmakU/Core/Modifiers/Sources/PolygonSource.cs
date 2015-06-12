@@ -20,20 +20,20 @@ namespace DanmakU.Modifiers {
         }
 
         [SerializeField, Show]
-        private DynamicInt edgeCount;
+        private DInt edgeCount;
 
         [SerializeField, Show]
-        private DynamicInt pointsPerEdge;
+        private DInt pointsPerEdge;
 
         [SerializeField, Show]
-        private DynamicFloat size;
+        private DFloat size;
 
         [SerializeField, Show]
         private RotationType type;
 
-        public PolygonSource(DynamicFloat size,
-                             DynamicInt edgeCount,
-                             DynamicInt pointsPerEdge,
+        public PolygonSource(DFloat size,
+                             DInt edgeCount,
+                             DInt pointsPerEdge,
                              RotationType type) {
             this.size = size;
             this.edgeCount = edgeCount;
@@ -41,17 +41,17 @@ namespace DanmakU.Modifiers {
             this.type = type;
         }
 
-        public DynamicFloat Size {
+        public DFloat Size {
             get { return size; }
             set { size = value; }
         }
 
-        public DynamicInt EdgeCount {
+        public DInt EdgeCount {
             get { return edgeCount; }
             set { edgeCount = value; }
         }
 
-        public DynamicInt PointsPerEdge {
+        public DInt PointsPerEdge {
             get { return pointsPerEdge; }
             set { pointsPerEdge = value; }
         }

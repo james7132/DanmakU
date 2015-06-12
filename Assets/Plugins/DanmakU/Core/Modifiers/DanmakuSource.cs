@@ -9,10 +9,10 @@ namespace DanmakU.Modifiers {
 
     public class SourcePoint {
 
-        public DynamicFloat BaseRotation;
+        public DFloat BaseRotation;
         public Vector2 Position;
 
-        public SourcePoint(Vector2 location, DynamicFloat rotation) {
+        public SourcePoint(Vector2 location, DFloat rotation) {
             Position = location;
             BaseRotation = rotation;
         }
@@ -32,7 +32,7 @@ namespace DanmakU.Modifiers {
                                                    float rotation);
 
         public override sealed void OnFire(Vector2 position,
-                                           DynamicFloat rotation) {
+                                           DFloat rotation) {
             UpdateSourcePoints(position, rotation);
             for (int i = 0; i < SourcePoints.Count; i++) {
                 FireSingle(SourcePoints[i].Position,

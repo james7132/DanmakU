@@ -5,6 +5,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A development kit for quick development of 2D Danmaku games
+/// </summary>
+
 namespace DanmakU {
 
     /// <summary>
@@ -148,12 +152,6 @@ namespace DanmakU {
             }
         }
 
-		/// <summary>
-		/// Deactivates all danmaku in 
-		/// </summary>
-		/// <param name="center">Center.</param>
-		/// <param name="radius">Radius.</param>
-		/// <param name="layerMask">Layer mask.</param>
         public static void DeactivateInCircle(Vector2 center,
                                               float radius,
                                               int layerMask = ~0) {
@@ -183,6 +181,9 @@ namespace DanmakU {
         }
 
         public static Danmaku FindByTag(string tag) {
+            if (tag == null)
+                throw new System.ArgumentNullException("Tag cannot be null!");
+
             Danmaku current;
             Danmaku[] all = danmakuPool.all;
             for (int i = 0; i < all.Length; i++) {
@@ -194,6 +195,9 @@ namespace DanmakU {
         }
 
         public static Danmaku[] FindAllByTag(string tag) {
+            if (tag == null)
+                throw new System.ArgumentNullException("Tag cannot be null!");
+
             Danmaku current;
             List<Danmaku> matches = new List<Danmaku>();
             Danmaku[] all = danmakuPool.all;
@@ -272,7 +276,7 @@ namespace DanmakU {
         /// </remarks>
         /// <returns>The inactive Danmaku objects in an array.</returns>
         /// <param name="count">the number of inactive Danmaku objects to retrieve.</param>
-        public static Danmaku[] GetInactive(DynamicInt count) {
+        public static Danmaku[] GetInactive(DInt count) {
             Danmaku[] array = new Danmaku[count];
             danmakuPool.Get(array);
             return array;
@@ -302,7 +306,7 @@ namespace DanmakU {
         /// <param name="position">Position.</param>
         /// <param name="rotation">Rotation.</param>
         public static Danmaku GetInactive(Vector2 position,
-                                          DynamicFloat rotation) {
+                                          DFloat rotation) {
             Danmaku danmaku = danmakuPool.Get();
             danmaku.position.x = position.x;
             danmaku.position.y = position.y;
@@ -311,26 +315,25 @@ namespace DanmakU {
         }
 
         public static Danmaku[] GetInactive(Vector2 position,
-                                            DynamicFloat rotation,
-                                            DynamicInt count) {
-            var array = new Danmaku[count];
+                                            DFloat rotation,
+                                            DInt count) {
+            Danmaku[] array = new Danmaku[count];
             GetInactive(position, rotation, array);
+            danmakuPool.Get(array);
+            array.MoveTo(position).RotateTo(rotation);
             return array;
         }
 
         public static void GetInactive(Vector2 position,
-                                       DynamicFloat rotation,
+                                       DFloat rotation,
                                        Danmaku[] prealloc) {
-			if(prealloc == null)
-				throw new System.ArgumentNullException("prealloc");
-
             danmakuPool.Get(prealloc);
             prealloc.MoveTo(position).RotateTo(rotation);
         }
 
         public static Danmaku GetInactive(DanmakuPrefab danmakuType,
                                           Vector2 position,
-                                          DynamicFloat rotation) {
+                                          DFloat rotation) {
             Danmaku danmaku = danmakuPool.Get();
             danmaku.MatchPrefab(danmakuType);
             danmaku.position.x = position.x;
@@ -341,8 +344,8 @@ namespace DanmakU {
 
         public static Danmaku[] GetInactive(DanmakuPrefab danmakuType,
                                             Vector2 position,
-                                            DynamicFloat rotation,
-                                            DynamicInt count) {
+                                            DFloat rotation,
+                                            DInt count) {
             Danmaku[] array = new Danmaku[count];
             danmakuPool.Get(array);
             for (int i = 0; i < array.Length; i++) {
@@ -357,7 +360,7 @@ namespace DanmakU {
 
         public static void GetInactive(DanmakuPrefab danmakuType,
                                        Vector2 position,
-                                       DynamicFloat rotation,
+                                       DFloat rotation,
                                        Danmaku[] prealloc) {
             danmakuPool.Get(prealloc);
             for (int i = 0; i < prealloc.Length; i++) {
@@ -377,30 +380,23 @@ namespace DanmakU {
             AngularSpeed = data.AngularSpeed;
             AddController(data.Controller);
             Damage = data.Damage.Value;
-            if (data.Group != null)
-                data.Group.Add(this);
+            OnActivate = data.OnActivate;
+            OnDeactivate = data.OnDeactivate;
         }
 
         public static Danmaku GetInactive(FireData data) {
-            if (data == null)
-                throw new System.ArgumentNullException();
             Danmaku danmaku = danmakuPool.Get();
             danmaku.Match(data);
             return danmaku;
         }
 
-        public static Danmaku[] GetInactive(FireData data, DynamicInt count) {
+        public static Danmaku[] GetInactive(FireData data, DInt count) {
             var danmakus = new Danmaku[count];
             GetInactive(data, danmakus);
             return danmakus;
         }
 
         public static void GetInactive(FireData data, Danmaku[] prealloc) {
-            if (data == null)
-                throw new System.ArgumentNullException("data");
-			if(prealloc == null)
-				throw new System.ArgumentNullException("prealloc");
-
             danmakuPool.Get(prealloc);
             for (int i = 0; i < prealloc.Length; i++)
                 prealloc[i].Match(data);

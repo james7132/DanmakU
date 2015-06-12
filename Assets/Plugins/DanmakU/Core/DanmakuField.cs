@@ -255,7 +255,7 @@ namespace DanmakU {
 
         public Danmaku SpawnDanmaku(DanmakuPrefab bulletType,
                                     Vector2 location,
-                                    DynamicFloat rotation,
+                                    DFloat rotation,
                                     CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;
@@ -269,8 +269,8 @@ namespace DanmakU {
 
         public Danmaku FireLinear(DanmakuPrefab prefab,
                                   Vector2 location,
-                                  DynamicFloat rotation,
-                                  DynamicFloat speed,
+                                  DFloat rotation,
+                                  DFloat speed,
                                   CoordinateSystem coordSys = CoordinateSystem.View,
                                   DanmakuModifier modifier = null) {
             if (TargetField == null)
@@ -297,9 +297,9 @@ namespace DanmakU {
 
         public Danmaku FireCurved(DanmakuPrefab prefab,
                                   Vector2 location,
-                                  DynamicFloat rotation,
-                                  DynamicFloat speed,
-                                  DynamicFloat angularSpeed,
+                                  DFloat rotation,
+                                  DFloat speed,
+                                  DFloat angularSpeed,
                                   CoordinateSystem coordSys = CoordinateSystem.View,
                                   DanmakuModifier modifier = null) {
             if (TargetField == null)

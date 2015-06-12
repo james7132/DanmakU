@@ -9,7 +9,7 @@ namespace DanmakU.Modifiers {
     public class ClearControllersModifier : DanmakuModifier {
         #region implemented abstract members of DanmakuModifier
 
-        public override void OnFire(Vector2 position, DynamicFloat rotation) {
+        public override void OnFire(Vector2 position, DFloat rotation) {
             Controller = null;
             FireSingle(position, rotation);
         }

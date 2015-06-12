@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 namespace DanmakU {
 
     [Serializable]
-    public struct DynamicInt {
+    public struct DInt {
 
         public enum ValueType {
 
@@ -28,13 +28,13 @@ namespace DanmakU {
         [SerializeField]
         private ValueType _type;
 
-        public DynamicInt(int value) {
+        public DInt(int value) {
             _min = value;
             _max = value;
             _type = ValueType.Constant;
         }
 
-        public DynamicInt(int min, int max) {
+        public DInt(int min, int max) {
             if (min > max) {
                 _max = min;
                 _min = max;
@@ -81,44 +81,44 @@ namespace DanmakU {
             }
         }
 
-        public static implicit operator int(DynamicInt df) {
+        public static implicit operator int(DInt df) {
             return df.Value;
         }
 
-        public static implicit operator DynamicInt(int f) {
-            return new DynamicInt(f);
+        public static implicit operator DInt(int f) {
+            return new DInt(f);
         }
 
-        public static implicit operator DynamicFloat(DynamicInt di) {
-            return new DynamicFloat(di._min, di._max);
+        public static implicit operator DFloat(DInt di) {
+            return new DFloat(di._min, di._max);
         }
 
-        public static DynamicInt operator +(DynamicInt di1, DynamicInt di2) {
-            return new DynamicInt(di1._min + di2._min, di1._max + di2._max);
+        public static DInt operator +(DInt di1, DInt di2) {
+            return new DInt(di1._min + di2._min, di1._max + di2._max);
         }
 
-        public static DynamicInt operator -(DynamicInt di1, DynamicInt di2) {
-            return new DynamicInt(di1._min - di2._min, di1._max - di2._max);
+        public static DInt operator -(DInt di1, DInt di2) {
+            return new DInt(di1._min - di2._min, di1._max - di2._max);
         }
 
-        public static DynamicInt operator *(DynamicInt di1, DynamicInt di2) {
-            return new DynamicInt(di1._min*di2._min, di1._max*di2._max);
+        public static DInt operator *(DInt di1, DInt di2) {
+            return new DInt(di1._min*di2._min, di1._max*di2._max);
         }
 
-        public static bool operator ==(DynamicInt di1, DynamicInt di2) {
+        public static bool operator ==(DInt di1, DInt di2) {
             if (di1._type == ValueType.Constant &&
                 di2._type == ValueType.Constant)
                 return di1._min == di2._min;
             return (di1._min == di2._min) && (di1._max == di2._max);
         }
 
-        public static bool operator !=(DynamicInt df1, DynamicInt df2) {
+        public static bool operator !=(DInt df1, DInt df2) {
             return !(df1 == df2);
         }
 
         public override bool Equals(object obj) {
-            if (obj is DynamicInt)
-                return (DynamicInt) obj == this;
+            if (obj is DInt)
+                return (DInt) obj == this;
             return false;
         }
 
@@ -136,7 +136,7 @@ namespace DanmakU {
     }
 
     [Serializable]
-    public struct DynamicFloat {
+    public struct DFloat {
 
         public enum ValueType {
 
@@ -154,13 +154,13 @@ namespace DanmakU {
         [SerializeField]
         private ValueType _type;
 
-        public DynamicFloat(float value) {
+        public DFloat(float value) {
             _min = value;
             _max = value;
             _type = ValueType.Constant;
         }
 
-        public DynamicFloat(float min, float max) {
+        public DFloat(float min, float max) {
             if (min > max) {
                 _max = min;
                 _min = max;
@@ -208,69 +208,69 @@ namespace DanmakU {
             }
         }
 
-        public static implicit operator float(DynamicFloat df) {
+        public static implicit operator float(DFloat df) {
             return df.Value;
         }
 
-        public static implicit operator DynamicFloat(float f) {
-            return new DynamicFloat(f);
+        public static implicit operator DFloat(float f) {
+            return new DFloat(f);
         }
 
-        public static explicit operator DynamicInt(DynamicFloat df) {
-            return new DynamicInt((int) df._min, (int) df._max);
+        public static explicit operator DInt(DFloat df) {
+            return new DInt((int) df._min, (int) df._max);
         }
 
-        public static DynamicFloat operator +(DynamicFloat df, float f) {
-            return new DynamicFloat(df._min + f, df._max + f);
+        public static DFloat operator +(DFloat df, float f) {
+            return new DFloat(df._min + f, df._max + f);
         }
 
-        public static DynamicFloat operator +(float f, DynamicFloat df) {
-            return new DynamicFloat(df._min + f, df._max + f);
+        public static DFloat operator +(float f, DFloat df) {
+            return new DFloat(df._min + f, df._max + f);
         }
 
-        public static DynamicFloat operator +(DynamicFloat df, int i) {
-            return new DynamicFloat(df._min + i, df._max + i);
+        public static DFloat operator +(DFloat df, int i) {
+            return new DFloat(df._min + i, df._max + i);
         }
 
-        public static DynamicFloat operator +(int i, DynamicFloat df) {
-            return new DynamicFloat(df._min + i, df._max + i);
+        public static DFloat operator +(int i, DFloat df) {
+            return new DFloat(df._min + i, df._max + i);
         }
 
-        public static DynamicFloat operator +(DynamicFloat df1, DynamicFloat df2
+        public static DFloat operator +(DFloat df1, DFloat df2
             ) {
-            return new DynamicFloat(df1._min + df2._min, df1._max + df2._max);
+            return new DFloat(df1._min + df2._min, df1._max + df2._max);
         }
 
-        public static DynamicFloat operator -(DynamicFloat df, int i) {
-            return new DynamicFloat(df._min - i, df._max - i);
+        public static DFloat operator -(DFloat df, int i) {
+            return new DFloat(df._min - i, df._max - i);
         }
 
-        public static DynamicFloat operator -(int i, DynamicFloat df) {
-            return new DynamicFloat(i - df._min, i - df._max);
+        public static DFloat operator -(int i, DFloat df) {
+            return new DFloat(i - df._min, i - df._max);
         }
 
-        public static DynamicFloat operator -(DynamicFloat df1, DynamicFloat df2
+        public static DFloat operator -(DFloat df1, DFloat df2
             ) {
-            return new DynamicFloat(df1._min - df2._min, df1._max - df2._max);
+            return new DFloat(df1._min - df2._min, df1._max - df2._max);
         }
 
-        public static DynamicFloat operator *(DynamicFloat df1, DynamicFloat df2
+        public static DFloat operator *(DFloat df1, DFloat df2
             ) {
-            return new DynamicFloat(df1._min*df2._min, df1._min*df2._max);
+            return new DFloat(df1._min*df2._min, df1._min*df2._max);
         }
 
-        public static bool operator ==(DynamicFloat df1, DynamicFloat df2) {
+        public static bool operator ==(DFloat df1, DFloat df2) {
             return (Math.Abs(df1._min - df2._min) < float.Epsilon) && (Math.Abs(df1._max - df2._max) < float.Epsilon);
         }
 
-        public static bool operator !=(DynamicFloat df1, DynamicFloat df2) {
+        public static bool operator !=(DFloat df1, DFloat df2) {
             return !(df1 == df2);
         }
 
         public override bool Equals(object obj) {
-            if (!(obj is DynamicFloat))
+            if (!(obj is DFloat))
                 return false;
-            var df = (DynamicFloat) obj;
+            var df = (DFloat) obj;
             return df == this;
         }
 
