@@ -8,7 +8,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67e1bb098aab04646b36832bd8c1f8a2, type: 3}
+  m_Script: {fileID: 11500000, guid: e6be75b3b883153419f7ccd5bf25d247, type: 3}
   m_Name: VFWSettings
   m_EditorClassIdentifier: 
   _serializationData:
