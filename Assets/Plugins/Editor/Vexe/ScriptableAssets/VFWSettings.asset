@@ -8,7 +8,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd76edddd05535e47b1e1b320d9a9be0, type: 3}
+  m_Script: {fileID: 11500000, guid: 67e1bb098aab04646b36832bd8c1f8a2, type: 3}
   m_Name: VFWSettings
   m_EditorClassIdentifier: 
   _serializationData:
@@ -23,8 +23,8 @@ MonoBehaviour:
       - string _dictionaryFormat
       - bool DisplayReadonlyIfTrue
       values:
-      - true
-      - '"BoxedMembersArea,Headers,BoxedHeaders"'
+      - false
+      - '"BoxedMembersArea"'
       - 10
       - '"$nicename"'
       - '"$nicename ($count)"'
@@ -33,9 +33,10 @@ MonoBehaviour:
   _serializerType:
     _name: Vexe.Runtime.Serialization.FullSerializerBackend, Assembly-CSharp-firstpass,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  _id: 412
+  _id: -1
   dbg: 0
-  UseHungarianNotation: 1
-  DefaultDisplay: 28
+  _dirty: 0
+  UseHungarianNotation: 0
+  DefaultDisplay: 4
   DefaultSpacing: 10
   DisplayReadonlyIfTrue: 1

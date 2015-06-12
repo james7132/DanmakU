@@ -36,6 +36,22 @@ namespace DanmakU {
 
         #endregion
 
+        #region Gradient
+
+        /// <summary>
+        /// Randomly chooses a color from a Gradient.
+        /// </summary>
+        /// <param name="gradient">the gradient to sample from</param>
+        /// <exception cref="NullReferenceException">throw if the <paramref name="gradient"/> is null</exception>
+        /// <returns>a random color from the gradient</returns>
+        public static Color Random(this Gradient gradient) {
+            if (gradient == null)
+                throw new NullReferenceException();
+            return gradient.Evaluate(UnityEngine.Random.value);
+        }
+
+        #endregion
+
         #region Quaternion
 
         /// <summary>
