@@ -5,10 +5,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// A development kit for quick development of 2D Danmaku games
-/// </summary>
-
 namespace DanmakU {
 
     /// <summary>
@@ -116,15 +112,15 @@ namespace DanmakU {
         /// </summary>
         internal static void UpdateAll() {
             colliderMap.Clear();
-
             //caches the change in time since the last frame
             Danmaku danmaku;
             dt = TimeUtil.DeltaTime;
             Danmaku[] all = danmakuPool.all;
             for (int i = 0; i < all.Length; i++) {
                 danmaku = all[i];
-                if (danmaku != null && danmaku._isActive)
-                    danmaku.Update();
+                if (danmaku != null && danmaku._isActive) {
+                    danmaku.Update();   
+                }
             }
         }
 

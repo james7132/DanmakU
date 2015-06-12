@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015 James Liu
+// Copyright (c) 2015 James Liu
 //	
 // See the LISCENSE file for copying permission.
 
@@ -36,8 +36,19 @@ namespace DanmakU {
 			}
 		}
 
+		/// <summary>
+		/// A utility function that makes coroutines wait for a specified number of frames.
+		/// </summary>
+		/// <remarks>
+		/// This method does nothing unless it is used in a yield statement in a coroutine.
+		/// For example: <c>yield return WaitForFrames(3);</c> will cause a coroutine to wait 3 frames.
+		/// This function will wait at least one frame, even when <paramref name="frameCount"/> is zero or negative.
+		/// Disabling this behavior will pause
+		/// </remarks>
+		/// <returns>the proper command to make</returns>
+		/// <param name="frameCount">the number of frames to wait.</param>
 		protected YieldInstruction WaitForFrames(int frameCount) {
-			if(frameCount < 0)
+			if(frameCount <= 0)
 				return null;
 			return StartCoroutine(waitForFrames(frameCount));
 		}
@@ -55,6 +66,13 @@ namespace DanmakU {
             get { return TimeUtil.DeltaTime; }
         }
 
+		/// <summary>
+		/// Calculates the cosine of the 
+		/// </summary>
+		/// <remarks>
+		/// This function has much better performance than Mathf.Cos; however it can have much lower accuracy.
+		/// </remarks>
+		/// <param name="degree">Degree.</param>
         protected static float Cos(float degree) {
             return Danmaku.Cos(degree);
         }

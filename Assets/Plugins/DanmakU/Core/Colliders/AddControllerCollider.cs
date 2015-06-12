@@ -85,7 +85,7 @@ namespace DanmakU.Collider {
         /// </remarks>
         /// <param name="controller">Controller.</param>
         public void RemoveController(DanmakuController controller) {
-            controllerAggregate -= controller;
+            controllerAggregate = controllerAggregate.Remove(controller);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace DanmakU.Collider {
             if (affected.Contains(danmaku))
                 return;
 
-            danmaku.ControllerUpdate += controllerAggregate;
+            danmaku.AddController(controllerAggregate);
 
             affected.Add(danmaku);
         }

@@ -3,6 +3,7 @@
 // See the LISCENSE file for copying permission.
 
 using System;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -52,11 +53,11 @@ namespace DanmakU {
             get { return _min; }
             set {
                 _min = value;
-                if (_min > _max) {
-                    int temp = _max;
-                    _max = _min;
-                    _min = temp;
-                }
+                if (_min <= _max)
+                    return;
+                int temp = _max;
+                _max = _min;
+                _min = temp;
             }
         }
 
@@ -116,14 +117,20 @@ namespace DanmakU {
         }
 
         public override bool Equals(object obj) {
-            if (obj is DynamicInt) {
-                return (DynamicInt)obj == this;
-            }
+            if (obj is DynamicInt)
+                return (DynamicInt) obj == this;
             return false;
         }
 
         public override int GetHashCode() {
             return 193*_min + 389*_max;
+        }
+
+        public override string ToString() {
+            if (_type == ValueType.Constant || _max == _min)
+                return _max.ToString();
+            else
+                return string.Format("({0} - {1})", _min, _max);
         }
 
     }
@@ -145,12 +152,12 @@ namespace DanmakU {
         private float _min;
 
         [SerializeField]
-        private ValueType type;
+        private ValueType _type;
 
         public DynamicFloat(float value) {
             _min = value;
             _max = value;
-            type = ValueType.Constant;
+            _type = ValueType.Constant;
         }
 
         public DynamicFloat(float min, float max) {
@@ -161,22 +168,22 @@ namespace DanmakU {
                 _max = max;
                 _min = min;
             }
-            type = (min == max) ? ValueType.Constant : ValueType.Random;
+            _type = (min == max) ? ValueType.Constant : ValueType.Random;
         }
 
         public ValueType Type {
-            get { return type; }
+            get { return _type; }
         }
 
         public float Min {
             get { return _min; }
             set {
                 _min = value;
-                if (_min > _max) {
-                    float temp = _max;
-                    _max = _min;
-                    _min = temp;
-                }
+                if (!(_min > _max))
+                    return;
+                float temp = _max;
+                _max = _min;
+                _min = temp;
             }
         }
 
@@ -184,17 +191,17 @@ namespace DanmakU {
             get { return _max; }
             set {
                 _max = value;
-                if (_min > _max) {
-                    float temp = _max;
-                    _max = _min;
-                    _min = temp;
-                }
+                if (!(_min > _max))
+                    return;
+                float temp = _max;
+                _max = _min;
+                _min = temp;
             }
         }
 
         public float Value {
             get {
-                if (type == ValueType.Constant ||
+                if (_type == ValueType.Constant ||
                     Math.Abs(_max - _min) < float.Epsilon)
                     return _min;
                 return Random.Range(_min, _max);
@@ -253,7 +260,7 @@ namespace DanmakU {
         }
 
         public static bool operator ==(DynamicFloat df1, DynamicFloat df2) {
-            return (df1._min == df2._min) && (df1._max == df2._max);
+            return (Math.Abs(df1._min - df2._min) < float.Epsilon) && (Math.Abs(df1._max - df2._max) < float.Epsilon);
         }
 
         public static bool operator !=(DynamicFloat df1, DynamicFloat df2) {
@@ -261,15 +268,21 @@ namespace DanmakU {
         }
 
         public override bool Equals(object obj) {
-            if (obj is DynamicFloat) {
-                DynamicFloat df = (DynamicFloat) obj;
-                return df == this;
-            }
-            return false;
+            if (!(obj is DynamicFloat))
+                return false;
+            var df = (DynamicFloat) obj;
+            return df == this;
         }
 
         public override int GetHashCode() {
-            return 193*_min.GetHashCode() + 389*_min.GetHashCode();
+            return 193*_min.GetHashCode() + 389*_max.GetHashCode();
+        }
+
+        public override string ToString() {
+            if (_type == ValueType.Constant || Math.Abs(_max - _min) < float.Epsilon)
+                return _max.ToString();
+            else
+                return string.Format("({0} - {1})", _min, _max);
         }
 
     }
