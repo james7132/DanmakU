@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
-using Hourai.SmashBrew;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
 using Vexe.Runtime.Types;
@@ -9,6 +9,25 @@ namespace Hourai {
 
     public abstract class Game : Singleton<Game> {
 
+        private bool _paused;
+        private float _oldTimeScale;
+
+        public bool Paused {
+            get { return _paused; }
+            set {
+                if (_paused == value)
+                    return;
+                if (value) {
+                    _oldTimeScale = Time.timeScale;
+                    Time.timeScale = 0f;
+                } else {
+                    Time.timeScale = _oldTimeScale;
+                }
+                _paused = value;
+            }
+        }
+
+        // All the things that require an actual instance
         #region Global Callbacks 
 
         public static event Action OnUpdate;
@@ -44,6 +63,26 @@ namespace Hourai {
 
         private void OnLevelWasLoaded(int level) {
             OnLoad.SafeInvoke(level);
+        }
+
+        #endregion
+ 
+        #region Global Coroutines
+
+        public static Coroutine StaticCoroutine(IEnumerator coroutine) {
+            if(Instance == null)
+                throw new InvalidOperationException("Cannot start a static coroutine without a Game instance.");
+            if(coroutine == null)
+                throw new ArgumentNullException("coroutine");
+            return Instance.StartCoroutine(coroutine);
+        }
+
+        public static Coroutine StaticCoroutine(IEnumerable coroutine) {
+            if(Instance == null)
+                throw new InvalidOperationException("Cannot start a static coroutine without a Game instance.");
+            if (coroutine == null)
+                throw new ArgumentNullException("coroutine");
+            return StaticCoroutine(coroutine.GetEnumerator());
         }
 
         #endregion

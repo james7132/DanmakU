@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Vexe.Runtime.Types;
 
 namespace Hourai {
@@ -7,6 +8,44 @@ namespace Hourai {
     /// A utility behaviour with a large number of more succinct code shortcuts to make for shorter
     /// </summary>
     public abstract class HouraiBehaviour : BetterBehaviour {
+
+        #region Time Properties
+
+        private float _localTimeScale = 1f;
+
+        public virtual float LocalTimeScale {
+            get { return _localTimeScale; }
+            set {
+                float oldValue = _localTimeScale;
+                _localTimeScale = value;
+                if(oldValue == 0f)
+                   OnPause(false);
+                else if(_localTimeScale == 0f)
+                   OnPause(true);
+            }
+        }
+
+        public float EffectiveTimeScale {
+            get { return LocalTimeScale*Time.timeScale; }
+        }
+
+        public bool Paused {
+            get { return EffectiveTimeScale == 0f; }
+        }
+
+        protected float DeltaTime {
+            get { return Time.deltaTime * LocalTimeScale; }
+        }
+
+        protected float FixedDeltaTime {
+            get { return Time.fixedDeltaTime * LocalTimeScale; }
+        }
+
+        protected virtual void OnPause(bool paused) {
+        }
+
+        #endregion
+
         #region GameObject Functions
 
         public bool CompareLayer(int layerMask) {
