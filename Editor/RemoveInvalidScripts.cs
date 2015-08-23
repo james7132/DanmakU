@@ -34,10 +34,10 @@ namespace Hourai.Editor {
         [PostProcessScene]
         private static void RemoveScripts() {
             if (BuildPipeline.isBuildingPlayer)
-                foreach (UnityObject obj in BuildOnlyComponents)
+                foreach (UnityObject obj in EditorOnlyComponents)
                     UnityObject.DestroyImmediate(obj);
             else
-                foreach (UnityObject obj in EditorOnlyComponents)
+                foreach (UnityObject obj in BuildOnlyComponents)
                     UnityObject.DestroyImmediate(obj);
         }
 
