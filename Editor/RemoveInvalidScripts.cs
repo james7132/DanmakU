@@ -10,7 +10,8 @@ using UnityObject = UnityEngine.Object;
 
 namespace Hourai.Editor {
 
-    public static class RemoveInvalidScripts {
+    [InitializeOnLoad]
+    internal static class RemoveInvalidScripts {
 
         private static readonly IEnumerable<Type> AllTypes = from assembly in AppDomain.CurrentDomain.GetAssemblies()
                                                                from assemblyType in assembly.GetTypes()

@@ -7,7 +7,6 @@ namespace Hourai.Editor {
     /// <summary>
     /// Removes the extra "Script" field on any editor derived from this.
     /// </summary>
-    [CanEditMultipleObjects]
     public abstract class ScriptlessEditor : UnityEditor.Editor {
 
         private List<string> toIgnore = new List<string>();
@@ -39,11 +38,13 @@ namespace Hourai.Editor {
 
     }
 
+    [CanEditMultipleObjects]
     [CustomEditor(typeof (MonoBehaviour), true, isFallback = true)]
     internal sealed class MonoBehaviourEditor : ScriptlessEditor {
 
     }
 
+    [CanEditMultipleObjects]
     [CustomEditor(typeof (ScriptableObject), true, isFallback = true)]
     internal sealed class ScriptableObjectEditor : ScriptlessEditor {
 
