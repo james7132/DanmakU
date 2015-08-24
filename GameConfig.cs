@@ -27,7 +27,6 @@ namespace Hourai {
         public string GUITag {
             get { return _guiTag; }
         }
-
     }
 
 }
