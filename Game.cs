@@ -117,6 +117,26 @@ namespace Hourai {
         public static Transform[] GetRespawnPoints() {
             return GameObject.FindGameObjectsWithTag(Config.RespawnTag).Select(go => go.transform).ToArray();
         }
+        
+        public static GameObject FindPlayer() {
+            return GameObject.FindGameObjectWithTag(Config.PlayerTag);
+        }
+
+        public static GameObject[] FindPlayers() {
+            return GameObject.FindGameObjectsWithTag(Config.PlayerTag);
+        }
+
+        public static GameObject FindRespawn() {
+            return GameObject.FindGameObjectWithTag(Config.RespawnTag);
+        }
+
+        public static GameObject[] FindRespawns() {
+            return GameObject.FindGameObjectsWithTag(Config.RespawnTag);
+        }
+
+        public static GameObject FindGUI() {
+            return GameObject.FindGameObjectWithTag(Config.GUITag);
+        }
     }
 
 }
