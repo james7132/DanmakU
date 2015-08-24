@@ -20,6 +20,14 @@ namespace Hourai {
         public string RespawnTag {
             get { return _respawnTag; }
         }
+
+        [Serialize, Show, Tags, Category("Tags"), Default("GUI")]
+        private string _guiTag;
+
+        public string GUITag {
+            get { return _guiTag; }
+        }
+
     }
 
 }
