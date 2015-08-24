@@ -6,7 +6,7 @@ using Vexe.Runtime.Extensions;
 using Vexe.Runtime.Types;
 
 namespace Hourai {
-
+    
     public abstract class Game : Singleton<Game> {
 
         private bool _paused;
@@ -66,7 +66,7 @@ namespace Hourai {
         }
 
         #endregion
- 
+        
         #region Global Coroutines
 
         public static Coroutine StaticCoroutine(IEnumerator coroutine) {
