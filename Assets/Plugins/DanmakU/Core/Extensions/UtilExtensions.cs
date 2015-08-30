@@ -101,24 +101,6 @@ namespace DanmakU {
         }
 
         #endregion
-
-        #region MonoBehaviour
-
-        public static Task StartTask(this MonoBehaviour behaviour,
-                                     IEnumerator task) {
-            if (task == null)
-                throw new ArgumentNullException("Cannot start a null Task");
-            return new Task(behaviour, task);
-        }
-
-        public static Task StartTask(this MonoBehaviour behaviour,
-                                     IEnumerable task) {
-            if (task == null)
-                throw new ArgumentNullException("Cannot start a null Task");
-            return new Task(behaviour, task);
-        }
-
-        #endregion
     }
 
 }

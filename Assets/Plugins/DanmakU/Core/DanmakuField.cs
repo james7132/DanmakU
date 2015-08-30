@@ -271,28 +271,16 @@ namespace DanmakU {
                                   Vector2 location,
                                   DFloat rotation,
                                   DFloat speed,
-                                  CoordinateSystem coordSys = CoordinateSystem.View,
-                                  DanmakuModifier modifier = null) {
+                                  CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;
             Vector2 position = TargetField.WorldPoint(location, coordSys);
-            if (modifier == null) {
-                Danmaku danmaku = Danmaku.GetInactive(prefab, position, rotation);
-                danmaku.Field = TargetField;
-                danmaku.Activate();
-                danmaku.Speed = speed;
-                danmaku.AngularSpeed = 0f;
-                return danmaku;
-            }
-            var temp = new FireData {
-                Prefab = prefab,
-                Speed = speed,
-                AngularSpeed = 0f,
-                Field = this
-            };
-            modifier.Initialize(temp);
-            modifier.OnFire(position, rotation);
-            return null;
+            Danmaku danmaku = Danmaku.GetInactive(prefab, position, rotation);
+            danmaku.Field = TargetField;
+            danmaku.Activate();
+            danmaku.Speed = speed;
+            danmaku.AngularSpeed = 0f;
+            return danmaku;
         }
 
         public Danmaku FireCurved(DanmakuPrefab prefab,
@@ -300,28 +288,16 @@ namespace DanmakU {
                                   DFloat rotation,
                                   DFloat speed,
                                   DFloat angularSpeed,
-                                  CoordinateSystem coordSys = CoordinateSystem.View,
-                                  DanmakuModifier modifier = null) {
+                                  CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;
             Vector2 position = TargetField.WorldPoint(location, coordSys);
-            if (modifier == null) {
-                Danmaku danmaku = Danmaku.GetInactive(prefab, position, rotation);
-                danmaku.Field = this;
-                danmaku.Activate();
-                danmaku.Speed = speed;
-                danmaku.AngularSpeed = angularSpeed;
-                return danmaku;
-            }
-            var temp = new FireData {
-                Prefab = prefab,
-                Speed = speed,
-                AngularSpeed = angularSpeed,
-                Field = this
-            };
-            modifier.Initialize(temp);
-            modifier.OnFire(position, rotation);
-            return null;
+            Danmaku danmaku = Danmaku.GetInactive(prefab, position, rotation);
+            danmaku.Field = this;
+            danmaku.Activate();
+            danmaku.Speed = speed;
+            danmaku.AngularSpeed = angularSpeed;
+            return danmaku;
         }
 
         public Danmaku Fire(FireData data) {
@@ -332,10 +308,6 @@ namespace DanmakU {
             Danmaku danmaku = data.Fire();
             data.Field = old;
             return danmaku;
-        }
-
-        public FireBuilder Fire(DanmakuPrefab prefab) {
-            return new FireBuilder(prefab, this);
         }
 
 #if UNITY_EDITOR

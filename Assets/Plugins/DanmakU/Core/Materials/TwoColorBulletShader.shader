@@ -2,7 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
-Shader "Danmaku/Touhou Sprite - Two Color"
+Shader "Danmaku/Sprite - Two Color"
 {
 	Properties
 	{

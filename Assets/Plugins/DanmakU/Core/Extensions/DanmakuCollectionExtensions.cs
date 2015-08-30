@@ -458,29 +458,6 @@ namespace DanmakU {
             return danmakus;
         }
 
-        public static T Fire<T>(this T danmakus,
-                                FireBuilder builder,
-                                bool useRotation = true,
-                                Predicate<Danmaku> filter = null)
-            where T : class, IEnumerable<Danmaku> {
-            if (danmakus == null)
-                return null;
-            if (builder == null)
-                throw new ArgumentNullException("builder");
-            Vector2 tempPos = builder.Position;
-            DFloat tempRot = builder.Rotation;
-            danmakus.ForEach(delegate(Danmaku danmaku) {
-                                 builder.Position = danmaku.Position;
-                                 if (useRotation)
-                                     builder.Rotation = danmaku.Rotation;
-                                 builder.Fire();
-                             },
-                             filter);
-            builder.Position = tempPos;
-            builder.Rotation = tempRot;
-            return danmakus;
-        }
-
         #endregion
     }
 

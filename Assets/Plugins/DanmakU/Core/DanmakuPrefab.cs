@@ -2,6 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Vexe.Runtime.Types;
@@ -16,7 +17,7 @@ namespace DanmakU {
     /// </summary>
     [DisallowMultipleComponent]
     [AddComponentMenu("DanmakU/Danmaku Prefab")]
-    public sealed class DanmakuPrefab : BetterBehaviour {
+    public sealed class DanmakuPrefab : BetterBehaviour, IEnumerable<FireData> {
 
         public enum RenderingType {
 
@@ -334,6 +335,10 @@ namespace DanmakU {
             return runtime;
         }
 
+        public static implicit operator FireData(DanmakuPrefab prefab) {
+            return prefab ? new FireData() {Prefab = prefab} : null;
+        }
+
         #region Prefab Fields
 
         [SerializeField]
@@ -482,6 +487,21 @@ namespace DanmakU {
         }
 
         #endregion
+
+        public IEnumerable Infinite() {
+            FireData fd = this;
+            while (true)
+                yield return fd;
+        } 
+
+        public IEnumerator<FireData> GetEnumerator() {
+            yield return this;
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 
 }
