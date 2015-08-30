@@ -28,10 +28,6 @@ namespace DanmakU {
 
         //private MaterialPropertyBlock mpb;
 
-        internal DanmakuController ExtraControllers {
-            get { return controllerAggregate; }
-        }
-
         internal void Add(Danmaku danmaku) {
             currentDanmaku.Add(danmaku);
         }
@@ -252,8 +248,6 @@ namespace DanmakU {
 
             currentDanmaku = new HashSet<Danmaku>();
             particles = new ParticleSystem.Particle[runtimeSystem.particleCount];
-            for (int i = 0; i < extraControllers.Length; i++)
-                controllerAggregate += extraControllers[i].Update;
 
             runtimeRenderer.mesh = renderMesh;
             runtimeRenderer.renderMode = ParticleSystemRenderMode.Mesh;
@@ -378,9 +372,6 @@ namespace DanmakU {
         [Serialize]
         internal bool fixedAngle;
 
-        [Serialize]
-        private IDanmakuController[] extraControllers;
-
         internal Vector3 cachedScale;
         internal string cachedTag;
         internal int cachedLayer;
@@ -390,7 +381,6 @@ namespace DanmakU {
         internal Material cachedMaterial;
         internal int cachedSortingLayer;
         internal int cachedSortingOrder;
-        private DanmakuController controllerAggregate;
 
         #endregion
 
@@ -475,7 +465,7 @@ namespace DanmakU {
         }
 
         /// <summary>
-        /// Gets the sorting layer u
+        /// Gets the sorting layer
         /// </summary>
         /// <value>The sorting layer to be used when rendering.</value>
         public int SortingLayerID {

@@ -10,7 +10,7 @@ namespace DanmakU {
     [ExecuteInEditMode]
     [DisallowMultipleComponent]
     [AddComponentMenu("DanmakU/Danmaku Field")]
-    public class DanmakuField : MonoBehaviour {
+    public class DanmakuField : MonoBehaviour, IFireBindable {
 
         public enum CoordinateSystem {
 
@@ -25,6 +25,8 @@ namespace DanmakU {
 
         private static readonly Vector2 InfiniteSize = float.PositiveInfinity*
                                                        Vector2.one;
+
+        private DanmakuList activeDanmaku;
 
         internal Bounds2D bounds;
 
@@ -149,6 +151,7 @@ namespace DanmakU {
             if (_fields == null)
                 _fields = new List<DanmakuField>();
             _fields.Add(this);
+            activeDanmaku = new DanmakuList();
             TargetField = this;
         }
 
@@ -175,6 +178,7 @@ namespace DanmakU {
                                  movementBounds.Extents.Max();
             } else
                 bounds.Extents = InfiniteSize;
+            activeDanmaku.RemoveAll(d => bounds.Contains(d.Position));
         }
 
         private void OnDestroy() {
@@ -192,7 +196,6 @@ namespace DanmakU {
                 case CoordinateSystem.ViewRelative:
                     return point.Hadamard2(movementBounds.Size);
                 default:
-                case CoordinateSystem.View:
                     return movementBounds.Min +
                            point.Hadamard2(movementBounds.Size);
             }
@@ -253,18 +256,18 @@ namespace DanmakU {
             return clone;
         }
 
-        public Danmaku SpawnDanmaku(DanmakuPrefab bulletType,
+        public Danmaku SpawnDanmaku(DanmakuPrefab prefab,
                                     Vector2 location,
                                     DFloat rotation,
                                     CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;
-            Danmaku bullet = Danmaku.GetInactive(bulletType,
+            Danmaku danmaku = Danmaku.GetInactive(prefab,
                                                  TargetField.WorldPoint(location, coordSys),
                                                  rotation);
-            bullet.Field = TargetField;
-            bullet.Activate();
-            return bullet;
+            danmaku.Activate();
+            activeDanmaku.Add(danmaku);
+            return danmaku;
         }
 
         public Danmaku FireLinear(DanmakuPrefab prefab,
@@ -276,10 +279,10 @@ namespace DanmakU {
                 TargetField = this;
             Vector2 position = TargetField.WorldPoint(location, coordSys);
             Danmaku danmaku = Danmaku.GetInactive(prefab, position, rotation);
-            danmaku.Field = TargetField;
             danmaku.Activate();
             danmaku.Speed = speed;
             danmaku.AngularSpeed = 0f;
+            activeDanmaku.Add(danmaku);
             return danmaku;
         }
 
@@ -293,20 +296,18 @@ namespace DanmakU {
                 TargetField = this;
             Vector2 position = TargetField.WorldPoint(location, coordSys);
             Danmaku danmaku = Danmaku.GetInactive(prefab, position, rotation);
-            danmaku.Field = this;
             danmaku.Activate();
             danmaku.Speed = speed;
             danmaku.AngularSpeed = angularSpeed;
+            activeDanmaku.Add(danmaku);
             return danmaku;
         }
 
         public Danmaku Fire(FireData data) {
             if (TargetField == null)
                 TargetField = this;
-            DanmakuField old = data.Field;
-            data.Field = TargetField;
             Danmaku danmaku = data.Fire();
-            data.Field = old;
+            activeDanmaku.Add(danmaku);
             return danmaku;
         }
 
@@ -318,6 +319,16 @@ namespace DanmakU {
             Gizmos.DrawWireCube(movementBounds.Center, movementBounds.Size);
         }
 #endif
+
+        public void Bind(FireData fireData)
+        {
+            activeDanmaku.Bind(fireData);
+        }
+
+        public void Unbind(FireData fireData)
+        {
+            activeDanmaku.Unbind(fireData);
+        }
     }
 
 }

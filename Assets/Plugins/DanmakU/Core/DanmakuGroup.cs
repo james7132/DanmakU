@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace DanmakU {
 
-    public abstract class DanmakuGroup : ICollection<Danmaku> {
+    public abstract class DanmakuGroup : ICollection<Danmaku>, IFireBindable {
 
         protected ICollection<Danmaku> Group;
 
@@ -186,61 +186,26 @@ namespace DanmakU {
             if (collection == null)
                 throw new ArgumentNullException();
 
-            var colList = collection as IList<Danmaku>;
-            if (colList != null) {
-                for (int i = 0; i < colList.Count; i++) {
-                    if (Contains(colList[i]))
-                        return true;
-                }
-            } else {
-                foreach (var danmaku in collection) {
-                    if (Contains(danmaku))
-                        return true;
-                }
+            foreach (var danmaku in collection) {
+                if (Contains(danmaku))
+                    return true;
             }
             return true;
         }
 
-        public bool Exists(Predicate<Danmaku> match) {
+        public bool Exists(Func<Danmaku, bool> match) {
             return (Find(match) != null);
         }
 
-        public Danmaku Find(Predicate<Danmaku> match) {
-            var colList = Group as IList<Danmaku>;
-            if (colList != null) {
-                int count = colList.Count;
-                for (int i = 0; i < count; i++) {
-                    if (match(colList[i]))
-                        return colList[i];
-                }
-            } else {
-                foreach (var danmaku in Group) {
-                    if (match(danmaku))
-                        return danmaku;
-                }
-            }
-            return null;
+        public Danmaku Find(Func<Danmaku, bool> match) {
+            return Group.FirstOrDefault(match);
         }
 
-        public List<Danmaku> FindAll(Predicate<Danmaku> match) {
-            var matches = new List<Danmaku>();
-            var colList = Group as IList<Danmaku>;
-            if (colList != null) {
-                int count = colList.Count;
-                for (int i = 0; i < count; i++) {
-                    if (match(colList[i]))
-                        matches.Add(colList[i]);
-                }
-            } else {
-                foreach (var danmaku in Group) {
-                    if (match(danmaku))
-                        matches.Add(danmaku);
-                }
-            }
-            return matches;
+        public List<Danmaku> FindAll(Func<Danmaku, bool> match) {
+            return Group.Where(match).ToList();
         }
 
-        public void RemoveAll(Predicate<Danmaku> match) {
+        public void RemoveAll(Func<Danmaku, bool> match) {
             RemoveRange(FindAll(match));
         }
 
@@ -301,6 +266,20 @@ namespace DanmakU {
         }
 
         #endregion
+
+        public void Bind(FireData fireData)
+        {
+            if(fireData == null)
+                throw new ArgumentNullException("fireData");
+            fireData.OnActivate += Add;
+        }
+
+        public void Unbind(FireData fireData)
+        {
+            if (fireData == null)
+                throw new ArgumentNullException("fireData");
+            fireData.OnActivate -= Add;
+        }
     }
 
     public class DanmakuGroup<T> : DanmakuGroup

@@ -52,7 +52,6 @@ namespace DanmakU {
             Danmaku danmaku = Danmaku.GetInactive(this);
             danmaku.Position = position ?? Position;
             danmaku.Rotation = rotation ?? Rotation;
-            danmaku.Field = Field;
             danmaku.Activate();
             return danmaku;
         }

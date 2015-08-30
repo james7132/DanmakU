@@ -2,6 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -182,7 +183,7 @@ namespace DanmakU {
 
         public static Danmaku FindByTag(string tag) {
             if (tag == null)
-                throw new System.ArgumentNullException("Tag cannot be null!");
+                throw new ArgumentNullException("tag");
 
             Danmaku current;
             Danmaku[] all = danmakuPool.all;
@@ -196,7 +197,7 @@ namespace DanmakU {
 
         public static Danmaku[] FindAllByTag(string tag) {
             if (tag == null)
-                throw new System.ArgumentNullException("Tag cannot be null!");
+                throw new ArgumentNullException("tag");
 
             Danmaku current;
             List<Danmaku> matches = new List<Danmaku>();
@@ -210,26 +211,25 @@ namespace DanmakU {
         }
 
         public static int FindAllByTagNoAlloc(string tag,
-                                              IList<Danmaku> danmaku,
+                                              IList<Danmaku> list,
                                               int start = 0) {
+
             if (tag == null)
-                throw new System.ArgumentNullException("Tag cannot be null!");
-            if (danmaku == null) {
-                throw new System.ArgumentNullException(
-                    "Danmaku Array cannot be null!");
-            }
+                throw new ArgumentNullException("tag");
+            if (list == null)
+                throw new ArgumentNullException("collection");
             Danmaku current;
-            int index = start, count = -1, size = danmaku.Count;
+            int index = start, count = -1, size = list.Count;
             Danmaku[] all = danmakuPool.all;
-            for (int i = 0; i < all.Length; i++) {
+            for (var i = 0; i < all.Length; i++) {
                 current = all[i];
-                if (current._isActive && current.Tag == tag) {
-                    index++;
-                    count++;
-                    danmaku[index] = current;
-                    if (index >= size)
-                        break;
-                }
+                if (!current._isActive || current.Tag != tag)
+                    continue;
+                index++;
+                count++;
+                list[index] = current;
+                if (index >= size)
+                    break;
             }
             return count;
         }
@@ -237,11 +237,10 @@ namespace DanmakU {
         public static int AddAllByTag(string tag,
                                       ICollection<Danmaku> collection) {
             if (tag == null)
-                throw new System.ArgumentNullException("Tag cannot be null!");
-            if (collection == null) {
-                throw new System.ArgumentNullException(
-                    "Danmaku container cannot be null!");
-            }
+                throw new ArgumentNullException("tag");
+            if (collection == null)
+                throw new ArgumentNullException("collection");
+
             int count = -1;
             Danmaku current;
             Danmaku[] all = danmakuPool.all;
@@ -378,7 +377,7 @@ namespace DanmakU {
             Rotation = data.Rotation;
             Speed = data.Speed;
             AngularSpeed = data.AngularSpeed;
-            AddController(data.Controller);
+            _onUpdate = data.Controller;
             Damage = data.Damage.Value;
             OnActivate = data.OnActivate;
             OnDeactivate = data.OnDeactivate;

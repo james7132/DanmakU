@@ -10,37 +10,6 @@ namespace DanmakU {
 
     public static class DanmakuControllerExtensions {
 
-        #region IDanmakuController Enumerable Extensions
-
-        /// <summary>
-        /// Creates a single multicast DanmakuController delegate from a collection of IDanmakuControllers.
-        /// </summary>
-        /// <remarks>Any and all <c>null</c> values within the collection will be ignored.</remarks>
-        /// <exception cref="NullReferenceException">thrown if the controllers collection is null.</exception>
-        /// <param name="controllers">the collection of controllers to compress.</param>
-        public static DanmakuController Compress(
-            this IEnumerable<IDanmakuController> controllers) {
-            if (controllers == null)
-                throw new NullReferenceException();
-
-            DanmakuController controller = null;
-            var list = controllers as IDanmakuController[];
-            if (list != null) {
-                foreach (var current in list) {
-                    if (current != null)
-                        controller += current.Update;
-                }
-            } else {
-                foreach (var current in controllers) {
-                    if (current != null)
-                        controller += current.Update;
-                }
-            }
-            return controller;
-        }
-
-        #endregion
-
         #region DanmakuController Enumerable Functions
 
         /// <summary>
@@ -100,20 +69,8 @@ namespace DanmakU {
             return source;
         }
 
-
-        public static DanmakuController Remove(this DanmakuController source, IDanmakuController toRemove) {
-            if (toRemove == null)
-                return source;
-            return source - toRemove.Update;
-        }
-
-        public static DanmakuController RemoveAll(this DanmakuController source, IDanmakuController toRemove) {
-            if (toRemove == null)
-                return source;
-            return source.RemoveAll(toRemove.Update);
-        }
-
         #endregion
+
     }
 
 }

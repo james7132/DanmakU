@@ -12,17 +12,24 @@ using Vexe.Runtime.Extensions;
 namespace DanmakU {
 
     [System.Serializable]
-    public static class FireModifier {
+    public static class DanmakuModifier {
 
         private static readonly Action<FireData, Vector2> setPos = (fd, pos) => fd.Position = pos;
         private static readonly Action<FireData, float> setRot = (fd, rot) => fd.Rotation = rot;
 
         #region General Utilty Functions
-        public static IEnumerable Flatten(this IEnumerable enumerable)
+        /// <summary>
+        /// Replaces enumerated enumeration with their elements.
+        /// This is a shallow replacement, only works on the initial enumeration.
+        /// For a deep replacement (a recursive replacement of all enumerated enumerations), use FullyFlatten() instead.
+        /// </summary>
+        /// <param name="enumeration">the target enumeration of enumerations</param>
+        /// <returns>an flattened enumeration. Returns an empty enumeration if <paramref name="enumeration"/> is null.</returns>
+        public static IEnumerable Flatten(this IEnumerable enumeration)
         {
-            if (enumerable == null)
+            if (enumeration == null)
                 yield break;
-            foreach (object data in enumerable)
+            foreach (object data in enumeration)
             {
                 var fd = data as FireData;
                 var asEnumerator = data as IEnumerator;
@@ -40,12 +47,18 @@ namespace DanmakU {
             }
         }
 
-        public static IEnumerable FullyFlatten(this IEnumerable enumerable)
+        /// <summary>
+        /// Recursively replaces all enumerated enumerations with their elements.
+        /// This is a deep replacement. To only flatten the initial enumeration, use Flatten() instead.
+        /// </summary>
+        /// <param name="enumeration">the target enumeration of enumerations</param>
+        /// <returns>an flattened enumeration. Returns an empty enumeration if <paramref name="enumeration"/> is null.</returns>
+        public static IEnumerable FullyFlatten(this IEnumerable enumeration)
         {
-            if (enumerable == null)
+            if (enumeration == null)
                 yield break;
             Stack<IEnumerator> enumerationStack = new Stack<IEnumerator>();
-            enumerationStack.Push(enumerable.GetEnumerator());
+            enumerationStack.Push(enumeration.GetEnumerator());
             while (enumerationStack.Count > 0)
             {
                 IEnumerator iterator = enumerationStack.Peek();
@@ -76,16 +89,26 @@ namespace DanmakU {
             }
         }
 
-
-        public static IEnumerable Replace<TIn, TOut>(this IEnumerable coroutine,
+        /// <summary>
+        /// Replaces all elements of type <typeparamref name="TIn"/> with generated values of type <typeparamref name="TOut"/>.
+        /// This removes all replaced elements from the resultant enumeration and maintains the size of the enumeration.
+        /// To keep the elements in, use Inject instead.
+        /// </summary>
+        /// <typeparam name="TIn">the target type to replace elements of</typeparam>
+        /// <typeparam name="TOut">the type of object to replace with</typeparam>
+        /// <param name="enumeration">the enumeration to replace the elements of</param>
+        /// <param name="replacement">a mapping function that maps elements to be replace to their replacement</param>
+        /// <param name="filter">a selection function. Returns true if a element is to be replaced. If null, all elements that can be replaced will be.</param>
+        /// <returns>the enumeration with replaced elements</returns>
+        public static IEnumerable Replace<TIn, TOut>(this IEnumerable enumeration,
                                                      Func<TIn, TOut> replacement,
                                                      Predicate<TIn> filter = null)
         {
             if (replacement == null)
                 throw new ArgumentNullException("replacement");
-            if (coroutine == null)
+            if (enumeration == null)
                 yield break;
-            foreach (object data in coroutine)
+            foreach (object data in enumeration)
             {
                 if (data is TIn && (filter == null || filter((TIn)data)))
                     yield return replacement((TIn)data);
@@ -94,10 +117,21 @@ namespace DanmakU {
             }
         }
 
+        /// <summary>
+        /// Injects a new elements of type <typeparamref name="TOut"/> before or after elements of type <typeparamref name="TIn"/>.
+        /// This keeps all matched elements in the enumeration. This also expands the 
+        /// </summary>
+        /// <typeparam name="TIn"></typeparam>
+        /// <typeparam name="TOut"></typeparam>
+        /// <param name="coroutine"></param>
+        /// <param name="injection"></param>
+        /// <param name="after"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public static IEnumerable Inject<TIn, TOut>(this IEnumerable coroutine,
                                                     Func<TIn, TOut> injection,
-                                                    Predicate<TIn> after = null,
-                                                    Predicate<TIn> filter = null) where TIn : class
+                                                    Func<TIn, bool> after = null,
+                                                    Func<TIn, bool> filter = null) where TIn : class
         {
             if (injection == null)
                 throw new ArgumentNullException("injection");
@@ -128,7 +162,7 @@ namespace DanmakU {
                                                Func<FireData, IEnumerable<T>> duplicationFunc,
                                                Action<FireData, T> editFunc = null,
                                                bool includeOriginal = true,
-                                               Predicate<FireData> filter = null) {
+                                               Func<FireData, bool> filter = null) {
             if(duplicationFunc == null)
                 throw new ArgumentNullException("duplicationFunc");
             if (coroutine == null)
@@ -153,7 +187,6 @@ namespace DanmakU {
                 }
             }
         }
-
         #endregion
 
         public static Task Fire(this MonoBehaviour behaviour, IEnumerable coroutine)
@@ -163,7 +196,8 @@ namespace DanmakU {
 
         public static Task Fire(this IEnumerable data, MonoBehaviour context = null) {
             if (data == null)
-                return null;
+                throw new ArgumentNullException("data");
+
             var fd = data as FireData;
             var dp = data as DanmakuPrefab;
             if (fd != null)
@@ -179,13 +213,12 @@ namespace DanmakU {
             return null;
         }
 
+        /// The actual coroutine that is executed in Fire() calls
         private static IEnumerator FireRoutine(IEnumerable dataSource) {
             foreach (object data in dataSource.FullyFlatten())
             {
                 var yi = data as YieldInstruction;
                 var fd = data as FireData;
-                var df = data as DFloat?;
-                var di = data as DInt?;
                 if (data == null || yi != null)
                     yield return data;
                 else if (fd != null)
@@ -220,11 +253,12 @@ namespace DanmakU {
 
         public static IEnumerable ForEachFireData(this IEnumerable coroutine, 
                                                     Action<FireData> action, 
-                                                    Predicate<FireData> filter = null) {
+                                                    Func<FireData, bool> filter = null) {
             if (coroutine == null)
                 yield break;
             if (action == null)
                 throw new ArgumentNullException("action");
+
             var copy = new FireData();
             foreach (object data in coroutine) {
                 var fd = data as FireData;
@@ -238,7 +272,7 @@ namespace DanmakU {
             }
         }
 
-        public static IEnumerable RadialBurst(this IEnumerable data, DFloat range, DInt count, Predicate<FireData> filter = null) {
+        public static IEnumerable RadialBurst(this IEnumerable data, DFloat range, DInt count, Func<FireData, bool> filter = null) {
             
             Func<FireData, IEnumerable<float>> burstFunc = 
                 delegate(FireData fd) {
@@ -265,7 +299,7 @@ namespace DanmakU {
             return data.Duplicate(burstFunc, setRotation, false, filter);
         }
 
-        public static IEnumerable LinearBurst(this IEnumerable data, DInt count, DFloat dSpeed, Predicate<FireData> filter = null) {
+        public static IEnumerable LinearBurst(this IEnumerable data, DInt count, DFloat dSpeed, Func<FireData, bool> filter = null) {
             Func<FireData, IEnumerable<float>> burstFunc =
                 delegate(FireData fd) {
                     float start = fd.Speed.Value;
@@ -283,22 +317,35 @@ namespace DanmakU {
             return data.Duplicate(burstFunc, setSpeed, false, filter);
         }
 
+        #region Controller Functions
+
         public static IEnumerable WithController(this IEnumerable data, 
                                                  Func<FireData, DanmakuController> controller, 
-                                                 Predicate<FireData> filter = null) {
+                                                 Func<FireData, bool> filter = null) {
             if (controller == null)
                 return data;
             return data.ForEachFireData(fireData => fireData.Controller += controller(fireData), filter);
         }
 
-        public static IEnumerable WithoutControllers(this IEnumerable data, Predicate<FireData> filter = null) {
+        public static IEnumerable WithController(this IEnumerable data,
+                                                 DanmakuController controller,
+                                                 Func<FireData, bool> filter = null)
+        {
+            if (controller == null)
+                return data;
+            return data.ForEachFireData(fireData => fireData.Controller += controller, filter);
+        }
+
+        public static IEnumerable WithoutControllers(this IEnumerable data, Func<FireData, bool> filter = null) {
             return data.ForEachFireData(fireData => fireData.Controller = null, filter);
         }
+
+        #endregion
 
         #region Timing Functions
         public static IEnumerable Delay(this IEnumerable coroutine, 
                                         Func<FireData, DInt> frames, 
-                                        Predicate<FireData> filter = null) {
+                                        Func<FireData, bool> filter = null) {
             if(frames == null)
                 throw new ArgumentNullException("frames");
             return coroutine.Inject(frames, fd => true, filter);
@@ -306,13 +353,13 @@ namespace DanmakU {
 
         public static IEnumerable Delay(this IEnumerable coroutine,
                                         DInt frames,
-                                        Predicate<FireData> filter = null) {
+                                        Func<FireData, bool> filter = null) {
             return coroutine.Delay(fd => frames, filter);
         }
 
         public static IEnumerable Delay(this IEnumerable coroutine,
                                         Func<FireData, DFloat> seconds,
-                                        Predicate<FireData> filter = null)
+                                        Func<FireData, bool> filter = null)
         {
             if (seconds == null)
                 throw new ArgumentNullException("seconds");
@@ -321,37 +368,37 @@ namespace DanmakU {
 
         public static IEnumerable Delay(this IEnumerable coroutine,
                                         DFloat seconds,
-                                        Predicate<FireData> filter = null)
+                                        Func<FireData, bool> filter = null)
         {
             return coroutine.Delay(fd => seconds, filter);
         }
         #endregion
 
         #region Position Functions
-        public static IEnumerable From(this IEnumerable data, Func<FireData, Vector2> position, Predicate<FireData> filter = null)
+        public static IEnumerable From(this IEnumerable data, Func<FireData, Vector2> position, Func<FireData, bool> filter = null)
         {
             if(position == null)
                 throw new ArgumentNullException("position");
             return data.ForEachFireData(fd => fd.Position = position(fd), filter);
         }
 
-        public static IEnumerable From(this IEnumerable data, Vector2 position, Predicate<FireData> filter = null) {
+        public static IEnumerable From(this IEnumerable data, Vector2 position, Func<FireData, bool> filter = null) {
             return data.ForEachFireData(fireData => fireData.Position = position, filter);
         }
 
         public static IEnumerable From(this IEnumerable coroutine,
                                        Func<FireData, IEnumerable<Vector2>> positions,
-                                       Predicate<FireData> filter = null) {
+                                       Func<FireData, bool> filter = null) {
             return coroutine.Duplicate(positions, setPos, false, filter);
         }
 
         public static IEnumerable From(this IEnumerable coroutine,
                                        IEnumerable<Vector2> positions,
-                                       Predicate<FireData> filter = null) {
+                                       Func<FireData, bool> filter = null) {
             return coroutine.From(fd => positions, filter);
         }
 
-        public static IEnumerable From(this IEnumerable data, GameObject gameObject, Predicate<FireData> filter = null)
+        public static IEnumerable From(this IEnumerable data, GameObject gameObject, Func<FireData, bool> filter = null)
         {
             if (gameObject == null)
                 return data;
@@ -361,36 +408,36 @@ namespace DanmakU {
 
         public static IEnumerable From(this IEnumerable coroutine,
                                        Func<FireData, IEnumerable<GameObject>> gameObjects,
-                                       Predicate<FireData> filter = null)
+                                       Func<FireData, bool> filter = null)
         {
             return coroutine.Duplicate(gameObjects, ((data, o) => data.Position = o.transform.position), false, filter);
         }
 
         public static IEnumerable From(this IEnumerable coroutine,
                                        IEnumerable<GameObject> gameObjects,
-                                       Predicate<FireData> filter = null) {
+                                       Func<FireData, bool> filter = null) {
             return coroutine.From(fd => gameObjects, filter);
         }
 
-        public static IEnumerable From(this IEnumerable data, Component component, Predicate<FireData> filter = null) {
+        public static IEnumerable From(this IEnumerable data, Component component, Func<FireData, bool> filter = null) {
             return component ? data.From(component.gameObject) : data;
         }
 
         public static IEnumerable From(this IEnumerable coroutine,
                                Func<FireData, IEnumerable<Component>> components,
-                               Predicate<FireData> filter = null)
+                               Func<FireData, bool> filter = null)
         {
             return coroutine.Duplicate(components, ((data, o) => data.Position = o.transform.position), false, filter);
         }
 
         public static IEnumerable From(this IEnumerable coroutine,
                                        IEnumerable<Component> components,
-                                       Predicate<FireData> filter = null)
+                                       Func<FireData, bool> filter = null)
         {
             return coroutine.From(fd => components, filter);
         }
 
-        public static IEnumerable From(this IEnumerable data, Danmaku danmaku, Predicate<FireData> filter = null) {
+        public static IEnumerable From(this IEnumerable data, Danmaku danmaku, Func<FireData, bool> filter = null) {
             if(danmaku == null)
                 throw new ArgumentNullException("danmaku");
             return data.ForEachFireData(fd => fd.Position = (danmaku ? danmaku.Position : fd.Position), filter);
@@ -398,23 +445,23 @@ namespace DanmakU {
 
         public static IEnumerable From(this IEnumerable coroutine,
                                        Func<FireData, IEnumerable<Danmaku>> danmaku,
-                                       Predicate<FireData> filter = null)
+                                       Func<FireData, bool> filter = null)
         {
             return coroutine.Duplicate(danmaku, ((data, o) => data.Position = o.Position), false, filter);
         }
 
         public static IEnumerable From(this IEnumerable coroutine,
                                        IEnumerable<Danmaku> danmaku,
-                                       Predicate<FireData> filter = null)
+                                       Func<FireData, bool> filter = null)
         {
             return coroutine.From(fd => danmaku, filter);
         }
         #endregion
 
-
+        #region Rotation/Direction Functions
         public static IEnumerable InDirection(this IEnumerable coroutine,
                                                Func<FireData, DFloat> angle,
-                                               Predicate<FireData> filter = null)
+                                               Func<FireData, bool> filter = null)
         {
             if (angle == null)
                 throw new ArgumentNullException("angle");
@@ -423,31 +470,29 @@ namespace DanmakU {
 
         public static IEnumerable InDirection(this IEnumerable coroutine,
                                                DFloat angle,
-                                               Predicate<FireData> filter = null)
+                                               Func<FireData, bool> filter = null)
         {
-            if (angle == null)
-                throw new ArgumentNullException("angle");
             return coroutine.ForEachFireData(fd => fd.Rotation = angle, filter);
         }
 
         public static IEnumerable Towards(this IEnumerable coroutine,
                                           Func<FireData, Vector2> target,
-                                          Predicate<FireData> filter = null) {
+                                          Func<FireData, bool> filter = null) {
             return coroutine.ForEachFireData(fd => fd.Rotation = DanmakuUtil.AngleBetween2D(fd.Position, target(fd)), filter);
         }
 
         public static IEnumerable Towards(this IEnumerable coroutine,
                                           Vector2 target,
-                                          Predicate<FireData> filter = null) {
+                                          Func<FireData, bool> filter = null) {
             return coroutine.ForEachFireData(fd => fd.Rotation = DanmakuUtil.AngleBetween2D(fd.Position, target), filter);
         }
 
         public static IEnumerable Towards(this IEnumerable coroutine,
                                           GameObject target,
-                                          Predicate<FireData> filter = null)
+                                          Func<FireData, bool> filter = null)
         {
             if (target == null)
-                throw new ArgumentNullException("gameObj");
+                throw new ArgumentNullException("target");
             Transform trans = target.transform;
             return coroutine.ForEachFireData(delegate(FireData fd) {
                                                  if (trans)
@@ -459,13 +504,53 @@ namespace DanmakU {
 
         public static IEnumerable Towards(this IEnumerable coroutine,
                                           Component target,
-                                          Predicate<FireData> filter = null) 
+                                          Func<FireData, bool> filter = null) 
         {
             if(target == null)
-                throw new ArgumentNullException("component");
+                throw new ArgumentNullException("target");
             return coroutine.Towards(target.gameObject);
         }
+        #endregion
 
+        #region Speed Functions
+
+        public static IEnumerable WithSpeed(this IEnumerable coroutine,
+                                            Func<FireData, DFloat> speed,
+                                            Func<FireData, bool> filter = null)
+        {
+            if(speed == null)
+                throw new ArgumentNullException("speed");
+            return coroutine.ForEachFireData(d => d.Speed = speed(d), filter);
+        }
+
+        public static IEnumerable WithSpeed(this IEnumerable coroutine,
+                                            DFloat speed,
+                                            Func<FireData, bool> filter = null)
+        {
+            return coroutine.ForEachFireData(d => d.Speed = speed, filter);
+        }
+
+        #endregion
+
+        #region Angular Speed Functions
+
+        public static IEnumerable WithAngularSpeed(this IEnumerable coroutine,
+                                            Func<FireData, DFloat> angSpeed,
+                                            Func<FireData, bool> filter = null)
+        {
+            if (angSpeed == null)
+                throw new ArgumentNullException("angSpeed");
+            return coroutine.ForEachFireData(d => d.Speed = angSpeed(d), filter);
+        }
+
+        public static IEnumerable WithAngularSpeed(this IEnumerable coroutine,
+                                            DFloat angSpeed,
+                                            Func<FireData, bool> filter = null)
+        {
+            return coroutine.ForEachFireData(d => d.Speed = angSpeed, filter);
+        }
+
+        #endregion
     }
 
 }
