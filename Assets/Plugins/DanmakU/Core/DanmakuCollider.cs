@@ -2,13 +2,13 @@
 //	
 // See the LISCENSE file for copying permission.
 
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using UnityEngine;
+using Vexe.Runtime.Types;
 
 /// <summary>
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
-
 namespace DanmakU {
 
     [RequireComponent(typeof (Collider2D))]
@@ -18,10 +18,10 @@ namespace DanmakU {
         /// A filter for a set of tags, delimited by "|" for selecting which bullets to affect
         /// Leaving this blank will affect all bullets
         /// </summary>
-        [SerializeField]
-        private string tagFilter;
+        [Serialize, PerItem, Tags]
+        private string[] validTags;
 
-        private Regex validTags;
+        private HashSet<string> tags; 
 
         #region IDanmakuCollider implementation
 
@@ -30,7 +30,7 @@ namespace DanmakU {
         /// </summary>
         /// <param name="proj">Proj.</param>
         public void OnDanmakuCollision(Danmaku danmaku, RaycastHit2D info) {
-            if (validTags == null || validTags.IsMatch(danmaku.Tag))
+            if (tags == null ||tags.Contains(danmaku.Tag))
                 DanmakuCollision(danmaku, info);
         }
 
@@ -40,10 +40,8 @@ namespace DanmakU {
         /// Called on Component instantiation
         /// </summary>
         protected virtual void Awake() {
-            if (string.IsNullOrEmpty(tagFilter))
-                validTags = null;
-            else
-                validTags = new Regex(tagFilter);
+            if(validTags != null && validTags.Length > 0)
+                tags = new HashSet<string>(validTags);
         }
 
         /// <summary>

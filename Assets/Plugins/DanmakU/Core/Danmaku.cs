@@ -70,7 +70,7 @@ namespace DanmakU {
         /// </summary>
         public event Action<Danmaku> OnDeactivate;
 
-        private event DanmakuController ControllerUpdate {
+        public event DanmakuController Controller {
             add {
                 _onUpdate += value;
                 _controllerCheck = _onUpdate != null;
@@ -79,31 +79,6 @@ namespace DanmakU {
                 _onUpdate = _onUpdate.Remove(value);
                 _controllerCheck = _onUpdate != null;
             }
-        }
-
-        public void AddController(IDanmakuController controller) {
-            ControllerUpdate += controller.Update;
-        }
-
-        public void AddController(DanmakuController controller) {
-            ControllerUpdate += controller;
-        }
-
-        public void RemoveController(IDanmakuController controller) {
-            ControllerUpdate -= controller.Update;
-        }
-
-        public void RemoveController(DanmakuController controller) {
-            ControllerUpdate -= controller;
-        }
-
-        public void RemoveAllControllers(IDanmakuController controller) {
-            DanmakuController temp = controller.Update;
-            RemoveAllControllers(temp);
-        }
-
-        public void RemoveAllControllers(DanmakuController controller) {
-            _onUpdate = _onUpdate.RemoveAll(controller);
         }
 
         public void ClearControllers() {
@@ -144,13 +119,13 @@ namespace DanmakU {
             if (_controllerCheck)
                 _onUpdate(this, dt);
 
-            if (AngularSpeed != 0f) {
+            if (!Mathf.Approximately(AngularSpeed, 0f)) {
                 float rotationChange = AngularSpeed*dt;
                 rotation += rotationChange;
                 direction = UnitCircle(rotation);
             }
 
-            if (Speed != 0) {
+            if(!Mathf.Approximately(Speed, 0f)) {
                 float movementChange = Speed*dt;
                 position.x += direction.x*movementChange;
                 position.y += direction.y*movementChange;
@@ -167,7 +142,7 @@ namespace DanmakU {
                 float sqrDistance = movementVector.sqrMagnitude;
                 float cx = colliderOffset.x;
                 float cy = colliderOffset.y;
-                if (cx == 0 && cy == 0)
+                if (Mathf.Approximately(cx, 0f) && Mathf.Approximately(cy, 0f))
                     _collisionCenter = _originalPosition;
                 else {
                     float c = direction.x;
@@ -179,7 +154,6 @@ namespace DanmakU {
                 //Check if the collision detection should be continuous or not
                 switch (colliderType) {
                     default:
-                    case ColliderType.Point:
                         if (sqrDistance > sizeSquared ||
                             Physics2D.OverlapPoint(_collisionCenter,
                                                    colliderMask) != null) {
@@ -257,8 +231,7 @@ namespace DanmakU {
                 }
             }
 
-            if (!_isActive ||
-                (Field != null && !Field.bounds.Contains(position))) {
+            if (!_isActive) {
                 DeactivateImmediate();
                 return;
             }
@@ -301,18 +274,14 @@ namespace DanmakU {
                 colliderOffset = scale.Hadamard2(runtime.colliderOffset);
             }
 
-            Tag = runtime.cachedTag;
-
             Color = runtime.Color;
             Scale = 1f;
             layer = runtime.cachedLayer;
             colliderMask = collisionMask[layer];
-
-            AddController(runtime.ExtraControllers);
         }
 
         public static implicit operator FireData(Danmaku danmaku) {
-            return new FireData {
+            var fd = new FireData {
                 Position = danmaku.Position,
                 Rotation = danmaku.Rotation,
                 AngularSpeed = danmaku.AngularSpeed,
@@ -320,8 +289,9 @@ namespace DanmakU {
                 Prefab = danmaku.Prefab,
                 Controller = danmaku._onUpdate,
                 Damage = danmaku.Damage,
-                Field = danmaku.Field
             };
+
+            return fd;
         }
 
         /// <summary>
@@ -390,7 +360,6 @@ namespace DanmakU {
             _onUpdate = null;
             OnActivate = null;
             OnDeactivate = null;
-            Field = null;
             _controllerCheck = false;
             Damage = 0;
             runtime.Remove(this);
@@ -557,10 +526,15 @@ namespace DanmakU {
         /// Gets the instance's tag.
         /// </summary>
         /// <remarks>
-        /// This is initialzied to the tag on the DanmakuPrefab, but can be changed to any string.
+        /// This is initialzied to the tag on the DanmakuPrefab.
+        /// Note that changing the tag on any Danmaku will change the tag on every Danmaku spawned from
+        /// the prefab that spawned that instance.
         /// </remarks>
         /// <value>The tag of the projectile.</value>
-        public string Tag { get; set; }
+        public string Tag {
+            get { return prefab.tag; }
+            set { prefab.tag = value; }
+        }
 
         /// <summary>
         /// Gets or sets the instance's layer.
@@ -576,8 +550,6 @@ namespace DanmakU {
                 colliderMask = collisionMask[layer];
             }
         }
-
-        public DanmakuField Field { get; set; }
 
         #endregion
 
@@ -604,7 +576,7 @@ namespace DanmakU {
         /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
         public void MoveTowards(Transform target, float maxDistanceDelta) {
             if (target == null)
-                throw new System.ArgumentNullException();
+                throw new ArgumentNullException();
             Position = Vector2.MoveTowards(position,
                                            target.position,
                                            maxDistanceDelta);
@@ -620,7 +592,7 @@ namespace DanmakU {
         /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
         public void MoveTowards(Component target, float maxDistanceDelta) {
             if (target == null)
-                throw new System.ArgumentNullException();
+                throw new ArgumentNullException();
             Position = Vector2.MoveTowards(position,
                                            target.transform.position,
                                            maxDistanceDelta);

@@ -23,7 +23,7 @@ namespace DanmakU.Modifiers {
                                          Func<FireData, DInt> count, 
                                          Func<FireData, DFloat> radius,
                                          bool radialFire = true,
-                                         Predicate<FireData> filter = null) {
+                                         Func<FireData, bool> filter = null) {
 
             Func<FireData, IEnumerable<Pose>> circleFunc =
                 delegate(FireData fd) {
@@ -54,7 +54,11 @@ namespace DanmakU.Modifiers {
             return data.Duplicate(circleFunc, setPose, false, filter);
         }
 
-        public static IEnumerable Circle(this IEnumerable data, DInt count, DFloat radius, bool radialFire = true, Predicate<FireData> filter = null) {
+        public static IEnumerable Circle(this IEnumerable data, 
+                                        DInt count,
+                                        DFloat radius, 
+                                        bool radialFire = true, 
+                                        Func<FireData, bool> filter = null) {
             return data.Circle(fireData => count, fireData => radius, radialFire, filter);
         }
 
