@@ -235,14 +235,11 @@ namespace DanmakU {
                         if (colliderMap.ContainsKey(collider)) {
                             scripts = colliderMap[collider];
                             if (scripts == null) {
-                                scripts =
-                                    Util.GetComponents<IDanmakuCollider>(
-                                                                         collider);
+                                scripts = collider.GetComponents<IDanmakuCollider>();
                                 colliderMap[collider] = scripts;
                             }
                         } else {
-                            scripts =
-                                Util.GetComponents<IDanmakuCollider>(collider);
+                            scripts = collider.GetComponents<IDanmakuCollider>();
                             colliderMap[collider] = scripts;
                         }
 
@@ -346,17 +343,6 @@ namespace DanmakU {
             data.Position = tempPos;
             data.Rotation = tempRot;
             return danmaku;
-        }
-
-        public void Fire(FireBuilder builder, bool useRotation = true) {
-            Vector2 tempPos = builder.Position;
-            DFloat tempRot = builder.Rotation;
-            builder.Position = Position;
-            if (useRotation)
-                builder.Rotation = Rotation;
-            builder.Fire();
-            builder.Position = tempPos;
-            builder.Rotation = tempRot;
         }
 
         /// <summary>

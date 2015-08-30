@@ -2,22 +2,27 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using System.Collections;
 using UnityEngine;
 using DanmakU;
-using DanmakU.Modifiers;
 
 public class BasicFireTest : MonoBehaviour {
 
-	[SerializeField]
-	private FrameCounter delay;
+    [SerializeField]
+    private float delay;
 
 	[SerializeField]
 	private DanmakuPrefab prefab;
 
-	void Update() {
-		if(delay.Tick()) {
-			Danmaku.ConstructFire(prefab).Fire();
-		}
-	}
+    private Task test;
+
+    private void Start() {
+        test = prefab.Infinite().From(this).InDirection(new DFloat(0f, 90f)).Delay(delay).Fire();
+        Invoke("Test", 10);
+    }
+
+    void Test() {
+        test.Stop();
+    }
 
 }

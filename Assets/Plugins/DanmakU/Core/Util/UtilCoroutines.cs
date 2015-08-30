@@ -52,32 +52,6 @@ namespace DanmakU {
         }
 
         internal class NullBehaviour : MonoBehaviour {
-
-            private HashSet<Task> latentTasks;
-
-            private void Awake() {
-                latentTasks = new HashSet<Task>();
-                DontDestroyOnLoad(this);
-                StartCoroutine(StartTasks());
-            }
-
-            public void QueueTask(Task task) {
-                latentTasks.Add(task);
-            }
-
-            private IEnumerator StartTasks() {
-                while (true) {
-                    if (latentTasks.Count > 0) {
-                        foreach (var task in latentTasks) {
-                            if (!task.started)
-                                task.Start();
-                        }
-                        latentTasks.Clear();
-                    }
-                    yield return new WaitForEndOfFrame();
-                }
-            }
-
         }
 
     }

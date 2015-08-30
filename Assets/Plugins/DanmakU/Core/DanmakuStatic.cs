@@ -402,9 +402,8 @@ namespace DanmakU {
                 prealloc[i].Match(data);
         }
 
-        public static FireBuilder ConstructFire(DanmakuPrefab prefab) {
-            var builder = new FireBuilder(prefab);
-            return builder;
+        public static implicit operator bool(Danmaku danmaku) {
+            return danmaku != null && danmaku._isActive;
         }
 
     }

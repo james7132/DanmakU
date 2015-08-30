@@ -88,18 +88,6 @@ namespace DanmakU {
         protected static Vector2 UnitCircle(float degree) {
             return Danmaku.UnitCircle(degree);
         }
-
-        protected Task StartTask(IEnumerable task) {
-            if (task == null)
-                throw new System.ArgumentNullException("task");
-            return new Task(this, task);
-        }
-
-        protected Task StartTask(IEnumerator task) {
-            if (task == null)
-                throw new System.ArgumentNullException("task");
-            return new Task(this, task);
-        }
     }
 
 }

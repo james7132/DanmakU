@@ -2,57 +2,60 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Vexe.Runtime.Types;
 
 namespace DanmakU.Modifiers {
 
-    public class SourcePoint {
+    public struct Pose {
 
-        public DFloat BaseRotation;
         public Vector2 Position;
-
-        public SourcePoint(Vector2 location, DFloat rotation) {
-            Position = location;
-            BaseRotation = rotation;
-        }
+        public float Rotation;
 
     }
 
-    [System.Serializable]
-    public abstract class DanmakuSource : DanmakuModifier {
+    public static class DanmakuSource {
+        
+        public static IEnumerable Circle(this IEnumerable data, 
+                                         Func<FireData, DInt> count, 
+                                         Func<FireData, DFloat> radius,
+                                         bool radialFire = true,
+                                         Predicate<FireData> filter = null) {
 
-        protected List<SourcePoint> SourcePoints;
+            Func<FireData, IEnumerable<Pose>> circleFunc =
+                delegate(FireData fd) {
+                    int currentCount = count(fd).Value;
 
-        public DanmakuSource() {
-            SourcePoints = new List<SourcePoint>();
+                    if (currentCount <= 0)
+                        return new Pose[0];
+
+                    float currentRadius = radius(fd).Value;
+                    float delta = 360f / currentCount;
+                    Pose[] locations = new Pose[currentCount];
+
+                    for (var i = 0; i < currentCount; i++) {
+                        float currentRotation = Mathf.Deg2Rad * fd.Rotation + i * delta;
+                        locations[i].Position = fd.Position + currentRadius * Util.OnUnitCircle(currentRotation);
+                        if(radialFire)
+                            locations[i].Rotation = Mathf.Rad2Deg * currentRotation - 90f;
+                    }
+
+                    return locations;
+                };
+
+            Action<FireData, Pose> setPose = delegate(FireData fd, Pose p) {
+                                                 fd.Position = p.Position;
+                                                 fd.Rotation = p.Rotation;
+                                             };
+
+            return data.Duplicate(circleFunc, setPose, false, filter);
         }
 
-        protected abstract void UpdateSourcePoints(Vector2 position,
-                                                   float rotation);
-
-        public override sealed void OnFire(Vector2 position,
-                                           DFloat rotation) {
-            UpdateSourcePoints(position, rotation);
-            for (int i = 0; i < SourcePoints.Count; i++) {
-                FireSingle(SourcePoints[i].Position,
-                           SourcePoints[i].BaseRotation);
-            }
-        }
-
-        private void DrawGizmos() {
-            //			UpdatePoints(transform.position, transform.rotation.eulerAngles.z);
-            for (int i = 0; i < SourcePoints.Count; i++) {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(SourcePoints[i].Position, 1f);
-                Gizmos.color = Color.red;
-                Vector3 endRay = SourcePoints[i].Position +
-                                 5*
-                                 Util.OnUnitCircle(
-                                                   SourcePoints[i].BaseRotation + 90f)
-                                     .normalized;
-                Gizmos.DrawLine(SourcePoints[i].Position, endRay);
-            }
+        public static IEnumerable Circle(this IEnumerable data, DInt count, DFloat radius, bool radialFire = true, Predicate<FireData> filter = null) {
+            return data.Circle(fireData => count, fireData => radius, radialFire, filter);
         }
 
     }
