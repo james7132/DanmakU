@@ -5,7 +5,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace DanmakU {
 
@@ -32,6 +34,58 @@ namespace DanmakU {
                 current++;
             }
             return iterator.Current;
+        }
+
+        #endregion
+
+        #region Enumerated Unity Objects
+
+        public static void Destroy<T>(this IEnumerable<T> set, Func<T, bool> filter = null, float t = 0f)
+            where T : UnityObject {
+            if(set == null)
+                throw new ArgumentNullException("set");
+            foreach(T obj in set.Where(o => o && (filter == null || filter(o))))
+                UnityObject.Destroy(obj, t);
+        }
+
+        #endregion
+
+        #region GameObject 
+
+        public static IEnumerable<GameObject> Children(this GameObject gameObject, Func<GameObject, bool> filter = null) {
+            if(!gameObject)
+                throw new ArgumentNullException("gameObject");
+            foreach (Transform child in gameObject.transform) {
+                if(!child)
+                    continue;
+                GameObject childGO = child.gameObject;
+                if (filter == null || filter(childGO))
+                    yield return childGO;
+            }
+        }
+
+        public static IEnumerable<GameObject> Descendants(this GameObject gameObject,
+                                                          Func<GameObject, bool> filter = null) {
+            if(!gameObject)
+                throw new ArgumentNullException("gameObject");
+            Stack<IEnumerator> iterators = new Stack<IEnumerator>();
+            iterators.Push(gameObject.transform.GetEnumerator());
+            while (iterators.Count > 0) {
+                IEnumerator iterator = iterators.Peek();
+                while (iterator.MoveNext()) {
+                    var trans = iterator.Current as Transform;
+                    if (!trans)
+                        continue;
+                    if (trans.childCount > 0) {
+                        iterator = trans.GetEnumerator();
+                        iterators.Push(iterator);
+                    }
+                    GameObject go = trans.gameObject;
+                    if (filter == null || filter(go))
+                        yield return go;
+                }
+                iterators.Pop();
+            }
         }
 
         #endregion

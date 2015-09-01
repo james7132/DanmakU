@@ -72,16 +72,9 @@ Shader "Danmaku/Sprite - Two Color"
 				fixed4 targetColor = IN.color;
 				fixed4 texColor = tex2D(_MainTex, IN.texcoord);
 				fixed greyScale = (texColor.r + texColor.g + texColor.b) / 3;
-				fixed4 a = (1, 1, 1, texColor.a * targetColor.a), b;
-				if(greyScale >= 0.5)
-				{
-					b = lerp(targetColor, _UpperColor, (greyScale - 0.5) * 2);
-				}
-				else
-				{
-					b = lerp(_LowerColor, targetColor, greyScale * 2);
-				}
-				return a*b;
+				fixed4 b = lerp(targetColor, (greyScale >= 0.5) ? _UpperColor : _LowerColor, abs(greyScale - 0.5) * 2);
+				b.a = texColor.a * targetColor.a;
+				return b;
 			}
 		ENDCG
 		}

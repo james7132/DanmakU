@@ -381,6 +381,8 @@ namespace DanmakU {
             Damage = data.Damage.Value;
             OnActivate = data.OnActivate;
             OnDeactivate = data.OnDeactivate;
+            if (data.Color != null)
+                Color = data.Color.Value;
         }
 
         public static Danmaku GetInactive(FireData data) {

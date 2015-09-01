@@ -5,6 +5,7 @@
 using System.Collections;
 using UnityEngine;
 using DanmakU;
+using DanmakU.Modifiers;
 
 public class BasicFireTest : MonoBehaviour {
 
@@ -17,7 +18,13 @@ public class BasicFireTest : MonoBehaviour {
     private Task test;
 
     private void Start() {
-        test = prefab.Infinite().From(this).InDirection(new DFloat(0f, 90f)).Delay(delay).Fire();
+
+        test = prefab.Infinite()
+                    .From(gameObject.Descendants())
+                    .WithSpeed(2)
+                    .Delay(delay)
+                    .RadialBurst(360, 10)
+                    .Execute();
         Invoke("Test", 10);
     }
 

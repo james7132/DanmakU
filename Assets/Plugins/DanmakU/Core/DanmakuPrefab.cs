@@ -12,6 +12,11 @@ using UnityEditor;
 
 namespace DanmakU {
 
+    class DanmakuType : MonoBehaviour
+    {
+        public DanmakuPrefab 
+    }
+
     /// <summary>
     /// A container behavior used on prefabs to define how a bullet looks or behaves
     /// </summary>
@@ -26,30 +31,12 @@ namespace DanmakU {
 
         }
 
-        //private MaterialPropertyBlock mpb;
-
-        internal void Add(Danmaku danmaku) {
-            currentDanmaku.Add(danmaku);
-        }
-
-        internal void Remove(Danmaku danmaku) {
-            currentDanmaku.Remove(danmaku);
-        }
-
         private void Update() {
-            //runtimeRenderer.GetPropertyBlock(mpb);
-            //mpb.SetTexture("_MainTexture", cachedSprite.texture);
-            //runtimeRenderer.SetPropertyBlock(mpb);
-
             danmakuCount = currentDanmaku.Count;
             int count = runtimeSystem.particleCount;
             if (danmakuCount > count) {
-                //Debug.Log("hello");
                 runtimeSystem.maxParticles = Mathf.NextPowerOfTwo(danmakuCount);
                 runtimeSystem.Emit(danmakuCount - count);
-
-                //Debug.Log(runtimeSystem.particleCount);
-                count = danmakuCount;
             }
             if (danmakuCount > particles.Length) {
                 particles =
@@ -59,54 +46,36 @@ namespace DanmakU {
 
             runtimeSystem.GetParticles(particles);
 
-            //Debug.Log(count2);
             bool done;
-            IEnumerator<Danmaku> enumerator = currentDanmaku.GetEnumerator();
             if (fixedAngle) {
-                for (int i = 0; i < danmakuCount; i++) {
-                    done = enumerator.MoveNext();
-                    if (done) {
-                        Danmaku danmaku = enumerator.Current;
+                for (var i = 0; i < danmakuCount; i++) {
+                        Danmaku danmaku = currentDanmaku[i];
                         particles[i].position = danmaku.position;
                         particles[i].size = danmaku.Scale;
-
-                        //particles[i].axisOfRotation = forward;
                         particles[i].lifetime = 1000;
                         particles[i].color = danmaku.Color;
-                    } else {
-                        particles[i].size = 0f;
-                        particles[i].lifetime = -1;
-                    }
                 }
             } else {
                 Vector3 forward = Vector3.forward;
-                for (int i = 0; i < danmakuCount; i++) {
-                    done = enumerator.MoveNext();
-                    if (done) {
-                        Danmaku danmaku = enumerator.Current;
+                for (var i = 0; i < danmakuCount; i++) {
+                        Danmaku danmaku = currentDanmaku[i];
                         particles[i].position = danmaku.position;
                         particles[i].rotation = danmaku.rotation;
                         particles[i].size = danmaku.Scale;
                         particles[i].axisOfRotation = forward;
                         particles[i].color = danmaku.Color;
-                        if (particles[i].lifetime <= 1)
-                            particles[i].lifetime = 1000;
-                    } else {
-                        particles[i].size = 0f;
-                        particles[i].lifetime = -1;
-                    }
+                        particles[i].lifetime = 1000;
                 }
             }
             runtimeSystem.SetParticles(particles, danmakuCount);
         }
 
         public void Awake() {
-            //mpb = new MaterialPropertyBlock();
             Vector3[] vertexes;
 
-            Renderer singleRenderer = GetComponent<Renderer>();
-            SpriteRenderer spriteRenderer = singleRenderer as SpriteRenderer;
-            MeshRenderer meshRenderer = singleRenderer as MeshRenderer;
+            var singleRenderer = GetComponent<Renderer>();
+            var spriteRenderer = singleRenderer as SpriteRenderer;
+            var meshRenderer = singleRenderer as MeshRenderer;
             if (singleRenderer == null ||
                 (spriteRenderer == null && meshRenderer == null)) {
                 Debug.LogError("Danmaku Prefab (" + name +
@@ -124,8 +93,7 @@ namespace DanmakU {
                     Destroy(otherComponent);
             }
 
-            foreach (Transform child in transform)
-                Destroy(child.gameObject);
+            gameObject.Children().Destroy();
 
             cachedScale = transform.localScale;
             cachedTag = gameObject.tag;
@@ -246,7 +214,7 @@ namespace DanmakU {
             runtimeSystem.startSpeed = 0f;
             runtimeSystem.enableEmission = false;
 
-            currentDanmaku = new HashSet<Danmaku>();
+            currentDanmaku = new DanmakuList();
             particles = new ParticleSystem.Particle[runtimeSystem.particleCount];
 
             runtimeRenderer.mesh = renderMesh;
@@ -392,7 +360,7 @@ namespace DanmakU {
         private ParticleSystem runtimeSystem;
         private ParticleSystemRenderer runtimeRenderer;
         private ParticleSystem.Particle[] particles;
-        private HashSet<Danmaku> currentDanmaku;
+        internal DanmakuList currentDanmaku;
         private int danmakuCount;
         private RenderingType renderingType;
 

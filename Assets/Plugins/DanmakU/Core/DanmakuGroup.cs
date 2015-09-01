@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Vexe.Runtime.Extensions;
 
 namespace DanmakU {
 
@@ -39,7 +40,6 @@ namespace DanmakU {
         protected void RaiseAddEvent(Danmaku target) {
             if (target == null)
                 return;
-            target.groups.Add(this);
             target.OnDeactivate += OnDanmakuDeactivate;
 
             if (OnAdd != null)
@@ -50,65 +50,29 @@ namespace DanmakU {
             if (targets == null)
                 throw new ArgumentNullException();
 
-            var colList = targets as IList<Danmaku>;
-            if (colList != null) {
-                int count = colList.Count;
-                for (var i = 0; i < count; i++) {
-                    Danmaku target = colList[i];
-                    if (target == null)
-                        continue;
-                    target.groups.Add(this);
-                    if (OnAdd != null)
-                        OnAdd(target);
-                }
-            } else {
-                foreach (var target in targets) {
-                    if (target == null)
-                        continue;
-                    target.groups.Add(this);
-                    if (OnAdd != null)
-                        OnAdd(target);
-                }
+            foreach (Danmaku target in targets.Where(t => t)) {
+                target.OnDeactivate += OnDanmakuDeactivate;
+                OnAdd.SafeInvoke(target);   
             }
         }
 
         protected void RaiseRemoveEvent(Danmaku target) {
             if (target == null)
                 return;
-            target.groups.Remove(this);
-            if (OnRemove != null)
-                OnRemove(target);
+            OnRemove.SafeInvoke(target);
         }
 
         protected void RaiseRemoveEvent(IEnumerable<Danmaku> targets) {
             if (targets == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("targets");
 
-            var colList = targets as IList<Danmaku>;
-            if (colList != null) {
-                int count = colList.Count;
-                for (var i = 0; i < count; i++) {
-                    Danmaku target = colList[i];
-                    if (target == null)
-                        continue;
-                    target.groups.Remove(this);
-                    if (OnRemove != null)
-                        OnRemove(target);
-                }
-            } else {
-                foreach (var target in targets) {
-                    if (target == null)
-                        continue;
-                    target.groups.Remove(this);
-                    if (OnRemove != null)
-                        OnRemove(target);
-                }
-            }
+            foreach (Danmaku target in targets.Where(t => t))
+                OnRemove.SafeInvoke(target);
         }
 
         public bool TrueForAll(Predicate<Danmaku> match) {
             if (match == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("match");
 
             var colList = Group as IList<Danmaku>;
             if (colList != null) {

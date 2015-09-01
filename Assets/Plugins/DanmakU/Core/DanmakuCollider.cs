@@ -6,9 +6,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-/// <summary>
-/// A development kit for quick development of 2D Danmaku games
-/// </summary>
 namespace DanmakU {
 
     [RequireComponent(typeof (Collider2D))]
