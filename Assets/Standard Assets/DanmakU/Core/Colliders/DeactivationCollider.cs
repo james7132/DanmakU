@@ -4,12 +4,12 @@
 
 using UnityEngine;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
     /// <summary>
     /// A DanmakuCollider that deactivates all valid danmaku that come in contact with it.
     /// </summary>
-    [AddComponentMenu("DanmakU/Colliders/Deactivation Collider")]
+    [AddComponentMenu("Hourai.DanmakU/Colliders/Deactivation Collider")]
     public class DeactivationCollider : DanmakuCollider {
         #region implemented abstract members of DanmakuCollider
 

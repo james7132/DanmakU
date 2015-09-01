@@ -10,7 +10,7 @@ using UnityEngine;
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
     /// A single projectile fired.
@@ -56,6 +56,10 @@ namespace DanmakU {
 
         static Danmaku() {
             Setup();
+            Game.OnUpdate += UpdateAll;
+
+            // Deactivate all Danmaku when the 
+            Game.OnLoad += level => DeactivateAll();
         }
 
         public static int TotalCount {
@@ -115,7 +119,7 @@ namespace DanmakU {
         /// Does a frame update on all currently active bullets.
         /// This should be called only once per frame. 
         /// </summary>
-        internal static void UpdateAll() {
+        static void UpdateAll() {
             colliderMap.Clear();
             //caches the change in time since the last frame
             Danmaku danmaku;

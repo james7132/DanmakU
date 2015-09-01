@@ -6,7 +6,7 @@
 //using UnityEditor;
 //using System;
 //using System.Collections;
-//using DanmakU;
+//using Hourai.DanmakU;
 //
 ///// <summary>
 ///// Custom <a href="http://docs.unity3d.com/ScriptReference/PropertyDrawer.html">PropertyDrawer</a> for FieldMovementPattern.AtomicMovement

@@ -5,12 +5,12 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
     /// <summary>
     /// A Danmaku Controller that speeds up or slows down danmaku so long as bullets are contacting it.
     /// </summary>
-    [AddComponentMenu("DanmakU/Colliders/Acceleration Collider")]
+    [AddComponentMenu("Hourai.DanmakU/Colliders/Acceleration Collider")]
     public class AccelerationCollider : DanmakuCollider {
 
         [SerializeField, Show]

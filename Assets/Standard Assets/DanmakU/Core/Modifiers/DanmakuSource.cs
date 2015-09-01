@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Modifiers {
+namespace Hourai.DanmakU.Modifiers {
 
     public struct Pose {
 

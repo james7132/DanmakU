@@ -4,12 +4,12 @@
 
 using UnityEngine;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
     /// <summary>
     /// A DanmakuCollider implementation that removes all DanmakuControllers from the bullets that come into contact with it.
     /// </summary>
-    [AddComponentMenu("DanmakU/Colliders/Clear Controllers Collider")]
+    [AddComponentMenu("Hourai.DanmakU/Colliders/Clear Controllers Collider")]
     public class ClearControllersCollider : DanmakuCollider {
 
         private DanmakuGroup affected;

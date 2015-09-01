@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
     /// <summary>
     /// A DanmakuCollider implementation that uses vector reflection to redirect bullets.
@@ -14,7 +14,7 @@ namespace DanmakU.Collider {
     /// The resultant direction that valid bullets face after coming into contact with this collider is based
     /// on the vector reflection calculated from the incoming direction of the bullet and the normal to the collider at the point of collision.
     /// </remarks>
-    [AddComponentMenu("DanmakU/Colliders/Reflection Collider")]
+    [AddComponentMenu("Hourai.DanmakU/Colliders/Reflection Collider")]
     public class ReflectionCollider : DanmakuCollider {
 
         private DanmakuGroup affected;

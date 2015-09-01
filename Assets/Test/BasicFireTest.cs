@@ -4,8 +4,8 @@
 
 using System.Collections;
 using UnityEngine;
-using DanmakU;
-using DanmakU.Modifiers;
+using Hourai.DanmakU;
+using Hourai.DanmakU.Modifiers;
 
 public class BasicFireTest : MonoBehaviour {
 

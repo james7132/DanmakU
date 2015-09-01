@@ -5,12 +5,12 @@
 //using UnityEngine;
 //using UnityEditor;
 //
-//using DanmakU;
+//using Hourai.DanmakU;
 //
 ///// <summary>
-///// Custom editor scripts for various components of the DanmakU development kit
+///// Custom editor scripts for various components of the Hourai.DanmakU development kit
 ///// </summary>
-//namespace DanmakU.Editor {
+//namespace Hourai.DanmakU.Editor {
 //
 //	/// <summary>
 //	/// Custom <a href="http://docs.unity3d.com/ScriptReference/Editor.html">Editor</a> for FieldMovementPattern.

@@ -4,11 +4,11 @@
 
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     [ExecuteInEditMode]
     [RequireComponent(typeof (BoxCollider2D))]
-    [AddComponentMenu("DanmakU/Misc/Field Boundary")]
+    [AddComponentMenu("Hourai.DanmakU/Misc/Field Boundary")]
     public sealed class FieldBoundary : MonoBehaviour {
 
         private static Vector2[] fixedPoints = {

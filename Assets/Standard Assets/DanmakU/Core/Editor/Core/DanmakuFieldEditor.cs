@@ -5,10 +5,10 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using DanmakU;
+using Hourai.DanmakU;
 
 
-namespace DanmakU.Editor {
+namespace Hourai.DanmakU.Editor {
 
 	[CustomEditor(typeof(DanmakuField))]
 	internal class DanmakuFieldEditor : UnityEditor.Editor {

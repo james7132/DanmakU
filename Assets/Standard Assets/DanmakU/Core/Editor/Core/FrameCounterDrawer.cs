@@ -5,7 +5,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace DanmakU.Editor {
+namespace Hourai.DanmakU.Editor {
 	
 	[CustomPropertyDrawer(typeof(FrameCounter))]
 	internal class FrameCounterDrawer : PropertyDrawer {

@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public static class Vector3Extensions {
 

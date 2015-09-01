@@ -5,7 +5,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public sealed class Task {
 

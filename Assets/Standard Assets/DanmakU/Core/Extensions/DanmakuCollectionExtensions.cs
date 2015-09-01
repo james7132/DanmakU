@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public static class DanmakuCollectionExtensions {
 

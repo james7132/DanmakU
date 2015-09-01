@@ -5,7 +5,7 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
     /// <summary>
     /// A DanmakuCollider implementation that adds controllers to valid bullets that contact it.

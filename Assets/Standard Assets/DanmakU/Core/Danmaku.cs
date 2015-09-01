@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
     /// A single projectile fired.
@@ -31,7 +31,7 @@ namespace DanmakU {
         private DanmakuController _onUpdate;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DanmakU.Danmaku"/> class.
+        /// Initializes a new instance of the <see cref="Hourai.DanmakU.Danmaku"/> class.
         /// </summary>
         internal Danmaku(int poolIndex) {
             PoolIndex = poolIndex;
@@ -321,8 +321,8 @@ namespace DanmakU {
         /// Calling this on a instance marked for deactivation will unmark the projectile and keep it from deactivating.
         /// </remarks>
         public void Activate() {
-            if (DanmakuGameController.Instance == null)
-                new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
+            if (DanmakuGame.Instance == null)
+                new GameObject("Danmaku Game Controller").AddComponent<DanmakuGame>();
             to_deactivate = false;
             runtime.currentDanmaku.Add(this);
             if (_isActive)
@@ -366,7 +366,7 @@ namespace DanmakU {
         }
 
         /// <summary>
-        /// Serves as a hash function for a <see cref="DanmakU.Danmaku"/> object.
+        /// Serves as a hash function for a <see cref="Hourai.DanmakU.Danmaku"/> object.
         /// </summary>
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
         public override int GetHashCode() {

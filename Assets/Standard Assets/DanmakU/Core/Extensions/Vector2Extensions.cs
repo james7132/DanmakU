@@ -5,7 +5,7 @@
 using System;
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public static class Vector2Extensions {
 

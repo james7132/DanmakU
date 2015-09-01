@@ -5,9 +5,9 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
-    [AddComponentMenu("DanmakU/Colliders/Prefab Change Collider")]
+    [AddComponentMenu("Hourai.DanmakU/Colliders/Prefab Change Collider")]
     public class PrefabChangeCollider : DanmakuCollider {
 
         private DanmakuGroup affected;

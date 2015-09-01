@@ -4,10 +4,10 @@
 
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
-    /// A set of utility functions that can be quite useful when using DanmakU
+    /// A set of utility functions that can be quite useful when using Hourai.DanmakU
     /// </summary>
     public static class DanmakuUtil {
 

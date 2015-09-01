@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public interface IFireBindable {
 
