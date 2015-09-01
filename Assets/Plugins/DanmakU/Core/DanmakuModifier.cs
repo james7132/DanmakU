@@ -6,13 +6,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
 
 namespace DanmakU {
 
     [System.Serializable]
-    public static class DanmakuModifier {
+    public static class FireModifier {
 
         private static readonly Action<FireData, Vector2> setPos = (fd, pos) => fd.Position = pos;
         private static readonly Action<FireData, float> setRot = (fd, rot) => fd.Rotation = rot;
@@ -189,12 +190,13 @@ namespace DanmakU {
         }
         #endregion
 
-        public static Task Fire(this MonoBehaviour behaviour, IEnumerable coroutine)
+        public static Task Execute(this MonoBehaviour behaviour, IEnumerable coroutine)
         {
-            return coroutine.Fire(behaviour);
+            return coroutine.Execute(behaviour);
         }
 
-        public static Task Fire(this IEnumerable data, MonoBehaviour context = null) {
+        public static Task Execute(this IEnumerable data, MonoBehaviour context = null)
+        {
             if (data == null)
                 throw new ArgumentNullException("data");
 
@@ -551,6 +553,52 @@ namespace DanmakU {
         }
 
         #endregion
+
+        #region Color Functions
+
+        public static IEnumerable WithColor(this IEnumerable data,
+                                            Func<FireData, Color?> color,
+                                            Func<FireData, bool> filter = null) {
+            if(color == null)
+                throw new ArgumentNullException("color");
+            return data.ForEachFireData(fd => fd.Color = color(fd), filter);
+        }
+
+        public static IEnumerable WithColor(this IEnumerable data,
+                                            Color? color,
+                                            Func<FireData, bool> filter = null)
+        {
+            return data.ForEachFireData(fd => fd.Color = color, filter);
+        }
+
+        public static IEnumerable WithColor(this IEnumerable data,
+                                            Gradient gradient,
+                                            Func<FireData, bool> filter = null) {
+            return data.WithColor(fd => gradient.Random(), filter);
+        }
+
+        #endregion
+        
+        #region Damage Functions
+
+        public static IEnumerable WithDamage(this IEnumerable coroutine,
+                                            Func<FireData, DFloat> damage,
+                                            Func<FireData, bool> filter = null)
+        {
+            if (damage == null)
+                throw new ArgumentNullException("damage");
+            return coroutine.ForEachFireData(d => d.Damage = damage(d), filter);
+        }
+
+        public static IEnumerable WithDamage(this IEnumerable coroutine,
+                                            DFloat damage,
+                                            Func<FireData, bool> filter = null)
+        {
+            return coroutine.ForEachFireData(d => d.Damage = damage, filter);
+        }
+
+        #endregion
+
     }
 
 }

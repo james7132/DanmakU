@@ -50,14 +50,12 @@ MonoBehaviour:
       - Vector2 colliderSize
       - Vector2 colliderOffset
       - bool fixedAngle
-      - IDanmakuController[] extraControllers
       values:
       - 0
       - '"Circle"'
       - '{"x":1.0,"y":1.0}'
       - '{"x":0.0,"y":0.0}'
       - false
-      - '[]'
   _serializerType:
     _name: Vexe.Runtime.Serialization.FullSerializerBackend, Assembly-CSharp-firstpass,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -76,7 +74,7 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 2100000, guid: 4330258e1a878ef4ba58c7bcfd36f9c0, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -91,14 +89,50 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c8e47c138956e5a4eaf03ada283dcf0b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: _serializationData.serializedStrings.keys.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: _serializationData.serializedStrings.values.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4330258e1a878ef4ba58c7bcfd36f9c0, type: 2}
+    - target: {fileID: 0}
+      propertyPath: _serializationData.serializedStrings.keys.Array.data[5]
+      value: IDanmakuController[] extraControllers
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: _serializationData.serializedStrings.values.Array.data[4]
+      value: false
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: _serializationData.serializedStrings.values.Array.data[5]
+      value: '[]'
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 190404}

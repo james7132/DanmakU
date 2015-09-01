@@ -156,7 +156,7 @@ namespace DanmakU {
                                        Vector2 target,
                                        float maxDistanceDelta,
                                        Func<Danmaku, bool> filter = null)
-            {
+        {
             return danmakus.ForEach(x => x.MoveTowards(target, maxDistanceDelta), filter);
         }
 

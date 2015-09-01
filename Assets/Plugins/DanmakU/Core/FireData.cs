@@ -20,12 +20,13 @@ namespace DanmakU {
         public DanmakuController Controller;
         public Action<Danmaku> OnActivate;
         public Action<Danmaku> OnDeactivate;
-        public DInt Damage;
+        public DFloat Damage;
         public DanmakuField Field;
         public Vector2 Position;
         public DanmakuPrefab Prefab;
         public DFloat Rotation;
         public DFloat Speed = 5f;
+        public Color? Color;
 
         public void Copy(FireData other) {
             if (other == null || other == this)
@@ -40,6 +41,7 @@ namespace DanmakU {
             Prefab = other.Prefab;
             Rotation = other.Rotation;
             Speed = other.Speed;
+            Color = other.Color;
         }
 
         public FireData Clone() {

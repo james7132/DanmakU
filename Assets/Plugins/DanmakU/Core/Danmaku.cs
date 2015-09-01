@@ -35,7 +35,6 @@ namespace DanmakU {
         /// </summary>
         internal Danmaku(int poolIndex) {
             PoolIndex = poolIndex;
-            groups = new HashSet<DanmakuGroup>();
         }
 
         /// <summary>
@@ -119,16 +118,16 @@ namespace DanmakU {
             if (_controllerCheck)
                 _onUpdate(this, dt);
 
-            if (!Mathf.Approximately(AngularSpeed, 0f)) {
-                float rotationChange = AngularSpeed*dt;
+            if (AngularSpeed != 0f) {
+                float rotationChange = AngularSpeed * dt;
                 rotation += rotationChange;
-                direction = UnitCircle(rotation);
+                direction = UnitCircle(rotation);   
             }
 
-            if(!Mathf.Approximately(Speed, 0f)) {
-                float movementChange = Speed*dt;
-                position.x += direction.x*movementChange;
-                position.y += direction.y*movementChange;
+            if (Speed != 0) {
+                float movementChange = Speed * dt;
+                position.x += direction.x * movementChange;
+                position.y += direction.y * movementChange;   
             }
 
             movementVector.x = position.x - _originalPosition.x;
@@ -249,9 +248,9 @@ namespace DanmakU {
                 this.prefab = prefab;
 
                 if (_isActive) {
-                    runtime.Remove(this);
+                    runtime.currentDanmaku.Remove(this);
                     runtime = prefab.GetRuntime();
-                    runtime.Add(this);
+                    runtime.currentDanmaku.Add(this);
                 } else
                     runtime = prefab.GetRuntime();
 
@@ -259,7 +258,6 @@ namespace DanmakU {
                 colliderType = runtime.collisionType;
                 switch (colliderType) {
                     default:
-                    case ColliderType.Point:
                         colliderSize = Vector2.zero;
                         sizeSquared = 0;
                         break;
@@ -270,7 +268,7 @@ namespace DanmakU {
                         colliderSize = runtime.colliderSize;
                         break;
                 }
-                sizeSquared = colliderSize.y*colliderSize.y;
+                sizeSquared = colliderSize.y * colliderSize.y;
                 colliderOffset = scale.Hadamard2(runtime.colliderOffset);
             }
 
@@ -326,7 +324,7 @@ namespace DanmakU {
             if (DanmakuGameController.Instance == null)
                 new GameObject("Danmaku Game Controller").AddComponent<DanmakuGameController>();
             to_deactivate = false;
-            runtime.Add(this);
+            runtime.currentDanmaku.Add(this);
             if (_isActive)
                 return;
             if(OnActivate != null)
@@ -362,7 +360,6 @@ namespace DanmakU {
             OnDeactivate = null;
             _controllerCheck = false;
             Damage = 0;
-            runtime.Remove(this);
             CollisionCheck = true;
             _isActive = false;
             danmakuPool.Return(this);
@@ -405,8 +402,6 @@ namespace DanmakU {
 
         private bool to_deactivate;
 
-        internal HashSet<DanmakuGroup> groups;
-
         internal Vector3 position;
         internal float rotation;
 
@@ -424,18 +419,18 @@ namespace DanmakU {
         /// <summary>
         /// The vertex color to use when rendering
         /// </summary>
-        public Color32 Color { get; set; }
+        public Color32 Color;
 
-        public int Damage { get; set; }
+        public float Damage;
 
         /// <summary>
         /// Whether or not to perform collision detection with the Danmaku instance.
         /// </summary>
-        public bool CollisionCheck { get; set; }
+        public bool CollisionCheck;
 
-        public float Speed { get; set; }
+        public float Speed;
 
-        public float AngularSpeed { get; set; }
+        public float AngularSpeed;
 
         public DanmakuPrefab Prefab {
             get { return runtime; }
@@ -504,7 +499,7 @@ namespace DanmakU {
             }
         }
 
-        public float Scale { get; set; }
+        public float Scale;
 
         /// <summary>
         /// The amount of time that has passed since this bullet has been fired.
