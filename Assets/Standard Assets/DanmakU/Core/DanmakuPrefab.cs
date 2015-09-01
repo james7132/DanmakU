@@ -12,9 +12,8 @@ using UnityEditor;
 
 namespace DanmakU {
 
-    class DanmakuType : MonoBehaviour
+    public class DanmakuType : MonoBehaviour
     {
-        public DanmakuPrefab 
     }
 
     /// <summary>
