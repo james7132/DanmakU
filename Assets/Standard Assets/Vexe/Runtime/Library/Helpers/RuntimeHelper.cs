@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
 using Vexe.Runtime.Serialization;
@@ -67,11 +66,13 @@ namespace Vexe.Runtime.Helpers
 
         public static int GetTargetID(object target)
         {
-            var obj = target as IVFWObject;
-            if (obj != null)
-                return obj.GetPersistentId();
+            var beh = target as BaseBehaviour;
+            if (beh != null) return beh.GetPersistentId();
 
-            return target.GetHashCode();
+            var obj = target as BaseScriptableObject;
+            if (obj != null) return obj.GetPersistentId();
+
+            return RuntimeHelpers.GetHashCode(target);
         }
 
         public static bool IsModified(UnityObject target, SerializerBackend serializer, SerializationData data)
@@ -218,6 +219,12 @@ namespace Vexe.Runtime.Helpers
             byte g = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
             byte b = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
             return new Color32(r, g, b, 255);
+        }
+
+        public static string ColorToHex(Color32 color)
+        {
+            string hex = color.r.ToString("X2") + color.g.ToString("X2") + color.b.ToString("X2");
+            return hex;
         }
     }
 }

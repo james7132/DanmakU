@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
-
+using System;
+using Vexe.Runtime.Extensions;
 #if UNITY_EDITOR
 using UnityEditor;
+using System.IO;
+using System.Linq;
 #endif
 
 namespace Vexe.Runtime.Types
@@ -15,21 +18,28 @@ namespace Vexe.Runtime.Types
     /// (**) You could serialize the prefs data to stream, say file or memory.
     /// (***) It uses dictionaries so it's faster than writing to registry
     /// 
-    /// NOTE: You could use the extension method (in Vexe.Runtime.Extensions) ValueOrDefault on the dictionaries
+    /// NOTE: You could use ValueOrDefault on the dictionaries
     /// if you're not sure whether or not there's a value registered with a certain key.
     /// There's also an overload that lets you specify the default value to use.
     /// </summary>
-    public class BetterPrefs : BetterScriptableObject
+    [CreateAssetMenu(menuName = "Vexe/BetterPrefs")]
+    public class BetterPrefs : BaseScriptableObject
     {
-        public Dictionary<int, int>     Ints     = new Dictionary<int, int>();
-        public Dictionary<int, string>  Strings  = new Dictionary<int, string>();
-        public Dictionary<int, float>   Floats   = new Dictionary<int, float>();
-        public Dictionary<int, bool>    Bools    = new Dictionary<int, bool>();
-        public Dictionary<int, Vector3> Vector3s = new Dictionary<int, Vector3>();
-        public Dictionary<int, Color>   Colors   = new Dictionary<int, Color>();
+        [Serializable] public class LookupIntInt : SerializableDictionary<int, int> { }
+        [Serializable] public class LookupIntString : SerializableDictionary<int, string> { }
+        [Serializable] public class LookupIntFloat : SerializableDictionary<int, float> { }
+        [Serializable] public class LookupIntBool : SerializableDictionary<int, bool> { }
+        [Serializable] public class LookupIntVector3 : SerializableDictionary<int, Vector3> { }
+        [Serializable] public class LookupIntColor : SerializableDictionary<int, Color> { }
 
-        [Show]
-        void Clear()
+        public LookupIntInt     Ints     = new LookupIntInt();
+        public LookupIntString  Strings  = new LookupIntString();
+        public LookupIntFloat   Floats   = new LookupIntFloat();
+        public LookupIntBool    Bools    = new LookupIntBool();
+        public LookupIntVector3 Vector3s = new LookupIntVector3();
+        public LookupIntColor   Colors   = new LookupIntColor();
+
+        [Show] void Clear()
         {
             Ints.Clear();
             Strings.Clear();
@@ -40,46 +50,46 @@ namespace Vexe.Runtime.Types
         }
 
 #if UNITY_EDITOR
-        const string EditorPrefsPath  = "Assets/Plugins/Editor/Vexe/ScriptableAssets/BetterEditorPrefs.asset";
-        const string RuntimePrefsPath = "Assets/Plugins/Vexe/Runtime/ScriptableAssets/BetterPrefs.asset";
-
-        static BetterPrefs editorInstance;
+        static BetterPrefs instance;
         public static BetterPrefs GetEditorInstance()
         {
-            if ( editorInstance == null )
-            {
-                editorInstance = AssetDatabase.LoadAssetAtPath(EditorPrefsPath, typeof(BetterPrefs)) as BetterPrefs;
-                if ( editorInstance == null )
-                {
-                    editorInstance = ScriptableObject.CreateInstance<BetterPrefs>();
-                    AssetDatabase.CreateAsset(editorInstance, EditorPrefsPath);
-                    AssetDatabase.ImportAsset(EditorPrefsPath, ImportAssetOptions.ForceUpdate);
+            if (instance == null) {
+                // First attempt is to find the pref instance anywhere in the AssetDatabase
+                var prefPath = AssetDatabase.FindAssets("t:BetterPrefs BetterEditorPrefs").Select(x => AssetDatabase.GUIDToAssetPath(x)).FirstOrDefault();
+                if (prefPath != null) {
+                    instance = AssetDatabase.LoadAssetAtPath<BetterPrefs>(prefPath);
+                } else {
+                    // Otherwise create one on the spot
+                    instance = CreateInstance<BetterPrefs>();
                 }
             }
 
-            AssignIfNull(ref editorInstance.Ints);
-            AssignIfNull(ref editorInstance.Strings);
-            AssignIfNull(ref editorInstance.Floats);
-            AssignIfNull(ref editorInstance.Bools);
-            AssignIfNull(ref editorInstance.Colors);
-            AssignIfNull(ref editorInstance.Vector3s);
+            if (instance.Ints == null) instance.Ints = new LookupIntInt();
+            if (instance.Strings == null) instance.Strings = new LookupIntString();
+            if (instance.Floats == null) instance.Floats = new LookupIntFloat();
+            if (instance.Bools == null) instance.Bools = new LookupIntBool();
+            if (instance.Colors == null) instance.Colors = new LookupIntColor();
+            if (instance.Vector3s == null) instance.Vector3s = new LookupIntVector3();
 
-            return editorInstance;
-        }
+            // Add instance to the Asset Database if it isn't there already.
+            if (AssetDatabase.Contains(instance))
+                return instance;
 
-        static void AssignIfNull<T>(ref Dictionary<int, T> value)
-        {
-            if (value == null)
-                value = new Dictionary<int, T>();
-        }
+            const string root = "Assets";
+            var dirs = Directory.GetDirectories(root, "Vexe", SearchOption.AllDirectories);
+            var editorDir = dirs.FirstOrDefault(x => Directory.GetParent(x).Name == "Editor") ?? string.Empty;
 
-        public static class BetterPrefsMenus
-        {
-            [MenuItem("Tools/Vexe/BetterPrefs/CreateAsset")]
-            public static void CreateBetterPrefsAsset()
-            {
-                AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<BetterPrefs>(), RuntimePrefsPath);
+            var prefsDir = Path.Combine(editorDir, "ScriptableAssets");
+            if (editorDir.IsNullOrEmpty() || !Directory.Exists(prefsDir)) {
+                Debug.LogError("Unable to create editor prefs asset at Editor/Vexe/ScriptableAssets (couldn't find folder). Creating in project root instead...");
+                prefsDir = root;
             }
+
+            var path = Path.Combine(prefsDir, "BetterEditorPrefs.asset");
+            AssetDatabase.CreateAsset(instance, path);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.Refresh();
+            return instance;
         }
 #endif
     }
