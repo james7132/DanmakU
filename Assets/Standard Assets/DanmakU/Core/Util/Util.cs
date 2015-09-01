@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
     /// A static utility class of random functions and constants that are useful in various Unity projects

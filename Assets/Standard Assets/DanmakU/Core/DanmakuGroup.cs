@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Vexe.Runtime.Extensions;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public abstract class DanmakuGroup : ICollection<Danmaku>, IFireBindable {
 

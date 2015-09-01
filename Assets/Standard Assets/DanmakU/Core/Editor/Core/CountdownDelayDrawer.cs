@@ -8,7 +8,7 @@ using UnityEditor;
 /// <summary>
 /// Custom editor scripts for various components of UnityUtilLib
 /// </summary>
-namespace DanmakU.Editor {
+namespace Hourai.DanmakU.Editor {
 
 	/// <summary>
 	/// Custom <a href="http://docs.unity3d.com/ScriptReference/PropertyDrawer.html">PropertyDrawer</a> for CountdownDelay

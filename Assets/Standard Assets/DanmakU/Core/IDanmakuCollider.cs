@@ -4,7 +4,7 @@
 
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
     /// An interface for any behaviour that would like to recieve messages of when danmaku collides

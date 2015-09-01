@@ -6,7 +6,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     [Serializable]
     public struct DInt {

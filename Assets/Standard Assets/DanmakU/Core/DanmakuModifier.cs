@@ -10,13 +10,12 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using Vexe.Runtime.Extensions;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     [System.Serializable]
     public static class FireModifier {
 
         private static readonly Action<FireData, Vector2> setPos = (fd, pos) => fd.Position = pos;
-        private static readonly Action<FireData, float> setRot = (fd, rot) => fd.Rotation = rot;
 
         #region General Utilty Functions
         /// <summary>
@@ -207,7 +206,7 @@ namespace DanmakU {
             else if (dp != null)
                 ((FireData) dp).Fire();
             else {
-                var fireTask = new Task(context ?? DanmakuGameController.Instance,
+                var fireTask = new Task(context ?? DanmakuGame.Instance,
                                          FireRoutine(data));
                 fireTask.Start();
                 return fireTask;

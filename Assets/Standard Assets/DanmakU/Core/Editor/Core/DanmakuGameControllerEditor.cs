@@ -4,12 +4,12 @@
 
 using UnityEngine;
 using UnityEditor;
-using DanmakU;
+using Hourai.DanmakU;
 
 /// <summary>
 /// Custom <a href="http://docs.unity3d.com/ScriptReference/Editor.html">Editor</a> for ProjectileManager
 /// </summary>
-[CustomEditor(typeof(DanmakuGameController))]
+[CustomEditor(typeof(DanmakuGame))]
 internal class DanmakuGameControllerEditor : UnityEditor.Editor {
 
 	/// <summary>

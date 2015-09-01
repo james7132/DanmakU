@@ -3,16 +3,15 @@
 // See the LISCENSE file for copying permission.
 
 using UnityEngine;
+using Hourai;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
-    /// A GameController implementation for 2D Danmaku games.
+    /// A Game implementation for 2D Danmaku games.
     /// </summary>
-    [AddComponentMenu("DanmakU/Danmaku Game Controller")]
-    public sealed class DanmakuGameController : MonoBehaviour {
-
-        private static DanmakuGameController instance;
+    [AddComponentMenu("Hourai.DanmakU/Danmaku Game")]
+    public sealed class DanmakuGame : Game {
 
         [SerializeField]
         private float angleResolution = 0.1f;
@@ -25,31 +24,11 @@ namespace DanmakU {
 
         public bool FrameRateIndependent = true;
 
-        public static DanmakuGameController Instance {
-            get {
-                if (instance != null)
-                    return instance;
-                instance = FindObjectOfType<DanmakuGameController>() ??
-                           new GameObject("Danmaku Game Controller")
-                               .AddComponent<DanmakuGameController>();
-                return instance;
-            }
-        }
-
-        private void Awake() {
-            DontDestroyOnLoad(gameObject);
-            if (instance != null) {
-                Destroy(this);
-                return;
-            }
-            instance = this;
+        protected override void Awake() {
+            base.Awake();
             Danmaku.Setup(danmakuInitialCount,
                           danmakuSpawnOnEmpty,
                           angleResolution);
-        }
-
-        private void Update() {
-            Danmaku.UpdateAll();
         }
 
         private void OnLevelWasLoaded(int level) {

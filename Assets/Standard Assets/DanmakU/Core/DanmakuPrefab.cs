@@ -10,7 +10,7 @@ using Vexe.Runtime.Types;
 using UnityEditor;
 #endif
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public class DanmakuType : MonoBehaviour
     {
@@ -20,7 +20,7 @@ namespace DanmakU {
     /// A container behavior used on prefabs to define how a bullet looks or behaves
     /// </summary>
     [DisallowMultipleComponent]
-    [AddComponentMenu("DanmakU/Danmaku Prefab")]
+    [AddComponentMenu("Hourai.DanmakU/Danmaku Prefab")]
     public sealed class DanmakuPrefab : BetterBehaviour, IEnumerable<FireData> {
 
         public enum RenderingType {
@@ -45,7 +45,6 @@ namespace DanmakU {
 
             runtimeSystem.GetParticles(particles);
 
-            bool done;
             if (fixedAngle) {
                 for (var i = 0; i < danmakuCount; i++) {
                         Danmaku danmaku = currentDanmaku[i];

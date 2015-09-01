@@ -9,7 +9,7 @@ using UnityEngine;
 /// A development kit for quick development of 2D Danmaku games
 /// </summary>
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     internal class DanmakuPool {
 

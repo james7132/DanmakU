@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public static class DanmakuControllerExtensions {
 

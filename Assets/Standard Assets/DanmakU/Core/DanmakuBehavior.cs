@@ -6,7 +6,7 @@ using System.Collections;
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public abstract class DanmakuBehaviour : BetterBehaviour {
 

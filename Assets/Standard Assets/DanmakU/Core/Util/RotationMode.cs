@@ -1,4 +1,4 @@
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     public enum RotationMode {
 

@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
     /// A static class of utility functions for coroutines.

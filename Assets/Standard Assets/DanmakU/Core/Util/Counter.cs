@@ -2,7 +2,7 @@
 //	
 // See the LISCENSE file for copying permission.
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     [System.Serializable]
     public struct CountdownDelay {

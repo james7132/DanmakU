@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
     /// Class with util extension methods.
@@ -88,6 +88,13 @@ namespace DanmakU {
             }
         }
 
+        public static T FindClosest<T>(this GameObject gameObject) where T : Component
+        {
+            if (!gameObject)
+                throw new ArgumentNullException("gameObject");
+            return Util.FindClosest<T>(gameObject.transform.position);
+        }
+
         #endregion
 
         #region Gradient
@@ -131,6 +138,13 @@ namespace DanmakU {
             if (transform == null)
                 throw new NullReferenceException();
             return transform.eulerAngles.z;
+        }
+
+        public static T FindCloset<T>(this Transform transform) where T : Component
+        {
+            if (transform == null)
+                throw new ArgumentNullException("transform");
+            return Util.FindClosest<T>(transform.position);
         }
 
         #endregion

@@ -5,12 +5,12 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
     /// <summary>
     /// A DanmakuCollider that changes the direction of motion for all valid bullets that come into contact with it.
     /// </summary>
-    [AddComponentMenu("DanmakU/Colliders/Redirection Collider")]
+    [AddComponentMenu("Hourai.DanmakU/Colliders/Redirection Collider")]
     public class RedirectionCollider : DanmakuCollider {
 
         private DanmakuGroup affected;

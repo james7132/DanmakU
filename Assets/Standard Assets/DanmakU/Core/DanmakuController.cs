@@ -5,7 +5,7 @@
 using System;
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     /// <summary>
     /// Delegate form of IDanmakuController

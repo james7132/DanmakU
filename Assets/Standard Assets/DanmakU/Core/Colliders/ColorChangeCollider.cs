@@ -5,9 +5,9 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
-    [AddComponentMenu("DanmakU/Colliders/Color Change Collider")]
+    [AddComponentMenu("Hourai.DanmakU/Colliders/Color Change Collider")]
     public class ColorChangeCollider : DanmakuCollider {
 
         //TODO Make a proper custom editor for this class

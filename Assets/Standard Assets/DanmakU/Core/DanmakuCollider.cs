@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     [RequireComponent(typeof (Collider2D))]
     public abstract class DanmakuCollider : DanmakuBehaviour, IDanmakuCollider {

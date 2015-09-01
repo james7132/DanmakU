@@ -5,11 +5,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DanmakU {
+namespace Hourai.DanmakU {
 
     [ExecuteInEditMode]
     [DisallowMultipleComponent]
-    [AddComponentMenu("DanmakU/Danmaku Field")]
+    [AddComponentMenu("Hourai.DanmakU/Danmaku Field")]
     public class DanmakuField : MonoBehaviour, IFireBindable {
 
         public enum CoordinateSystem {

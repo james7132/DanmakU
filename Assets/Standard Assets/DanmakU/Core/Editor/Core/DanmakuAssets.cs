@@ -5,8 +5,8 @@
 using UnityEngine;
 using UnityEditor;
 
-using DanmakU;
-//using DanmakU.Phantasmagoria;
+using Hourai.DanmakU;
+//using Hourai.DanmakU.Phantasmagoria;
 using System.IO;
 
 /// <summary>
@@ -35,9 +35,9 @@ internal static class DanmakuAssets {
 
 	/// <summary>
 	/// Creates a blank DanmakuPrefab asset
-	/// Found under Assets/Create/DanmakU/Danmaku Prefab
+	/// Found under Assets/Create/Hourai.DanmakU/Danmaku Prefab
 	/// </summary>
-	[MenuItem("Assets/Create/DanmakU/Sprite Danmaku Prefab", false, 51)]
+	[MenuItem("Assets/Create/Hourai.DanmakU/Sprite Danmaku Prefab", false, 51)]
 	public static void AddSpriteDanmakuPrefab() {
 		GameObject temp = new GameObject ("Danmaku Prefab");
 		temp.AddComponent<SpriteRenderer> ();
@@ -47,7 +47,7 @@ internal static class DanmakuAssets {
 		Object.DestroyImmediate (temp);
 	}
 
-	[MenuItem("Assets/Create/DanmakU/Mesh Danmaku Prefab", false, 52)]
+	[MenuItem("Assets/Create/Hourai.DanmakU/Mesh Danmaku Prefab", false, 52)]
 	public static void AddMeshDanmakuPrefab() {
 		GameObject temp = new GameObject ("Danmaku Prefab");
 		temp.AddComponent<MeshFilter> ();
@@ -60,9 +60,9 @@ internal static class DanmakuAssets {
 
 //	/// <summary>
 //	/// Creates the base of a full Phantasmagoria game with a single click
-//	/// Found under GameObject/Create/DanmakU/Phantasmagoria/Game Gamecontroller
+//	/// Found under GameObject/Create/Hourai.DanmakU/Phantasmagoria/Game Gamecontroller
 //	/// </summary>
-//	[MenuItem("GameObject/Create/DanmakU/Phantasmagoria/Game Controller")]
+//	[MenuItem("GameObject/Create/Hourai.DanmakU/Phantasmagoria/Game Controller")]
 //	public static void CreatePhantasmagoriaGame() {
 //		GameObject temp = new GameObject ("Game Controller");
 //		temp.AddComponent<StaticGameObject> ();
@@ -85,10 +85,10 @@ internal static class DanmakuAssets {
 
 	/// <summary>
 	/// Creates a PhantasmagoriaField with a single click
-	/// Found under GameObject/Create/DanmakU/Phantasmagoria/Field
+	/// Found under GameObject/Create/Hourai.DanmakU/Phantasmagoria/Field
 	/// </summary>
 	/// <returns>The phantasmagoria field created.</returns>
-	[MenuItem("GameObject/Create/DanmakU/Danmaku Field")]
+	[MenuItem("GameObject/Create/Hourai.DanmakU/Danmaku Field")]
 	public static DanmakuField CreateDanmakuField() {
 		GameObject temp = new GameObject ("Field");
 		DanmakuField field = temp.AddComponent<DanmakuField> ();
@@ -111,9 +111,9 @@ internal static class DanmakuAssets {
 		return field;
 	}
 
-//	[MenuItem("Assets/Create/DanmakU/Custom Attack Pattern")]
+//	[MenuItem("Assets/Create/Hourai.DanmakU/Custom Attack Pattern")]
 //	public static void CreateAttackPattern() {
-//		string text = "using UnityEngine;\nusing System.Collections;\nusing DanmakU;\n" +
+//		string text = "using UnityEngine;\nusing System.Collections;\nusing Hourai.DanmakU;\n" +
 //						"\npublic class NewAttackPattern : AttackPattern {\n" +
 //						"\t//Used to determine when the attack pattern is finished and can terminate" +
 //						"\n\tprotected override bool IsFinished {\n" +

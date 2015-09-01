@@ -5,9 +5,9 @@
 using UnityEngine;
 using Vexe.Runtime.Types;
 
-namespace DanmakU.Collider {
+namespace Hourai.DanmakU.Collider {
 
-    [AddComponentMenu("DanmakU/Colliders/Constant Force Collider")]
+    [AddComponentMenu("Hourai.DanmakU/Colliders/Constant Force Collider")]
     public class ConstantForceCollider : DanmakuCollider {
 
         //TODO Document
