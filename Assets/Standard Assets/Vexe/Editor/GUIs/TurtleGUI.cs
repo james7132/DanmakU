@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 using UnityEngine;
 using System.Reflection;
@@ -75,7 +75,7 @@ namespace Vexe.Editor.GUIs
             GUILayout.Label(content, style, option);
         }
 
-        public override int Mask(GUIContent content, int mask, string[] displayedOptions, GUIStyle style, Layout option)
+        public override int MaskField(GUIContent content, int mask, string[] displayedOptions, GUIStyle style, Layout option)
         {
             return EditorGUILayout.MaskField(content, mask, displayedOptions, style, option);
         }
@@ -206,7 +206,7 @@ namespace Vexe.Editor.GUIs
             return EditorGUILayout.TagField(content, tag, style, layout);
         }
 
-        public override int Layer(GUIContent label, int layer, GUIStyle style, Layout layout)
+        public override int LayerField(GUIContent label, int layer, GUIStyle style, Layout layout)
         {
             return EditorGUILayout.LayerField(label, layer, style, layout);
         }
@@ -234,6 +234,16 @@ namespace Vexe.Editor.GUIs
         public override long Long(GUIContent content, long value, Layout option)
         {
             return EditorGUILayout.LongField(content, value, option);
+        }
+
+        public override IDisposable If(bool condition, IDisposable body)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void MinMaxSlider(GUIContent label, ref float minValue, ref float maxValue, float minLimit, float maxLimit, Layout option)
+        {
+            throw new NotImplementedException();
         }
     }
 }

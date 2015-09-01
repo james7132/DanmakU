@@ -1,4 +1,4 @@
-﻿//#define dbg_level_1
+//#define dbg_level_1
 //#define dbg_level_2
 #define dbg_controls
 
@@ -444,9 +444,17 @@ namespace Vexe.Editor.GUIs
             _pendingLayout = true;
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             End();
+        }
+
+        public override IDisposable If(bool condition, IDisposable body)
+        {
+            if (condition)
+                return body;
+            body.Dispose();
+            return null;
         }
 
         public override Bounds BoundsField(GUIContent content, Bounds value, Layout option)
@@ -627,7 +635,7 @@ namespace Vexe.Editor.GUIs
             }
         }
 
-        public override int Mask(GUIContent content, int mask, string[] displayedOptions, GUIStyle style, Layout option)
+        public override int MaskField(GUIContent content, int mask, string[] displayedOptions, GUIStyle style, Layout option)
         {
             var data = new ControlData(content, style, option, ControlType.MaskField);
 
@@ -836,7 +844,7 @@ namespace Vexe.Editor.GUIs
             return tag;
         }
 
-        public override int Layer(GUIContent content, int layer, GUIStyle style, Layout layout)
+        public override int LayerField(GUIContent content, int layer, GUIStyle style, Layout layout)
         {
             var data = new ControlData(content, style, layout, ControlType.Popup);
 
@@ -947,6 +955,15 @@ namespace Vexe.Editor.GUIs
             if (CanDrawControl(out position, data))
                 return EditorGUI.LongField(position, content, value);
             return value;
+        }
+
+        public override void MinMaxSlider(GUIContent label, ref float minValue, ref float maxValue, float minLimit, float maxLimit, Layout option)
+        {
+            var data = new ControlData(label, GUIStyles.MinMaxSlider, option, ControlType.Slider);
+
+            Rect position;
+            if (CanDrawControl(out position, data))
+                EditorGUI.MinMaxSlider(label, position, ref minValue, ref maxValue, minLimit, maxLimit);
         }
     }
 }

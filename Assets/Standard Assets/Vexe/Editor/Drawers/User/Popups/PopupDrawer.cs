@@ -49,11 +49,11 @@ namespace Vexe.Editor.Drawers
 					else // populate from type (member should be static)
 					{
 						var typeName = split[0];
-						populateFrom = ReflectionHelper.GetAllTypes()
+						populateFrom = ReflectionHelper.CachedGetRuntimeTypes()
 											           .FirstOrDefault(x => x.Name == typeName);
 
 						if (populateFrom == null)
-							throw new InvalidOperationException("Couldn't find type " + typeName);
+							throw new InvalidOperationException("Couldn't find type to populate the popup from " + typeName);
 
 						_populateFromType = true;
 					}
@@ -135,7 +135,7 @@ namespace Vexe.Editor.Drawers
                     {
                         _currentIndex = 0;
                         if (_values.Length > 0)
-                            memberValue = _values[0];
+                            SetValue(_values[0]);
                     }
 
                     gui.BeginCheck();

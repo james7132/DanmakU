@@ -1,13 +1,37 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
+namespace System
+{
+    public static class Extensions
+    {
+		public static string GetString(this byte[] bytes)
+		{
+			return Convert.ToBase64String(bytes);
+		}
+
+		public static byte[] GetBytes(this string str)
+		{
+			return Convert.FromBase64String(str);
+		}
+    }
+}
+
 namespace Vexe.Runtime.Extensions
 {
 	public static class OtherExtensions
 	{
+        /// <summary>
+        /// Sets the stream's length to 0
+        /// </summary>
+        public static void Reset(this MemoryStream memory)
+        {
+            memory.SetLength(0);
+        }
+
         /// <summary>
         /// http://stackoverflow.com/questions/4108828/generic-extension-method-to-see-if-an-enum-contains-a-flag
         /// </summary>
@@ -78,11 +102,6 @@ namespace Vexe.Runtime.Extensions
 		public static float Sqr(this float value)
 		{
 			return value * value;
-		}
-
-		public static string GetString(this byte[] bytes)
-		{
-			return Convert.ToBase64String(bytes);
 		}
 
 		/// <summary>

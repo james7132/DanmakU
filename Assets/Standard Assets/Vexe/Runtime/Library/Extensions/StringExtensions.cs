@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -6,6 +6,71 @@ namespace Vexe.Runtime.Extensions
 {
 	public static class StringExtensions
 	{
+        /// <summary>
+        /// Eg MY_INT_VALUE => MyIntValue
+        /// </summary>
+        public static string ToTitleCase(this string input)
+        {
+            var builder = new StringBuilder();
+            for (int i = 0; i < input.Length; i++)
+            {
+                var current = input[i];
+                if (current == '_' && i + 1 < input.Length)
+                {
+                    var next = input[i + 1];
+                    if (char.IsLower(next))
+                        next = char.ToUpper(next);
+                    builder.Append(next);
+                    i++;
+                }
+                else
+                    builder.Append(current);
+            }
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Performs a simple char-by-char comparison to see if input ends with postfix
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsPostfix(this string input, string postfix)
+        {
+            if (input == null)
+                throw new ArgumentNullException("input");
+
+            if (postfix == null)
+                throw new ArgumentNullException("postfix");
+
+            if (input.Length < postfix.Length)
+                return false;
+
+            for (int i = input.Length - 1, j = postfix.Length - 1; j >= 0; i--, j--)
+                if (input[i] != postfix[j])
+                    return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Performs a simple char-by-char comparison to see if input starts with prefix
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsPrefix(this string input, string prefix)
+        {
+            if (input == null)
+                throw new ArgumentNullException("input");
+
+            if (prefix == null)
+                throw new ArgumentNullException("prefix");
+
+            if (input.Length < prefix.Length)
+                return false;
+
+            for (int i = 0; i < prefix.Length; i++)
+                if (input[i] != prefix[i])
+                    return false;
+            return true;
+        }
+
 		public static Enum ToEnum(this string str, Type enumType)
 		{
 			return Enum.Parse(enumType, str) as Enum;
@@ -19,11 +84,6 @@ namespace Vexe.Runtime.Extensions
 		public static string FormatWith(this string str, params object[] args)
 		{
 			return string.Format(str, args);
-		}
-
-		public static byte[] GetBytes(this string str)
-		{
-			return Convert.FromBase64String(str);
 		}
 
 		/// <summary>

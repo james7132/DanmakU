@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using UnityEngine;
 using Vexe.Editor.GUIs;
 using Vexe.Editor.Helpers;
 using Vexe.Runtime.Extensions;
@@ -126,11 +125,6 @@ namespace Vexe.Editor.Drawers
 					_setValue(match);
 			}
 		}
-
-        public bool IsEmpty()
-        {
-            return string.IsNullOrEmpty(_pattern);
-        }
     }
 
 	public abstract class FilterDrawer<T, A> : CompositeDrawer<T, A> where A : CompositeAttribute

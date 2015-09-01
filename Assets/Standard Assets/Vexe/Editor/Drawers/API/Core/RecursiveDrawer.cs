@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -29,6 +29,7 @@ namespace Vexe.Editor.Drawers
         private Func<UnityObject[], UnityObject> _getDraggedObject;
         private Func<Func<Type[]>, Action<Type>, string, Tab> _newTypeTab;
         private Func<Func<UnityObject[]>, string, Tab> _newUnityTab;
+        private bool _disablePicker, _autoAlloc;
 
         protected override void Initialize()
         {
@@ -53,6 +54,8 @@ namespace Vexe.Editor.Drawers
                     var go = drag as GameObject;
                     if (go != null)
                     {
+                        if (!memberType.IsA<Component>())
+                            continue;
                         var c = go.GetComponent(memberType);
                         if (c != null)
                             return c;
@@ -110,12 +113,29 @@ namespace Vexe.Editor.Drawers
                 ArrayUtility.Add(ref systemTypes, memberType);
 
             _tabs[idx] = _newTypeTab(() => systemTypes, TryCreateInstance, "System Type");
+
+            var display = attributes.GetAttribute<DisplayAttribute>();
+            if (display != null)
+            {
+                _autoAlloc = (display.ObjOpt & Obj.AutoAlloc) != 0;
+                _disablePicker = (display.ObjOpt & Obj.DisablePicker) != 0;
+            }
         }
 
         public override void OnGUI()
         {
             using (gui.Horizontal())
             {
+                if (_autoAlloc && memberValue == null)
+                {
+                    if (memberType.IsA<UnityObject>())
+                        Debug.Log("Cannot automatically allocate memory for UnityObject member: " + member.NiceName);
+                    else if (memberType.IsAbstract)
+                        Debug.Log("Cannot automatically allocate memory for abstract member: " + member.NiceName);
+                    else
+                        memberValue = memberType.ActivatorInstance();
+                }
+
                 var isEmpty  = string.IsNullOrEmpty(displayText);
                 var label    = isEmpty ? string.Empty : displayText + " " + (foldout ? "^" : ">");
                 var value    = member.Value;
@@ -170,7 +190,7 @@ namespace Vexe.Editor.Drawers
                         {
                             var mb = unityObj as MonoBehaviour;
                             if (mb != null)
-                            { 
+                            {
                                 var monoscript = MonoScript.FromMonoBehaviour(mb);
                                 var scriptPath = AssetDatabase.GetAssetPath(monoscript);
                                 UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(scriptPath, 0);
@@ -193,12 +213,15 @@ namespace Vexe.Editor.Drawers
                 gui.Cursor(thumbRect, MouseCursor.Link);
 
                 // Selection/thumb button
-                { 
+                {
                     if (e.IsMouseContained(thumbRect) && e.IsMouseDown())
                     {
                         if (e.IsLMB())
                         {
-                            SelectionWindow.Show("Select a `" + memberTypeName + "` object", _tabs);
+                            if (_disablePicker)
+                                memberValue = memberType.ActivatorInstance();
+                            else
+                                SelectionWindow.Show("Select a `" + memberTypeName + "` object", _tabs);
                         }
                         else if (e.IsRMB())
                         {
@@ -259,16 +282,11 @@ namespace Vexe.Editor.Drawers
 
         public static bool DrawRecursive(ref object target, BaseGUI gui, int id, UnityObject unityTarget, params string[] memberNames)
         {
-            RuntimeMember[] serialized = null;
-            var vfwObj = target as IVFWObject;
-            if (vfwObj != null)
-                serialized = vfwObj.GetSerializedMembers();
-
             List<MemberInfo> members;
             var targetType = target.GetType();
             if (memberNames.IsNullOrEmpty())
             {
-                members = VisibilityLogic.CachedGetVisibleMembers(targetType, serialized);
+                members = VisibilityLogic.CachedGetVisibleMembers(targetType);
             }
             else
             {
@@ -282,7 +300,7 @@ namespace Vexe.Editor.Drawers
                         LogFormat("RecursiveDrawer: Couldn't find member {0} in {1}", name, targetType.Name);
                         continue;
                     }
-                    if (VisibilityLogic.IsVisibleMember(member, serialized))
+                    if (VisibilityLogic.IsVisibleMember(member))
                         members.Add(member);
                 }
             }

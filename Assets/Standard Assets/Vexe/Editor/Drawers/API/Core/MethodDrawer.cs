@@ -1,7 +1,9 @@
-﻿//#define DBG
+//#define DBG
 
 using System;
 using System.Reflection;
+using System.Collections;
+using UnityEngine;
 using Vexe.Editor.GUIs;
 using Vexe.Editor.Types;
 using Vexe.Runtime.Extensions;
@@ -23,8 +25,10 @@ namespace Vexe.Editor.Drawers
         private string comment;
 
 		private object rawTarget;
+        private UnityObject unityTarget;
 		private int id;
 		private BaseGUI gui;
+        private bool isCoroutine;
 
 		private BetterPrefs prefs { get { return BetterPrefs.GetEditorInstance(); } }
 
@@ -38,16 +42,22 @@ namespace Vexe.Editor.Drawers
 		{
 			this.gui = gui;
 			this.rawTarget = rawTarget;
+            this.unityTarget = unityTarget;
 			this.id = id;
 
 			if (initialized) return;
 			initialized = true;
+
+            isCoroutine = method.ReturnType == typeof(IEnumerator);
 
             var commentAttr = method.GetCustomAttribute<CommentAttribute>();
             if (commentAttr != null)
                 comment = commentAttr.comment;
 
 			niceName = method.GetNiceName();
+
+            if (niceName.IsPrefix("dbg") || niceName.IsPrefix("Dbg"))
+                niceName = niceName.Remove(0, 3);
 
 			invoke	     = method.DelegateForCall();
 			var argInfos = method.GetParameters();
@@ -61,12 +71,12 @@ namespace Vexe.Editor.Drawers
 				int i = iLoop;
 				var argInfo = argInfos[i];
 
-				argKeys[i] = RuntimeHelper.CombineHashCodes(id, argInfo);
+				argKeys[i] = RuntimeHelper.CombineHashCodes(id, argInfo.ParameterType.Name + argInfo.Name);
 
-				argValues[i] = ValueOrDefault(argInfos[i].ParameterType, argKeys[i]);
+				argValues[i] = TryLoad(argInfos[i].ParameterType, argKeys[i]);
 
                 argMembers[i] = EditorMember.WrapGetSet(
-                        @get         : () => argValues[i],
+                        @get         : () =>  argValues[i],
                         @set         : x => argValues[i] = x,
                         @rawTarget   : rawTarget,
                         @unityTarget : unityTarget,
@@ -97,7 +107,7 @@ namespace Vexe.Editor.Drawers
 						bool argChange = gui.Member(argMembers[i], false);
 						changed |= argChange;
 						if (argChange)
-							TryAdd(argValues[i], argKeys[i]);
+							TrySave(argValues[i], argKeys[i]);
 					}
 				}
 			}
@@ -109,11 +119,17 @@ namespace Vexe.Editor.Drawers
 			using (gui.Horizontal())
 			{
 				if (gui.Button(niceName, GUIStyles.Mini))
-					invoke(rawTarget, argValues);
+                {
+                    var mb = unityTarget as MonoBehaviour;
+                    if (isCoroutine && mb != null)
+                        mb.StartCoroutine(invoke(rawTarget, argValues) as IEnumerator);
+                    else
+                        invoke(rawTarget, argValues);
+                }
 
 				gui.Space(12f);
 				if (argMembers.Length > 0)
-				{ 
+				{
 					foldout = gui.Foldout(foldout);
 					gui.Space(-11.5f);
 				}
@@ -121,24 +137,30 @@ namespace Vexe.Editor.Drawers
 			return foldout;
 		}
 
-		void TryAdd(object obj, int key)
+		void TrySave(object obj, int key)
 		{
 			if (obj == null) return;
 
 			var type = obj.GetType();
-			if (type == typeof(int))
+            if (type.IsEnum || type == typeof(int))
 				 prefs.Ints[key] = (int)obj;
-			if (type == typeof(string))
+			else if (type == typeof(string))
 				 prefs.Strings[key] = (string)obj;
-			if (type == typeof(float))
+			else if (type == typeof(float))
 				 prefs.Floats[key] = (float)obj;
-			if (type == typeof(bool))
+			else if (type == typeof(bool))
 				 prefs.Bools[key] = (bool)obj;
 		}
 
-		object ValueOrDefault(Type type, int key)
+		object TryLoad(Type type, int key)
 		{
-			if (type == typeof(int))
+            if (type.IsEnum)
+            {
+                int value = prefs.Ints.ValueOrDefault(key);
+                object result = Enum.ToObject(type, value);
+                return result;
+            }
+            if (type == typeof(int))
 				return prefs.Ints.ValueOrDefault(key);
 			if (type == typeof(string))
 				return prefs.Strings.ValueOrDefault(key);

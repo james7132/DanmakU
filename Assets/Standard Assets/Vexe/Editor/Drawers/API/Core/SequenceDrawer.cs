@@ -1,4 +1,4 @@
-﻿//#define PROFILE
+//#define PROFILE
 
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,6 @@ namespace Vexe.Editor.Drawers
         private Attribute[] _perItemAttributes;
         private TextFilter _filter;
         private string _originalDisplay;
-        private bool _dirty;
 
         public bool UpdateCount = true;
 
@@ -110,18 +109,15 @@ namespace Vexe.Editor.Drawers
 						if (gui.ClearButton("elements"))
                         { 
                             Clear();
-                            _dirty = true;
                         }
                         if (gui.RemoveButton("last element"))
                         { 
                             RemoveLast();
-                            _dirty = true;
                         }
                     }
                     if (gui.AddButton("element", MiniButtonStyle.ModRight))
                     { 
                         AddValue();
-                        _dirty = true;
                     }
 				}
 			}
@@ -135,8 +131,6 @@ namespace Vexe.Editor.Drawers
 				    gui.HelpBox("Sequence is empty");
 				return;
 			}
-
-            _dirty = false;
 
 			// body
 			using (gui.Vertical(_options.GuiBox ? GUI.skin.box : GUIStyle.none))
@@ -207,9 +201,10 @@ namespace Vexe.Editor.Drawers
 							{
 								using (gui.Vertical())
 								{
-									var element = GetElement(i);
-									gui.Member(element, @ignoreComposition: _perItemAttributes == null);
-								}
+                                    var element = GetElement(i);
+                                    using (gui.If(!_options.Readonly && _elementType.IsNumeric(), gui.LabelWidth(15f)))
+                                        gui.Member(element, @ignoreComposition: _perItemAttributes == null);
+                                }
 							}
 
 							if (gui.HasChanged())
@@ -217,7 +212,6 @@ namespace Vexe.Editor.Drawers
 								if (_options.Readonly)
 								{
 									memberValue[i] = previous;
-                                    _dirty = true;
 								}
 								else if (_options.UniqueItems)
 								{
@@ -230,7 +224,6 @@ namespace Vexe.Editor.Drawers
 											if (occurances > 1)
 											{
 												memberValue[i] = previous;
-                                                _dirty = true;
 												break;
 											}
 										}
@@ -250,12 +243,10 @@ namespace Vexe.Editor.Drawers
 									if (gui.MoveDownButton())
                                     { 
 										MoveElementDown(i);
-                                        _dirty = true;
                                     }
 									if (gui.MoveUpButton())
                                     { 
 										MoveElementUp(i);
-                                        _dirty = true;
                                     }
 								}
 							}
@@ -263,7 +254,17 @@ namespace Vexe.Editor.Drawers
 							if (!_options.Readonly && _options.PerItemRemove && gui.RemoveButton("element", MiniButtonStyle.ModRight))
                             { 
 								RemoveAt(i);
-                                _dirty = true;
+                            }
+
+                            ///Only valid for Classes implementing ICloneable
+                            if (typeof(ICloneable).IsAssignableFrom(_elementType) && elementValue != null)
+                            {
+                                if (!_options.Readonly && _options.PerItemDuplicate && gui.AddButton("element", MiniButtonStyle.ModRight))
+                                {
+                                    ICloneable _elementToClone = (ICloneable)elementValue;
+                                    TElement cloned = (TElement)_elementToClone.Clone();
+                                    AddValue(cloned);
+                                }
                             }
 						}
 					}
@@ -322,13 +323,6 @@ namespace Vexe.Editor.Drawers
 				}
 				gui.Space(3f);
 			}
-
-            if (_dirty)
-            {
-                var vfw = unityTarget as IVFWObject;
-                if (vfw != null)
-                    vfw.MarkChanged();
-            }
 		}
 
 		private EditorMember GetElement(int index)
@@ -337,7 +331,7 @@ namespace Vexe.Editor.Drawers
 			{
 				var element = EditorMember.WrapIListElement(
 					@attributes  : _perItemAttributes,
-					@elementName : string.Empty,
+					@elementName : _elementType.IsNumeric() && !_options.Readonly ? "~" : string.Empty,
                     @elementType : typeof(TElement),
 					@elementId   : RuntimeHelper.CombineHashCodes(id, index)
 				);
@@ -381,7 +375,6 @@ namespace Vexe.Editor.Drawers
 		private void AddValue(TElement value)
 		{
 			Insert(memberValue.Count, value);
-            _dirty = true;
 		}
 
 		private void AddValue()
@@ -396,19 +389,21 @@ namespace Vexe.Editor.Drawers
 			public readonly bool Advanced;
 			public readonly bool LineNumbers;
 			public readonly bool PerItemRemove;
+            public readonly bool PerItemDuplicate;
 			public readonly bool GuiBox;
 			public readonly bool UniqueItems;
             public readonly bool Filter;
 
 			public SequenceOptions(Seq options)
 			{
-				Readonly      = options.HasFlag(Seq.Readonly);
-				Advanced      = options.HasFlag(Seq.Advanced);
-				LineNumbers   = options.HasFlag(Seq.LineNumbers);
-				PerItemRemove = options.HasFlag(Seq.PerItemRemove);
-				GuiBox        = options.HasFlag(Seq.GuiBox);
-				UniqueItems   = options.HasFlag(Seq.UniqueItems);
-                Filter        = options.HasFlag(Seq.Filter);
+				Readonly          = options.HasFlag(Seq.Readonly);
+				Advanced          = options.HasFlag(Seq.Advanced);
+				LineNumbers       = options.HasFlag(Seq.LineNumbers);
+				PerItemRemove     = options.HasFlag(Seq.PerItemRemove);
+                PerItemDuplicate  = options.HasFlag(Seq.PerItemDuplicate);
+				GuiBox            = options.HasFlag(Seq.GuiBox);
+				UniqueItems       = options.HasFlag(Seq.UniqueItems);
+                Filter            = options.HasFlag(Seq.Filter);
 			}
 		}
 	}

@@ -51,7 +51,7 @@ namespace Vexe.Editor.Editors
                         #if DBG
                         Debug.Log("New gui instance for: " + target.GetType().Name);
                         #endif
-                        _gui = useUnityGUI ? (BaseGUI)new TurtleGUI() : new RabbitGUI();
+                        _gui = new RabbitGUI();
                         _guiCache[id] = _gui;
                     }
                 }
@@ -92,14 +92,14 @@ namespace Vexe.Editor.Editors
         private List<MembersCategory> _categories;
         private List<MemberInfo> _visibleMembers;
         private SerializedProperty _script;
-        private EditorMember _serializationData, _debug, _serializerType;
+        private EditorMember _serializationData, _debug;
         private int _repaintCount, _spacing;
         private CategoryDisplay _display;
         private Action _onGUIFunction;
         private string[] _membersDrawnByUnityLayout;
         private BaseGUI _gui;
+
         static Dictionary<int, BaseGUI> _guiCache = new Dictionary<int, BaseGUI>();
-        static int guiKey = "UnityGUI".GetHashCode();
 
         /// <summary>
         /// Members of these types will be drawn by Unity's Layout system
@@ -108,13 +108,6 @@ namespace Vexe.Editor.Editors
         {
             typeof(UnityEngine.Events.UnityEventBase)
         };
-
-        //private bool _useUnityGUI;
-        private static bool useUnityGUI
-        {
-            get { return prefs.Bools.ValueOrDefault(guiKey); }
-            set { prefs.Bools[guiKey] = value; }
-        }
 
         protected bool foldout
         {
@@ -128,7 +121,7 @@ namespace Vexe.Editor.Editors
                 prefs = BetterPrefs.GetEditorInstance();
 
             if (foldouts == null)
-                foldouts = new Foldouts(prefs);
+                foldouts = new Foldouts();
 
             var component = target as Component;
             gameObject = component == null ? null : component.gameObject;
@@ -137,10 +130,11 @@ namespace Vexe.Editor.Editors
 
             id = RuntimeHelper.GetTargetID(target);
 
-            //_useUnityGUI = useUnityGUI;
-            //gui = _useUnityGUI ? (BaseGUI)new TurtleGUI() : new RabbitGUI();
-
             Initialize();
+
+            var rabbit = gui as RabbitGUI;
+            if (rabbit != null && _membersDrawnByUnityLayout.Length > 0)
+                rabbit.OnFinishedLayoutReserve = DoUnityLayout;
 
             gui.OnEnable();
         }
@@ -162,20 +156,9 @@ namespace Vexe.Editor.Editors
 
         public sealed override void OnInspectorGUI()
         {
-            // update gui instance if it ever changes
-            //if (_useUnityGUI != useUnityGUI)
-            //{
-            //    _useUnityGUI = useUnityGUI;
-            //    gui = _useUnityGUI ? (BaseGUI)new TurtleGUI() : new RabbitGUI();
-            //}
-
             // creating the delegate once, reducing allocation
             if (_onGUIFunction == null)
                 _onGUIFunction = OnGUI;
-
-            var rabbit = gui as RabbitGUI;
-            if (rabbit != null && rabbit.OnFinishedLayoutReserve == null && _membersDrawnByUnityLayout.Length > 0)
-                rabbit.OnFinishedLayoutReserve = DoUnityLayout;
 
             // I found 25 to be a good padding value such that there's not a whole lot of empty space wasted
             // and the vertical inspector scrollbar doesn't obstruct our controls
@@ -252,10 +235,7 @@ namespace Vexe.Editor.Editors
             OnBeforeInitialized();
 
             // fetch visible members
-            var vfwObj = target as IVFWObject;
-            Assert.NotNull(vfwObj, "Target must implement IVFWObject!");
-            var serialized = vfwObj.GetSerializedMembers();
-            _visibleMembers = VisibilityLogic.CachedGetVisibleMembers(targetType, serialized);
+            _visibleMembers = VisibilityLogic.CachedGetVisibleMembers(targetType);
 
             var drawnByUnity = _visibleMembers
                 .Where(x => x.IsDefined<DrawByUnityAttribute>() || DrawnByUnityTypes.Any(x.GetDataType().IsA));
@@ -310,7 +290,7 @@ namespace Vexe.Editor.Editors
 
                     if (current == null)
                     {
-                        current = new MembersCategory(path, d.DisplayOrder, id);
+                        current = new MembersCategory(path, d.Order, id);
                         if (i == 0)
                             _categories.Add(current);
                         if (parent != null)
@@ -363,21 +343,17 @@ namespace Vexe.Editor.Editors
 
             var field = targetType.GetMemberFromAll("_serializationData", Flags.InstancePrivate);
             if (field == null)
-                throw new vMemberNotFound(targetType, "_serializationData");
-
-            _serializationData = EditorMember.WrapMember(field, target, target, id);
+            {
+                if (targetType.IsA<BetterBehaviour>() || targetType.IsA<BetterScriptableObject>())
+                    throw new vMemberNotFound(targetType, "_serializationData");
+            }
+            else _serializationData = EditorMember.WrapMember(field, target, target, id);
 
             field = targetType.GetField("dbg", Flags.InstanceAnyVisibility);
             if (field == null)
                 throw new vMemberNotFound(targetType, "dbg");
 
             _debug = EditorMember.WrapMember(field, target, target, id);
-
-            var serializerType = targetType.GetMemberFromAll("SerializerType", Flags.InstanceAnyVisibility);
-            if (serializerType == null)
-                throw new vMemberNotFound(targetType, "SerializerType");
-
-            _serializerType = EditorMember.WrapMember(serializerType, target, target, id);
 
             OnAfterInitialized();
         }
@@ -405,15 +381,6 @@ namespace Vexe.Editor.Editors
                     using (gui.Indent(GUI.skin.textField))
                     {
                         gui.Space(3f);
-                        if (targetType.IsDefined<HasRequirementsAttribute>())
-                        {
-                            using (gui.Horizontal())
-                            {
-                                gui.Space(3f);
-                                if (gui.MiniButton("Resolve Requirements", (Layout)null))
-                                    Requirements.Resolve(target, gameObject);
-                            }
-                        }
 
                         gui.Member(_debug);
 
@@ -436,9 +403,8 @@ namespace Vexe.Editor.Editors
                             gui.RequestResetIfRabbit();
                         }
 
-                        gui.Member(_serializerType);
-
-                        gui.Member(_serializationData, true);
+                        if (_serializationData != null)
+                            gui.Member(_serializationData, true);
                     }
                 }
             }
@@ -486,21 +452,6 @@ namespace Vexe.Editor.Editors
             }
 
             return false;
-        }
-
-        public static class MenuItems
-        {
-            [MenuItem("Tools/Vexe/GUI/UseUnityGUI")]
-            public static void UseUnityGUI()
-            {
-                BetterPrefs.GetEditorInstance().Bools[guiKey] = true;
-            }
-
-            [MenuItem("Tools/Vexe/GUI/UseRabbitGUI")]
-            public static void UseRabbitGUI()
-            {
-                BetterPrefs.GetEditorInstance().Bools[guiKey] = false;
-            }
         }
     }
 }
