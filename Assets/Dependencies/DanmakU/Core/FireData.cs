@@ -16,16 +16,16 @@ namespace Hourai.DanmakU {
     [Serializable]
     public class FireData : IEnumerable<FireData> {
 
-        public DFloat AngularSpeed;
+        public float AngularSpeed;
         public DanmakuController Controller;
         public Action<Danmaku> OnActivate;
         public Action<Danmaku> OnDeactivate;
-        public DFloat Damage;
+        public float Damage;
         public DanmakuField Field;
         public Vector2 Position;
         public DanmakuPrefab Prefab;
-        public DFloat Rotation;
-        public DFloat Speed = 5f;
+        public float Rotation;
+        public float Speed = 5f;
         public Color? Color;
 
         public void Copy(FireData other) {
@@ -50,7 +50,7 @@ namespace Hourai.DanmakU {
             return data;
         }
 
-        public Danmaku Fire(Vector2? position = null, DFloat? rotation = null) {
+        public Danmaku Fire(Vector2? position = null, float? rotation = null) {
             Danmaku danmaku = Danmaku.GetInactive(this);
             danmaku.Position = position ?? Position;
             danmaku.Rotation = rotation ?? Rotation;
@@ -79,8 +79,7 @@ namespace Hourai.DanmakU {
             return GetEnumerator();
         }
 
-        public IEnumerable Multiple(DInt amount, Action<FireData> delta = null) {
-            int count = amount.Value;
+        public IEnumerable Multiple(int count, Action<FireData> delta = null) {
             if (delta != null) {
                 FireData clone = Clone();
                 for (var i = 0; i < count; i++) {

@@ -85,33 +85,6 @@ namespace Hourai.DanmakU {
                     danmaku.Speed = speedLimit;
             };
         }
-
-        public static DanmakuController ClampSpeed(Func<Danmaku, DFloat> ranges)
-        {
-            if (ranges == null)
-                throw new ArgumentNullException("ranges");
-            return delegate(Danmaku danmaku, float dt) {
-                       DFloat range = ranges(danmaku);
-                       float speed = danmaku.Speed;
-                       if (speed > range.Max)
-                           danmaku.Speed = range.Max;
-                       else if (speed < range.Min)
-                           danmaku.Speed = range.Min;
-            };
-        }
-
-        public static DanmakuController ClampSpeed(DFloat range)
-        {
-            return delegate(Danmaku danmaku, float dt)
-            {
-                float speed = danmaku.Speed;
-                if (speed > range.Max)
-                    danmaku.Speed = range.Max;
-                else if (speed < range.Min)
-                    danmaku.Speed = range.Min;
-            };
-        }
-
         #endregion
 
         #region Color Controllers

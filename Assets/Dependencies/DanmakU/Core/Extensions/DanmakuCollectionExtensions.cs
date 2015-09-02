@@ -209,13 +209,13 @@ namespace Hourai.DanmakU {
 
         #region Rotation Functions
 
-        public static IEnumerable<Danmaku> RotateTo(this IEnumerable<Danmaku> danmakus, DFloat rotation, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> RotateTo(this IEnumerable<Danmaku> danmakus, float rotation, Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.Rotation = rotation, filter);
         }
 
         public static IEnumerable<Danmaku> RotateTo(this IEnumerable<Danmaku> danmakus,
-                                    ICollection<DFloat> rotations,
+                                    ICollection<float> rotations,
                                     Func<Danmaku, bool> filter = null)
             {
             if (rotations == null)
@@ -223,7 +223,7 @@ namespace Hourai.DanmakU {
             return danmakus.ForEach(x => x.Rotation = rotations.Random(), filter);
         }
 
-        public static IEnumerable<Danmaku> Rotate(this IEnumerable<Danmaku> danmakus, DFloat delta, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> Rotate(this IEnumerable<Danmaku> danmakus, float delta, Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.Rotation += delta, filter);
         }
@@ -232,19 +232,19 @@ namespace Hourai.DanmakU {
 
         #region Speed Functions
 
-        public static IEnumerable<Danmaku> Speed(this IEnumerable<Danmaku> danmakus, DFloat speed, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> Speed(this IEnumerable<Danmaku> danmakus, float speed, Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.Speed = speed, filter);
         }
 
-        public static IEnumerable<Danmaku> Speed(this IEnumerable<Danmaku> danmakus, ICollection<DFloat> speeds, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> Speed(this IEnumerable<Danmaku> danmakus, ICollection<float> speeds, Func<Danmaku, bool> filter = null)
             {
             if (speeds == null)
                 throw new ArgumentNullException("speeds");
             return danmakus.ForEach(x => x.Speed = speeds.Random(), filter);
         }
 
-        public static IEnumerable<Danmaku> Accelerate(this IEnumerable<Danmaku> danmakus, DFloat deltaSpeed, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> Accelerate(this IEnumerable<Danmaku> danmakus, float deltaSpeed, Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.Speed += deltaSpeed, filter);
         }
@@ -254,21 +254,21 @@ namespace Hourai.DanmakU {
         #region Angular Speed Functions
 
         public static IEnumerable<Danmaku> AngularSpeed(this IEnumerable<Danmaku> danmakus,
-                                        DFloat angularSpeed,
+                                        float angularSpeed,
                                         Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.AngularSpeed = angularSpeed, filter);
         }
 
         public static IEnumerable<Danmaku> AngularSpeed(this IEnumerable<Danmaku> danmakus,
-                                        ICollection<DFloat> angularSpeeds,
+                                        ICollection<float> angularSpeeds,
                                         Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.AngularSpeed = angularSpeeds.Random(), filter);
         }
 
         public static IEnumerable<Danmaku> AngularAccelerate(this IEnumerable<Danmaku> danmakus,
-                                             DFloat deltaSpeed,
+                                             float deltaSpeed,
                                              Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.AngularSpeed += deltaSpeed, filter);
@@ -278,12 +278,12 @@ namespace Hourai.DanmakU {
 
         #region Damage Functions
 
-        public static IEnumerable<Danmaku> Damage(this IEnumerable<Danmaku> danmakus, DInt damage, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> Damage(this IEnumerable<Danmaku> danmakus, int damage, Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.Damage = damage, filter);
         }
 
-        public static IEnumerable<Danmaku> Damage(this IEnumerable<Danmaku> danmakus, ICollection<DInt> damages, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> Damage(this IEnumerable<Danmaku> danmakus, ICollection<int> damages, Func<Danmaku, bool> filter = null)
             {
             return danmakus.ForEach(x => x.AngularSpeed = damages.Random(), filter);
         }
@@ -382,7 +382,7 @@ namespace Hourai.DanmakU {
                                 Func<Danmaku, bool> filter = null)
             {
             Vector2 tempPos = data.Position;
-            DFloat tempRot = data.Rotation;
+            float tempRot = data.Rotation;
             danmakus.ForEach(delegate(Danmaku danmaku) {
                                  data.Position = danmaku.Position;
                                  if (useRotation)
