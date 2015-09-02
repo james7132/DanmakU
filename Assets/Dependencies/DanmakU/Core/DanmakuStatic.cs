@@ -279,7 +279,7 @@ namespace Hourai.DanmakU {
         /// </remarks>
         /// <returns>The inactive Danmaku objects in an array.</returns>
         /// <param name="count">the number of inactive Danmaku objects to retrieve.</param>
-        public static Danmaku[] GetInactive(DInt count) {
+        public static Danmaku[] GetInactive(int count) {
             Danmaku[] array = new Danmaku[count];
             danmakuPool.Get(array);
             return array;
@@ -309,17 +309,17 @@ namespace Hourai.DanmakU {
         /// <param name="position">Position.</param>
         /// <param name="rotation">Rotation.</param>
         public static Danmaku GetInactive(Vector2 position,
-                                          DFloat rotation) {
+                                          float rotation) {
             Danmaku danmaku = danmakuPool.Get();
             danmaku.position.x = position.x;
             danmaku.position.y = position.y;
-            danmaku.Rotation = rotation.Value;
+            danmaku.Rotation = rotation;
             return danmaku;
         }
 
         public static Danmaku[] GetInactive(Vector2 position,
-                                            DFloat rotation,
-                                            DInt count) {
+                                            float rotation,
+                                            int count) {
             Danmaku[] array = new Danmaku[count];
             GetInactive(position, rotation, array);
             danmakuPool.Get(array);
@@ -328,7 +328,7 @@ namespace Hourai.DanmakU {
         }
 
         public static void GetInactive(Vector2 position,
-                                       DFloat rotation,
+                                       float rotation,
                                        Danmaku[] prealloc) {
             danmakuPool.Get(prealloc);
             prealloc.MoveTo(position).RotateTo(rotation);
@@ -336,7 +336,7 @@ namespace Hourai.DanmakU {
 
         public static Danmaku GetInactive(DanmakuPrefab danmakuType,
                                           Vector2 position,
-                                          DFloat rotation) {
+                                          float rotation) {
             Danmaku danmaku = danmakuPool.Get();
             danmaku.MatchPrefab(danmakuType);
             danmaku.position.x = position.x;
@@ -347,8 +347,8 @@ namespace Hourai.DanmakU {
 
         public static Danmaku[] GetInactive(DanmakuPrefab danmakuType,
                                             Vector2 position,
-                                            DFloat rotation,
-                                            DInt count) {
+                                            float rotation,
+                                            int count) {
             Danmaku[] array = new Danmaku[count];
             danmakuPool.Get(array);
             for (int i = 0; i < array.Length; i++) {
@@ -356,14 +356,14 @@ namespace Hourai.DanmakU {
                 danmaku.MatchPrefab(danmakuType);
                 danmaku.position.x = position.x;
                 danmaku.position.y = position.y;
-                danmaku.Rotation = rotation.Value;
+                danmaku.Rotation = rotation;
             }
             return array;
         }
 
         public static void GetInactive(DanmakuPrefab danmakuType,
                                        Vector2 position,
-                                       DFloat rotation,
+                                       float rotation,
                                        Danmaku[] prealloc) {
             danmakuPool.Get(prealloc);
             for (int i = 0; i < prealloc.Length; i++) {
@@ -371,7 +371,7 @@ namespace Hourai.DanmakU {
                 danmaku.MatchPrefab(danmakuType);
                 danmaku.position.x = position.x;
                 danmaku.position.y = position.y;
-                danmaku.Rotation = rotation.Value;
+                danmaku.Rotation = rotation;
             }
         }
 
@@ -382,7 +382,7 @@ namespace Hourai.DanmakU {
             Speed = data.Speed;
             AngularSpeed = data.AngularSpeed;
             _onUpdate = data.Controller;
-            Damage = data.Damage.Value;
+            Damage = data.Damage;
             OnActivate = data.OnActivate;
             OnDeactivate = data.OnDeactivate;
             if (data.Color != null)
@@ -395,7 +395,7 @@ namespace Hourai.DanmakU {
             return danmaku;
         }
 
-        public static Danmaku[] GetInactive(FireData data, DInt count) {
+        public static Danmaku[] GetInactive(FireData data, int count) {
             var danmakus = new Danmaku[count];
             GetInactive(data, danmakus);
             return danmakus;

@@ -258,7 +258,7 @@ namespace Hourai.DanmakU {
 
         public Danmaku SpawnDanmaku(DanmakuPrefab prefab,
                                     Vector2 location,
-                                    DFloat rotation,
+                                    float rotation,
                                     CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;
@@ -272,8 +272,8 @@ namespace Hourai.DanmakU {
 
         public Danmaku FireLinear(DanmakuPrefab prefab,
                                   Vector2 location,
-                                  DFloat rotation,
-                                  DFloat speed,
+                                  float rotation,
+                                  float speed,
                                   CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;
@@ -288,9 +288,9 @@ namespace Hourai.DanmakU {
 
         public Danmaku FireCurved(DanmakuPrefab prefab,
                                   Vector2 location,
-                                  DFloat rotation,
-                                  DFloat speed,
-                                  DFloat angularSpeed,
+                                  float rotation,
+                                  float speed,
+                                  float angularSpeed,
                                   CoordinateSystem coordSys = CoordinateSystem.View) {
             if (TargetField == null)
                 TargetField = this;

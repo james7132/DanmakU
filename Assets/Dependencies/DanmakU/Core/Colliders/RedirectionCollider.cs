@@ -16,7 +16,7 @@ namespace Hourai.DanmakU.Collider {
         private DanmakuGroup affected;
 
         [SerializeField]
-        private DFloat angle;
+        private float angle;
 
         //TODO Document
 
@@ -31,7 +31,7 @@ namespace Hourai.DanmakU.Collider {
             set { rotationMode = value; }
         }
 
-        public DFloat Angle {
+        public float Angle {
             get { return angle; }
             set { angle = value; }
         }
@@ -55,7 +55,7 @@ namespace Hourai.DanmakU.Collider {
                                                  RaycastHit2D info) {
             if (affected.Contains(danmaku))
                 return;
-            float baseAngle = angle.Value;
+            float baseAngle = angle;
             switch (rotationMode) {
                 case RotationMode.Relative:
                     baseAngle += danmaku.Rotation;

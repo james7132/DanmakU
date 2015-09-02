@@ -20,19 +20,19 @@ namespace Hourai.DanmakU.Modifiers {
     public static class DanmakuSource {
         
         public static IEnumerable Circle(this IEnumerable data, 
-                                         Func<FireData, DInt> count, 
-                                         Func<FireData, DFloat> radius,
+                                         Func<FireData, int> count, 
+                                         Func<FireData, float> radius,
                                          bool radialFire = true,
                                          Func<FireData, bool> filter = null) {
 
             Func<FireData, IEnumerable<Pose>> circleFunc =
                 delegate(FireData fd) {
-                    int currentCount = count(fd).Value;
+                    int currentCount = count(fd);
 
                     if (currentCount <= 0)
                         return new Pose[0];
 
-                    float currentRadius = radius(fd).Value;
+                    float currentRadius = radius(fd);
                     float delta = 360f / currentCount;
                     Pose[] locations = new Pose[currentCount];
 
@@ -55,8 +55,8 @@ namespace Hourai.DanmakU.Modifiers {
         }
 
         public static IEnumerable Circle(this IEnumerable data, 
-                                        DInt count,
-                                        DFloat radius, 
+                                        int count,
+                                        float radius, 
                                         bool radialFire = true, 
                                         Func<FireData, bool> filter = null) {
             return data.Circle(fireData => count, fireData => radius, radialFire, filter);

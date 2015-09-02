@@ -224,23 +224,15 @@ namespace Hourai.DanmakU {
                     yield return data;
                 else if (fd != null)
                     fd.Fire();
-                else if (data is int || data is DInt) {
-                    int frames;
-                    if (data is DInt)
-                        frames = ((DInt) data).Value;
-                    else
-                        frames = (int) data;
+                else if (data is int) {
+                    int frames = (int) data;
                     if (frames <= 0)
                         yield return null;
                     else
                         for (var i = 0; i < frames; i++)
                             yield return null;
-                } else if (data is float || data is DFloat) {
-                    float seconds;
-                    if (data is DFloat)
-                        seconds = ((DFloat) data).Value;
-                    else
-                        seconds = (float) data;
+                } else if (data is float) {
+                    float seconds = (float) data;
                     if (seconds < TimeUtil.DeltaTime)
                         yield return null;
                     else
@@ -273,21 +265,20 @@ namespace Hourai.DanmakU {
             }
         }
 
-        public static IEnumerable RadialBurst(this IEnumerable data, DFloat range, DInt count, Func<FireData, bool> filter = null) {
-            
+        public static IEnumerable RadialBurst(this IEnumerable data, float range, int count, Func<FireData, bool> filter = null) {
+
+            if (count == 1)
+                return data;
+
             Func<FireData, IEnumerable<float>> burstFunc = 
                 delegate(FireData fd) {
-                    int currentCount = count.Value;
 
-                    if (currentCount <= 0)
+                    if (count <= 0)
                         return new float[0];
-                    if (currentCount == 1)
-                        return new float[] { fd.Rotation };
 
-                    float currentRange = range.Value;
-                    float delta = currentRange / count.Value;
-                    float start = fd.Rotation.Value - 0.5f * currentRange;
-                    float[] set = new float[count.Value];
+                    float delta = range / count;
+                    float start = fd.Rotation - 0.5f * range;
+                    float[] set = new float[count];
 
                     for (var i = 0; i < set.Length; i++)
                         set[i] = start + i * delta;
@@ -300,15 +291,14 @@ namespace Hourai.DanmakU {
             return data.Duplicate(burstFunc, setRotation, false, filter);
         }
 
-        public static IEnumerable LinearBurst(this IEnumerable data, DInt count, DFloat dSpeed, Func<FireData, bool> filter = null) {
+        public static IEnumerable LinearBurst(this IEnumerable data, int count, float dSpeed, Func<FireData, bool> filter = null) {
             Func<FireData, IEnumerable<float>> burstFunc =
                 delegate(FireData fd) {
-                    float start = fd.Speed.Value;
-                    float delta = dSpeed.Value;
-                    float[] set = new float[count.Value];
+                    float start = fd.Speed;
+                    float[] set = new float[count];
 
                     for (var i = 0; i < set.Length; i++)
-                        set[i] = start + i * delta;
+                        set[i] = start + i * dSpeed;
 
                     return set;
                 };
@@ -345,7 +335,7 @@ namespace Hourai.DanmakU {
 
         #region Timing Functions
         public static IEnumerable Delay(this IEnumerable coroutine, 
-                                        Func<FireData, DInt> frames, 
+                                        Func<FireData, int> frames, 
                                         Func<FireData, bool> filter = null) {
             if(frames == null)
                 throw new ArgumentNullException("frames");
@@ -353,13 +343,13 @@ namespace Hourai.DanmakU {
         }
 
         public static IEnumerable Delay(this IEnumerable coroutine,
-                                        DInt frames,
+                                        int frames,
                                         Func<FireData, bool> filter = null) {
             return coroutine.Delay(fd => frames, filter);
         }
 
         public static IEnumerable Delay(this IEnumerable coroutine,
-                                        Func<FireData, DFloat> seconds,
+                                        Func<FireData, float> seconds,
                                         Func<FireData, bool> filter = null)
         {
             if (seconds == null)
@@ -368,7 +358,7 @@ namespace Hourai.DanmakU {
         }
 
         public static IEnumerable Delay(this IEnumerable coroutine,
-                                        DFloat seconds,
+                                        float seconds,
                                         Func<FireData, bool> filter = null)
         {
             return coroutine.Delay(fd => seconds, filter);
@@ -461,7 +451,7 @@ namespace Hourai.DanmakU {
 
         #region Rotation/Direction Functions
         public static IEnumerable InDirection(this IEnumerable coroutine,
-                                               Func<FireData, DFloat> angle,
+                                               Func<FireData, float> angle,
                                                Func<FireData, bool> filter = null)
         {
             if (angle == null)
@@ -470,7 +460,7 @@ namespace Hourai.DanmakU {
         }
 
         public static IEnumerable InDirection(this IEnumerable coroutine,
-                                               DFloat angle,
+                                               float angle,
                                                Func<FireData, bool> filter = null)
         {
             return coroutine.ForEachFireData(fd => fd.Rotation = angle, filter);
@@ -516,7 +506,7 @@ namespace Hourai.DanmakU {
         #region Speed Functions
 
         public static IEnumerable WithSpeed(this IEnumerable coroutine,
-                                            Func<FireData, DFloat> speed,
+                                            Func<FireData, float> speed,
                                             Func<FireData, bool> filter = null)
         {
             if(speed == null)
@@ -525,7 +515,7 @@ namespace Hourai.DanmakU {
         }
 
         public static IEnumerable WithSpeed(this IEnumerable coroutine,
-                                            DFloat speed,
+                                            float speed,
                                             Func<FireData, bool> filter = null)
         {
             return coroutine.ForEachFireData(d => d.Speed = speed, filter);
@@ -536,7 +526,7 @@ namespace Hourai.DanmakU {
         #region Angular Speed Functions
 
         public static IEnumerable WithAngularSpeed(this IEnumerable coroutine,
-                                            Func<FireData, DFloat> angSpeed,
+                                            Func<FireData, float> angSpeed,
                                             Func<FireData, bool> filter = null)
         {
             if (angSpeed == null)
@@ -545,7 +535,7 @@ namespace Hourai.DanmakU {
         }
 
         public static IEnumerable WithAngularSpeed(this IEnumerable coroutine,
-                                            DFloat angSpeed,
+                                            float angSpeed,
                                             Func<FireData, bool> filter = null)
         {
             return coroutine.ForEachFireData(d => d.Speed = angSpeed, filter);
@@ -581,7 +571,7 @@ namespace Hourai.DanmakU {
         #region Damage Functions
 
         public static IEnumerable WithDamage(this IEnumerable coroutine,
-                                            Func<FireData, DFloat> damage,
+                                            Func<FireData, float> damage,
                                             Func<FireData, bool> filter = null)
         {
             if (damage == null)
@@ -590,7 +580,7 @@ namespace Hourai.DanmakU {
         }
 
         public static IEnumerable WithDamage(this IEnumerable coroutine,
-                                            DFloat damage,
+                                            float damage,
                                             Func<FireData, bool> filter = null)
         {
             return coroutine.ForEachFireData(d => d.Damage = damage, filter);
