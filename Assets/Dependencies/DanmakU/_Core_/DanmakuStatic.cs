@@ -28,15 +28,6 @@ namespace Hourai.DanmakU {
         /// </summary>
         internal const int standardSpawn = 100;
 
-        /// <summary>
-        /// A set of 2D vectors corresponding to unit circle coordinates
-        /// Precalculated since Cosine and Sine calculations are expensive when called thousands of times per frame.
-        /// An array access on an array of structs is much cheaper than calling both Mathf.Cos, and Mathf.Sin.
-        /// </summary>
-        internal static Vector2[] unitCircle;
-
-        private static float invAngRes;
-        private static int unitCircleMax;
         private static int[] collisionMask;
         private static DanmakuPool danmakuPool;
 
@@ -45,7 +36,7 @@ namespace Hourai.DanmakU {
         /// Static member accesses are slightly faster than member accesses or passing via parameters.
         /// Since it is a static value within each frame, it is best to cache it as a static variable.
         /// </summary>
-        private static float dt;
+        public static float dt;
 
         /// <summary>
         /// A map that matches colliders to respective collision handler scripts.
@@ -67,7 +58,7 @@ namespace Hourai.DanmakU {
         }
 
         public static int ActiveCount {
-            get { return (danmakuPool != null) ? danmakuPool.totalCount : 0; }
+            get { return (danmakuPool != null) ? danmakuPool.totalCount - danmakuPool.inactiveCount : 0; }
         }
 
         internal static void Setup(int initial = standardStart,
@@ -76,43 +67,6 @@ namespace Hourai.DanmakU {
             colliderMap = new Dictionary<Collider2D, IDanmakuCollider[]>();
             collisionMask = Util.CollisionLayers2D();
             danmakuPool = new DanmakuPool(initial, spawn);
-            invAngRes = 1f/angRes;
-            unitCircleMax = Mathf.CeilToInt(360f/angRes);
-            float angle = 90f;
-            unitCircle = new Vector2[unitCircleMax];
-            for (int i = 0; i < unitCircleMax; i++) {
-                angle += angRes;
-                unitCircle[i] = Util.OnUnitCircle(angle);
-            }
-        }
-
-        internal static int Ang2Index(float angle) {
-            float clamp = angle - 360*Mathf.FloorToInt(angle/360);
-            int index = (int) (clamp*invAngRes);
-            if (index >= unitCircleMax)
-                index = unitCircleMax - 1;
-            if (index < 0)
-                index = 0;
-            return index;
-        }
-
-        internal static Vector2 UnitCircle(float angle) {
-            return unitCircle[Ang2Index(angle)];
-        }
-
-        internal static float Cos(float angle) {
-            return unitCircle[Ang2Index(angle)].x;
-        }
-
-        internal static float Sin(float angle) {
-            return unitCircle[Ang2Index(angle)].y;
-        }
-
-        internal static float Tan(float angle) {
-            float sin = Sin(angle);
-            if (sin == 0f)
-                return float.NaN;
-            return Cos(angle)/Sin(angle);
         }
 
         /// <summary>
@@ -120,16 +74,16 @@ namespace Hourai.DanmakU {
         /// This should be called only once per frame. 
         /// </summary>
         static void UpdateAll() {
-            colliderMap.Clear();
+            if(colliderMap.Count > 0)
+                colliderMap.Clear();
             //caches the change in time since the last frame
-            Danmaku danmaku;
             dt = TimeUtil.DeltaTime;
             Danmaku[] all = danmakuPool.all;
-            for (int i = 0; i < all.Length; i++) {
+            Danmaku danmaku;
+            for (var i = 0; i < all.Length; i++) {
                 danmaku = all[i];
-                if (danmaku != null && danmaku._isActive) {
-                    danmaku.Update();   
-                }
+                if (danmaku != null && danmaku._isActive)
+                    danmaku.Update();
             }
         }
 

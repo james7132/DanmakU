@@ -13,11 +13,6 @@ namespace Hourai.DanmakU {
 
     internal class DanmakuPool {
 
-        internal Danmaku[] all;
-        private int currentIndex;
-        private int endIndex;
-        internal int inactiveCount;
-
         //FIXME: Currently not working: optimized version of pool, need to debug
 
         //			internal Danmaku[] all;
@@ -113,6 +108,11 @@ namespace Hourai.DanmakU {
         //			
         //			#endregion
 
+        internal Danmaku[] all;
+        private int currentIndex;
+        private int endIndex;
+        internal int inactiveCount;
+
         internal int[] queue;
         private int size;
         internal int spawnCount;
@@ -130,6 +130,7 @@ namespace Hourai.DanmakU {
                 all = new Danmaku[2];
                 queue = new int[2];
             }
+            
             int endCount = totalCount + count;
             if (all.Length < endCount) {
                 size = all.Length;

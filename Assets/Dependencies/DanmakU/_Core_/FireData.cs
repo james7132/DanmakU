@@ -16,17 +16,16 @@ namespace Hourai.DanmakU {
     [Serializable]
     public class FireData : IEnumerable<FireData> {
 
+        public Vector2 Position;
+        public float Rotation;
+        public Color? Color;
+        public float Damage;
+        public float Speed = 5f;
         public float AngularSpeed;
-        public DanmakuController Controller;
+        public Action<Danmaku> Controller;
         public Action<Danmaku> OnActivate;
         public Action<Danmaku> OnDeactivate;
-        public float Damage;
-        public DanmakuField Field;
-        public Vector2 Position;
         public DanmakuPrefab Prefab;
-        public float Rotation;
-        public float Speed = 5f;
-        public Color? Color;
 
         public void Copy(FireData other) {
             if (other == null || other == this)
@@ -36,7 +35,6 @@ namespace Hourai.DanmakU {
             OnActivate = other.OnActivate;
             OnDeactivate = other.OnDeactivate;
             Damage = other.Damage;
-            Field = other.Field;
             Position = other.Position;
             Prefab = other.Prefab;
             Rotation = other.Rotation;
@@ -54,19 +52,6 @@ namespace Hourai.DanmakU {
             Danmaku danmaku = Danmaku.GetInactive(this);
             danmaku.Activate();
             return danmaku;
-        }
-
-        public void AddGroup(DanmakuGroup group) {
-            if(group == null)
-                throw new ArgumentNullException("group");
-            OnActivate += group.Add;
-        }
-
-        public void RemoveGroup(DanmakuGroup group)
-        {
-            if (group == null)
-                throw new ArgumentNullException("group");
-            OnActivate -= group.Add;
         }
 
         public IEnumerator<FireData> GetEnumerator() {
