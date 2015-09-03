@@ -14,7 +14,7 @@ namespace Hourai.DanmakU {
     /// The base object that represents a single bullet in a bullet hell game.
     /// </summary>
     public sealed partial class Danmaku {
-
+        
         /// <summary>
         /// The supported collider shapes used by danmaku.
         /// </summary>
@@ -28,7 +28,7 @@ namespace Hourai.DanmakU {
         }
 
         private bool _isActive;
-        private DanmakuController _onUpdate;
+        private Action<Danmaku> _onUpdate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Hourai.DanmakU.Danmaku"/> class.
@@ -69,7 +69,7 @@ namespace Hourai.DanmakU {
         /// </summary>
         public event Action<Danmaku> OnDeactivate;
 
-        public event DanmakuController Controller {
+        public event Action<Danmaku> Controller {
             add {
                 _onUpdate += value;
                 _controllerCheck = _onUpdate != null;
@@ -85,30 +85,6 @@ namespace Hourai.DanmakU {
             _onUpdate = null;
         }
 
-        #region Rotation Functions
-
-        public void Rotate(float deltaTheta) {
-            Rotation += deltaTheta;
-        }
-
-        #endregion
-
-        #region Speed Functions
-
-        public void Accelerate(float dv) {
-            Speed += dv;
-        }
-
-        #endregion
-
-        #region Angular Speed Functions 
-
-        public void AngularAcclerate(float dav) {
-            AngularSpeed += dav;
-        }
-
-        #endregion
-
         internal void Update()
         {
             _originalPosition.x = position.x;
@@ -116,12 +92,12 @@ namespace Hourai.DanmakU {
             Vector2 movementVector;
 
             if (_controllerCheck)
-                _onUpdate(this, dt);
+                _onUpdate(this);
 
             if (AngularSpeed != 0f) {
                 float rotationChange = AngularSpeed * dt;
                 rotation += rotationChange;
-                direction = UnitCircle(rotation);   
+                direction = FastTrig.UnitCircle(rotation);   
             }
 
             if (Speed != 0) {
@@ -478,7 +454,7 @@ namespace Hourai.DanmakU {
             get { return rotation; }
             set {
                 rotation = value;
-                direction = UnitCircle(value);
+                direction = FastTrig.UnitCircle(value);
             }
         }
 
@@ -510,7 +486,7 @@ namespace Hourai.DanmakU {
         }
 
         /// <summary>
-        /// The number of framesfieldBoundshave passed since this bullet has been fired.
+        /// The number of frames passed since this bullet has been fired.
         /// </summary>
         /// <value>The number of frames that have passed since this bullet has been fired.</value>
         public int Frames {

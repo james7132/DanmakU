@@ -8,7 +8,7 @@ using Vexe.Runtime.Types;
 
 namespace Hourai.DanmakU {
 
-    public abstract class DanmakuBehaviour : BetterBehaviour {
+    public abstract class DanmakuBehaviour : HouraiBehaviour {
 
         /// <summary>
         /// Shorthand for <c>TimeUtil.DeltaTime</c>.
@@ -25,19 +25,19 @@ namespace Hourai.DanmakU {
 		/// </remarks>
 		/// <param name="degree">Degree.</param>
         protected static float Cos(float degree) {
-            return Danmaku.Cos(degree);
+            return FastTrig.Cos(degree);
         }
 
         protected static float Sin(float degree) {
-            return Danmaku.Sin(degree);
+            return FastTrig.Sin(degree);
         }
 
         protected static float Tan(float degree) {
-            return Danmaku.Tan(degree);
+            return FastTrig.Tan(degree);
         }
 
         protected static Vector2 UnitCircle(float degree) {
-            return Danmaku.UnitCircle(degree);
+            return FastTrig.UnitCircle(degree);
         }
     }
 

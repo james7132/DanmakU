@@ -5,7 +5,6 @@
 using System.Collections;
 using UnityEngine;
 using Hourai.DanmakU;
-using Hourai.DanmakU.Modifiers;
 
 public class BasicFireTest : MonoBehaviour {
 
@@ -25,12 +24,11 @@ public class BasicFireTest : MonoBehaviour {
         group = DanmakuGroup.List();
         FireData data = prefab;
         group.Bind(data);
-        test = data.Infinite()
-                    //.From(gameObject.Descendants())
-                    //.WithSpeed(2)
-                    //.Towards(Vector2.zero)
+        test = data.Infinite(Modifier.Rotate(2.5f))
+                    .From(gameObject.Descendants())
+                    .WithSpeed(2)
                     .Delay(delay)
-                    .Circle(5,1)
+                    .RadialBurst(100)
                     .Execute();
         Invoke("Test", 10);
     }
