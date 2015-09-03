@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 436082}
   - 212: {fileID: 21290556}
-  - 114: {fileID: 11418844}
+  - 114: {fileID: 11409350}
   m_Layer: 0
   m_Name: bullet petal
   m_TagString: Untagged
@@ -24,12 +24,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190404}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.33125591, y: -3.5960927, z: 0}
+  m_LocalPosition: {x: -4.34639072, y: -5.92172575, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11418844
+--- !u!114 &11409350
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -37,9 +37,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 190404}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0ff05c7de0b00a43963de07c13c70f6, type: 3}
+  m_Script: {fileID: 11500000, guid: 4a07ad0e112c37d44acf76a147bfa444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _id: -9034
+  dbg: 0
   _serializationData:
     serializedObjects:
     - {fileID: 19876622, guid: 1369960486de0844c8c02f62913f5ffb, type: 2}
@@ -56,12 +58,6 @@ MonoBehaviour:
       - '{"x":1.0,"y":1.0}'
       - '{"x":0.0,"y":0.0}'
       - false
-  _serializerType:
-    _name: Vexe.Runtime.Serialization.FullSerializerBackend, Assembly-CSharp-firstpass,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  _id: -4282
-  dbg: 0
-  _dirty: 0
   danmakuSystemPrefab: {fileID: 19876622, guid: 1369960486de0844c8c02f62913f5ffb,
     type: 2}
 --- !u!212 &21290556

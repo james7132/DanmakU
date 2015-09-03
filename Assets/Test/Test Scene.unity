@@ -199,10 +199,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 962dd0a4b09ff7848a4053b1cd301a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  angleResolution: .100000001
-  danmakuInitialCount: 1000
-  danmakuSpawnOnEmpty: 100
-  FrameRateIndependent: 0
 --- !u!114 &513550414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,13 +210,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4739c22ef73ad62488fe344c8fe9addd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  supportHDRTextures: 1
-  supportDX11: 1
-  isSupported: 1
-  strengthX: 2.98000002
-  strengthY: 3.99000001
-  fishEyeShader: {fileID: 4800000, guid: 874ceab4425f64bccb1d14032f4452b1, type: 3}
-  fisheyeMaterial: {fileID: 0}
 --- !u!20 &513550416
 Camera:
   m_ObjectHideFlags: 0
@@ -365,7 +354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delay: .00999999978
-  prefab: {fileID: 11418844, guid: 5c0c5bf0c434853449fa68def8d34e65, type: 2}
+  prefab: {fileID: 0}
 --- !u!4 &1376768896
 Transform:
   m_ObjectHideFlags: 0
