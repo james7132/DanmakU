@@ -7,7 +7,7 @@ using Vexe.Runtime.Types;
 
 namespace Hourai {
     
-    public abstract class Game : Singleton<Game> {
+    public class Game : Singleton<Game> {
 
         private bool _paused;
         private float _oldTimeScale;

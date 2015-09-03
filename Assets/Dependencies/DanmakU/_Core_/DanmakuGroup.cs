@@ -10,167 +10,93 @@ using Vexe.Runtime.Extensions;
 
 namespace Hourai.DanmakU {
 
-    public abstract class DanmakuGroup : ICollection<Danmaku>, IFireBindable {
+    public sealed class DanmakuGroup : ICollection<Danmaku>, IFireBindable, IComparable<ICollection<Danmaku>>{
 
-        protected ICollection<Danmaku> Group;
+        private ICollection<Danmaku> _group;
 
-        #region IEnumerable implementation
-
-        public IEnumerator<Danmaku> GetEnumerator() {
-            return Group.GetEnumerator();
+        public ICollection<Danmaku> Group
+        {
+            get { return _group; }
         }
-
-        #endregion
-
-        #region IEnumerable implementation
-
-        IEnumerator IEnumerable.GetEnumerator() {
-            return Group.GetEnumerator();
-        }
-
-        #endregion
 
         public event Action<Danmaku> OnAdd;
         public event Action<Danmaku> OnRemove;
 
-        protected virtual void OnDanmakuDeactivate(Danmaku danmaku) {
-            Remove(danmaku);
+        public static DanmakuGroup Set(IEnumerable<Danmaku> source = null) {
+            HashSet<Danmaku> set;
+            if (source == null)
+                set = new HashSet<Danmaku>();
+            else
+                set = new HashSet<Danmaku>(source);
+            return new DanmakuGroup(set);
         }
 
-        protected void RaiseAddEvent(Danmaku target) {
-            if (target == null)
+        public static DanmakuGroup List(IEnumerable<Danmaku> source = null) {
+            List<Danmaku> list;
+            if (source == null)
+                list = new List<Danmaku>();
+            else
+                list = new List<Danmaku>(source);
+            return new DanmakuGroup(list);
+        }
+
+        public DanmakuGroup(ICollection<Danmaku> collection)
+        {
+            if (collection == null)
+                throw new ArgumentNullException("collection");
+            _group = collection;
+            if (_group.Count <= 0) 
                 return;
-            target.OnDeactivate += OnDanmakuDeactivate;
-
-            if (OnAdd != null)
-                OnAdd(target);
-        }
-
-        protected void RaiseAddEvent(IEnumerable<Danmaku> targets) {
-            if (targets == null)
-                throw new ArgumentNullException();
-
-            foreach (Danmaku target in targets.Where(t => t)) {
-                target.OnDeactivate += OnDanmakuDeactivate;
-                OnAdd.SafeInvoke(target);   
-            }
-        }
-
-        protected void RaiseRemoveEvent(Danmaku target) {
-            if (target == null)
-                return;
-            OnRemove.SafeInvoke(target);
-        }
-
-        protected void RaiseRemoveEvent(IEnumerable<Danmaku> targets) {
-            if (targets == null)
-                throw new ArgumentNullException("targets");
-
-            foreach (Danmaku target in targets.Where(t => t))
-                OnRemove.SafeInvoke(target);
-        }
-
-        public bool TrueForAll(Predicate<Danmaku> match) {
-            if (match == null)
-                throw new ArgumentNullException("match");
-
-            var colList = Group as IList<Danmaku>;
-            if (colList != null) {
-                for (int i = 0; i < colList.Count; i++) {
-                    if (!match(colList[i]))
-                        return false;
-                }
-            } else {
-                foreach (var danmaku in Group) {
-                    if (!match(danmaku))
-                        return false;
-                }
-            }
-            return true;
+            foreach (Danmaku danmaku in _group)
+                if (danmaku != null)
+                    danmaku.OnDeactivate += RemoveEvent;
         }
 
         public void AddRange(IEnumerable<Danmaku> collection) {
             if (collection == null)
                 throw new ArgumentNullException();
 
-            if (Group is List<Danmaku>)
-                (Group as List<Danmaku>).AddRange(collection);
-            else if (Group is HashSet<Danmaku>)
-                (Group as HashSet<Danmaku>).UnionWith(collection);
-            else if (collection is IList<Danmaku>) {
-                var colList = (IList<Danmaku>) collection;
-                for (int i = 0; i < colList.Count; i++)
-                    Group.Add(colList[i]);
-            } else {
-                foreach (var danmaku in collection)
-                    Group.Add(danmaku);
-            }
-            RaiseAddEvent(collection);
+            if(OnAdd == null)
+                foreach (var danmaku in collection) {
+                    if (danmaku != null)
+                        danmaku.OnDeactivate += RemoveEvent;
+                    _group.Add(danmaku);
+                }
+            else
+                foreach (Danmaku danmaku in collection) {
+                    if (danmaku != null) {
+                        danmaku.OnDeactivate += RemoveEvent;
+                        OnAdd(danmaku);
+                    }
+                    _group.Add(danmaku);
+                }
         }
 
         public int RemoveRange(IEnumerable<Danmaku> collection) {
             if (collection == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("collection");
 
-            int oldCount = Group.Count;
-            if (Group is HashSet<Danmaku>)
-                (Group as HashSet<Danmaku>).ExceptWith(collection);
-            else if (collection is IList<Danmaku>) {
-                var colList = (IList<Danmaku>) collection;
-                for (int i = 0; i < colList.Count; i++)
-                    Group.Remove(colList[i]);
-            } else {
-                foreach (var danmaku in collection)
-                    Group.Remove(danmaku);
-            }
-            RaiseRemoveEvent(collection);
-            return oldCount - Group.Count;
+            int oldCount = _group.Count;
+            if (OnRemove == null)
+                RemoveAll(collection);
+            else
+                foreach (Danmaku danmaku in collection)
+                    if (_group.Remove(danmaku) && danmaku != null)
+                        OnRemove(danmaku);
+            return oldCount - _group.Count;
         }
 
-        public bool ContainsAll(IEnumerable<Danmaku> collection) {
-            if (collection == null)
-                throw new ArgumentNullException();
-
-            var colList = collection as IList<Danmaku>;
-            if (colList != null) {
-                for (int i = 0; i < colList.Count; i++) {
-                    if (!Group.Contains(colList[i]))
-                        return false;
-                }
-            } else {
-                foreach (var danmaku in collection) {
-                    if (!Group.Contains(danmaku))
-                        return false;
-                }
-            }
-            return true;
-        }
-
-        public bool ContainsAny(IEnumerable<Danmaku> collection) {
-            if (collection == null)
-                throw new ArgumentNullException();
-
-            foreach (var danmaku in collection) {
-                if (Contains(danmaku))
-                    return true;
-            }
-            return true;
-        }
-
-        public bool Exists(Func<Danmaku, bool> match) {
-            return (Find(match) != null);
-        }
-
-        public Danmaku Find(Func<Danmaku, bool> match) {
-            return Group.FirstOrDefault(match);
-        }
-
-        public List<Danmaku> FindAll(Func<Danmaku, bool> match) {
-            return Group.Where(match).ToList();
+        void RemoveAll(IEnumerable<Danmaku> collection) {
+            var set = _group as HashSet<Danmaku>;
+            if (set != null)
+                set.ExceptWith(collection);
+            else
+                foreach (Danmaku danmaku in collection)
+                    _group.Remove(danmaku);
         }
 
         public void RemoveAll(Func<Danmaku, bool> match) {
-            RemoveRange(FindAll(match));
+            RemoveRange(_group.Where(match));
         }
 
         public Danmaku[] ToArray() {
@@ -180,53 +106,55 @@ namespace Hourai.DanmakU {
         }
 
         public override int GetHashCode() {
-            return Group.GetHashCode();
+            return _group.GetHashCode();
         }
 
         public override bool Equals(object obj) {
-            return Group.Equals(obj);
+            return _group.Equals(obj);
         }
 
         #region ICollection implementation
 
         public void Add(Danmaku item) {
-            Group.Add(item);
-            RaiseAddEvent(item);
+            _group.Add(item);
+            if (item != null)
+                item.OnDeactivate += RemoveEvent;
+
         }
 
         public void Clear() {
-            var groupList = Group as IList<Danmaku>;
-            Group.Clear();
-            if (groupList != null) {
-                for (int i = 0; i < groupList.Count; i++)
-                    RaiseRemoveEvent(groupList[i]);
-            } else {
-                foreach (var danmaku in Group)
-                    RaiseRemoveEvent(danmaku);
-            }
+            if (OnRemove != null)
+                foreach (Danmaku danmaku in _group)
+                    OnRemove(danmaku);
+            _group.Clear();
         }
 
         public bool Contains(Danmaku item) {
-            return Group.Contains(item);
+            return _group.Contains(item);
         }
 
         public void CopyTo(Danmaku[] array, int arrayIndex) {
-            Group.CopyTo(array, arrayIndex);
+            _group.CopyTo(array, arrayIndex);
         }
 
         public bool Remove(Danmaku item) {
-            bool success = Group.Remove(item);
+            bool success = _group.Remove(item);
             if (success)
-                RaiseRemoveEvent(item);
+                OnRemove.SafeInvoke(item);
             return success;
         }
 
+        void RemoveEvent(Danmaku item) {
+            if (_group.Remove(item) && OnRemove != null)
+                OnRemove(item);
+        }
+
         public int Count {
-            get { return Group.Count; }
+            get { return _group.Count; }
         }
 
         public bool IsReadOnly {
-            get { return Group.IsReadOnly; }
+            get { return _group.IsReadOnly; }
         }
 
         #endregion
@@ -244,206 +172,17 @@ namespace Hourai.DanmakU {
                 throw new ArgumentNullException("fireData");
             fireData.OnActivate -= Add;
         }
+
+        public int CompareTo(ICollection<Danmaku> other) {
+            return _group.Count.CompareTo(other.Count);
+        }
+
+        public IEnumerator<Danmaku> GetEnumerator() {
+            return _group.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return _group.GetEnumerator();
+        }
     }
-
-    public class DanmakuGroup<T> : DanmakuGroup
-        where T : ICollection<Danmaku>, new() {
-
-        public DanmakuGroup() {
-            Group = new T();
-        }
-
-        public DanmakuGroup(IEnumerable<Danmaku> danmakus) {
-            Group = new T();
-            AddRange(danmakus);
-        }
-
-    }
-
-    public class DanmakuList : DanmakuGroup<List<Danmaku>>, IList<Danmaku> {
-
-        //TODO Document
-
-        private List<Danmaku> danmakuList;
-
-        public DanmakuList() {
-            danmakuList = Group as List<Danmaku>;
-        }
-
-        public DanmakuList(IEnumerable<Danmaku> danmakus) : base(danmakus) {
-            danmakuList = Group as List<Danmaku>;
-        }
-
-        public int Capacity {
-            get { return danmakuList.Capacity; }
-        }
-
-        public int FindIndex(Predicate<Danmaku> match) {
-            return danmakuList.FindIndex(match);
-        }
-
-        public int FindIndex(int startIndex, Predicate<Danmaku> match) {
-            return danmakuList.FindIndex(startIndex, match);
-        }
-
-        public int FindIndex(int startIndex, int count, Predicate<Danmaku> match) {
-            return danmakuList.FindIndex(startIndex, count, match);
-        }
-
-        public int IndexOf(Danmaku item, int start) {
-            return danmakuList.IndexOf(item, start);
-        }
-
-        public int IndexOf(Danmaku item, int start, int end) {
-            return danmakuList.IndexOf(item, start, end);
-        }
-
-        public int LastIndexOf(Danmaku item) {
-            return danmakuList.LastIndexOf(item);
-        }
-
-        public int LastIndexOf(Danmaku item, int start) {
-            return danmakuList.LastIndexOf(item, start);
-        }
-
-        public int LastIndexOf(Danmaku item, int start, int end) {
-            return danmakuList.LastIndexOf(item, start, end);
-        }
-
-        public Danmaku FindLast(Predicate<Danmaku> match) {
-            return danmakuList.FindLast(match);
-        }
-
-        public int FindLastIndex(Predicate<Danmaku> match) {
-            return FindLastIndex(0, Count, match);
-        }
-
-        public int FindLastIndex(int startIndex, Predicate<Danmaku> match) {
-            return danmakuList.FindLastIndex(startIndex, match);
-        }
-
-        public int FindLastIndex(int startIndex,
-                                 int count,
-                                 Predicate<Danmaku> match) {
-            return danmakuList.FindLastIndex(startIndex, count, match);
-        }
-
-        public void InsertRange(int index, IEnumerable<Danmaku> collection) {
-            danmakuList.InsertRange(index, collection);
-            var colList = collection as IList<Danmaku>;
-            if (colList != null) {
-                int count = colList.Count;
-                for (int i = 0; i < count; i++)
-                    RaiseAddEvent(colList[i]);
-            } else {
-                foreach (var danmaku in collection)
-                    RaiseAddEvent(danmaku);
-            }
-        }
-
-        public void Reverse() {
-            danmakuList.Reverse();
-        }
-
-        public void Reverse(int start, int end) {
-            danmakuList.Reverse(start, end);
-        }
-
-        public void TrimExcess() {
-            danmakuList.TrimExcess();
-        }
-
-        #region IList implementation
-
-        public int IndexOf(Danmaku item) {
-            return danmakuList.IndexOf(item);
-        }
-
-        public void Insert(int index, Danmaku item) {
-            danmakuList.Insert(index, item);
-            RaiseAddEvent(item);
-        }
-
-        public void RemoveAt(int index) {
-            Danmaku target = danmakuList[index];
-            danmakuList.RemoveAt(index);
-            RaiseRemoveEvent(target);
-        }
-
-        public Danmaku this[int index] {
-            get { return danmakuList[index]; }
-            set {
-                Danmaku current = danmakuList[index];
-                if (current == value)
-                    return;
-                RaiseRemoveEvent(current);
-                RaiseAddEvent(value);
-                danmakuList[index] = value;
-            }
-        }
-
-        #endregion
-    }
-
-    public class DanmakuSet : DanmakuGroup<HashSet<Danmaku>> {
-
-        //TODO Document
-
-        private HashSet<Danmaku> danmakuSet;
-
-        public DanmakuSet() {
-            danmakuSet = Group as HashSet<Danmaku>;
-        }
-
-        public DanmakuSet(IEnumerable<Danmaku> danmakus) : base(danmakus) {
-            danmakuSet = Group as HashSet<Danmaku>;
-        }
-
-        public void UnionWith(IEnumerable<Danmaku> collection) {
-            if (collection == null)
-                throw new ArgumentNullException();
-
-            var otherAsCollection = collection as ICollection<Danmaku>;
-            if (otherAsCollection != null && otherAsCollection.Count <= 0)
-                return;
-
-            AddRange(collection);
-        }
-
-        public void ExceptWith(IEnumerable<Danmaku> collection) {
-            if (collection == null)
-                throw new ArgumentNullException();
-
-            if (danmakuSet.Count == 0)
-                return;
-
-            var otherAsCollection = collection as ICollection<Danmaku>;
-            if (otherAsCollection != null && otherAsCollection.Count <= 0)
-                return;
-
-            RemoveRange(collection);
-        }
-
-        public void IntersectWith(IEnumerable<Danmaku> collection) {
-            if (collection == null)
-                throw new ArgumentNullException();
-
-            if (danmakuSet.Count <= 0)
-                return;
-
-            var otherAsCollection = collection as ICollection<Danmaku>;
-            if (otherAsCollection != null && otherAsCollection.Count <= 0) {
-                Clear();
-                return;
-            }
-
-            foreach (var danmaku in danmakuSet) {
-                if (!collection.Contains(danmaku))
-                    RaiseRemoveEvent(danmaku);
-            }
-            danmakuSet.IntersectWith(collection);
-        }
-
-    }
-
 }
