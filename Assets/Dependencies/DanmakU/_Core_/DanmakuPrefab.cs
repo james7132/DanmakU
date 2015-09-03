@@ -212,7 +212,8 @@ namespace Hourai.DanmakU {
             runtimeSystem.startSpeed = 0f;
             runtimeSystem.enableEmission = false;
 
-            currentDanmaku = new DanmakuList();
+            currentDanmaku = new List<Danmaku>();
+            currentGroup = new DanmakuGroup(currentDanmaku);
             particles = new ParticleSystem.Particle[runtimeSystem.particleCount];
 
             runtimeRenderer.mesh = renderMesh;
@@ -358,7 +359,8 @@ namespace Hourai.DanmakU {
         private ParticleSystem runtimeSystem;
         private ParticleSystemRenderer runtimeRenderer;
         private ParticleSystem.Particle[] particles;
-        internal DanmakuList currentDanmaku;
+        internal List<Danmaku> currentDanmaku;
+        internal DanmakuGroup currentGroup;
         private int danmakuCount;
         private RenderingType renderingType;
 

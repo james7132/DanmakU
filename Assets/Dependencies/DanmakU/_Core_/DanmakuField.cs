@@ -26,7 +26,7 @@ namespace Hourai.DanmakU {
         private static readonly Vector2 InfiniteSize = float.PositiveInfinity*
                                                        Vector2.one;
 
-        private DanmakuList activeDanmaku;
+        private DanmakuGroup activeDanmaku;
 
         internal Bounds2D bounds;
 
@@ -151,7 +151,7 @@ namespace Hourai.DanmakU {
             if (_fields == null)
                 _fields = new List<DanmakuField>();
             _fields.Add(this);
-            activeDanmaku = new DanmakuList();
+            activeDanmaku = DanmakuGroup.List();
             TargetField = this;
         }
 

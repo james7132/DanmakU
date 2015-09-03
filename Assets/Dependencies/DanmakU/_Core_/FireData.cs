@@ -50,10 +50,8 @@ namespace Hourai.DanmakU {
             return data;
         }
 
-        public Danmaku Fire(Vector2? position = null, float? rotation = null) {
+        public Danmaku Fire() {
             Danmaku danmaku = Danmaku.GetInactive(this);
-            danmaku.Position = position ?? Position;
-            danmaku.Rotation = rotation ?? Rotation;
             danmaku.Activate();
             return danmaku;
         }
