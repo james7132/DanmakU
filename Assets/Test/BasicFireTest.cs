@@ -25,7 +25,7 @@ public class BasicFireTest : MonoBehaviour {
         FireData data = prefab;
         group.Bind(data);
         test = data.Infinite(Modifier.Rotate(2.5f))
-                    .From(gameObject.Descendants())
+                    //.From(gameObject.Descendants())
                     .WithSpeed(2)
                     .Delay(delay)
                     .RadialBurst(100)
@@ -34,8 +34,7 @@ public class BasicFireTest : MonoBehaviour {
     }
 
     void Test() {
-        Debug.Log(group.Count);
-        group.Color(grad);
+        group.Deactivate();
         test.Stop();
     }
 

@@ -97,7 +97,7 @@ namespace Hourai.DanmakU {
             if (AngularSpeed != 0f) {
                 float rotationChange = AngularSpeed * dt;
                 rotation += rotationChange;
-                direction = FastTrig.UnitCircle(rotation);   
+                direction = Util.OnUnitCircle(rotation);
             }
 
             if (Speed != 0) {
@@ -206,7 +206,7 @@ namespace Hourai.DanmakU {
                 }
             }
 
-            if (!_isActive) {
+            if (!_isActive || to_deactivate) {
                 DeactivateImmediate();
                 return;
             }
@@ -319,6 +319,7 @@ namespace Hourai.DanmakU {
         /// If Danmaku needs to be deactivated in a moment when it is not being updated (i.e. when the game is paused), use <see cref="DeactivateImmediate"/> instead.
         /// </remarks>
         public void Deactivate() {
+            Debug.Log("Hello");
             to_deactivate = true;
         }
 
@@ -454,7 +455,7 @@ namespace Hourai.DanmakU {
             get { return rotation; }
             set {
                 rotation = value;
-                direction = FastTrig.UnitCircle(value);
+                direction = Util.OnUnitCircle(rotation);
             }
         }
 

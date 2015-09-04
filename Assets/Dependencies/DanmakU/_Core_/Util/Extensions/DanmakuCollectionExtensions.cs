@@ -18,7 +18,7 @@ namespace Hourai.DanmakU {
             if (action == null)
                 throw new ArgumentNullException("action");
             foreach (Danmaku danmaku in danmakus) {
-                if (danmaku && (filter == null || filter(danmaku)))
+                if (danmaku != null && (filter == null || filter(danmaku)))
                     action(danmaku);
             }
             return danmakus;
