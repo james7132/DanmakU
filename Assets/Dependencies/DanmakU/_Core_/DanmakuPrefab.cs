@@ -5,6 +5,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Vexe.Runtime.Types;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -32,6 +33,8 @@ namespace Hourai.DanmakU {
 
         private void Update() {
             danmakuCount = currentDanmaku.Count;
+            if (danmakuCount <= 0)
+                return;
             int count = runtimeSystem.particleCount;
             if (danmakuCount > count) {
                 runtimeSystem.maxParticles = Mathf.NextPowerOfTwo(danmakuCount);
@@ -144,8 +147,12 @@ namespace Hourai.DanmakU {
                     vertexes = new Vector3[verts.Length];
                     int[] triangles = new int[tris.Length];
 
+                    Matrix4x4 rot = Matrix4x4.TRS(Vector3.zero,
+                                                  Quaternion.Euler(0f, 0f, rotationOffset),
+                                                  Vector3.one);
+
                     for (int i = 0; i < verts.Length; i++)
-                        vertexes[i] = verts[i];
+                        vertexes[i] = rot * verts[i];
 
                     for (int i = 0; i < tris.Length; i++)
                         triangles[i] = tris[i];
@@ -222,11 +229,9 @@ namespace Hourai.DanmakU {
             runtimeRenderer.sharedMaterial = renderMaterial;
             runtimeRenderer.sortingLayerID = cachedSortingLayer;
             runtimeRenderer.sortingOrder = cachedSortingOrder;
-            runtimeRenderer.reflectionProbeUsage =
-                UnityEngine.Rendering.ReflectionProbeUsage.Off;
+            runtimeRenderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
             runtimeRenderer.receiveShadows = false;
-            runtimeRenderer.shadowCastingMode =
-                UnityEngine.Rendering.ShadowCastingMode.Off;
+            runtimeRenderer.shadowCastingMode = ShadowCastingMode.Off;
             runtimeRenderer.useLightProbes = false;
 
             gameObject.hideFlags = HideFlags.HideInHierarchy;
@@ -248,7 +253,6 @@ namespace Hourai.DanmakU {
             Gizmos.color = Color.green;
             switch (collisionType) {
                 case Danmaku.ColliderType.Point:
-
                     //Handles.PositionHandle(Vector3.zero, Quaternion.identity);
                     break;
                 case Danmaku.ColliderType.Circle:
@@ -313,6 +317,9 @@ namespace Hourai.DanmakU {
 
         [Serialize, Default(0f, 0f)]
         internal Vector2 colliderOffset;
+
+        [Serialize, fSlider(-180f, 180f)]
+        private float rotationOffset;
 
 #if UNITY_EDITOR
         public override void Reset() {
@@ -447,16 +454,14 @@ namespace Hourai.DanmakU {
         #endregion
 
         public IEnumerable Infinite() {
-            FireData fd = this;
-            while (true)
-                yield return fd;
+            return ((FireData)this).Infinite();
         } 
 
         public IEnumerator<FireData> GetEnumerator() {
-            yield return this;
+            yield return ((FireData) this);
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
