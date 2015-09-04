@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42f54d3639c02544385383898827713d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delay: .00999999978
+  delay: 0
   prefab: {fileID: 11409350, guid: 5c0c5bf0c434853449fa68def8d34e65, type: 2}
   grad:
     key0:
