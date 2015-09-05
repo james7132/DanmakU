@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a07ad0e112c37d44acf76a147bfa444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: -9034
+  _id: 7814
   dbg: 0
   _serializationData:
     serializedObjects:
@@ -51,13 +51,19 @@ MonoBehaviour:
       - ColliderType collisionType
       - Vector2 colliderSize
       - Vector2 colliderOffset
+      - float rotationOffset
       - bool fixedAngle
+      - int initialCount
+      - int spawnCount
       values:
       - 0
       - '"Circle"'
       - '{"x":1.0,"y":1.0}'
       - '{"x":0.0,"y":0.0}'
+      - -90.0
       - false
+      - 1000
+      - 100
   danmakuSystemPrefab: {fileID: 19876622, guid: 1369960486de0844c8c02f62913f5ffb,
     type: 2}
 --- !u!212 &21290556
@@ -123,11 +129,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: _serializationData.serializedStrings.values.Array.data[4]
-      value: false
+      value: -90.0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: _serializationData.serializedStrings.values.Array.data[5]
-      value: '[]'
+      value: false
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

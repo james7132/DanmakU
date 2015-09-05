@@ -12,7 +12,7 @@ namespace Hourai.DanmakU
             return delegate(Danmaku danmaku)
             {
                 if (deactivation(danmaku))
-                    danmaku.Deactivate();
+                    danmaku.Destroy();
             };
         }
     }

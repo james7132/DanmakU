@@ -2,19 +2,395 @@
 //	
 // See the LISCENSE file for copying permission.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Vexe.Runtime.Types;
+using Vexe.Runtime.Extensions;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 namespace Hourai.DanmakU {
 
-    public class DanmakuType : MonoBehaviour
+    [RequireComponent(typeof(ParticleSystem))]
+    public abstract class DanmakuType : MonoBehaviour, IEnumerable<Danmaku>
     {
+        private DanmakuPrefab prefab;
+
+        public List<Danmaku> toDestroy;
+
+        // Pool variables
+        internal Danmaku[] all;
+        internal int _totalCount;
+        internal int _spawnCount;
+        internal int _activeCount;
+        internal int _releasedCount;
+
+        // Particle System variables
+        private ParticleSystem danmakuSystem;
+        private ParticleSystemRenderer dRenderer;
+        private ParticleSystem.Particle[] particles;
+
+        // Rendedring variables
+        internal Mesh mesh;
+        internal Color color;
+        internal Material material;
+        internal int sortingLayer;
+        internal int sortingOrder;
+
+        #region Public Properties
+        public int IotalCount {
+            get { return _totalCount; }
+        }
+
+        public int ActiveCount {
+            get { return _activeCount; }
+        }
+
+        public int SpawnCount {
+            get { return _spawnCount; }
+            set { _spawnCount = value; }
+        }
+
+        public int SortingLayer {
+            get { return sortingLayer; }
+            set {
+                sortingLayer = value;
+                dRenderer.sortingLayerID = value;
+            }
+        }
+
+        public int SortingOrder {
+            get { return sortingOrder; }
+            set {
+                sortingOrder = value;
+                dRenderer.sortingOrder = value;
+            }
+        }
+
+        public Mesh Mesh {
+            get { return mesh; }
+        }
+
+        public Color Color {
+            get { return color; }
+            set {
+                color = value;
+                danmakuSystem.startColor = value;
+            }
+        }
+
+        public Material Material {
+            get { return material; }
+        }
+        #endregion
+
+        #region Initialization
+        void Awake()
+        {
+            DontDestroyOnLoad(this);
+            danmakuSystem = GetComponent<ParticleSystem>();
+            dRenderer = GetComponent<ParticleSystemRenderer>();
+            
+            Transform root = transform.root;
+            transform.parent = null;
+            transform.localPosition = Vector3.zero;
+
+            danmakuSystem.simulationSpace = ParticleSystemSimulationSpace.World;
+            danmakuSystem.startSize = 1;
+            danmakuSystem.startLifetime = float.PositiveInfinity;
+            danmakuSystem.gravityModifier = 0f;
+            danmakuSystem.startSpeed = 0;
+            danmakuSystem.enableEmission = false;
+
+            particles = new ParticleSystem.Particle[danmakuSystem.particleCount];
+            dRenderer.renderMode = ParticleSystemRenderMode.Mesh;
+
+            dRenderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
+            dRenderer.receiveShadows = false;
+            dRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            dRenderer.useLightProbes = false;
+
+            //gameObject.hideFlags = HideFlags.HideInHierarchy;
+
+            // Destroy rest of hiearchy
+            if(root != transform)
+                Destroy(root.gameObject);
+            gameObject.Children().Destroy();
+
+            Component[] whitelist = new Component[] { this, danmakuSystem, dRenderer, transform };
+            foreach (Component comp in GetComponents<Component>())
+                if (!whitelist.Contains(comp))
+                    Destroy(comp);
+        }
+
+        // MUST be called from a DanmakuPrefab
+        internal void Init(Renderer renderer, DanmakuPrefab prefab)
+        {
+            if (!prefab)
+                throw new ArgumentNullException("prefab");
+
+            this.prefab = prefab;
+
+            _totalCount = 0;
+            _activeCount = 0;
+            _spawnCount = prefab.spawnCount;
+            if (_spawnCount <= 0)
+                _spawnCount = 1;
+            all = new Danmaku[prefab.initialCount * 2];
+            Spawn(prefab.initialCount);
+            toDestroy = new List<Danmaku>();
+
+            material = renderer.sharedMaterial;
+            sortingLayer = renderer.sortingLayerID;
+            sortingOrder = renderer.sortingOrder;
+            mesh = new Mesh();
+
+            OnInit(renderer);
+
+            Matrix4x4 rot = Matrix4x4.TRS(Vector3.zero,
+                                            Quaternion.Euler(0f, 0f, prefab.rotationOffset),
+                                            prefab.transform.localScale);
+            Vector3[] verts = mesh.vertices;
+            for (int i = 0; i < verts.Length; i++)
+                verts[i] = rot * verts[i];
+            mesh.vertices = verts;
+
+            dRenderer.mesh = mesh;
+
+            danmakuSystem.startColor = color;
+            dRenderer.sharedMaterial = material;
+            dRenderer.sortingLayerID = sortingLayer;
+            dRenderer.sortingOrder = sortingOrder;
+        }
+
+        internal abstract void OnInit(Renderer renderer);
+        #endregion
+        public bool updating;
+
+        void Update()
+        {
+            //--------------------------------------------------------------------
+            //  Rendering Update
+            //--------------------------------------------------------------------
+            int particleCount = danmakuSystem.particleCount;
+            if (_activeCount > particleCount)
+            {
+                danmakuSystem.maxParticles = Mathf.NextPowerOfTwo(_activeCount);
+                danmakuSystem.Emit(_activeCount - particleCount);
+            }
+            if (_activeCount > particles.Length)
+                Array.Resize(ref particles, Mathf.NextPowerOfTwo(_activeCount + 1));
+
+            if (_activeCount <= 0 && particleCount <= 0)
+                return;
+
+            danmakuSystem.GetParticles(particles);
+            int staticActiveCount = _activeCount;
+
+            updating = true;
+
+            // For some reason, new ParticleSystem.Particle breaks bullet systems
+            // but accessing a 
+            ParticleSystem.Particle particle = particles[0];
+            particle.axisOfRotation = Vector3.forward;
+            int i = 0;
+            if (prefab.fixedAngle) {
+                while (i < staticActiveCount) {
+                    Danmaku danmaku = all[i];
+                    danmaku.Update();
+                    particle.position = danmaku.position;
+                    particle.size = danmaku.Scale;
+                    particle.color = danmaku.Color;
+                    particles[i] = particle;
+                    i++;
+                }
+            }
+            else
+            {
+                while (i < staticActiveCount)
+                {
+                    Danmaku danmaku = all[i];
+                    danmaku.Update();
+                    particle.position = danmaku.position;
+                    particle.rotation = danmaku.rotation;
+                    particle.size = danmaku.Scale;
+                    particle.color = danmaku.Color;
+                    particles[i] = particle;
+                    i++;
+                }
+            }
+            updating = false;
+            // Destroy extra particles
+            while (i < particleCount) {
+                particles[i].lifetime = 0;
+                i++;
+            }
+
+            int destroyedCount = toDestroy.Count;
+            // Remove destroyed particles
+            for (i = 0; i < destroyedCount; i++)
+                toDestroy[i].DestroyImpl();
+            toDestroy.Clear();
+
+            danmakuSystem.SetParticles(particles, _activeCount);
+        }
+
+        protected virtual void OnDestroy() {
+            Destroy(mesh);
+        }
+
+        public void DestroyAll()
+        {
+            for (int i = 0; i < _activeCount; i++)
+                all[i].Destroy();
+        }
+
+        void Spawn(int count)
+        {
+            int endCount = _totalCount + count;
+            if (all.Length < endCount)
+                Array.Resize(ref all, Mathf.NextPowerOfTwo(endCount + 1));
+            for (int i = _totalCount; i < all.Length; i++)
+                all[i] = new Danmaku(i);
+            _totalCount = endCount;
+        }
+
+        #region Pooling Functions
+        /// <summary>
+        /// Retrievese a inactive Danmaku from the pool.
+        /// The Danmaku wil not be rendered or be updated until Activate is called on it.
+        /// </summary>
+        /// <returns></returns>
+        public Danmaku Get()
+        {
+            if (_releasedCount >= _totalCount)
+                Spawn(_spawnCount);
+            Danmaku inactive = all[_releasedCount];
+            inactive.Color = color;
+            inactive.prefab = prefab;
+            inactive.Scale = 1f;
+            _releasedCount++;
+            return inactive;
+        }
+
+        internal void Activate(Danmaku danmaku)
+        {
+            Danmaku active = all[_activeCount]; // This should be a released but not active bullet
+            all[danmaku.PoolIndex] = active;
+            all[active.PoolIndex] = danmaku;
+
+            active.PoolIndex = danmaku.PoolIndex;
+            danmaku.PoolIndex = _activeCount;
+            _activeCount++;
+        }
+
+        internal void Return(Danmaku danmaku)
+        {
+            Danmaku released = all[_releasedCount];
+            Danmaku active = all[_activeCount];
+
+            all[_releasedCount] = danmaku;
+            all[_activeCount] = released;
+            all[danmaku.PoolIndex] = active;
+
+            released.PoolIndex = active.PoolIndex;
+            active.PoolIndex = danmaku.PoolIndex;
+            danmaku.PoolIndex = _releasedCount;
+
+            _activeCount--;
+            _releasedCount--;
+        }
+        #endregion
+
+        #region IEnumerable Implementation
+        public IEnumerator<Danmaku> GetEnumerator()
+        {
+            for (var i = 0; i < _activeCount; i++)
+                yield return all[i];
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+        #endregion
+    }
+
+    internal sealed class SpriteDanmaku : DanmakuType {
+
+        internal override void OnInit(Renderer renderer)
+        {
+            SpriteRenderer sr = renderer as SpriteRenderer;
+            if (sr == null)
+                return;
+            //cachedSprite = renderer.sprite;
+            color = sr.color;
+
+            Sprite sprite = sr.sprite;
+            material = new Material(material);
+            material.mainTexture = sprite.texture;
+
+            if (sprite == null)
+                Destroy(mesh);
+            else
+            {
+                var verts = sprite.vertices;
+                var tris = sprite.triangles;
+
+                var vertexes = new Vector3[verts.Length];
+                int[] triangles = new int[tris.Length];
+
+                for (int i = 0; i < verts.Length; i++)
+                    vertexes[i] = verts[i];
+
+                for (int i = 0; i < tris.Length; i++)
+                    triangles[i] = tris[i];
+
+                mesh.vertices = vertexes;
+                mesh.uv = sprite.uv;
+                mesh.triangles = triangles;
+            }
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Destroy(material);
+        }
+    }
+
+    internal sealed class MeshDanmaku : DanmakuType
+    {
+        internal override void OnInit(Renderer renderer)
+        {
+            var mr = renderer as MeshRenderer;
+            if (mr == null)
+                return;
+            color = Color.white;
+
+            MeshFilter filter = mr.GetComponent<MeshFilter>();
+            Debug.Log(filter);
+            if (filter == null)
+            {
+                Debug.LogError("Danmaku Prefab (" + name +
+                               ") is trying to use a MeshRenderer as a base, but no MeshFilter is found. Please add one.");
+            }
+            else
+            {
+                Mesh fMesh = filter.sharedMesh;
+                mesh.vertices = fMesh.vertices;
+                mesh.uv = fMesh.uv;
+                mesh.triangles = fMesh.triangles;
+                mesh.colors = fMesh.colors;
+                mesh.normals = fMesh.normals;
+                mesh.tangents = fMesh.tangents;
+            }
+        }
     }
 
     /// <summary>
@@ -31,211 +407,85 @@ namespace Hourai.DanmakU {
 
         }
 
-        private void Update() {
-            danmakuCount = currentDanmaku.Count;
-            if (danmakuCount <= 0)
-                return;
-            int count = runtimeSystem.particleCount;
-            if (danmakuCount > count) {
-                runtimeSystem.maxParticles = Mathf.NextPowerOfTwo(danmakuCount);
-                runtimeSystem.Emit(danmakuCount - count);
-            }
-            if (danmakuCount > particles.Length) {
-                particles =
-                    new ParticleSystem.Particle[
-                        Mathf.NextPowerOfTwo(danmakuCount + 1)];
-            }
-
-            runtimeSystem.GetParticles(particles);
-
-            if (fixedAngle) {
-                for (var i = 0; i < danmakuCount; i++) {
-                        Danmaku danmaku = currentDanmaku[i];
-                        particles[i].position = danmaku.position;
-                        particles[i].size = danmaku.Scale;
-                        particles[i].lifetime = 1000;
-                        particles[i].color = danmaku.Color;
-                }
-            } else {
-                Vector3 forward = Vector3.forward;
-                for (var i = 0; i < danmakuCount; i++) {
-                        Danmaku danmaku = currentDanmaku[i];
-                        particles[i].position = danmaku.position;
-                        particles[i].rotation = danmaku.rotation;
-                        particles[i].size = danmaku.Scale;
-                        particles[i].axisOfRotation = forward;
-                        particles[i].color = danmaku.Color;
-                        particles[i].lifetime = 1000;
-                }
-            }
-            runtimeSystem.SetParticles(particles, danmakuCount);
+        void Awake()
+        {
+            Destroy(gameObject);
         }
 
-        public void Awake() {
-            Vector3[] vertexes;
-
+        void Init()
+        {
             var singleRenderer = GetComponent<Renderer>();
             var spriteRenderer = singleRenderer as SpriteRenderer;
             var meshRenderer = singleRenderer as MeshRenderer;
-            if (singleRenderer == null ||
-                (spriteRenderer == null && meshRenderer == null)) {
+            if (spriteRenderer == null && meshRenderer == null)
+            {
                 Debug.LogError("Danmaku Prefab (" + name +
                                ") has neither SpriteRenderer or MeshRenderer. Attach one or the other to it.");
                 Destroy(this);
                 return;
             }
 
-            singleRenderer.enabled = false;
+            ParticleSystem system = null;
+            if (danmakuSystemPrefab != null)
+                system = Instantiate(danmakuSystemPrefab);
+            if (system == null)
+            {
+                GameObject runtimeObject =
+                    Instantiate(Resources.Load("Danmaku Particle System")) as
+                    GameObject ?? new GameObject(name);
+                system = runtimeObject.GetOrAddComponent<ParticleSystem>();
+            }
+            if(meshRenderer)
+                type = system.gameObject.AddComponent<MeshDanmaku>();
+            else
+                type = system.gameObject.AddComponent<SpriteDanmaku>();
+            type.Init(singleRenderer, this);
+            type.gameObject.SetActive(true);
+        }
 
-            foreach (
-                Component otherComponent in GetComponentsInChildren<Component>()
-                ) {
-                if (otherComponent != this && !(otherComponent is Transform))
-                    Destroy(otherComponent);
+        public Danmaku Get()
+        {
+            if (!type)
+                Init();
+            return type.Get();
+        }
+
+        public void Match(Danmaku danmaku)
+        {
+            throw new System.Exception();
+            if (danmaku.prefab != this)
+            {
+                danmaku.prefab = this;
+
+                // TODO: Figure out how to transfer Danmaku from pool to pool here
+
+                danmaku.colliderType = collisionType;
+                switch (collisionType)
+                {
+                    default:
+                        danmaku.colliderSize = Vector2.zero;
+                        break;
+                    case Danmaku.ColliderType.Circle:
+                        danmaku.colliderSize = colliderSize * Mathf.Max(cachedScale.x, cachedScale.y);
+                        break;
+                    case Danmaku.ColliderType.Line:
+                        danmaku.colliderSize = colliderSize;
+                        break;
+                }
+                danmaku.sizeSquared = colliderSize.y * colliderSize.y;
+                danmaku.colliderOffset = cachedScale.Hadamard2(colliderOffset);
             }
 
-            gameObject.Children().Destroy();
+            danmaku.Color = cachedColor;
+            danmaku.Scale = 1f;
+            danmaku.Layer = cachedLayer;
+        }
 
+        void Initialize()
+        {
             cachedScale = transform.localScale;
             cachedTag = gameObject.tag;
             cachedLayer = gameObject.layer;
-
-            if (danmakuSystemPrefab != null)
-                runtimeSystem = Instantiate(danmakuSystemPrefab);
-            if (runtimeSystem == null) {
-                GameObject runtimeObject =
-                    Instantiate(Resources.Load("Danmaku Particle System")) as
-                    GameObject;
-                if (runtimeObject == null)
-                    runtimeObject = new GameObject(name);
-                if (runtimeSystem == null)
-                    runtimeSystem = runtimeObject.GetComponent<ParticleSystem>();
-                if (runtimeSystem == null)
-                    runtimeSystem = runtimeObject.AddComponent<ParticleSystem>();
-            }
-
-            Transform runtimeTransform = runtimeSystem.transform;
-
-            //runtimeTransform.parent = null;
-            runtimeTransform.localPosition = Vector3.zero;
-
-            runtimeRenderer =
-                runtimeSystem.GetComponent<ParticleSystemRenderer>();
-
-            renderMesh = new Mesh();
-
-            if (meshRenderer == null) {
-                renderingType = RenderingType.Sprite;
-                singleRenderer = spriteRenderer;
-                cachedSprite = spriteRenderer.sprite;
-                cachedColor = spriteRenderer.color;
-                cachedMaterial = spriteRenderer.sharedMaterial;
-                cachedSortingLayer = spriteRenderer.sortingLayerID;
-                cachedSortingOrder = spriteRenderer.sortingOrder;
-
-                //renderMaterial = cachedMaterial;
-
-                renderMaterial = new Material(cachedMaterial);
-                renderMaterial.mainTexture = Sprite.texture;
-
-                if (cachedSprite == null)
-                    runtimeRenderer.mesh = null;
-                else {
-                    var verts = cachedSprite.vertices;
-                    var tris = cachedSprite.triangles;
-
-                    vertexes = new Vector3[verts.Length];
-                    int[] triangles = new int[tris.Length];
-
-                    Matrix4x4 rot = Matrix4x4.TRS(Vector3.zero,
-                                                  Quaternion.Euler(0f, 0f, rotationOffset),
-                                                  Vector3.one);
-
-                    for (int i = 0; i < verts.Length; i++)
-                        vertexes[i] = rot * verts[i];
-
-                    for (int i = 0; i < tris.Length; i++)
-                        triangles[i] = tris[i];
-
-                    renderMesh.vertices = vertexes;
-                    renderMesh.uv = cachedSprite.uv;
-                    renderMesh.triangles = triangles;
-                }
-            } else {
-                renderingType = RenderingType.Mesh;
-                singleRenderer = meshRenderer;
-                cachedSprite = null;
-                cachedColor = Color.white;
-                cachedMaterial = meshRenderer.sharedMaterial;
-                cachedSortingLayer = meshRenderer.sortingLayerID;
-                cachedSortingOrder = meshRenderer.sortingOrder;
-
-                renderMaterial = meshRenderer.sharedMaterial;
-                MeshFilter filter = meshRenderer.GetComponent<MeshFilter>();
-                if (filter == null) {
-                    Debug.LogError("Danmaku Prefab (" + name +
-                                   ") is trying to use a MeshRenderer as a base, but no MeshFilter is found. Please add one.");
-                } else {
-                    Mesh filterMesh = filter.mesh;
-                    renderMesh.vertices = filterMesh.vertices;
-                    renderMesh.uv = filterMesh.uv;
-                    renderMesh.triangles = filterMesh.triangles;
-                    renderMesh.colors = filterMesh.colors;
-                    renderMesh.normals = filterMesh.normals;
-                    renderMesh.tangents = filterMesh.tangents;
-                }
-            }
-
-            if (renderMesh != null) {
-                //Scale the mesh as necessary based on prefab's scale
-
-                Matrix4x4 transformMatrix = Matrix4x4.TRS(Vector3.zero,
-                                                          Quaternion.identity,
-                                                          transform.localScale);
-                vertexes = renderMesh.vertices;
-                for (int i = 0; i < vertexes.Length; i++) {
-                    //Debug.Log(vertexes[i]);
-                    vertexes[i] = transformMatrix*vertexes[i];
-                }
-                renderMesh.vertices = vertexes;
-                renderMesh.Optimize();
-            }
-
-            runtimeRenderer.mesh = renderMesh;
-
-            //singleRenderer.enabled = false;
-            //GetComponent<CircleCollider2D>().enabled = false;
-            //Disable all other components
-            foreach (Behaviour comp in GetComponentsInChildren<Behaviour>()) {
-                if (comp != this)
-                    comp.enabled = false;
-            }
-
-            runtimeSystem.simulationSpace = ParticleSystemSimulationSpace.World;
-            runtimeSystem.startColor = cachedColor;
-            runtimeSystem.startSize = 1;
-            runtimeSystem.startLifetime = float.PositiveInfinity;
-            runtimeSystem.gravityModifier = 0f;
-            runtimeSystem.startSpeed = 0f;
-            runtimeSystem.enableEmission = false;
-
-            currentDanmaku = new List<Danmaku>();
-            currentGroup = new DanmakuGroup(currentDanmaku);
-            particles = new ParticleSystem.Particle[runtimeSystem.particleCount];
-
-            runtimeRenderer.mesh = renderMesh;
-            runtimeRenderer.renderMode = ParticleSystemRenderMode.Mesh;
-
-            runtimeRenderer.sharedMaterial = renderMaterial;
-            runtimeRenderer.sortingLayerID = cachedSortingLayer;
-            runtimeRenderer.sortingOrder = cachedSortingOrder;
-            runtimeRenderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
-            runtimeRenderer.receiveShadows = false;
-            runtimeRenderer.shadowCastingMode = ShadowCastingMode.Off;
-            runtimeRenderer.useLightProbes = false;
-
-            gameObject.hideFlags = HideFlags.HideInHierarchy;
-            runtimeSystem.gameObject.hideFlags = HideFlags.HideInHierarchy;
         }
 
 #if UNITY_EDITOR
@@ -281,23 +531,8 @@ namespace Hourai.DanmakU {
 #endif
 
         private void OnDestroy() {
-            if (runtimeSystem != null)
-                Destroy(runtimeSystem.gameObject);
-            if (renderMesh != null)
-                Destroy(renderMesh);
-        }
-
-        internal DanmakuPrefab GetRuntime() {
-            if (runtime == null)
-                runtime = CreateRuntimeInstance(this);
-            return runtime;
-        }
-
-        private static DanmakuPrefab CreateRuntimeInstance(DanmakuPrefab prefab) {
-            DanmakuPrefab runtime = Instantiate(prefab);
-            runtime.enabled = true;
-            runtime.gameObject.SetActive(true);
-            return runtime;
+            if (type)
+                Destroy(type.gameObject);
         }
 
         public static implicit operator FireData(DanmakuPrefab prefab) {
@@ -319,7 +554,7 @@ namespace Hourai.DanmakU {
         internal Vector2 colliderOffset;
 
         [Serialize, fSlider(-180f, 180f)]
-        private float rotationOffset;
+        internal float rotationOffset;
 
 #if UNITY_EDITOR
         public override void Reset() {
@@ -346,6 +581,12 @@ namespace Hourai.DanmakU {
         [Serialize]
         internal bool fixedAngle;
 
+        [Serialize, Default(1000)]
+        internal int initialCount;
+
+        [Serialize, Default(100)]
+        internal int spawnCount;
+
         internal Vector3 cachedScale;
         internal string cachedTag;
         internal int cachedLayer;
@@ -360,39 +601,16 @@ namespace Hourai.DanmakU {
 
         #region Runtime fields
 
-        private DanmakuPrefab runtime;
-        private Mesh renderMesh;
-        private Material renderMaterial;
-        private ParticleSystem runtimeSystem;
-        private ParticleSystemRenderer runtimeRenderer;
-        private ParticleSystem.Particle[] particles;
-        internal List<Danmaku> currentDanmaku;
+        internal DanmakuType type;
+        private HashSet<Danmaku> currentDanmaku;
         internal DanmakuGroup currentGroup;
-        private int danmakuCount;
-        private RenderingType renderingType;
 
         #endregion
 
         #region Accessor Properties
 
-        public RenderingType RenderType {
-            get { return renderingType; }
-        }
-
         public bool FixedAngle {
             get { return fixedAngle; }
-        }
-
-        public Vector3 Scale {
-            get { return cachedScale; }
-        }
-
-        public string Tag {
-            get { return cachedTag; }
-        }
-
-        public int Layer {
-            get { return cachedLayer; }
         }
 
         /// <summary>
@@ -411,54 +629,19 @@ namespace Hourai.DanmakU {
             get { return colliderOffset; }
         }
 
-        /// <summary>
-        /// Gets the sprite of the instance's SpriteRenderer
-        /// </summary>
-        /// <value>The sprite to be rendered.</value>
-        public Sprite Sprite {
-            get { return cachedSprite; }
-        }
-
-        public Mesh Mesh {
-            get { return renderMesh; }
-        }
-
-        /// <summary>
-        /// Gets the color of the instance's SpriteRenderer
-        /// </summary>
-        /// <value>The color to be rendered with.</value>
-        public Color Color {
-            get { return cachedColor; }
-        }
-
-        /// <summary>
-        /// Gets the material used by the instance's SpriteRenderer
-        /// </summary>
-        /// <value>The material to be rendered with.</value>
-        public Material Material {
-            get { return cachedMaterial; }
-        }
-
-        /// <summary>
-        /// Gets the sorting layer
-        /// </summary>
-        /// <value>The sorting layer to be used when rendering.</value>
-        public int SortingLayerID {
-            get { return cachedSortingLayer; }
-        }
-
-        public int SortingOrder {
-            get { return cachedSortingOrder; }
+        public DanmakuType Renderer
+        {
+            get { return type; }
         }
 
         #endregion
 
         public IEnumerable Infinite() {
-            return ((FireData)this).Infinite();
+            return new FireData() { Prefab = this }.Infinite();
         } 
 
         public IEnumerator<FireData> GetEnumerator() {
-            yield return ((FireData) this);
+            yield return new FireData() { Prefab = this };
         }
 
         IEnumerator System.Collections.IEnumerable.GetEnumerator()

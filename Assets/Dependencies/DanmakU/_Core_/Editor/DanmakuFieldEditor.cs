@@ -24,9 +24,9 @@ namespace Hourai.DanmakU.Editor {
 		public void OnEnable() {
 			field = target as DanmakuField;
 
-			useClipBoundary = serializedObject.FindProperty("UseClipBoundary");
-			clipBoundary = serializedObject.FindProperty ("ClipBoundary");
-			size = serializedObject.FindProperty("FieldSize");
+			useClipBoundary = serializedObject.FindProperty("useClipBoundary");
+			clipBoundary = serializedObject.FindProperty ("clipBoundary");
+			size = serializedObject.FindProperty("fieldSize");
 			camera2D = serializedObject.FindProperty ("camera2D");
 			camera3D = serializedObject.FindProperty ("otherCameras");
 		}
@@ -37,7 +37,7 @@ namespace Hourai.DanmakU.Editor {
 
 		public override void OnInspectorGUI () {
 			serializedObject.Update ();
-			EditorGUILayout.PropertyField(useClipBoundary);
+			EditorGUILayout.PropertyField(useClipBoundary); 
 			if (useClipBoundary.boolValue) {
 				EditorGUI.indentLevel++;
 				EditorGUILayout.PropertyField (clipBoundary);

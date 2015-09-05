@@ -40,7 +40,7 @@ namespace Hourai.DanmakU.Collider {
                 return;
 
             if (prefab != null)
-                danmaku.MatchPrefab(prefab);
+                prefab.Match(danmaku);
 
             affected.Add(danmaku);
         }

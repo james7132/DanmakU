@@ -409,7 +409,7 @@ GUI/Editor:
 
 Helpers/Extensions:
 - Added HasFlag Enum extension method
-- Added Activate/Deactivate Transform extension methods
+- Added Activate/Destroy Transform extension methods
 - Added GetCurrentSceneName to RuntimeHelper
 - Added GetCallStack(bool verbose) in RuntimeHelper
 

@@ -1,11 +1,55 @@
 ﻿using UnityEngine;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Vexe.Runtime.Extensions;
 
 namespace Hourai.DanmakU
 {
+    public static partial class Modifier
+    {
+        /// <summary>
+        /// Concatenates two enumerations together. The second enumeration will be appended to the end of the first.
+        /// If the first never ends, the second will never be reached.
+        /// If one is null, the other will be returned.
+        /// If both are null, an empty enumeration is returned;
+        /// </summary>
+        /// <param name="s1"></param>
+        /// <param name="s2"></param>
+        /// <returns></returns>
+        public static IEnumerable Concat(this IEnumerable s1, IEnumerable s2)
+        {
+            if (s1 == null && s2 == null)
+                return new object[0];
+            if (s1 == null)
+                return s2;
+            if (s2 == null)
+                return s1;
+            return ConcatImpl(s1, s2);
+        }
+
+        static IEnumerable ConcatImpl(IEnumerable s1, IEnumerable s2)
+        {
+            foreach (var obj in s1)
+                yield return obj;
+            foreach (var obj in s2)
+                yield return obj;
+        }
+
+        public static IEnumerable TerminateOn(this IEnumerable coroutine, Func<bool> condition)
+        {
+            if (condition == null)
+                throw new ArgumentNullException("conition");
+            foreach (var obj in coroutine)
+            {
+                yield return obj;
+                if (condition())
+                    yield break;
+            }
+        }
+    }
+
     public static class ModifierUtil {
 
         /// <summary>
@@ -224,7 +268,7 @@ namespace Hourai.DanmakU
             else if (dp != null)
                 ((FireData) dp).Fire();
             else {
-                var fireTask = new Task(context ?? DanmakuGame.Instance,
+                var fireTask = new Task(context ?? Game.Instance,
                                          FireRoutine(data));
                 fireTask.Start();
                 return fireTask;
@@ -336,5 +380,5 @@ namespace Hourai.DanmakU
             fm.actions += action;
             return fm;
         }
-}
+    }
 }

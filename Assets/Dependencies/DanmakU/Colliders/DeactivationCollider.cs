@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Hourai.DanmakU.Collider {
 
     /// <summary>
-    /// A DanmakuCollider that deactivates all valid danmaku that come in contact with it.
+    /// A DanmakuCollider that Destroys all valid danmaku that come in contact with it.
     /// </summary>
     [AddComponentMenu("Hourai.DanmakU/Colliders/Deactivation Collider")]
     public class DeactivationCollider : DanmakuCollider {
@@ -20,7 +20,7 @@ namespace Hourai.DanmakU.Collider {
         /// <param name="info">additional information about the collision</param>
         protected override void DanmakuCollision(Danmaku danmaku,
                                                  RaycastHit2D info) {
-            danmaku.Deactivate();
+            danmaku.Destroy();
         }
 
         #endregion

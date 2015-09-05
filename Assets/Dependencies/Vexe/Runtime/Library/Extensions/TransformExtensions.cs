@@ -9,9 +9,9 @@ namespace Vexe.Runtime.Extensions
             t.gameObject.Activate();
         }
 
-        public static void Deactivate(this Transform t)
+        public static void Destroy(this Transform t)
         {
-            t.gameObject.Deactivate();
+            t.gameObject.Destroy();
         }
 
         /// <summary>
