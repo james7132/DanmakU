@@ -38,7 +38,7 @@ namespace Hourai.DanmakU {
             else
                 list = new List<Danmaku>(source);
             return new DanmakuGroup(list);
-        }
+        } 
 
         public DanmakuGroup(ICollection<Danmaku> collection)
         {
@@ -49,7 +49,7 @@ namespace Hourai.DanmakU {
                 return;
             foreach (Danmaku danmaku in _group)
                 if (danmaku != null)
-                    danmaku.OnDeactivate += RemoveEvent;
+                    danmaku.OnDestroy += RemoveEvent;
         }
 
         public void AddRange(IEnumerable<Danmaku> collection) {
@@ -59,13 +59,13 @@ namespace Hourai.DanmakU {
             if(OnAdd == null)
                 foreach (var danmaku in collection) {
                     if (danmaku != null)
-                        danmaku.OnDeactivate += RemoveEvent;
+                        danmaku.OnDestroy += RemoveEvent;
                     _group.Add(danmaku);
                 }
             else
                 foreach (Danmaku danmaku in collection) {
                     if (danmaku != null) {
-                        danmaku.OnDeactivate += RemoveEvent;
+                        danmaku.OnDestroy += RemoveEvent;
                         OnAdd(danmaku);
                     }
                     _group.Add(danmaku);
@@ -118,7 +118,7 @@ namespace Hourai.DanmakU {
         public void Add(Danmaku item) {
             _group.Add(item);
             if (item != null)
-                item.OnDeactivate += RemoveEvent;
+                item.OnDestroy += RemoveEvent;
 
         }
 

@@ -27,12 +27,8 @@ namespace Hourai.DanmakU {
 
         }
 
-        private bool _isActive;
         private Action<Danmaku> _onUpdate;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Hourai.DanmakU.Danmaku"/> class.
-        /// </summary>
         internal Danmaku(int poolIndex) {
             PoolIndex = poolIndex;
         }
@@ -40,34 +36,20 @@ namespace Hourai.DanmakU {
         /// <summary>
         /// Gets or sets a value indicating whether this instance is active.
         /// </summary>
-        /// <remarks>
-        /// Setting it to true while inactive is equal to calling Activate.
-        /// Setting it to false while active is equal to calling DeactivateImmediate.
-        /// </remarks>
         /// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
         public bool IsActive {
-            get { return _isActive; }
-            set {
-                if (_isActive) {
-                    if (!value)
-                        DeactivateImmediate();
-                } else {
-                    if (value)
-                        Activate();
-                }
-                _isActive = value;
-            }
+            get { return PoolIndex <= Type._activeCount; }
         }
 
         /// <summary>
-        /// Occurs when the Danmaku instance is activated.
+        /// Called when the Danmaku instance is activated.
         /// </summary>
         public event Action<Danmaku> OnActivate;
 
         /// <summary>
-        /// Occurs when the Danmaku instance is deactivated.
+        /// Called when the Danmaku instance is destroyed.
         /// </summary>
-        public event Action<Danmaku> OnDeactivate;
+        public event Action<Danmaku> OnDestroy;
 
         public event Action<Danmaku> Controller {
             add {
@@ -80,6 +62,9 @@ namespace Hourai.DanmakU {
             }
         }
 
+        /// <summary>
+        /// Clears all cotnrollers from this 
+        /// </summary>
         public void ClearControllers() {
             _controllerCheck = true;
             _onUpdate = null;
@@ -117,7 +102,7 @@ namespace Hourai.DanmakU {
                 float sqrDistance = movementVector.sqrMagnitude;
                 float cx = colliderOffset.x;
                 float cy = colliderOffset.y;
-                if (Mathf.Approximately(cx, 0f) && Mathf.Approximately(cy, 0f))
+                if (cx == 0 && cy == 0)
                     _collisionCenter = _originalPosition;
                 else {
                     float c = direction.x;
@@ -194,73 +179,21 @@ namespace Hourai.DanmakU {
 
                         foreach (IDanmakuCollider script in scripts)
                             script.OnDanmakuCollision(this, hit);
-
-                        if (!to_deactivate)
-                            continue;
-
-                        position.x = hit.point.x;
-                        position.y = hit.point.y;
-                        DeactivateImmediate();
-                        return;
                     }
                 }
-            }
-
-            if (!_isActive || to_deactivate) {
-                DeactivateImmediate();
-                return;
             }
 
             frames++;
             time += dt;
         }
 
-        public void MatchPrefab(DanmakuPrefab prefab) {
-            if (prefab == null) {
-                Debug.LogError("Tried to match a null prefab");
-                return;
-            }
-            if (this.prefab != prefab) {
-                this.prefab = prefab;
-
-                if (_isActive) {
-                    runtime.currentDanmaku.Remove(this);
-                    runtime = prefab.GetRuntime();
-                    runtime.currentDanmaku.Add(this);
-                } else
-                    runtime = prefab.GetRuntime();
-
-                Vector2 scale = runtime.cachedScale;
-                colliderType = runtime.collisionType;
-                switch (colliderType) {
-                    default:
-                        colliderSize = Vector2.zero;
-                        sizeSquared = 0;
-                        break;
-                    case ColliderType.Circle:
-                        colliderSize = runtime.colliderSize*scale.Max();
-                        break;
-                    case ColliderType.Line:
-                        colliderSize = runtime.colliderSize;
-                        break;
-                }
-                sizeSquared = colliderSize.y * colliderSize.y;
-                colliderOffset = scale.Hadamard2(runtime.colliderOffset);
-            }
-
-            Color = runtime.Color;
-            Scale = 1f;
-            layer = runtime.cachedLayer;
-            colliderMask = collisionMask[layer];
-        }
-
         public static implicit operator FireData(Danmaku danmaku) {
-            var fd = new FireData {
+            var fd = new FireData () {
                 Position = danmaku.Position,
                 Rotation = danmaku.Rotation,
                 AngularSpeed = danmaku.AngularSpeed,
                 Speed = danmaku.Speed,
-                Prefab = danmaku.Prefab,
+                Prefab = danmaku.prefab,
                 Controller = danmaku._onUpdate,
                 Damage = danmaku.Damage,
             };
@@ -268,78 +201,43 @@ namespace Hourai.DanmakU {
             return fd;
         }
 
-        /// <summary>
-        /// Fires a single bullet from the bullet's current position.
-        /// </summary>
-        /// <remarks>
-        /// By default, firing using this method also uses the rotation of the bullet to fire the bullet.
-        /// Set <c>useRotation</c> to false to disable this.
-        /// </remarks>
-        /// <param name="data">the data used to create the .</param>
-        /// <param name="useRotation">If set to <c>true</c>, the bullet will use the current rotation of the bullet to fire with.</param>
-        public Danmaku Fire(FireData data, bool useRotation = true) {
-            Vector2 tempPos = data.Position;
-            float tempRot = data.Rotation;
-            data.Position = Position;
-            if (useRotation)
-                data.Rotation = Rotation;
-            Danmaku danmaku = data.Fire();
-            data.Position = tempPos;
-            data.Rotation = tempRot;
-            return danmaku;
-        }
-
-        /// <summary>
-        /// Activates the Danmaku instance.
-        /// </summary>
-        /// <remarks>
-        /// Calling this on a already active instance does nothing.
-        /// Calling this on a instance marked for deactivation will unmark the projectile and keep it from deactivating.
-        /// </remarks>
         public void Activate() {
-            if (DanmakuGame.Instance == null)
-                new GameObject("Danmaku Game Controller").AddComponent<DanmakuGame>();
-            to_deactivate = false;
-            runtime.currentDanmaku.Add(this);
-            if (_isActive)
+            if (IsActive)
                 return;
+
             if(OnActivate != null)
                 OnActivate(this);
-            _isActive = true;
+
+            Type.Activate(this);
+
             frames = 0;
             time = 0f;
         }
 
         /// <summary>
-        /// Marks the instance for deactivation.
+        /// Marks the instance for destruction.
+        /// 
         /// </summary>
-        /// <remarks>
-        /// Deactivated bullets are removed from the active set, and all 
-        /// The instance  removed from the active set and all bullet functionality will cease after current 
-        /// If Danmaku needs to be deactivated in a moment when it is not being updated (i.e. when the game is paused), use <see cref="DeactivateImmediate"/> instead.
-        /// </remarks>
-        public void Deactivate() {
-            Debug.Log("Hello");
-            to_deactivate = true;
+        public void Destroy()
+        {
+            Type.toDestroy.Add(this);
         }
+        
+        internal void DestroyImpl() {
+            if (!IsActive)
+                return;
 
-        /// <summary>
-        /// Immediately deactivates this Danmaku and ceases all processing done on it.
-        /// Calling this generally unadvised. Use <see cref="Deactivate"/> whenever possible.
-        /// This method should only be used when dealing with Projectiles while the game is paused or when ProjectileManager is not enabled
-        /// </summary>
-        public void DeactivateImmediate() {
-            if (_isActive && OnDeactivate != null)
-                OnDeactivate(this);
+            if (OnDestroy != null)
+                OnDestroy(this);
 
             _onUpdate = null;
             OnActivate = null;
-            OnDeactivate = null;
+            OnDestroy = null;
             _controllerCheck = false;
             Damage = 0;
             CollisionCheck = true;
-            _isActive = false;
-            danmakuPool.Return(this);
+
+            Type.Return(this);
         }
 
         /// <summary>
@@ -352,32 +250,23 @@ namespace Hourai.DanmakU {
 
         #region Private and Internal Fields
 
-        /// <summary>
-        /// The Danmaku instance's index within the DanmakuPool.
-        /// </summary>
-        internal readonly int PoolIndex;
-
-        //internal int renderIndex;
-
+        internal int PoolIndex;
         internal Vector2 direction;
 
         //Cached information about the Danmaku from its prefab
         internal ColliderType colliderType = ColliderType.Circle;
         internal Vector2 colliderOffset = Vector2.zero;
         internal Vector2 colliderSize = Vector2.zero;
-        private float sizeSquared;
+        internal float sizeSquared;
         internal int layer;
         internal int frames;
         internal float time;
 
         //Prefab information
-        private DanmakuPrefab prefab;
-        private DanmakuPrefab runtime;
+        internal DanmakuPrefab prefab;
 
         //Collision related variables
         private int colliderMask;
-
-        private bool to_deactivate;
 
         internal Vector3 position;
         internal float rotation;
@@ -410,22 +299,17 @@ namespace Hourai.DanmakU {
         public float AngularSpeed;
 
         public DanmakuPrefab Prefab {
-            get { return runtime; }
-        }
-
-        public Sprite Sprite {
-            get { return runtime.Sprite; }
-        }
-
-        public Mesh Mesh {
-            get { return runtime.Mesh; }
-        }
-
-        public Material Material {
-            get {
-                //return material;
-                return runtime.Material;
+            get { return prefab; }
+            set
+            {
+                if (prefab)
+                    prefab.Match(this);
             }
+        }
+
+        public DanmakuType Type
+        {
+            get { return prefab.type; }
         }
 
         /// <summary>
@@ -445,10 +329,10 @@ namespace Hourai.DanmakU {
         /// </summary>
         /// <remarks>
         /// If viewed from a unrotated orthographic camera:
-        /// 0 - Straight up
-        /// 90 - Straight Left
-        /// 180 - Straight Down
-        /// 270 -  Straight Right
+        /// 0 - Straight right
+        /// 90 - Straight up
+        /// 180 - Straight left
+        /// 270 -  Straight down
         /// </remarks>
         /// <value>The rotation of the bullet in degrees.</value>
         public float Rotation {
@@ -474,6 +358,10 @@ namespace Hourai.DanmakU {
                 rotation = Mathf.Atan2(direction.y, direction.x)*Mathf.Rad2Deg -
                            90f;
             }
+        }
+
+        public Vector2 Velocity {
+            get { return direction * Speed; }
         }
 
         public float Scale;
@@ -513,6 +401,7 @@ namespace Hourai.DanmakU {
         /// </summary>
         /// <remarks>
         /// Unlike GameObject's layers, this layer value only affects collision behavior.
+        /// Lighting and 
         /// </remarks>
         /// <value>The layer used for collision detection.</value>
         public int Layer {
@@ -521,73 +410,6 @@ namespace Hourai.DanmakU {
                 layer = value;
                 colliderMask = collisionMask[layer];
             }
-        }
-
-        #endregion
-
-        #region Position Functions
-
-        /// <summary>
-        /// Moves the bullet closer to the specified target point.
-        /// 
-        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
-        /// </summary>
-        /// <param name="target">The target position to move towards in absolute world coordinates.</param>
-        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Vector2 target, float maxDistanceDelta) {
-            Position = Vector2.MoveTowards(position, target, maxDistanceDelta);
-        }
-
-        /// <summary>
-        /// Moves the bullet closer to the specified target Transform's position.
-        /// 
-        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown if the target Transform is null.</exception>
-        /// <param name="target">The Transform of the object to move towards.</param>
-        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Transform target, float maxDistanceDelta) {
-            if (target == null)
-                throw new ArgumentNullException();
-            Position = Vector2.MoveTowards(position,
-                                           target.position,
-                                           maxDistanceDelta);
-        }
-
-        /// <summary>
-        /// Moves the bullet closer to the specified target Component's position.
-        /// 
-        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown if the target Component is null.</exception>
-        /// <param name="target">The Component of the object to move towards.</param>
-        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(Component target, float maxDistanceDelta) {
-            if (target == null)
-                throw new ArgumentNullException();
-            Position = Vector2.MoveTowards(position,
-                                           target.transform.position,
-                                           maxDistanceDelta);
-        }
-
-        /// <summary>
-        /// Moves the bullet closer to the specified target GameObject's position.
-        /// 
-        /// If <c>maxDisntanceDelta</c> is negative, the bullet will instead move away from the target point.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown if the target GameObject is null.</exception>
-        /// <param name="target">The GameObject of the object to move towards.</param>
-        /// <param name="maxDistanceDelta">The maximum distance traversed by a single call to this function.</param>
-        public void MoveTowards(GameObject target, float maxDistanceDelta) {
-            if (target == null)
-                throw new System.ArgumentNullException();
-            Position = Vector2.MoveTowards(position,
-                                           target.transform.position,
-                                           maxDistanceDelta);
-        }
-
-        public void Translate(Vector2 deltaPos) {
-            Position += deltaPos;
         }
 
         #endregion

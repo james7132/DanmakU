@@ -153,11 +153,11 @@ namespace Hourai.DanmakU {
         /// <param name="filter">a function to filter whether or not to apply the action. Returns true if it should. Defaults to null.</param>
         /// <typeparam name="IEnumerable<Danmaku>">The type of the collection.</typeparam>
         public static IEnumerable<Danmaku> MoveTowards(this IEnumerable<Danmaku> danmakus,
-                                       Vector2 target,
-                                       float maxDistanceDelta,
-                                       Func<Danmaku, bool> filter = null)
+                                                       Vector2 target,
+                                                       float maxDistanceDelta,
+                                                       Func<Danmaku, bool> filter = null)
         {
-            return danmakus.ForEach(x => x.MoveTowards(target, maxDistanceDelta), filter);
+            return danmakus.ForEach(x => x.Position = Vector2.MoveTowards(x.Position, target, maxDistanceDelta), filter);
         }
 
         public static IEnumerable<Danmaku> MoveTowards(this IEnumerable<Danmaku> danmakus,
@@ -338,24 +338,9 @@ namespace Hourai.DanmakU {
 
         #region General Functions
 
-        public static IEnumerable<Danmaku> Active(this IEnumerable<Danmaku> danmakus, bool value, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> Destroy(this IEnumerable<Danmaku> danmakus, Func<Danmaku, bool> filter = null)
             {
-            return danmakus.ForEach(x => x.IsActive = value, filter);
-        }
-
-        public static IEnumerable<Danmaku> Activate(this IEnumerable<Danmaku> danmakus, Func<Danmaku, bool> filter = null)
-            {
-            return danmakus.ForEach(x => x.Activate(), filter);
-        }
-
-        public static IEnumerable<Danmaku> Deactivate(this IEnumerable<Danmaku> danmakus, Func<Danmaku, bool> filter = null)
-            {
-            return danmakus.ForEach(x => x.Deactivate(), filter);
-        }
-
-        public static IEnumerable<Danmaku> DeactivateImmediate(this IEnumerable<Danmaku> danmakus, Func<Danmaku, bool> filter = null)
-            {
-            return danmakus.ForEach(x => x.DeactivateImmediate(), filter);
+            return danmakus.ForEach(x => x.Destroy(), filter);
         }
 
         #endregion
@@ -367,9 +352,9 @@ namespace Hourai.DanmakU {
             return danmakus.ForEach(x => x.CollisionCheck = collisionCheck, filter);
         }
 
-        public static IEnumerable<Danmaku> MatchPrefab(this IEnumerable<Danmaku> danmakus, DanmakuPrefab prefab, Func<Danmaku, bool> filter = null)
+        public static IEnumerable<Danmaku> Match(this IEnumerable<Danmaku> danmakus, DanmakuPrefab prefab, Func<Danmaku, bool> filter = null)
             {
-            return danmakus.ForEach(x => x.MatchPrefab(prefab), filter);
+            return danmakus.ForEach(x => prefab.Match(x), filter);
         }
 
         #endregion

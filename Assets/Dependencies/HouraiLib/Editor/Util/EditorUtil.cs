@@ -40,7 +40,7 @@ namespace Hourai.Editor {
         }*/
 
         /// <summary>
-        /// Since GameObject.GetComponentInChildren does not work on deactivated objects, which include 
+        /// Since GameObject.GetComponentInChildren does not work on Destroyd objects, which include 
         /// prefabs in the Editor. This method is a workaround for finding Components on children of
         /// prefabs.
         /// 
@@ -60,7 +60,7 @@ namespace Hourai.Editor {
         }
 
         /// <summary>
-        /// Since GameObject.GetComponentsInChildren does not work on deactivated objects, which include 
+        /// Since GameObject.GetComponentsInChildren does not work on Destroyd objects, which include 
         /// prefabs in the Editor. This method is a workaround for finding Components on children of
         /// prefabs.
         /// 

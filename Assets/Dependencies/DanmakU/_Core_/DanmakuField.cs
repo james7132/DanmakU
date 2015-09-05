@@ -26,8 +26,6 @@ namespace Hourai.DanmakU {
         private static readonly Vector2 InfiniteSize = float.PositiveInfinity*
                                                        Vector2.one;
 
-        private DanmakuGroup activeDanmaku;
-
         internal Bounds2D bounds;
 
         [SerializeField]
@@ -151,7 +149,6 @@ namespace Hourai.DanmakU {
             if (_fields == null)
                 _fields = new List<DanmakuField>();
             _fields.Add(this);
-            activeDanmaku = DanmakuGroup.List();
             TargetField = this;
         }
 
@@ -178,7 +175,6 @@ namespace Hourai.DanmakU {
                                  movementBounds.Extents.Max();
             } else
                 bounds.Extents = InfiniteSize;
-            activeDanmaku.RemoveAll(d => bounds.Contains(d.Position));
         }
 
         private void OnDestroy() {
@@ -256,61 +252,6 @@ namespace Hourai.DanmakU {
             return clone;
         }
 
-        public Danmaku SpawnDanmaku(DanmakuPrefab prefab,
-                                    Vector2 location,
-                                    float rotation,
-                                    CoordinateSystem coordSys = CoordinateSystem.View) {
-            if (TargetField == null)
-                TargetField = this;
-            Danmaku danmaku = Danmaku.GetInactive(prefab,
-                                                 TargetField.WorldPoint(location, coordSys),
-                                                 rotation);
-            danmaku.Activate();
-            activeDanmaku.Add(danmaku);
-            return danmaku;
-        }
-
-        public Danmaku FireLinear(DanmakuPrefab prefab,
-                                  Vector2 location,
-                                  float rotation,
-                                  float speed,
-                                  CoordinateSystem coordSys = CoordinateSystem.View) {
-            if (TargetField == null)
-                TargetField = this;
-            Vector2 position = TargetField.WorldPoint(location, coordSys);
-            Danmaku danmaku = Danmaku.GetInactive(prefab, position, rotation);
-            danmaku.Activate();
-            danmaku.Speed = speed;
-            danmaku.AngularSpeed = 0f;
-            activeDanmaku.Add(danmaku);
-            return danmaku;
-        }
-
-        public Danmaku FireCurved(DanmakuPrefab prefab,
-                                  Vector2 location,
-                                  float rotation,
-                                  float speed,
-                                  float angularSpeed,
-                                  CoordinateSystem coordSys = CoordinateSystem.View) {
-            if (TargetField == null)
-                TargetField = this;
-            Vector2 position = TargetField.WorldPoint(location, coordSys);
-            Danmaku danmaku = Danmaku.GetInactive(prefab, position, rotation);
-            danmaku.Activate();
-            danmaku.Speed = speed;
-            danmaku.AngularSpeed = angularSpeed;
-            activeDanmaku.Add(danmaku);
-            return danmaku;
-        }
-
-        public Danmaku Fire(FireData data) {
-            if (TargetField == null)
-                TargetField = this;
-            Danmaku danmaku = data.Fire();
-            activeDanmaku.Add(danmaku);
-            return danmaku;
-        }
-
 #if UNITY_EDITOR
         private void OnDrawGizmos() {
             Gizmos.color = Color.yellow;
@@ -322,12 +263,18 @@ namespace Hourai.DanmakU {
 
         public void Bind(FireData fireData)
         {
-            activeDanmaku.Bind(fireData);
+            fireData.Controller += DestroyOnLeave;
         }
 
         public void Unbind(FireData fireData)
         {
-            activeDanmaku.Unbind(fireData);
+            fireData.Controller -= DestroyOnLeave;
+        }
+
+        void DestroyOnLeave(Danmaku danmaku)
+        {
+            if (!bounds.Contains(danmaku.Position))
+                danmaku.Destroy();
         }
     }
 

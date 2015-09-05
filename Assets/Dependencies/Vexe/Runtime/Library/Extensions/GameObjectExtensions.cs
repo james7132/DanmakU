@@ -96,9 +96,9 @@ namespace Vexe.Runtime.Extensions
 		}
 
 		/// <summary>
-		/// Deactivates (calls SetActive(false)) this gameObject
+		/// Destroys (calls SetActive(false)) this gameObject
 		/// </summary>
-		public static void Deactivate(this GameObject go)
+		public static void Destroy(this GameObject go)
 		{
 			go.SetActive(false);
 		}

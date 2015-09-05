@@ -24,32 +24,41 @@ namespace Hourai.DanmakU {
         public float AngularSpeed;
         public Action<Danmaku> Controller;
         public Action<Danmaku> OnActivate;
-        public Action<Danmaku> OnDeactivate;
+        public Action<Danmaku> OnDestroy;
         public DanmakuPrefab Prefab;
 
-        public void Copy(FireData other) {
+        public FireData Copy(FireData other) {
             if (other == null || other == this)
-                return;
+                return this;
             AngularSpeed = other.AngularSpeed;
             Controller = other.Controller;
             OnActivate = other.OnActivate;
-            OnDeactivate = other.OnDeactivate;
+            OnDestroy = other.OnDestroy;
             Damage = other.Damage;
             Position = other.Position;
             Prefab = other.Prefab;
             Rotation = other.Rotation;
             Speed = other.Speed;
             Color = other.Color;
+            return this;
         }
 
         public FireData Clone() {
-            var data = new FireData();
-            data.Copy(this);
-            return data;
+            return new FireData().Copy(this);
         }
 
         public Danmaku Fire() {
-            Danmaku danmaku = Danmaku.GetInactive(this);
+            Danmaku danmaku = Prefab.Get();
+            danmaku.Position = Position;
+            danmaku.Rotation = Rotation;
+            danmaku.Speed = Speed;
+            danmaku.AngularSpeed = AngularSpeed;
+            danmaku.Controller += Controller;
+            danmaku.Damage = Damage;
+            danmaku.OnActivate += OnActivate;
+            danmaku.OnDestroy += OnDestroy;
+            if (Color != null)
+                Color = Color.Value;
             danmaku.Activate();
             return danmaku;
         }
