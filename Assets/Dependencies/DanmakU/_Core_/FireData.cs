@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Vexe.Runtime.Types;
 
 namespace Hourai.DanmakU {
 
@@ -16,7 +17,9 @@ namespace Hourai.DanmakU {
     [Serializable]
     public class FireData : IEnumerable<FireData> {
 
+        [Hide]
         public Vector2 Position;
+        [Hide]
         public float Rotation;
         public Color? Color;
         public float Damage;

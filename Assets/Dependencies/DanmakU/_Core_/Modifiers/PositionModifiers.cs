@@ -109,16 +109,16 @@ namespace Hourai.DanmakU
             return component ? data.From(component.gameObject) : data;
         }
 
-        public static IEnumerable From(this IEnumerable coroutine,
-                               Func<FireData, IEnumerable<Component>> components,
-                               Func<FireData, bool> filter = null)
+        public static IEnumerable From<T>(this IEnumerable coroutine,
+                                           Func<FireData, IEnumerable<T>> components,
+                                           Func<FireData, bool> filter = null) where T : Component
         {
             return coroutine.Duplicate(components, ((data, o) => data.Position = o.transform.position), false, filter);
         }
 
-        public static IEnumerable From(this IEnumerable coroutine,
-                                       IEnumerable<Component> components,
-                                       Func<FireData, bool> filter = null)
+        public static IEnumerable From<T>(this IEnumerable coroutine,
+                                           IEnumerable<T> components,
+                                           Func<FireData, bool> filter = null) where T : Component
         {
             return coroutine.From(fd => components, filter);
         }
