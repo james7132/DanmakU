@@ -16,6 +16,9 @@ using UnityEditor;
 
 namespace Hourai.DanmakU {
 
+    /// <summary>
+    /// 
+    /// </summary>
     [RequireComponent(typeof(ParticleSystem))]
     public abstract class DanmakuType : MonoBehaviour, IEnumerable<Danmaku>
     {
@@ -48,6 +51,7 @@ namespace Hourai.DanmakU {
         internal int sortingOrder;
         
         private int updateIndex;
+        private ParticleSystem.Particle particle;
 
         Action PostUpdate;
 
@@ -207,8 +211,8 @@ namespace Hourai.DanmakU {
             danmakuSystem.GetParticles(particles);
 
             // For some reason, new ParticleSystem.Particle breaks bullet systems
-            // but accessing a 
-            ParticleSystem.Particle particle = particles[0];
+            // but accessing the first element like this and reusing it for each is OK.
+            particle = particles[0];
             particle.axisOfRotation = Vector3.forward;
             updateIndex = 0;
             if (prefab.fixedAngle) {
@@ -234,6 +238,7 @@ namespace Hourai.DanmakU {
                     particles[updateIndex++] = particle;
                 }
             }
+
             updateIndex = -1;
 
             danmakuSystem.SetParticles(particles, _activeCount);
@@ -259,7 +264,7 @@ namespace Hourai.DanmakU {
             PostUpdate += delegate()
             {
                 for (int i = 0; i < _activeCount; i++)
-                    all[i].Destroy();
+                    all[i].DestroyImpl();
                 _activeCount = 0;
                 _releasedCount = 0;
             };
@@ -317,11 +322,27 @@ namespace Hourai.DanmakU {
             _releasedCount--;
 
             Danmaku active = all[_activeCount];     // Last active Danmaku
-            Danmaku released = all[_releasedCount]; // Last released Danmaku
-
-            all[danmaku.PoolIndex = _releasedCount] = danmaku;
-            all[released.PoolIndex = _activeCount] = released;
-            all[active.PoolIndex = index] = active;
+            if(_activeCount == _releasedCount)
+            {
+                all[danmaku.PoolIndex = _activeCount] = danmaku;
+                all[active.PoolIndex = index] = active;
+            }
+            else
+            {
+                Danmaku released = all[_releasedCount]; // Last released Danmaku
+                all[danmaku.PoolIndex = _releasedCount] = danmaku;
+                all[released.PoolIndex = _activeCount] = released;
+                all[active.PoolIndex = index] = active;
+            }
+            if (index <= updateIndex)
+            {
+                active.Update();
+                particle.position = active.position;
+                particle.rotation = active.rotation;
+                particle.size = active.Size;
+                particle.color = active.Color;
+                particles[index] = particle;
+            }
         }
         #endregion
 
@@ -392,7 +413,6 @@ namespace Hourai.DanmakU {
             color = Color.white;
 
             MeshFilter filter = mr.GetComponent<MeshFilter>();
-            Debug.Log(filter);
             if (filter == null)
             {
                 Debug.LogError("Danmaku Prefab (" + name +

@@ -226,6 +226,16 @@ namespace Hourai.DanmakU {
             if (!IsActive)
                 return;
             Type.Return(this);
+            DestroyImpl();
+        }
+
+        /// <summary>
+        /// What actually destroys 
+        /// Note that this does not return the Danmaku to the pool.
+        /// This is used for 
+        /// </summary>
+        internal void DestroyImpl()
+        {
             if (OnDestroy != null)
                 OnDestroy(this);
 

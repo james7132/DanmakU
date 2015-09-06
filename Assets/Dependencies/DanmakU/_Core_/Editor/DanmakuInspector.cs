@@ -35,7 +35,7 @@ namespace Hourai.DanmakU.Editor
             Vector3 forward = Vector3.forward;
             using (HandleUtil.With(Color.green)) {                
                 foreach (Danmaku danmaku in Danmaku.All) {
-                    if(danmaku == null || !danmaku.IsActive)
+                    if(danmaku == null)
                         continue;
                     selectedDanmaku = danmaku;
                     Handles.matrix = Matrix4x4.TRS(danmaku.Position, Quaternion.Euler(0f, 0f, danmaku.Rotation), danmaku.Size * Vector3.one);
