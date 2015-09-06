@@ -15,8 +15,6 @@ namespace Hourai {
                 if (_instance == null) {
                     _instance = FindObjectOfType<T>();
                     if (_instance == null) {
-                        Debug.LogError("Something is trying to access the " + typeof(T) +
-                                       " Singleton instance, but none exists.");
                         _instance = new GameObject(typeof(T).Name).AddComponent<T>();
                     }
                 }

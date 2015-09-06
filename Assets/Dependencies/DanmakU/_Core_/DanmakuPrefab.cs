@@ -19,9 +19,13 @@ namespace Hourai.DanmakU {
     [RequireComponent(typeof(ParticleSystem))]
     public abstract class DanmakuType : MonoBehaviour, IEnumerable<Danmaku>
     {
-        private DanmakuPrefab prefab;
+        internal static List<DanmakuType> activeTypes;
 
-        public List<Danmaku> toDestroy;
+        internal DanmakuPrefab prefab;
+        public DanmakuPrefab Prefab
+        {
+            get { return prefab; }
+        }
 
         // Pool variables
         internal Danmaku[] all;
@@ -38,9 +42,14 @@ namespace Hourai.DanmakU {
         // Rendedring variables
         internal Mesh mesh;
         internal Color color;
+        internal float size;
         internal Material material;
         internal int sortingLayer;
         internal int sortingOrder;
+        
+        private int updateIndex;
+
+        Action PostUpdate;
 
         #region Public Properties
         public int IotalCount {
@@ -80,8 +89,15 @@ namespace Hourai.DanmakU {
             get { return color; }
             set {
                 color = value;
-                danmakuSystem.startColor = value;
+                if(danmakuSystem)
+                    danmakuSystem.startColor = value;
             }
+        }
+
+        public float Size
+        {
+            get { return size; }
+            set { size = value; }
         }
 
         public Material Material {
@@ -92,17 +108,23 @@ namespace Hourai.DanmakU {
         #region Initialization
         void Awake()
         {
+            if (activeTypes == null)
+                activeTypes = new List<DanmakuType>();
+            activeTypes.Add(this);
+
             DontDestroyOnLoad(this);
+
             danmakuSystem = GetComponent<ParticleSystem>();
             dRenderer = GetComponent<ParticleSystemRenderer>();
-            
+
             Transform root = transform.root;
             transform.parent = null;
             transform.localPosition = Vector3.zero;
 
             danmakuSystem.simulationSpace = ParticleSystemSimulationSpace.World;
             danmakuSystem.startSize = 1;
-            danmakuSystem.startLifetime = float.PositiveInfinity;
+            danmakuSystem.startLifetime = Mathf.Infinity;
+            danmakuSystem.maxParticles = int.MaxValue;
             danmakuSystem.gravityModifier = 0f;
             danmakuSystem.startSpeed = 0;
             danmakuSystem.enableEmission = false;
@@ -115,7 +137,7 @@ namespace Hourai.DanmakU {
             dRenderer.shadowCastingMode = ShadowCastingMode.Off;
             dRenderer.useLightProbes = false;
 
-            //gameObject.hideFlags = HideFlags.HideInHierarchy;
+            gameObject.hideFlags = HideFlags.HideInHierarchy;
 
             // Destroy rest of hiearchy
             if(root != transform)
@@ -136,6 +158,7 @@ namespace Hourai.DanmakU {
 
             this.prefab = prefab;
 
+            size = prefab.cachedScale.Max();
             _totalCount = 0;
             _activeCount = 0;
             _spawnCount = prefab.spawnCount;
@@ -143,7 +166,6 @@ namespace Hourai.DanmakU {
                 _spawnCount = 1;
             all = new Danmaku[prefab.initialCount * 2];
             Spawn(prefab.initialCount);
-            toDestroy = new List<Danmaku>();
 
             material = renderer.sharedMaterial;
             sortingLayer = renderer.sortingLayerID;
@@ -170,84 +192,77 @@ namespace Hourai.DanmakU {
 
         internal abstract void OnInit(Renderer renderer);
         #endregion
-        public bool updating;
 
         void Update()
         {
-            //--------------------------------------------------------------------
-            //  Rendering Update
-            //--------------------------------------------------------------------
+            if (_activeCount <= 0)
+                return;
+
             int particleCount = danmakuSystem.particleCount;
             if (_activeCount > particleCount)
-            {
-                danmakuSystem.maxParticles = Mathf.NextPowerOfTwo(_activeCount);
                 danmakuSystem.Emit(_activeCount - particleCount);
-            }
             if (_activeCount > particles.Length)
                 Array.Resize(ref particles, Mathf.NextPowerOfTwo(_activeCount + 1));
 
-            if (_activeCount <= 0 && particleCount <= 0)
-                return;
-
             danmakuSystem.GetParticles(particles);
-            int staticActiveCount = _activeCount;
-
-            updating = true;
 
             // For some reason, new ParticleSystem.Particle breaks bullet systems
             // but accessing a 
             ParticleSystem.Particle particle = particles[0];
             particle.axisOfRotation = Vector3.forward;
-            int i = 0;
+            updateIndex = 0;
             if (prefab.fixedAngle) {
-                while (i < staticActiveCount) {
-                    Danmaku danmaku = all[i];
+                while (updateIndex < _activeCount) {
+                    Danmaku danmaku = all[updateIndex];
                     danmaku.Update();
                     particle.position = danmaku.position;
-                    particle.size = danmaku.Scale;
+                    particle.size = danmaku.Size;
                     particle.color = danmaku.Color;
-                    particles[i] = particle;
-                    i++;
+                    particles[updateIndex++] = particle;
                 }
             }
             else
             {
-                while (i < staticActiveCount)
+                while (updateIndex < _activeCount)
                 {
-                    Danmaku danmaku = all[i];
+                    Danmaku danmaku = all[updateIndex];
                     danmaku.Update();
                     particle.position = danmaku.position;
                     particle.rotation = danmaku.rotation;
-                    particle.size = danmaku.Scale;
+                    particle.size = danmaku.Size;
                     particle.color = danmaku.Color;
-                    particles[i] = particle;
-                    i++;
+                    particles[updateIndex++] = particle;
                 }
             }
-            updating = false;
-            // Destroy extra particles
-            while (i < particleCount) {
-                particles[i].lifetime = 0;
-                i++;
-            }
-
-            int destroyedCount = toDestroy.Count;
-            // Remove destroyed particles
-            for (i = 0; i < destroyedCount; i++)
-                toDestroy[i].DestroyImpl();
-            toDestroy.Clear();
+            updateIndex = -1;
 
             danmakuSystem.SetParticles(particles, _activeCount);
+
+            if(PostUpdate != null) {
+                PostUpdate();
+                PostUpdate = null;
+            }
         }
 
         protected virtual void OnDestroy() {
+            activeTypes.Remove(this);
             Destroy(mesh);
+        }
+
+        void OnLevelWasLoaded(int level) {
+            _activeCount = 0;
+            _releasedCount = 0;
         }
 
         public void DestroyAll()
         {
-            for (int i = 0; i < _activeCount; i++)
-                all[i].Destroy();
+            PostUpdate += delegate()
+            {
+                for (int i = 0; i < _activeCount; i++)
+                    all[i].Destroy();
+                _activeCount = 0;
+                _releasedCount = 0;
+            };
         }
 
         void Spawn(int count)
@@ -256,7 +271,7 @@ namespace Hourai.DanmakU {
             if (all.Length < endCount)
                 Array.Resize(ref all, Mathf.NextPowerOfTwo(endCount + 1));
             for (int i = _totalCount; i < all.Length; i++)
-                all[i] = new Danmaku(i);
+                all[i] = new Danmaku(i, this);
             _totalCount = endCount;
         }
 
@@ -273,37 +288,40 @@ namespace Hourai.DanmakU {
             Danmaku inactive = all[_releasedCount];
             inactive.Color = color;
             inactive.prefab = prefab;
-            inactive.Scale = 1f;
+            inactive.Size = size;
+            inactive.Layer = prefab.cachedLayer;
+            inactive.ColliderSize = prefab.colliderSize;
+            inactive.colliderOffset = prefab.colliderOffset;
             _releasedCount++;
             return inactive;
         }
 
         internal void Activate(Danmaku danmaku)
         {
-            Danmaku active = all[_activeCount]; // This should be a released but not active bullet
-            all[danmaku.PoolIndex] = active;
-            all[active.PoolIndex] = danmaku;
+            Danmaku active = all[_activeCount];
 
             active.PoolIndex = danmaku.PoolIndex;
             danmaku.PoolIndex = _activeCount;
+
+            all[_activeCount] = danmaku;
+            all[active.PoolIndex] = active;
+
             _activeCount++;
         }
 
         internal void Return(Danmaku danmaku)
         {
-            Danmaku released = all[_releasedCount];
-            Danmaku active = all[_activeCount];
-
-            all[_releasedCount] = danmaku;
-            all[_activeCount] = released;
-            all[danmaku.PoolIndex] = active;
-
-            released.PoolIndex = active.PoolIndex;
-            active.PoolIndex = danmaku.PoolIndex;
-            danmaku.PoolIndex = _releasedCount;
+            int index = danmaku.PoolIndex;
 
             _activeCount--;
             _releasedCount--;
+
+            Danmaku active = all[_activeCount];     // Last active Danmaku
+            Danmaku released = all[_releasedCount]; // Last released Danmaku
+
+            all[danmaku.PoolIndex = _releasedCount] = danmaku;
+            all[released.PoolIndex = _activeCount] = released;
+            all[active.PoolIndex = index] = active;
         }
         #endregion
 
@@ -414,6 +432,9 @@ namespace Hourai.DanmakU {
 
         void Init()
         {
+            cachedScale = transform.localScale;
+            cachedLayer = gameObject.layer;
+
             var singleRenderer = GetComponent<Renderer>();
             var spriteRenderer = singleRenderer as SpriteRenderer;
             var meshRenderer = singleRenderer as MeshRenderer;
@@ -476,19 +497,12 @@ namespace Hourai.DanmakU {
                 danmaku.colliderOffset = cachedScale.Hadamard2(colliderOffset);
             }
 
-            danmaku.Color = cachedColor;
-            danmaku.Scale = 1f;
+            danmaku.Color = type.Color;
+            danmaku.Size = 1f;
             danmaku.Layer = cachedLayer;
         }
 
-        void Initialize()
-        {
-            cachedScale = transform.localScale;
-            cachedTag = gameObject.tag;
-            cachedLayer = gameObject.layer;
-        }
-
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         private void OnDrawGizmosSelected() {
             Matrix4x4 oldGizmoMatrix = Gizmos.matrix;
             Matrix4x4 oldHandlesMatrix = Handles.matrix;
@@ -528,7 +542,7 @@ namespace Hourai.DanmakU {
             Gizmos.color = oldGizmosColor;
             Handles.color = oldHandlesColor;
         }
-#endif
+        #endif
 
         private void OnDestroy() {
             if (type)
@@ -588,22 +602,13 @@ namespace Hourai.DanmakU {
         internal int spawnCount;
 
         internal Vector3 cachedScale;
-        internal string cachedTag;
         internal int cachedLayer;
-
-        internal Sprite cachedSprite;
-        internal Color cachedColor;
-        internal Material cachedMaterial;
-        internal int cachedSortingLayer;
-        internal int cachedSortingOrder;
 
         #endregion
 
         #region Runtime fields
 
         internal DanmakuType type;
-        private HashSet<Danmaku> currentDanmaku;
-        internal DanmakuGroup currentGroup;
 
         #endregion
 

@@ -59,6 +59,18 @@ namespace Hourai.DanmakU {
                 colliderMap.Clear();
         }
 
+        public static IEnumerable<Danmaku> All
+        {
+            get
+            {
+                if (DanmakuType.activeTypes == null)
+                    yield break;
+                foreach (DanmakuType type in DanmakuType.activeTypes)
+                    foreach (Danmaku danmaku in type)
+                        yield return danmaku;
+            }
+        }
+
         internal static void Setup(float angRes = 0.1f) {
             colliderMap = new Dictionary<Collider2D, IDanmakuCollider[]>();
             collisionMask = Util.CollisionLayers2D();

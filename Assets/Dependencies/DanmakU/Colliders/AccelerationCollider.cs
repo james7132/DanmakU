@@ -34,7 +34,7 @@ namespace Hourai.DanmakU.Collider {
         /// <param name="info">additional information about the collision</param>
         protected override void DanmakuCollision(Danmaku danmaku,
                                                  RaycastHit2D info) {
-            danmaku.Speed += _acceleration*Dt;
+            danmaku.Speed += _acceleration * dt;
         }
 
         #endregion

@@ -13,7 +13,7 @@ namespace Hourai.DanmakU {
         /// <summary>
         /// Shorthand for <c>TimeUtil.DeltaTime</c>.
         /// </summary>
-        protected static float Dt {
+        protected static float dt {
             get { return TimeUtil.DeltaTime; }
         }
     }
