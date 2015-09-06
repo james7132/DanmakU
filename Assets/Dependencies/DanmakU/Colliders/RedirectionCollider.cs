@@ -13,6 +13,15 @@ namespace Hourai.DanmakU.Collider {
     [AddComponentMenu("Hourai.DanmakU/Colliders/Redirection Collider")]
     public class RedirectionCollider : DanmakuCollider {
 
+
+        public enum RotationType
+        {
+            Absolute,
+            Relative,
+            Reflection,
+            Object
+        }
+
         private DanmakuGroup affected;
 
         [SerializeField]
@@ -21,12 +30,12 @@ namespace Hourai.DanmakU.Collider {
         //TODO Document
 
         [SerializeField]
-        private RotationMode rotationMode;
+        private RotationType rotationMode;
 
         [Serialize]
         public Transform Target { get; set; }
 
-        public RotationMode RotationMode {
+        public RotationType RotationMode {
             get { return rotationMode; }
             set { rotationMode = value; }
         }
@@ -55,12 +64,22 @@ namespace Hourai.DanmakU.Collider {
                                                  RaycastHit2D info) {
             if (affected.Contains(danmaku))
                 return;
+            if (rotationMode == RotationType.Reflection)
+            {
+                Vector2 normal = info.normal;
+                Vector2 direction = danmaku.direction;
+                danmaku.Direction = direction -
+                                    2 * Vector2.Dot(normal, direction) * normal;
+                affected.Add(danmaku);
+                return;
+            }
+
             float baseAngle = angle;
             switch (rotationMode) {
-                case RotationMode.Relative:
+                case RotationType.Relative:
                     baseAngle += danmaku.Rotation;
                     break;
-                case RotationMode.Object:
+                case RotationType.Object:
                     if (Target != null) {
                         baseAngle += DanmakuUtil.AngleBetween2D(
                                                                 danmaku.Position,
@@ -70,7 +89,7 @@ namespace Hourai.DanmakU.Collider {
                                          "Trying to direct at an object but no Target object assinged");
                     }
                     break;
-                case RotationMode.Absolute:
+                case RotationType.Absolute:
                     break;
             }
             danmaku.Rotation = baseAngle;

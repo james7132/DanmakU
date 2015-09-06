@@ -436,6 +436,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   speed: 5
   burstCount: 20
+  rotation: 5
 --- !u!4 &1376768896
 Transform:
   m_ObjectHideFlags: 0
@@ -545,8 +546,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8700f30fe9e49ad4fb2ed407eba26a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera2D: {fileID: 0}
-  clipBoundary: 1
+  camera2D: {fileID: 513550416}
+  clipBoundary: 0
   fieldSize: {x: 20, y: 20}
   otherCameras: []
   useClipBoundary: 1

@@ -14,7 +14,7 @@ namespace Hourai.DanmakU {
     /// The base object that represents a single bullet in a bullet hell game.
     /// </summary>
     public sealed partial class Danmaku {
-        
+
         /// <summary>
         /// The supported collider shapes used by danmaku.
         /// </summary>
@@ -27,10 +27,13 @@ namespace Hourai.DanmakU {
 
         }
 
-        private Action<Danmaku> _onUpdate;
+        internal Action<Danmaku> _onUpdate;
+        private DanmakuType type;
 
-        internal Danmaku(int poolIndex) {
+        internal Danmaku(int poolIndex, DanmakuType type) {
             PoolIndex = poolIndex;
+            this.type = type;
+            prefab = type.Prefab;
         }
 
         /// <summary>
@@ -38,7 +41,7 @@ namespace Hourai.DanmakU {
         /// </summary>
         /// <value><c>true</c> if this instance is active; otherwise, <c>false</c>.</value>
         public bool IsActive {
-            get { return PoolIndex <= Type._activeCount; }
+            get { return PoolIndex < Type._activeCount; }
         }
 
         /// <summary>
@@ -93,8 +96,6 @@ namespace Hourai.DanmakU {
 
             movementVector.x = position.x - _originalPosition.x;
             movementVector.y = position.y - _originalPosition.y;
-
-            //Debug.DrawRay(originalPosition, movementVector);
 
             if (CollisionCheck)
             {
@@ -158,7 +159,8 @@ namespace Hourai.DanmakU {
                                                        colliderMask);
                         break;
                 }
-                if (hits != null && hits.Length > 0) {
+                if (hits != null && hits.Length > 0)
+                {
                     foreach (RaycastHit2D hit in hits) {
                         Collider2D collider = hit.collider;
 
@@ -204,14 +206,15 @@ namespace Hourai.DanmakU {
         public void Activate() {
             if (IsActive)
                 return;
-
-            if(OnActivate != null)
-                OnActivate(this);
-
             Type.Activate(this);
-
+            if (OnActivate != null)
+                OnActivate(this);
             frames = 0;
             time = 0f;
+        }
+
+        internal void ActivateImpl()
+        {
         }
 
         /// <summary>
@@ -220,13 +223,9 @@ namespace Hourai.DanmakU {
         /// </summary>
         public void Destroy()
         {
-            Type.toDestroy.Add(this);
-        }
-        
-        internal void DestroyImpl() {
             if (!IsActive)
                 return;
-
+            Type.Return(this);
             if (OnDestroy != null)
                 OnDestroy(this);
 
@@ -235,17 +234,12 @@ namespace Hourai.DanmakU {
             OnDestroy = null;
             _controllerCheck = false;
             Damage = 0;
+            Speed = 0;
+            AngularSpeed = 0;
+            position.x = 0;
+            position.y = 0;
+            rotation = 0;
             CollisionCheck = true;
-
-            Type.Return(this);
-        }
-
-        /// <summary>
-        /// Serves as a hash function for a <see cref="Hourai.DanmakU.Danmaku"/> object.
-        /// </summary>
-        /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
-        public override int GetHashCode() {
-            return PoolIndex;
         }
 
         #region Private and Internal Fields
@@ -292,7 +286,7 @@ namespace Hourai.DanmakU {
         /// <summary>
         /// Whether or not to perform collision detection with the Danmaku instance.
         /// </summary>
-        public bool CollisionCheck;
+        public bool CollisionCheck = true;
 
         public float Speed;
 
@@ -355,8 +349,7 @@ namespace Hourai.DanmakU {
             get { return direction; }
             set {
                 direction = value.normalized;
-                rotation = Mathf.Atan2(direction.y, direction.x)*Mathf.Rad2Deg -
-                           90f;
+                rotation = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             }
         }
 
@@ -364,7 +357,7 @@ namespace Hourai.DanmakU {
             get { return direction * Speed; }
         }
 
-        public float Scale;
+        public float Size;
 
         /// <summary>
         /// The amount of time that has passed since this bullet has been fired.
@@ -409,6 +402,25 @@ namespace Hourai.DanmakU {
             set {
                 layer = value;
                 colliderMask = collisionMask[layer];
+            }
+        }
+
+        public Vector2 ColliderSize
+        {
+            get { return colliderSize; }
+            set
+            {
+                colliderSize = value;
+                sizeSquared = value.x * value.x;
+            }
+        }
+
+        public Vector2 ColliderOffset
+        {
+            get { return colliderOffset; }
+            set
+            {
+                colliderOffset = prefab.cachedScale.Hadamard2(value);
             }
         }
 

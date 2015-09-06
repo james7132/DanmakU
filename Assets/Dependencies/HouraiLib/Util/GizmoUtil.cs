@@ -4,10 +4,14 @@ using UnityEngine;
 
 namespace Hourai {
 
-    public sealed class GizmoDisposable : IDisposable {
+    internal sealed class GizmoDisposable : IDisposable {
 
         private readonly Color? _oldColor;
         private readonly Matrix4x4? _oldTransform;
+
+        public GizmoDisposable()
+        {
+        }
 
         public GizmoDisposable(Color color) {
             //Cache the old color
@@ -42,6 +46,11 @@ namespace Hourai {
 
 
     public static class GizmoUtil {
+
+        public static IDisposable Save()
+        {
+            return new GizmoDisposable();
+        }
 
         public static IDisposable With(Color color) {
             return new GizmoDisposable(color);
