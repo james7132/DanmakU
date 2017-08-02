@@ -514,7 +514,7 @@ namespace Hourai.DanmakU {
                         break;
                 }
                 danmaku.sizeSquared = colliderSize.y * colliderSize.y;
-                danmaku.colliderOffset = cachedScale.Hadamard2(colliderOffset);
+                danmaku.colliderOffset = Vector2.Scale(cachedScale, colliderOffset);
             }
 
             danmaku.Color = type.Color;
