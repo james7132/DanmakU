@@ -430,7 +430,7 @@ namespace Hourai.DanmakU {
             get { return colliderOffset; }
             set
             {
-                colliderOffset = prefab.cachedScale.Hadamard2(value);
+                colliderOffset = Vector2.Scale(prefab.cachedScale, value);
             }
         }
 
