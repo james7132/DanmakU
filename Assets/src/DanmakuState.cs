@@ -4,7 +4,7 @@ using UnityEngine;
 namespace DanmakU {
 
     [Serializable]
-    public struct DanmakuInitialState {
+    public struct DanmakuState {
         public Vector2 Position;
         public Range Rotation;
         public Range Speed;

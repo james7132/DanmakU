@@ -7,13 +7,13 @@ namespace DanmakU.Fireables {
 
     public abstract class ShapeFireable : Fireable {
 
-        protected abstract IEnumerable<DanmakuInitialState> GetSubemissions(DanmakuInitialState state);
+        protected abstract IEnumerable<DanmakuState> GetSubemissions(DanmakuState state);
 
-        public override void Fire(DanmakuInitialState state) {
+        public override void Fire(DanmakuState state) {
             var subemissions = GetSubemissions(state);
             if (subemissions == null || Child == null)
                 return;
-            foreach (DanmakuInitialState sub in subemissions)
+            foreach (DanmakuState sub in subemissions)
                 Child.Fire(sub);
         }
 

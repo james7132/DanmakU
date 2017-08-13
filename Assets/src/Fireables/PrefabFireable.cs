@@ -16,7 +16,7 @@ namespace DanmakU {
             });
         }
 
-        public void Fire(DanmakuInitialState state) {
+        public void Fire(DanmakuState state) {
             var danmaku = Pool.Get();
             danmaku.ApplyState(state);
         }

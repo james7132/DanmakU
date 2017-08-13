@@ -11,7 +11,7 @@ namespace DanmakU {
             Subemitters = new List<IFireable>(subemitters);
         }
 
-        public void Fire(DanmakuInitialState state) {
+        public void Fire(DanmakuState state) {
             var subemitter = Subemitters[Mathf.FloorToInt(Random.value * Subemitters.Count)];
             if (subemitter != null)
                 subemitter.Fire(state);
