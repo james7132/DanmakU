@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -27,11 +28,24 @@ namespace DanmakU {
             }
         }
 
+        Color? color;
+        public Color? Color {
+            get { return color; }
+            set {
+                var block = new MaterialPropertyBlock();
+                block.SetColor("_Color", value.HasValue ? value.Value : UnityEngine.Color.white);
+                foreach (var renderer in renderers)
+                    renderer.SetPropertyBlock(block);
+            }
+        }
+
         public float Speed { get; set; }
         public float AngularVelocity { get; set; }
 
         readonly GameObject gameObject;
         readonly Transform transform;
+        readonly Renderer[] renderers;
+        readonly Color[] defaultColors;
 
         public GameObjectDanamku(GameObject obj) {
             Assert.IsNotNull(obj);
@@ -39,6 +53,7 @@ namespace DanmakU {
             transform = obj.transform;
             position = transform.position;
             rotation = transform.eulerAngles.z;
+            renderers = obj.GetComponentsInChildren<Renderer>();
         }
 
         public void SetActive(bool active) {

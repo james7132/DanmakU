@@ -15,6 +15,9 @@ namespace DanmakU {
         GameObject prefab;
 
         [SerializeField]
+        Gradient _color;
+
+        [SerializeField]
         DanmakuState initialState;
 
         DanmakuPool danmaku;
@@ -23,7 +26,10 @@ namespace DanmakU {
         void Start () {
             var prefabFireable = new PrefabFireable(prefab, 10000);
             danmaku = prefabFireable.Pool;
-            var fireable = ring.Of(circle).Of(prefabFireable);
+            var fireable = ring
+                            .Of(new RandomColor(_color))
+                            .Of(circle)
+                            .Of(prefabFireable);
             fireable.Fire(initialState);
         }
 

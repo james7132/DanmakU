@@ -15,6 +15,8 @@ namespace DanmakU {
             danmaku.Rotation = state.Rotation;
             danmaku.Speed = state.Speed;
             danmaku.AngularVelocity= state.AngularVelocity;
+            Debug.Log(state.Color);
+            danmaku.Color = state.Color;
         }
 
         internal static void UpdateDanmaku(this DanmakuPool danmakuSet, float deltaTime) {
