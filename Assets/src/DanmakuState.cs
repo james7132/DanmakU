@@ -9,6 +9,7 @@ namespace DanmakU {
         public Range Rotation;
         public Range Speed;
         public Range AngularVelocity;
+        public Color? Color;
 	}
 
 }
