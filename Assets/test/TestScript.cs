@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DanmakU.Fireables;
 
 namespace DanmakU {
 
@@ -13,10 +14,22 @@ namespace DanmakU {
         [SerializeField]
         GameObject prefab;
 
+        [SerializeField]
+        DanmakuInitialState initialState;
+
+        DanmakuPool danmaku;
+
         // Use this for initialization
         void Start () {
-            var fireable = ring.Of(circle).Of(new PrefabFireable(prefab));
-            fireable.Fire(new DanmakuInitialState());
+            var prefabFireable = new PrefabFireable(prefab, 10000);
+            danmaku = prefabFireable.Pool;
+            var fireable = ring.Of(circle).Of(prefabFireable);
+            fireable.Fire(initialState);
+        }
+
+        void Update() {
+            danmaku.UpdateDanmaku(Time.deltaTime);
+            Debug.Log(danmaku.ActiveCount);
         }
 
     }

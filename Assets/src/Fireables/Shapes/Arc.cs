@@ -2,24 +2,28 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DanmakU {
+namespace DanmakU.Fireables {
 
     [Serializable]
     public class Arc : ShapeFireable {
+
         [SerializeField]
         Range _count;
         [SerializeField]
         Range _arcLength;
         [SerializeField]
         Range _radius;
+
         public Range Count { 
             get { return _count;} 
             set { _count = value; } 
         }
+
         public Range ArcLength { 
             get { return _arcLength;} 
             set { _arcLength = value; } 
         }
+
         public Range Radius { 
             get { return _radius;} 
             set { _radius = value; } 
