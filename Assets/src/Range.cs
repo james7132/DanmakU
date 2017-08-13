@@ -7,7 +7,6 @@ namespace DanmakU {
 
 	[Serializable]
 	public struct Range {
-		[SerializeField]
 
 		public float Min;
 		public float Max;

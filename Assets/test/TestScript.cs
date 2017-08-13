@@ -15,7 +15,7 @@ namespace DanmakU {
         GameObject prefab;
 
         [SerializeField]
-        DanmakuInitialState initialState;
+        DanmakuState initialState;
 
         DanmakuPool danmaku;
 

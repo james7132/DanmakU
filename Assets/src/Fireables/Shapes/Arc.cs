@@ -35,7 +35,7 @@ namespace DanmakU.Fireables {
             Radius = radius;
         }
 
-        protected override IEnumerable<DanmakuInitialState> GetSubemissions(DanmakuInitialState state) {
+        protected override IEnumerable<DanmakuState> GetSubemissions(DanmakuState state) {
             float radius = Radius.GetValue();
             int count = Mathf.RoundToInt(Count.GetValue());
             float arcLength = ArcLength.GetValue();

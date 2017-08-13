@@ -4,9 +4,9 @@ namespace DanmakU.Fireables {
 
         public IFireable Child { get; set; }
 
-        public abstract void Fire(DanmakuInitialState state);
+        public abstract void Fire(DanmakuState state);
 
-        protected void Subfire(DanmakuInitialState state) {
+        protected void Subfire(DanmakuState state) {
             if (Child == null)
                 return;
             Child.Fire(state);
