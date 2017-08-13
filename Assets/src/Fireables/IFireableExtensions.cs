@@ -2,16 +2,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
-namespace DanmakU {
+namespace DanmakU.Fireables {
 
     public static class FireableExtensions {
+        
+        public delegate void FireAction(Action<DanmakuInitialState> fire, DanmakuInitialState state);
+
+        class FuncFireable : Fireable {
+
+            readonly FireAction _fireAction;
+
+            public FuncFireable(FireAction fireAction ) {
+                Assert.IsNotNull(fireAction);
+                _fireAction = fireAction;
+            }
+
+            public override void Fire(DanmakuInitialState state) {
+                _fireAction(Subfire, state);
+            }
+
+        }
 
         static Fireable GetLowestChild(Fireable fireable) {
             var last = fireable;
             while (fireable != null) {
                 last = fireable;
-                fireable = fireable.Subemitter as Fireable;
+                fireable = fireable.Child as Fireable;
             }
             return last;
         }
@@ -20,8 +38,12 @@ namespace DanmakU {
             if (fireable == null)
                 throw new ArgumentNullException("fireable");
             var lowest = GetLowestChild(fireable);
-            lowest.Subemitter = subemitter;
+            lowest.Child = subemitter;
             return fireable;
+        }
+
+        public static Fireable Of(this Fireable fireable, FireAction fireAction) {
+            return fireable.Of(new FuncFireable(fireAction));
         }
 
         public static Fireable Of(this Fireable fireable, IEnumerable<IFireable> subemitters) {

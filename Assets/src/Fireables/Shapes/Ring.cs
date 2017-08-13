@@ -3,18 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DanmakU {
+namespace DanmakU.Fireables {
 
     [Serializable]
     public class Ring : ShapeFireable {
+
         [SerializeField]
         Range _count;
+
         [SerializeField]
         Range _radius;
+
         public Range Count { 
             get { return _count;} 
             set { _count = value; } 
         }
+
         public Range Radius { 
             get { return _radius;} 
             set { _radius = value; } 
