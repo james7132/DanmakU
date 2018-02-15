@@ -1,0 +1,24 @@
+# This will run on Travis' 'new' container-based infrastructure
+sudo: false
+language: csharp
+
+# Blacklist
+branches:
+  except:
+    - gh-pages
+
+install:
+  - nuget install docfx.console -Version 2.31.0 -OutputDirectory .
+
+script:
+  - ls docfx.console.2.31.0/tools
+  - mono docfx.console.2.31.0/tools/docfx.exe docs/docfx.json
+  - echo "" > docs/_site/.nojekyll
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  local-dir: docs/_site
+  github_token: $GITHUB_TOKEN
+  on:
+    all_branches: true
