@@ -30,6 +30,11 @@ public struct Danmaku {
     set { Pool.AngularSpeeds[Index] = value; }
   }
 
+  public Color Color {
+    get { return Pool.Colors[Index]; }
+    set { Pool.Colors[Index] = value; }
+  }
+
   /// <summary>
   /// Destroys the danmaku object.
   /// </summary>

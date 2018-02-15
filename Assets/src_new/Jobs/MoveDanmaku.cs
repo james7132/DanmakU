@@ -13,10 +13,16 @@ public struct MoveDanmaku : IJobParallelFor {
   [ReadOnly] public NativeArray<float> Speeds;
   [ReadOnly] public NativeArray<float> AngularSpeeds;
 
+  [WriteOnly] public NativeArray<Matrix4x4> Transforms;
+
   public void Execute(int index) {
     var rotation = (CurrentRotations[index] + AngularSpeeds[index]) % (Mathf.PI * 2);
+    var position = CurrentPositions[index] + (Speeds[index] * RotationUtil.ToUnitVector(rotation));
 
-    NewPositions[index] = CurrentPositions[index] + (Speeds[index] * RotationUtil.ToUnitVector(rotation));
+    var rotationQuat = Quaternion.Euler(0, 0, rotation);
+
+    Transforms[index] = Martrix4x4.TRS(position, rotationQuat, Vector3.one);
+    NewPositions[index] = position;
     NewRotations[index] = rotation;
   }
 

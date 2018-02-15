@@ -8,8 +8,6 @@ using System.Runtime.CompilerServices;
 
 public class DanmakuPool : IDisposable {
 
-  const int kBatchSize = 32;
-
   public int ActiveCount;
 
   public NativeArray<Vector2> Positions;
@@ -18,8 +16,11 @@ public class DanmakuPool : IDisposable {
   public NativeArray<float> Speeds;
   public NativeArray<float> AngularSpeeds;
 
+  public NativeArray<Color> Colors;
+
+  public NativeArray<Matrix4x4> Transforms;
+
   readonly Stack<int> Deactivated;
-  JobHandle? UpdateHandle;
 
   public DanmakuPool(int poolSize) {
     ActiveCount = 0;
@@ -30,9 +31,11 @@ public class DanmakuPool : IDisposable {
 
     Speeds = new NativeArray<float>(poolSize, Allocator.Persistent);
     AngularSpeeds = new NativeArray<float>(poolSize, Allocator.Persistent);
+
+    Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent);
   }
 
-  public void StartUpdate() {
+  public UpdateContext Update(JobHandle dependency = default(JobHandle)) {
     while (Deactivated.Count > 0) {
       DestroyInternal(Deactivated.Pop());
     }
@@ -42,19 +45,7 @@ public class DanmakuPool : IDisposable {
       return;
     }
 
-    using (var positions = new NativeArray<Vector2>(Positions, Allocator.TempJob))
-    using (var rotations = new NativeArray<float>(Rotations, Allocator.TempJob)) {
-      new MoveDanmaku {
-        CurrentPositions = positions,
-        CurrentRotations = rotations,
-
-        NewPositions = Positions,
-        NewRotations = Rotations,
-
-        Speeds = Speeds,
-        AngularSpeeds = AngularSpeeds,
-      }.Schedule(ActiveCount, kBatchSize).Complete();
-    }
+    return new DanmakuPoolUpdateContext(this, dependency);
   }
 
   void DestroyInternal(int index) {
@@ -63,6 +54,7 @@ public class DanmakuPool : IDisposable {
     Swap(ref Rotations, index, ActiveCount);
     Swap(ref Speeds, index, ActiveCount);
     Swap(ref AngularSpeeds, index, ActiveCount);
+    Swap(ref Colors, index, ActiveCount);
   }
 
   public Danmaku Get() => new Danmaku(this, ActiveCount++);
@@ -86,8 +78,45 @@ public class DanmakuPool : IDisposable {
 
     Speeds.Dispose();
     AngularSpeeds.Dispose();
+
+    Colors.Dispose();
+
+    Transforms.Dispose();
   }
 
   internal void Destroy(Danmaku deactivate) => Deactivated.Push(deactivate.Index);
 
+  internal struct UpdateContext : IDisposable {
+
+    const int kBatchSize = 32;
+
+    public readonly NativeArray<Vector2> OldPositions;
+    public readonly NativeArray<float> OldRotations;
+    public readonly JobHandle UpdateJobHandle;
+
+    internal DanmakuPoolUpdateContext(DanmakuPool pool, JobHandle dependency) {
+      OldPositions = new NativeArray<Vector2>(pool.Positions, Allocator.TempJob));
+      OldRotations = new NativeArray<float>(pool.Rotations, Allocator.TempJob));
+
+      UpdateJobHandle = new MoveDanmaku {
+        CurrentPositions = OldPositions,
+        CurrentRotations = OldRotations,
+
+        NewPositions = pool.Positions,
+        NewRotations = pool.Rotations,
+
+        Speeds = pool.Speeds,
+        AngularSpeeds = pool.AngularSpeeds,
+
+        Transforms = pool.Transforms;
+      }.Schedule(pool.ActiveCount, kBatchSize, dependency);
+    }
+
+    public void Dispose() {
+      UpdateJobHandle.Complete();
+      OldPositions.Dispose();
+      OldRotations.Dispose();
+    }
+
+  }
 }
