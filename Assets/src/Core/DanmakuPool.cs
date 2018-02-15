@@ -6,6 +6,8 @@ using Unity.Collections;
 using UnityEngine;
 using System.Runtime.CompilerServices;
 
+namespace DanmakU {
+
 public class DanmakuPool : IDisposable {
 
   public int ActiveCount;
@@ -121,4 +123,6 @@ public class DanmakuPool : IDisposable {
     }
 
   }
+}
+
 }

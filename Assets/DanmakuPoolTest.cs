@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DanmakU;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,6 @@ public class DanmakuPoolTest : MonoBehaviour {
 
   DanmakuPool pool;
   Danmaku danmakuTest;
-  Transform[] objects;
 
   public int PoolSize;
   public DanmakuRenderer Renderer;

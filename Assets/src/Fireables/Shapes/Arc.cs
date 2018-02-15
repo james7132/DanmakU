@@ -45,7 +45,7 @@ namespace DanmakU.Fireables {
                 var currentState = state;
                 var angle = start + i * (arcLength / count);
                 state.Position = state.Position + 
-                    (radius * MathUtils.GetDirection(angle));
+                    (radius * RotationUtil.ToUnitVector(angle));
                 state.Rotation = angle;
                 yield return currentState;
             }
