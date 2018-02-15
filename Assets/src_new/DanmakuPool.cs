@@ -32,6 +32,8 @@ public class DanmakuPool : IDisposable {
     Speeds = new NativeArray<float>(poolSize, Allocator.Persistent);
     AngularSpeeds = new NativeArray<float>(poolSize, Allocator.Persistent);
 
+    Colors = new NativeArray<Color>(poolSize, Allocator.Persistent);
+
     Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent);
   }
 
@@ -40,12 +42,8 @@ public class DanmakuPool : IDisposable {
       DestroyInternal(Deactivated.Pop());
     }
 
-    if (ActiveCount <= 0) {
-      UpdateHandle = null;
-      return;
-    }
-
-    return new DanmakuPoolUpdateContext(this, dependency);
+    if (ActiveCount <= 0) return new UpdateContext();
+    return new UpdateContext(this, dependency);
   }
 
   void DestroyInternal(int index) {
@@ -86,17 +84,18 @@ public class DanmakuPool : IDisposable {
 
   internal void Destroy(Danmaku deactivate) => Deactivated.Push(deactivate.Index);
 
-  internal struct UpdateContext : IDisposable {
+  public struct UpdateContext : IDisposable {
 
     const int kBatchSize = 32;
 
     public readonly NativeArray<Vector2> OldPositions;
     public readonly NativeArray<float> OldRotations;
     public readonly JobHandle UpdateJobHandle;
+    readonly bool isValid;
 
-    internal DanmakuPoolUpdateContext(DanmakuPool pool, JobHandle dependency) {
-      OldPositions = new NativeArray<Vector2>(pool.Positions, Allocator.TempJob));
-      OldRotations = new NativeArray<float>(pool.Rotations, Allocator.TempJob));
+    internal UpdateContext(DanmakuPool pool, JobHandle dependency) {
+      OldPositions = new NativeArray<Vector2>(pool.Positions, Allocator.TempJob);
+      OldRotations = new NativeArray<float>(pool.Rotations, Allocator.TempJob);
 
       UpdateJobHandle = new MoveDanmaku {
         CurrentPositions = OldPositions,
@@ -108,11 +107,14 @@ public class DanmakuPool : IDisposable {
         Speeds = pool.Speeds,
         AngularSpeeds = pool.AngularSpeeds,
 
-        Transforms = pool.Transforms;
+        Transforms = pool.Transforms
       }.Schedule(pool.ActiveCount, kBatchSize, dependency);
+
+      isValid = true;
     }
 
     public void Dispose() {
+      if (!isValid) return;
       UpdateJobHandle.Complete();
       OldPositions.Dispose();
       OldRotations.Dispose();

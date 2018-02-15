@@ -1,40 +1,43 @@
+using UnityEngine;
+using UnityEngine.Rendering;
 
-namespace DanmakU {
-
-public class DanmakuRenderer {
+public abstract class DanmakuRenderer : MonoBehaviour {
 
   const int kRenderBatchSize = 1023;
 
-  Vector4[] colorCache = new Vector4[kRenderBatchSize];
-  Matrix4x4[] transformCache = new Matrix4x4[kRenderBatchSize]
-  MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+  static Vector4[] colorCache = new Vector4[kRenderBatchSize];
+  static Matrix4x4[] transformCache = new Matrix4x4[kRenderBatchSize];
 
-  public Mesh mesh;
   public Material material;
+  protected abstract Mesh GetMesh();
+  protected abstract MaterialPropertyBlock GetMaterialPropertyBlock();
   public DanmakuPool Pool;
 
-  public void Render() {
-    if (pool?.ActiveCount <= 0) return;
+  /// <summary>
+  /// Update is called every frame, if the MonoBehaviour is enabled.
+  /// </summary>
+  void Update() {
+    if (Pool == null || Pool.ActiveCount <= 0) return;
 
     int i = 0;
-    int batchEnd = Mathf.Min(pool.ActiveCount, kRenderBatchSize);
-    while (i < pool.ActiveCount) {
+    int batchEnd = Mathf.Min(Pool.ActiveCount, kRenderBatchSize);
+    var propertyBlock = GetMaterialPropertyBlock();
+    while (i < Pool.ActiveCount) {
       for (; i < batchEnd; i++) {
-        colorCache[i % kRenderBatchSize] = pool.Colors[i];
-        transformCache[i % kRenderBatchSize] = pool.Transforms[i];
+        colorCache[i % kRenderBatchSize] = Pool.Colors[i];
+        transformCache[i % kRenderBatchSize] = Pool.Transforms[i];
       }
       int count = i % kRenderBatchSize;
       if (count == 0) count = kRenderBatchSize;
       propertyBlock.SetVectorArray("_Color", colorCache);
-      Graphics.DrawMeshInstanced(mesh, 0, material, transformCache,
+      Graphics.DrawMeshInstanced(GetMesh(), 0, material, transformCache,
           count: count,
           properties: propertyBlock,
           castShadows: ShadowCastingMode.Off,
-          layer: gameObject.layer)
-      batchEnd = Mathf.Min(pool.ActiveCount, batchEnd + kRenderBatchSize);
+          receiveShadows: false,
+          layer: gameObject.layer);
+      batchEnd = Mathf.Min(Pool.ActiveCount, batchEnd + kRenderBatchSize);
     }
   }
-
-}
 
 }

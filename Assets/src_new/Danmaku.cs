@@ -1,4 +1,5 @@
 using Unity.Collections;
+using UnityEngine;
 
 public struct Danmaku {
 

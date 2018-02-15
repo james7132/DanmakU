@@ -9,6 +9,7 @@ public class DanmakuPoolTest : MonoBehaviour {
   Transform[] objects;
 
   public int PoolSize;
+  public DanmakuRenderer Renderer;
   int counter;
 
 	void Start () {
@@ -20,8 +21,12 @@ public class DanmakuPoolTest : MonoBehaviour {
       danmaku.Speed = Random.value;
       danmaku.Rotation = Random.value * Mathf.PI * 2;
       danmaku.AngularSpeed = Random.Range(-1f, 1f) * Mathf.PI / 128;
-      objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
-      objects[i].GetComponent<Renderer>().material.color = new Color(Random.value,Random.value, Random.value);
+      danmaku.Color = new Color(Random.value,Random.value, Random.value);
+      // objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
+      // objects[i].GetComponent<Renderer>().material.color = new Color(Random.value,Random.value, Random.value);
+    }
+    if (Renderer != null) {
+      Renderer.Pool = pool;
     }
 	}
 
@@ -29,11 +34,11 @@ public class DanmakuPoolTest : MonoBehaviour {
   /// Update is called every frame, if the MonoBehaviour is enabled.
   /// </summary>
   void Update() {
-    pool.StartUpdate();
-    for (int i = 0; i < objects.Length; i++) {
-      objects[i].localPosition = pool.Positions[i];
-      objects[i].localRotation = Quaternion.Euler(0, 0, pool.Rotations[i] * Mathf.Rad2Deg);
-    }
+    pool.Update().Dispose();
+    // for (int i = 0; i < objects.Length; i++) {
+    //   objects[i].localPosition = pool.Positions[i];
+    //   objects[i].localRotation = Quaternion.Euler(0, 0, pool.Rotations[i] * Mathf.Rad2Deg);
+    // }
   }
 
   /// <summary>
