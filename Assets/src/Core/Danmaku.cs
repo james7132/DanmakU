@@ -1,6 +1,8 @@
 using Unity.Collections;
 using UnityEngine;
 
+namespace DanmakU {
+
 public struct Danmaku {
 
   internal readonly int Index;
@@ -47,5 +49,7 @@ public struct Danmaku {
   /// destroyed Danmaku will likely result in undefined behavior.
   /// </remarks>
   public void Destroy() => Pool.Destroy(this);
+
+}
 
 }
