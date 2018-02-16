@@ -13,7 +13,7 @@ public class DanmakuPoolTest : MonoBehaviour {
   public DanmakuRenderer Renderer;
   public DanmakuState State;
   IFireable fireable;
-  int counter;
+  float timer;
 
 	void Start () {
     pool = new DanmakuPool(PoolSize);
@@ -31,8 +31,12 @@ public class DanmakuPoolTest : MonoBehaviour {
   /// </summary>
   void Update() {
     pool.Update().Dispose();
-    State.Rotation += 0.01f;
-    fireable.Fire(State);
+    timer += Time.deltaTime;
+    if (timer > 1/20f) {
+      State.Rotation += 20 * Mathf.Deg2Rad;
+      fireable.Fire(State);
+      timer = 0;
+    }
   }
 
   /// <summary>
