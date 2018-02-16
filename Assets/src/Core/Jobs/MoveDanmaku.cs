@@ -4,6 +4,8 @@ using UnityEngine;
 
 public struct MoveDanmaku : IJobParallelFor {
 
+  public float DeltaTime;
+
   [ReadOnly] public NativeArray<Vector2> CurrentPositions;
   [ReadOnly] public NativeArray<float> CurrentRotations;
 
@@ -16,8 +18,8 @@ public struct MoveDanmaku : IJobParallelFor {
   [WriteOnly] public NativeArray<Matrix4x4> Transforms;
 
   public void Execute(int index) {
-    var rotation = (CurrentRotations[index] + AngularSpeeds[index]) % (Mathf.PI * 2);
-    var position = CurrentPositions[index] + (Speeds[index] * RotationUtil.ToUnitVector(rotation));
+    var rotation = (CurrentRotations[index] + AngularSpeeds[index] * DeltaTime) % (Mathf.PI * 2);
+    var position = CurrentPositions[index] + (Speeds[index] * RotationUtil.ToUnitVector(rotation) * DeltaTime);
 
     var rotationQuat = Quaternion.Euler(0, 0, rotation * Mathf.Rad2Deg);
 
