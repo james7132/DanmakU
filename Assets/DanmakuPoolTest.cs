@@ -1,4 +1,5 @@
 ﻿using DanmakU;
+using DanmakU.Fireables;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,18 +11,16 @@ public class DanmakuPoolTest : MonoBehaviour {
 
   public int PoolSize;
   public DanmakuRenderer Renderer;
+  public DanmakuState State;
+  IFireable fireable;
   int counter;
 
 	void Start () {
     pool = new DanmakuPool(PoolSize);
-    for (int i = 0; i < PoolSize; i++) {
-      var danmaku = pool.Get();
-      danmaku.Position = 40 * Random.insideUnitCircle;
-      danmaku.Speed = Random.value;
-      danmaku.Rotation = Random.value * Mathf.PI * 2;
-      danmaku.AngularSpeed = Random.Range(-1f, 1f) * Mathf.PI / 128;
-      danmaku.Color = new Color(Random.value,Random.value, Random.value);
-    }
+    fireable = 
+      new Ring(5, 0)
+        .Of(new Circle(8, 3))
+        .Of(new PoolFireable(pool));
     if (Renderer != null) {
       Renderer.Pool = pool;
     }
@@ -32,10 +31,8 @@ public class DanmakuPoolTest : MonoBehaviour {
   /// </summary>
   void Update() {
     pool.Update().Dispose();
-    // for (int i = 0; i < objects.Length; i++) {
-    //   objects[i].localPosition = pool.Positions[i];
-    //   objects[i].localRotation = Quaternion.Euler(0, 0, pool.Rotations[i] * Mathf.Rad2Deg);
-    // }
+    State.Rotation += 0.01f;
+    fireable.Fire(State);
   }
 
   /// <summary>

@@ -40,6 +40,12 @@ public class DanmakuPool : IDisposable {
   }
 
   public UpdateContext Update(JobHandle dependency = default(JobHandle)) {
+    var bounds = DanmakuManager.Instance.Bounds;
+    for (var i = 0; i < ActiveCount; i++) {
+      if (bounds.Contains(Positions[i])) continue;
+      Deactivated.Push(i);
+    }
+
     while (Deactivated.Count > 0) {
       DestroyInternal(Deactivated.Pop());
     }
@@ -100,6 +106,8 @@ public class DanmakuPool : IDisposable {
       OldRotations = new NativeArray<float>(pool.Rotations, Allocator.TempJob);
 
       UpdateJobHandle = new MoveDanmaku {
+        DeltaTime = Time.deltaTime,
+
         CurrentPositions = OldPositions,
         CurrentRotations = OldRotations,
 
