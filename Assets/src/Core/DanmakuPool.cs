@@ -18,7 +18,7 @@ public class DanmakuPool : IDisposable {
   public NativeArray<float> Speeds;
   public NativeArray<float> AngularSpeeds;
 
-  public NativeArray<Color> Colors;
+  public NativeArray<Vector4> Colors;
 
   public NativeArray<Matrix4x4> Transforms;
 
@@ -34,7 +34,7 @@ public class DanmakuPool : IDisposable {
     Speeds = new NativeArray<float>(poolSize, Allocator.Persistent);
     AngularSpeeds = new NativeArray<float>(poolSize, Allocator.Persistent);
 
-    Colors = new NativeArray<Color>(poolSize, Allocator.Persistent);
+    Colors = new NativeArray<Vector4>(poolSize, Allocator.Persistent);
 
     Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent);
   }
