@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace DanmakU.Fireables {
 
@@ -17,7 +18,7 @@ public class PoolFireable : Fireable {
     var danmaku = Pool.Get();
     danmaku.Position = state.Position;
     danmaku.Rotation = state.Rotation.GetValue();
-    danmaku.Speed = state.Rotation.GetValue();
+    danmaku.Speed = state.Speed.GetValue();
     danmaku.AngularSpeed = state.AngularVelocity.GetValue();
     danmaku.Color = state.Color;
   }
