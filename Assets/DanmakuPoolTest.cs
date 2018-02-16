@@ -13,7 +13,6 @@ public class DanmakuPoolTest : MonoBehaviour {
   int counter;
 
 	void Start () {
-    objects = new Transform[PoolSize];
     pool = new DanmakuPool(PoolSize);
     for (int i = 0; i < PoolSize; i++) {
       var danmaku = pool.Get();
@@ -22,8 +21,6 @@ public class DanmakuPoolTest : MonoBehaviour {
       danmaku.Rotation = Random.value * Mathf.PI * 2;
       danmaku.AngularSpeed = Random.Range(-1f, 1f) * Mathf.PI / 128;
       danmaku.Color = new Color(Random.value,Random.value, Random.value);
-      // objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
-      // objects[i].GetComponent<Renderer>().material.color = new Color(Random.value,Random.value, Random.value);
     }
     if (Renderer != null) {
       Renderer.Pool = pool;

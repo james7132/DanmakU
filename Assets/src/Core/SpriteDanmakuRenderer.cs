@@ -13,7 +13,6 @@ public class SpriteDanmakuRenderer : DanmakuRenderer {
   public Sprite Sprite;
 
   Mesh spriteMesh;
-  MaterialPropertyBlock propertyBlock;
 
   /// <summary>
   /// This function is called when the object becomes enabled and active.
@@ -26,16 +25,13 @@ public class SpriteDanmakuRenderer : DanmakuRenderer {
     spriteMesh.vertices = Sprite.vertices.Select(v => (Vector3)v).ToArray();
     spriteMesh.triangles = Sprite.triangles.Select(t => (int)t).ToArray();
     spriteMesh.uv = Sprite.uv;
-
-    propertyBlock = new MaterialPropertyBlock();
-    propertyBlock.SetTexture("_MainTex", Sprite.texture);
-    Debug.Log(spriteMesh.vertices.Length);
   }
 
   /// <summary>
   /// This function is called when the behaviour becomes disabled or inactive.
   /// </summary>
   protected override void OnDisable() {
+    base.OnDisable();
 #if UNITY_EDITOR
     if (EditorApplication.isPlaying) {
       Destroy(spriteMesh);
@@ -50,24 +46,22 @@ public class SpriteDanmakuRenderer : DanmakuRenderer {
   protected override Mesh GetMesh() {
 #if UNITY_EDITOR
     if (!EditorApplication.isPlaying && Sprite != null) {
-      spriteMesh = new Mesh();
+      if (spriteMesh == null) {
+        spriteMesh = new Mesh();
+      }
       spriteMesh.vertices = Sprite.vertices.Select(v => (Vector3)v).ToArray();
       spriteMesh.triangles = Sprite.triangles.Select(t => (int)t).ToArray();
       spriteMesh.uv = Sprite.uv;
+      return spriteMesh;
     }
 #endif
     return spriteMesh;
   } 
-  protected override MaterialPropertyBlock GetMaterialPropertyBlock() {
-#if UNITY_EDITOR
-    if (!EditorApplication.isPlaying && Sprite != null) {
-      propertyBlock = new MaterialPropertyBlock();
-      propertyBlock.SetTexture("_MainTex", Sprite.texture);
-    }
-#endif
-    return propertyBlock;
-  } 
-  protected override bool UsesSpriteRendering => true;
+
+  protected override void PrepareMaterial(Material material) {
+    if (Sprite == null) return;
+    material.SetTexture("_MainTex", Sprite.texture);
+  }
 
 }
 
