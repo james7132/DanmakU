@@ -28,15 +28,15 @@ public class DanmakuPool : IDisposable {
     ActiveCount = 0;
     Deactivated = new Stack<int>(poolSize);
 
-    Positions = new NativeArray<Vector2>(poolSize, Allocator.Persistent);
-    Rotations = new NativeArray<float>(poolSize, Allocator.Persistent);
+    Positions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+    Rotations = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
 
-    Speeds = new NativeArray<float>(poolSize, Allocator.Persistent);
-    AngularSpeeds = new NativeArray<float>(poolSize, Allocator.Persistent);
+    Speeds = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+    AngularSpeeds = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
 
-    Colors = new NativeArray<Vector4>(poolSize, Allocator.Persistent);
+    Colors = new NativeArray<Vector4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
 
-    Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent);
+    Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
   }
 
   public UpdateContext Update(JobHandle dependency = default(JobHandle)) {
