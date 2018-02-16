@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace DanmakU {
 
-public class MeshDanmakuRenderer : DanmakuRenderer {
+public sealed class MeshDanmakuRenderer : DanmakuRenderer {
 
   public Mesh Mesh;
 

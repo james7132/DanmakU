@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace DanmakU {
 
-public class SpriteDanmakuRenderer : DanmakuRenderer {
+public sealed class SpriteDanmakuRenderer : DanmakuRenderer {
 
   public Sprite Sprite;
 
