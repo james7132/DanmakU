@@ -30,7 +30,7 @@ public class DanmakuPoolTest : MonoBehaviour {
   /// Update is called every frame, if the MonoBehaviour is enabled.
   /// </summary>
   void Update() {
-    pool.Update().Dispose();
+    pool.Update().Complete();
     timer += Time.deltaTime;
     if (timer > 1/20f) {
       State.Rotation += 20 * Mathf.Deg2Rad;

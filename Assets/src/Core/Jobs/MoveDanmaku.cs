@@ -8,11 +8,8 @@ public struct MoveDanmaku : IJobParallelFor {
 
   public NativeArray<float> Times;
 
-  [ReadOnly] public NativeArray<Vector2> CurrentPositions;
-  [ReadOnly] public NativeArray<float> CurrentRotations;
-
-  [WriteOnly] public NativeArray<Vector2> NewPositions;
-  [WriteOnly] public NativeArray<float> NewRotations;
+  public NativeArray<Vector2> Positions;
+  public NativeArray<float> Rotations;
 
   [ReadOnly] public NativeArray<float> Speeds;
   [ReadOnly] public NativeArray<float> AngularSpeeds;
@@ -20,15 +17,15 @@ public struct MoveDanmaku : IJobParallelFor {
   [WriteOnly] public NativeArray<Matrix4x4> Transforms;
 
   public void Execute(int index) {
-    var rotation = (CurrentRotations[index] + AngularSpeeds[index] * DeltaTime) % (Mathf.PI * 2);
-    var position = CurrentPositions[index] + (Speeds[index] * RotationUtil.ToUnitVector(rotation) * DeltaTime);
+    var rotation = (Rotations[index] + AngularSpeeds[index] * DeltaTime) % (Mathf.PI * 2);
+    var position = Positions[index] + (Speeds[index] * RotationUtil.ToUnitVector(rotation) * DeltaTime);
 
     var rotationQuat = Quaternion.Euler(0, 0, rotation * Mathf.Rad2Deg);
 
     Times[index] += DeltaTime;
     Transforms[index] = Matrix4x4.TRS(position, rotationQuat, Vector3.one);
-    NewPositions[index] = position;
-    NewRotations[index] = rotation;
+    Positions[index] = position;
+    Rotations[index] = rotation;
   }
 
 }
