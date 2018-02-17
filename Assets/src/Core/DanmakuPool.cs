@@ -12,6 +12,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   public int ActiveCount { get; private set; }
 
+  internal NativeArray<float> Times;
+
   public NativeArray<Vector2> Positions;
   public NativeArray<float> Rotations;
 
@@ -28,6 +30,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     ActiveCount = 0;
     Deactivated = new Stack<int>(poolSize);
 
+    Times = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+    
     Positions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     Rotations = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
 
@@ -62,7 +66,10 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// invalid or imporperly initialized values.
   /// </remarks>
   /// <returns></returns>
-  public Danmaku Get() => new Danmaku(this, ActiveCount++);
+  public Danmaku Get() {
+    Times[ActiveCount] = 0f;
+    return new Danmaku(this, ActiveCount++);
+  } 
 
   /// <summary>
   /// Retrieves a batch of new Danmaku from the pool.
@@ -71,6 +78,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// <param name="count">the number of danmaku to create. Must be less than or equal to the length of of danmaku.</param>
   public void Get(Danmaku[] danmaku, int count) {
     for (var i = 0; i < count; i++) {
+      Times[ActiveCount + i] = 0f;
       danmaku[i] = new Danmaku(this, ActiveCount + i);
     }
     ActiveCount += count;
@@ -82,6 +90,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   public void Clear() => ActiveCount = 0;
 
   public void Dispose() {
+    Times.Dispose();
+
     Positions.Dispose();
     Rotations.Dispose();
 
@@ -107,6 +117,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   void DestroyInternal(int index) {
     ActiveCount--;
+    Times[index] = Times[ActiveCount];
     Swap(ref Positions, index, ActiveCount);
     Swap(ref Rotations, index, ActiveCount);
     Swap(ref Speeds, index, ActiveCount);
@@ -129,6 +140,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
       UpdateJobHandle = new MoveDanmaku {
         DeltaTime = Time.deltaTime,
+
+        Times = pool.Times,
 
         CurrentPositions = OldPositions,
         CurrentRotations = OldRotations,

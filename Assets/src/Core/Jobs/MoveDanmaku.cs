@@ -6,6 +6,8 @@ public struct MoveDanmaku : IJobParallelFor {
 
   public float DeltaTime;
 
+  public NativeArray<float> Times;
+
   [ReadOnly] public NativeArray<Vector2> CurrentPositions;
   [ReadOnly] public NativeArray<float> CurrentRotations;
 
@@ -23,6 +25,7 @@ public struct MoveDanmaku : IJobParallelFor {
 
     var rotationQuat = Quaternion.Euler(0, 0, rotation * Mathf.Rad2Deg);
 
+    Times[index] += DeltaTime;
     Transforms[index] = Matrix4x4.TRS(position, rotationQuat, Vector3.one);
     NewPositions[index] = position;
     NewRotations[index] = rotation;
