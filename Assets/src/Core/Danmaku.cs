@@ -21,25 +21,25 @@ namespace DanmakU {
 /// </remarks>
 public struct Danmaku {
 
-  internal readonly int Index;
+  public readonly int Id;
   public readonly DanmakuPool Pool;
 
   internal Danmaku(DanmakuPool pool, int index) {
     Pool = pool;
-    Index = index;
+    Id = index;
   }
 
   /// <summary>
   /// Gets the number of seconds since the Danmaku was created.
   /// </summary>
-  public float Time => Pool.Times[Index];
+  public float Time => Pool.Times[Id];
 
   /// <summary>
   /// Gets or sets the world position of the Danmaku.
   /// </summary>
   public Vector2 Position {
-    get { return Pool.Positions[Index]; }
-    set { Pool.Positions[Index] = value; }
+    get { return Pool.Positions[Id]; }
+    set { Pool.Positions[Id] = value; }
   }
 
   /// <summary>
@@ -51,8 +51,8 @@ public struct Danmaku {
   /// the Danmaku is moving in.
   /// </remarks>
   public float Rotation {
-    get { return Pool.Rotations[Index]; }
-    set { Pool.Rotations[Index] = value; }
+    get { return Pool.Rotations[Id]; }
+    set { Pool.Rotations[Id] = value; }
   }
 
   /// <summary>
@@ -63,8 +63,8 @@ public struct Danmaku {
   /// Can be negative.
   /// </remarks>
   public float Speed {
-    get { return Pool.Speeds[Index]; }
-    set { Pool.Speeds[Index] = value; }
+    get { return Pool.Speeds[Id]; }
+    set { Pool.Speeds[Id] = value; }
   }
 
   /// <summary>
@@ -74,16 +74,16 @@ public struct Danmaku {
   /// Units are in radians per second. Can be negative.
   /// </remarks>
   public float AngularSpeed {
-    get { return Pool.AngularSpeeds[Index]; }
-    set { Pool.AngularSpeeds[Index] = value; }
+    get { return Pool.AngularSpeeds[Id]; }
+    set { Pool.AngularSpeeds[Id] = value; }
   }
 
   /// <summary>
   /// Gets or sets the Danmaku's rendering color.
   /// </summary>
   public Color Color {
-    get { return Pool.Colors[Index]; }
-    set { Pool.Colors[Index] = value; }
+    get { return Pool.Colors[Id]; }
+    set { Pool.Colors[Id] = value; }
   }
 
   /// <summary>
