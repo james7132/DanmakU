@@ -10,6 +10,8 @@ namespace DanmakU {
 
 public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
+  const int kBatchSize = 32;
+
   public int ActiveCount { get; private set; }
 
   internal NativeArray<float> Times;
@@ -43,7 +45,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
   }
 
-  public UpdateContext Update(JobHandle dependency = default(JobHandle)) {
+  public JobHandle Update(JobHandle dependency = default(JobHandle)) {
     var bounds = DanmakuManager.Instance.Bounds;
     for (var i = 0; i < ActiveCount; i++) {
       if (bounds.Contains(Positions[i])) continue;
@@ -54,8 +56,21 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
       DestroyInternal(Deactivated.Pop());
     }
 
-    if (ActiveCount <= 0) return new UpdateContext();
-    return new UpdateContext(this, dependency);
+    if (ActiveCount <= 0) return dependency;
+
+    return new MoveDanmaku {
+      DeltaTime = Time.deltaTime,
+
+      Times = Times,
+
+      Positions = Positions,
+      Rotations = Rotations,
+
+      Speeds = Speeds,
+      AngularSpeeds = AngularSpeeds,
+
+      Transforms = Transforms
+    }.Schedule(ActiveCount, kBatchSize, dependency);
   }
 
   /// <summary>
@@ -123,48 +138,6 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Swap(ref Speeds, index, ActiveCount);
     Swap(ref AngularSpeeds, index, ActiveCount);
     Swap(ref Colors, index, ActiveCount);
-  }
-
-  public struct UpdateContext : IDisposable {
-
-    const int kBatchSize = 32;
-
-    public readonly NativeArray<Vector2> OldPositions;
-    public readonly NativeArray<float> OldRotations;
-    public readonly JobHandle UpdateJobHandle;
-    readonly bool isValid;
-
-    internal UpdateContext(DanmakuPool pool, JobHandle dependency) {
-      OldPositions = new NativeArray<Vector2>(pool.Positions, Allocator.TempJob);
-      OldRotations = new NativeArray<float>(pool.Rotations, Allocator.TempJob);
-
-      UpdateJobHandle = new MoveDanmaku {
-        DeltaTime = Time.deltaTime,
-
-        Times = pool.Times,
-
-        CurrentPositions = OldPositions,
-        CurrentRotations = OldRotations,
-
-        NewPositions = pool.Positions,
-        NewRotations = pool.Rotations,
-
-        Speeds = pool.Speeds,
-        AngularSpeeds = pool.AngularSpeeds,
-
-        Transforms = pool.Transforms
-      }.Schedule(pool.ActiveCount, kBatchSize, dependency);
-
-      isValid = true;
-    }
-
-    public void Dispose() {
-      if (!isValid) return;
-      UpdateJobHandle.Complete();
-      OldPositions.Dispose();
-      OldRotations.Dispose();
-    }
-
   }
 
   public struct Enumerator : IEnumerator<Danmaku> {
