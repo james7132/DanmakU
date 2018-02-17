@@ -33,6 +33,7 @@ public class DanmakuPoolTest : MonoBehaviour {
   /// </summary>
   void Update() {
     pool.ColliderRadius = 1;
+    DanmakuCollider.RebuildSpatialHashes();
     pool.Update().Complete();
     timer += Time.deltaTime;
     if (timer > 1/20f) {
