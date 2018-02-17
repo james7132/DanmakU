@@ -18,12 +18,21 @@ public struct MoveDanmaku : IJobParallelFor {
 
   public void Execute(int index) {
     var rotation = (Rotations[index] + AngularSpeeds[index] * DeltaTime) % (Mathf.PI * 2);
-    var position = Positions[index] + (Speeds[index] * RotationUtil.ToUnitVector(rotation) * DeltaTime);
+    var direction = RotationUtil.ToUnitVector(rotation);
+    var position = Positions[index] + (Speeds[index] * direction * DeltaTime);
 
-    var rotationQuat = Quaternion.Euler(0, 0, rotation * Mathf.Rad2Deg);
+    var transform = new Matrix4x4();
+    transform[0, 0] = direction.x;
+    transform[0, 1] = -direction.y;
+    transform[1, 0] = direction.y;
+    transform[1, 1] = direction.x;
+    transform[2, 2] = 1.0f;
+    transform[3, 3] = 1;
+    transform[0, 3] = position.x;
+    transform[1, 3] = position.y;
 
     Times[index] += DeltaTime;
-    Transforms[index] = Matrix4x4.TRS(position, rotationQuat, Vector3.one);
+    Transforms[index] = transform;
     Positions[index] = position;
     Rotations[index] = rotation;
   }
