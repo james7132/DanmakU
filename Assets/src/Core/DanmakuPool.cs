@@ -8,9 +8,9 @@ using System.Runtime.CompilerServices;
 
 namespace DanmakU {
 
-public class DanmakuPool : IDisposable {
+public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
-  public int ActiveCount;
+  public int ActiveCount { get; private set; }
 
   public NativeArray<Vector2> Positions;
   public NativeArray<float> Rotations;
@@ -54,17 +54,21 @@ public class DanmakuPool : IDisposable {
     return new UpdateContext(this, dependency);
   }
 
-  void DestroyInternal(int index) {
-    ActiveCount--;
-    Swap(ref Positions, index, ActiveCount);
-    Swap(ref Rotations, index, ActiveCount);
-    Swap(ref Speeds, index, ActiveCount);
-    Swap(ref AngularSpeeds, index, ActiveCount);
-    Swap(ref Colors, index, ActiveCount);
-  }
-
+  /// <summary>
+  /// Retrieves a new Danmaku from the pool.
+  /// </summary>
+  /// <remarks>
+  /// The Danmaku's data is not cleared upon retrieval. There may be
+  /// invalid or imporperly initialized values.
+  /// </remarks>
+  /// <returns></returns>
   public Danmaku Get() => new Danmaku(this, ActiveCount++);
 
+  /// <summary>
+  /// Retrieves a batch of new Danmaku from the pool.
+  /// </summary>
+  /// <param name="danmaku">an array of danmaku to write the values to.</param>
+  /// <param name="count">the number of danmaku to create. Must be less than or equal to the length of of danmaku.</param>
   public void Get(Danmaku[] danmaku, int count) {
     for (var i = 0; i < count; i++) {
       danmaku[i] = new Danmaku(this, ActiveCount + i);
@@ -72,11 +76,10 @@ public class DanmakuPool : IDisposable {
     ActiveCount += count;
   }
 
-  void Swap<T>(ref NativeArray<T> array, int a, int b) where T : struct {
-    T temp = array[a];
-    array[a] = array[b];
-    array[b] = temp;
-  }
+  /// <summary>
+  /// Destroys all danmaku in the pool.
+  /// </summary>
+  public void Clear() => ActiveCount = 0;
 
   public void Dispose() {
     Positions.Dispose();
@@ -90,7 +93,26 @@ public class DanmakuPool : IDisposable {
     Transforms.Dispose();
   }
 
+  public Enumerator GetEnumerator() => new Enumerator(this, 0, ActiveCount);
+  IEnumerator<Danmaku> IEnumerable<Danmaku>.GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
   internal void Destroy(Danmaku deactivate) => Deactivated.Push(deactivate.Index);
+
+  void Swap<T>(ref NativeArray<T> array, int a, int b) where T : struct {
+    T temp = array[a];
+    array[a] = array[b];
+    array[b] = temp;
+  }
+
+  void DestroyInternal(int index) {
+    ActiveCount--;
+    Swap(ref Positions, index, ActiveCount);
+    Swap(ref Rotations, index, ActiveCount);
+    Swap(ref Speeds, index, ActiveCount);
+    Swap(ref AngularSpeeds, index, ActiveCount);
+    Swap(ref Colors, index, ActiveCount);
+  }
 
   public struct UpdateContext : IDisposable {
 
@@ -131,6 +153,38 @@ public class DanmakuPool : IDisposable {
     }
 
   }
+
+  public struct Enumerator : IEnumerator<Danmaku> {
+
+    readonly DanmakuPool pool;
+    readonly int start;
+    readonly int end;
+    int index;
+
+    public Danmaku Current => new Danmaku(pool, index);
+    object IEnumerator.Current => Current;
+
+    internal Enumerator(DanmakuPool pool, int start, int count) {
+      this.pool =  pool;
+      this.start = start;
+      this.end = start + count;
+      index = -1;
+    }
+
+    public bool MoveNext() {
+      if (index < 0) {
+        index = start;
+      } else {
+        index++;
+      }
+      return index < end;
+    }
+
+    public void Reset() => index = -1;
+    public void Dispose() {}
+
+  }
+  
 }
 
 }
