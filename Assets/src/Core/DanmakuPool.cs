@@ -14,6 +14,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   public int ActiveCount { get; private set; }
 
+  public float ColliderRadius;
+
   internal NativeArray<float> Times;
 
   public NativeArray<Vector2> Positions;
@@ -24,7 +26,9 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   public NativeArray<Vector4> Colors;
 
-  public NativeArray<Matrix4x4> Transforms;
+  internal NativeArray<Matrix4x4> Transforms;
+  internal NativeArray<Vector2> OldPositions;
+  internal NativeArray<int> CollisionMasks;
 
   readonly Stack<int> Deactivated;
 
@@ -43,6 +47,9 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Colors = new NativeArray<Vector4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
 
     Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+
+    OldPositions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+    CollisionMasks = new NativeArray<int>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
   }
 
   public JobHandle Update(JobHandle dependency = default(JobHandle)) {
@@ -58,7 +65,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
     if (ActiveCount <= 0) return dependency;
 
-    return new MoveDanmaku {
+    OldPositions.CopyFrom(Positions);
+    var updateHandle = new MoveDanmaku {
       DeltaTime = Time.deltaTime,
 
       Times = Times,
@@ -71,6 +79,14 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
       Transforms = Transforms
     }.Schedule(ActiveCount, kBatchSize, dependency);
+    if (DanmakuCollider.ColliderCount > 0) {
+      updateHandle = new CollideDanamku {
+        Radius = ColliderRadius,
+        Positions = Positions,
+        Collisions = CollisionMasks
+      }.Schedule(ActiveCount, kBatchSize, updateHandle);
+    }
+    return updateHandle;
   }
 
   /// <summary>
@@ -116,13 +132,16 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Colors.Dispose();
 
     Transforms.Dispose();
+
+    OldPositions.Dispose();
+    CollisionMasks.Dispose();
   }
 
   public Enumerator GetEnumerator() => new Enumerator(this, 0, ActiveCount);
   IEnumerator<Danmaku> IEnumerable<Danmaku>.GetEnumerator() => GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-  internal void Destroy(Danmaku deactivate) => Deactivated.Push(deactivate.Index);
+  internal void Destroy(Danmaku deactivate) => Deactivated.Push(deactivate.Id);
 
   void Swap<T>(ref NativeArray<T> array, int a, int b) where T : struct {
     T temp = array[a];
