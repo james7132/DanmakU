@@ -12,7 +12,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   const int kBatchSize = 32;
 
-  public int ActiveCount { get; private set; }
+  int activeCount;
+  public int ActiveCount => activeCount;
 
   public float ColliderRadius;
 
@@ -33,7 +34,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   readonly Stack<int> Deactivated;
 
   public DanmakuPool(int poolSize) {
-    ActiveCount = 0;
+    activeCount = 0;
     Deactivated = new Stack<int>(poolSize);
 
     Times = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
@@ -53,40 +54,31 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   }
 
   public JobHandle Update(JobHandle dependency = default(JobHandle)) {
-    var bounds = DanmakuManager.Instance.Bounds;
-    for (var i = 0; i < ActiveCount; i++) {
-      if (bounds.Contains(Positions[i])) continue;
-      Deactivated.Push(i);
-    }
-
     while (Deactivated.Count > 0) {
       DestroyInternal(Deactivated.Pop());
     }
 
     if (ActiveCount <= 0) return dependency;
-
-    OldPositions.CopyFrom(Positions);
-    var updateHandle = new MoveDanmaku {
+    new NativeSlice<Vector2>(OldPositions, 0, activeCount).CopyFrom(
+      new NativeSlice<Vector2>(Positions, 0, activeCount));
+    float dt = Time.deltaTime;
+    dependency = new MoveDanmaku {
       DeltaTime = Time.deltaTime,
-
-      Times = Times,
-
       Positions = Positions,
       Rotations = Rotations,
-
+      Times = Times,
       Speeds = Speeds,
       AngularSpeeds = AngularSpeeds,
-
       Transforms = Transforms
     }.Schedule(ActiveCount, kBatchSize, dependency);
     if (DanmakuCollider.ColliderCount > 0) {
-      updateHandle = new CollideDanamku {
+      dependency = new CollideDanamku {
         Radius = ColliderRadius,
         Positions = Positions,
         Collisions = CollisionMasks
-      }.Schedule(ActiveCount, kBatchSize, updateHandle);
+      }.Schedule(ActiveCount, kBatchSize, dependency);
     }
-    return updateHandle;
+    return dependency;
   }
 
   /// <summary>
@@ -98,8 +90,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// </remarks>
   /// <returns></returns>
   public Danmaku Get() {
-    Times[ActiveCount] = 0f;
-    return new Danmaku(this, ActiveCount++);
+    Times[activeCount] = 0f;
+    return new Danmaku(this, activeCount++);
   } 
 
   /// <summary>
@@ -109,16 +101,16 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// <param name="count">the number of danmaku to create. Must be less than or equal to the length of of danmaku.</param>
   public void Get(Danmaku[] danmaku, int count) {
     for (var i = 0; i < count; i++) {
-      Times[ActiveCount + i] = 0f;
-      danmaku[i] = new Danmaku(this, ActiveCount + i);
+      Times[activeCount + i] = 0f;
+      danmaku[i] = new Danmaku(this, activeCount + i);
     }
-    ActiveCount += count;
+    activeCount += count;
   }
 
   /// <summary>
   /// Destroys all danmaku in the pool.
   /// </summary>
-  public void Clear() => ActiveCount = 0;
+  public void Clear() => activeCount = 0;
 
   public void Dispose() {
     Times.Dispose();
@@ -143,20 +135,14 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   internal void Destroy(Danmaku deactivate) => Deactivated.Push(deactivate.Id);
 
-  void Swap<T>(ref NativeArray<T> array, int a, int b) where T : struct {
-    T temp = array[a];
-    array[a] = array[b];
-    array[b] = temp;
-  }
-
   void DestroyInternal(int index) {
-    ActiveCount--;
-    Times[index] = Times[ActiveCount];
-    Swap(ref Positions, index, ActiveCount);
-    Swap(ref Rotations, index, ActiveCount);
-    Swap(ref Speeds, index, ActiveCount);
-    Swap(ref AngularSpeeds, index, ActiveCount);
-    Swap(ref Colors, index, ActiveCount);
+    activeCount--;
+    Times[index] = Times[activeCount];
+    Positions[index] = Positions[activeCount];
+    Rotations[index] = Rotations[activeCount];
+    Speeds[index] = Speeds[activeCount];
+    AngularSpeeds[index] = AngularSpeeds[activeCount];
+    Colors[index] = Colors[activeCount];
   }
 
   public struct Enumerator : IEnumerator<Danmaku> {

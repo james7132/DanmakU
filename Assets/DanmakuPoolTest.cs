@@ -41,7 +41,15 @@ public class DanmakuPoolTest : MonoBehaviour {
       fireable.Fire(State);
       timer = 0;
     }
+    var bounds = DanmakuManager.Instance.Bounds;
+    var size = bounds.extents;
+    size.z = float.MaxValue;
+    bounds.extents = size;
     foreach (var danmaku in pool) {
+      if (!bounds.Contains(danmaku.Position)) {
+        danmaku.Destroy();
+        continue;
+      }
       var layerMask = pool.CollisionMasks[danmaku.Id];
       if (layerMask == 0) continue; 
       var oldPosition = pool.OldPositions[danmaku.Id];
