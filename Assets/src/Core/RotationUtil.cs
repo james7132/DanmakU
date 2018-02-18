@@ -3,27 +3,24 @@ using UnityEngine;
 
 public static class RotationUtil {
 
-  internal const float kRotationAccuracy = Mathf.PI / 10000;
-  internal const int kRotationCacheSize = (int)(Mathf.PI * 2 / kRotationAccuracy);
-  internal static Vector2[] RotationCache;
-
-  static RotationUtil() {
-    // TODO(james7132): This sadly promotes cache misses, can we do better than caching unit vectors?
-    RotationCache = new Vector2[kRotationCacheSize];
-    for (var i = 0; i < RotationCache.Length; i++) {
-      var angle = kRotationAccuracy * i;
-      RotationCache[i] = new Vector2 {
-        x = Mathf.Cos(angle),
-        y = Mathf.Sin(angle)
-      };
-    }
-  }
-
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Vector2 ToUnitVector(float rotation) {
-    int index = (int)(rotation / kRotationAccuracy);
-    index = (index %= kRotationCacheSize) < 0 ? index + kRotationCacheSize : index;
-    return RotationCache[index];
+    const float HalfPI = Mathf.PI / 2;
+    return new Vector2(SinHP(rotation + HalfPI), SinHP(rotation));
+  }
+
+  /// <summary>
+  /// A fast approximate sine function.
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static float SinHP(float t) {
+    const float TwoPI = Mathf.PI * 2;
+    t = (t % TwoPI + TwoPI) % TwoPI;
+    t = t - Mathf.PI;
+    float sin = t * (1.27323954f - Mathf.Sign(t) * 0.405284735f * t);
+    float sinSign = Mathf.Sign(sin);
+    sin *= sinSign * 0.255f * (sin - sinSign) + 1;
+		return sin;
   }
 
 }
