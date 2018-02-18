@@ -8,11 +8,11 @@ using UnityEditor;
 
 namespace DanmakU {
 
-public sealed class MeshDanmakuRenderer : DanmakuRenderer {
+internal sealed class MeshDanmakuRenderer : DanmakuRenderer {
 
-  public Mesh Mesh;
-
-  protected override Mesh GetMesh() => Mesh;
+  public MeshDanmakuRenderer(Material material, Mesh mesh) : base(material) {
+    Mesh = mesh;
+  }
 
 }
 

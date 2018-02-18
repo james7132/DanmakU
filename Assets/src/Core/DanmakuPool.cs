@@ -19,6 +19,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   internal NativeArray<float> Times;
 
+  public NativeArray<DanmakuState> InitialStates;
+
   public NativeArray<Vector2> Positions;
   public NativeArray<float> Rotations;
 
@@ -37,6 +39,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     activeCount = 0;
     Deactivated = new Stack<int>(poolSize);
 
+    InitialStates = new NativeArray<DanmakuState>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     Times = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     
     Positions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
@@ -82,16 +85,15 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   }
 
   /// <summary>
-  /// Retrieves a new Danmaku from the pool.
+  /// Creates a new Danmaku from the pool.
   /// </summary>
-  /// <remarks>
-  /// The Danmaku's data is not cleared upon retrieval. There may be
-  /// invalid or imporperly initialized values.
-  /// </remarks>
-  /// <returns></returns>
-  public Danmaku Get() {
+  public Danmaku Get(DanamkuConfig config) {
+    var state = config.CreateState();
+    InitialStates[activeCount] = state;
     Times[activeCount] = 0f;
-    return new Danmaku(this, activeCount++);
+    var danmaku = new Danmaku(this, activeCount++);
+    danmaku.ApplyState(state);
+    return danmaku;
   } 
 
   /// <summary>
@@ -113,6 +115,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   public void Clear() => activeCount = 0;
 
   public void Dispose() {
+    InitialStates.Dispose();
     Times.Dispose();
 
     Positions.Dispose();
@@ -129,7 +132,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     CollisionMasks.Dispose();
   }
 
-  public Enumerator GetEnumerator() => new Enumerator(this, 0, ActiveCount);
+  public DanmakuEnumerator GetEnumerator() => new DanmakuEnumerator(this, 0, ActiveCount);
   IEnumerator<Danmaku> IEnumerable<Danmaku>.GetEnumerator() => GetEnumerator();
   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -137,6 +140,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   void DestroyInternal(int index) {
     activeCount--;
+    InitialStates[index] = InitialStates[activeCount];
     Times[index] = Times[activeCount];
     Positions[index] = Positions[activeCount];
     Rotations[index] = Rotations[activeCount];
@@ -144,38 +148,38 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     AngularSpeeds[index] = AngularSpeeds[activeCount];
     Colors[index] = Colors[activeCount];
   }
-
-  public struct Enumerator : IEnumerator<Danmaku> {
-
-    readonly DanmakuPool pool;
-    readonly int start;
-    readonly int end;
-    int index;
-
-    public Danmaku Current => new Danmaku(pool, index);
-    object IEnumerator.Current => Current;
-
-    internal Enumerator(DanmakuPool pool, int start, int count) {
-      this.pool =  pool;
-      this.start = start;
-      this.end = start + count;
-      index = -1;
-    }
-
-    public bool MoveNext() {
-      if (index < 0) {
-        index = start;
-      } else {
-        index++;
-      }
-      return index < end;
-    }
-
-    public void Reset() => index = -1;
-    public void Dispose() {}
-
-  }
   
+}
+
+public struct DanmakuEnumerator : IEnumerator<Danmaku> {
+
+  readonly DanmakuPool pool;
+  readonly int start;
+  readonly int end;
+  int index;
+
+  public Danmaku Current => new Danmaku(pool, index);
+  object IEnumerator.Current => Current;
+
+  internal DanmakuEnumerator(DanmakuPool pool, int start, int count) {
+    this.pool =  pool;
+    this.start = start;
+    this.end = start + count;
+    index = -1;
+  }
+
+  public bool MoveNext() {
+    if (index < 0) {
+      index = start;
+    } else {
+      index++;
+    }
+    return index < end;
+  }
+
+  public void Reset() => index = -1;
+  public void Dispose() {}
+
 }
 
 }

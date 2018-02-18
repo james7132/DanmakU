@@ -12,22 +12,4 @@ public abstract class DanmakuModifier {
 
 }
 
-public static class IDanmakuModifierExtensions {
-
-  public static JobHandle RunUpdates(this List<DanmakuModifier> modifiers, 
-                                     DanmakuPool pool,
-                                     JobHandle dependency = default(JobHandle)) {
-    foreach (var modifier in modifiers) {
-      dependency = modifier.PreUpdate(pool, dependency);
-    }
-    dependency = pool.Update(dependency);
-    foreach (var modifier in modifiers) {
-      dependency = modifier.PostUpdate(pool, dependency);
-    }
-    return dependency;
-  }
-
-
-}
-
 }

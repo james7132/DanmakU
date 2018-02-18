@@ -34,6 +34,8 @@ public struct Danmaku {
   /// </summary>
   public float Time => Pool.Times[Id];
 
+  public DanmakuState InitialState => Pool.InitialStates[Id];
+
   /// <summary>
   /// Gets or sets the world position of the Danmaku.
   /// </summary>
@@ -97,6 +99,14 @@ public struct Danmaku {
   /// destroyed Danmaku will likely result in undefined behavior.
   /// </remarks>
   public void Destroy() => Pool.Destroy(this);
+
+  public void ApplyState(DanmakuState state) {
+    Position = state.Position;
+    Rotation = state.Rotation;
+    Speed = state.Speed;
+    AngularSpeed = state.AngularVelocity;
+    Color = state.Color;
+  }
 
 }
 
