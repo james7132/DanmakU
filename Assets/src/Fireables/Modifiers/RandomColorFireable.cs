@@ -11,7 +11,7 @@ namespace DanmakU.Fireables {
             _source = source;
         }
 
-        public override void Fire(DanmakuState state) {
+        public override void Fire(DanamkuConfig state) {
             state.Color = _source.Evaluate(Random.value);
             Subfire(state);
         }

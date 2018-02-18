@@ -6,7 +6,7 @@ using UnityEngine;
 namespace DanmakU {
 
 public interface IFireable {
-  void Fire(DanmakuState state);
+  void Fire(DanamkuConfig state);
 }
 
 }

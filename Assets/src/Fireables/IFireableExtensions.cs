@@ -8,7 +8,7 @@ namespace DanmakU.Fireables {
 
 public static class FireableExtensions {
   
-  public delegate void FireAction(Action<DanmakuState> fire, DanmakuState state);
+  public delegate void FireAction(Action<DanamkuConfig> fire, DanamkuConfig state);
 
   class FuncFireable : Fireable {
 
@@ -19,7 +19,7 @@ public static class FireableExtensions {
         _fireAction = fireAction;
     }
 
-    public override void Fire(DanmakuState state) {
+    public override void Fire(DanamkuConfig state) {
         _fireAction(Subfire, state);
     }
 
