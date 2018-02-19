@@ -16,6 +16,7 @@ internal abstract class DanmakuRenderer : IDisposable {
 
   static Vector4[] colorCache = new Vector4[kBatchSize];
   static Matrix4x4[] transformCache = new Matrix4x4[kBatchSize];
+  static int ColorPropertyId = Shader.PropertyToID("_Color");
 
   public Color Color { get; set; } = Color.white;
 
@@ -83,7 +84,7 @@ internal abstract class DanmakuRenderer : IDisposable {
   }
 
   void RenderBatch(Mesh mesh, int batchSize, int layer) {
-    propertyBlock.SetVectorArray("_Color", colorCache);
+    propertyBlock.SetVectorArray(ColorPropertyId, colorCache);
     Graphics.DrawMeshInstanced(mesh, 0, renderMaterial, transformCache,
       count: batchSize,
       properties: propertyBlock,
