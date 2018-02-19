@@ -17,6 +17,7 @@ public class DanmakuManager : MonoBehaviour {
 
   Dictionary<DanmakuRendererConfig, RendererGroup> RendererGroups;
   List<DanmakuRendererConfig> EmptyGroups;
+  JobHandle UpdateHandle;
 
   /// <summary>
   /// Awake is called when the script instance is being loaded.
@@ -41,7 +42,7 @@ public class DanmakuManager : MonoBehaviour {
   /// Update is called every frame, if the MonoBehaviour is enabled.
   /// </summary>
   void Update() {
-    WaitForUpdateComplete();
+    UpdateHandle.Complete();
     var bounds = Bounds;
     var size = bounds.extents;
     size.z = float.MaxValue;
@@ -73,8 +74,10 @@ public class DanmakuManager : MonoBehaviour {
   /// </summary>
   void LateUpdate() {
     DanmakuCollider.RebuildSpatialHashes();
+    UpdateHandle = default(JobHandle);
     foreach (var group in RendererGroups.Values) {
-      group.StartUpdate();
+      UpdateHandle = JobHandle.CombineDependencies(UpdateHandle, group.StartUpdate());
+      JobHandle.ScheduleBatchedJobs();
     }
   }
 
@@ -86,14 +89,8 @@ public class DanmakuManager : MonoBehaviour {
     Gizmos.DrawWireCube(Bounds.center, Bounds.size);
   }
 
-  void WaitForUpdateComplete() {
-    foreach (var group in RendererGroups.Values) {
-      group.CompleteUpdate();
-    }
-  }
-
   void RenderBullets(Camera camera) {
-    WaitForUpdateComplete();
+    UpdateHandle.Complete();
     foreach (var group in RendererGroups.Values) {
       group.Render(gameObject.layer);
     }
@@ -147,7 +144,6 @@ public class DanmakuManager : MonoBehaviour {
 
     public readonly DanmakuRenderer Renderer;
     public List<DanmakuSet> Sets;
-    readonly List<JobHandle> UpdateHandles;
 
     public int Count => Sets.Count;
     
@@ -155,41 +151,24 @@ public class DanmakuManager : MonoBehaviour {
       Assert.IsNotNull(renderer);
       Renderer = renderer;
       Sets = new List<DanmakuSet>();
-      UpdateHandles = new List<JobHandle>();
     }
 
-    public void AddSet(DanmakuSet set) {
-      Sets.Add(set);
-      UpdateHandles.Add(default(JobHandle));
-    }
+    public void AddSet(DanmakuSet set) => Sets.Add(set);
 
-    public bool RemoveSet(DanmakuSet set) {
-      int index = Sets.IndexOf(set);
-      if (index < 0) return false;
-      Sets.RemoveAt(index);
-      UpdateHandles.RemoveAt(index);
-      return true;
-    }
+    public bool RemoveSet(DanmakuSet set) => Sets.Remove(set);
 
-    public void StartUpdate() {
+    public JobHandle StartUpdate() {
+      var update = default(JobHandle);
       for (var i = 0; i < Sets.Count; i++) {
-        UpdateHandles[i] = Sets[i].Update(default(JobHandle));
+        update = JobHandle.CombineDependencies(update, Sets[i].Update(default(JobHandle)));
       }
+      return update;
     }
 
-    public void CompleteUpdate() {
-      foreach (var handle in UpdateHandles) {
-        if (!handle.IsCompleted) handle.Complete();
-      }
-    }
-
-    public void Render(int layer) {
-      Renderer.Render(Sets, layer);
-    }
+    public void Render(int layer) => Renderer.Render(Sets, layer);
 
     public void Dispose() {
       Sets.Clear();
-      UpdateHandles.Clear();
       foreach (var set in Sets) {
         set.Dispose();
       }
