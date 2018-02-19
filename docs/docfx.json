@@ -47,6 +47,13 @@
         ]
       }
     ],
+    "globalMetadata": {
+      "_appTitle": "DanmakU",
+      "_gitContribute": {
+        "repo": "https://github.com/james7132/DanmakU",
+        "branch": "develop",
+      }
+    },
     "dest": "_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
