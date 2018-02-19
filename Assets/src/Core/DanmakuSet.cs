@@ -9,24 +9,24 @@ namespace DanmakU {
 public class DanmakuSet : IEnumerable<Danmaku>, IFireable, IDisposable {
 
   public readonly DanmakuPool Pool;
-  readonly List<DanmakuModifier> Modifiers;
+  readonly List<IDanmakuModifier> Modifiers;
 
   internal DanmakuSet(DanmakuPool pool) {
     Pool = pool;
-    Modifiers = new List<DanmakuModifier>();
+    Modifiers = new List<IDanmakuModifier>();
   }
 
-  public DanmakuSet AddModifier(DanmakuModifier modifier) {
+  public DanmakuSet AddModifier(IDanmakuModifier modifier) {
     Modifiers.Add(modifier);
     return this;
   }
 
-  public DanmakuSet AddModifiers(IEnumerable<DanmakuModifier> modifiers) {
+  public DanmakuSet AddModifiers(IEnumerable<IDanmakuModifier> modifiers) {
     Modifiers.AddRange(modifiers);
     return this;
   }
 
-  public DanmakuSet RemoveModifiers(DanmakuModifier modifier) {
+  public DanmakuSet RemoveModifiers(IDanmakuModifier modifier) {
     Modifiers.Remove(modifier);
     return this;
   }
@@ -42,13 +42,11 @@ public class DanmakuSet : IEnumerable<Danmaku>, IFireable, IDisposable {
   public void ClearModifiers() => Modifiers.Clear();
 
   internal JobHandle Update(JobHandle dependency) {
+    Pool.FlushDestroyed();
     foreach (var modifier in Modifiers) {
-      dependency = modifier.PreUpdate(Pool, dependency);
+      dependency = modifier.UpdateDannmaku(Pool, dependency);
     }
     dependency = Pool.Update(dependency);
-    foreach (var modifier in Modifiers) {
-      dependency = modifier.PostUpdate(Pool, dependency);
-    }
     return dependency;
   }
 

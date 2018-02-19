@@ -16,6 +16,7 @@ public class DanmakuManager : MonoBehaviour {
   public int DefaultPoolSize = 1000;
 
   Dictionary<DanmakuRendererConfig, RendererGroup> RendererGroups;
+  List<DanmakuRendererConfig> EmptyGroups;
 
   /// <summary>
   /// Awake is called when the script instance is being loaded.
@@ -103,6 +104,21 @@ public class DanmakuManager : MonoBehaviour {
     var group = GetOrCreateRendererGroup(config);
     group.AddSet(set);
     return set;
+  }
+
+  internal void DestroyDanmakuSet(DanmakuSet set) {
+    EmptyGroups = EmptyGroups ?? new List<DanmakuRendererConfig>();
+    foreach (var kvp in RendererGroups) {
+      var group = kvp.Value;
+      group.RemoveSet(set);
+      if (group.Count <= 0) {
+        EmptyGroups.Add(kvp.Key);
+      }
+    }
+    foreach (var key in EmptyGroups) {
+      RendererGroups.Remove(key);
+    }
+    EmptyGroups.Clear();
   }
 
   RendererGroup GetOrCreateRendererGroup(DanmakuRendererConfig config) {

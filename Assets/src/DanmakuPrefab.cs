@@ -27,6 +27,8 @@ public class DanmakuPrefab : MonoBehaviour {
   [SerializeField] internal float ColliderRadius = 1f;
   [SerializeField] internal Vector2 ColliderOffset;
 
+  IDanmakuModifier[] Modifiers;
+
   /// <summary>
   /// Callback to draw gizmos that are pickable and always drawn.
   /// </summary>
@@ -34,6 +36,10 @@ public class DanmakuPrefab : MonoBehaviour {
     var center = transform.TransformPoint(ColliderOffset);
     Gizmos.color = Color.cyan;
     Gizmos.DrawWireSphere(center, ColliderRadius);
+  }
+
+  public IDanmakuModifier[] GetModifiers() {
+    return Modifiers ?? (Modifiers = GetComponents<IDanmakuModifier>());
   }
 
   internal DanmakuRendererConfig GetRendererConfig() {

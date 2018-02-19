@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Unity.Jobs;
+﻿using Unity.Jobs;
 
 namespace DanmakU {
 
-public abstract class DanmakuModifier {
+public interface IDanmakuModifier {
 
-  public virtual JobHandle PreUpdate(DanmakuPool pool, JobHandle dependency) => dependency;
-  public virtual JobHandle PostUpdate(DanmakuPool pool, JobHandle dependency) => dependency;
+  JobHandle UpdateDannmaku(DanmakuPool pool, JobHandle dependency);
 
 }
 
