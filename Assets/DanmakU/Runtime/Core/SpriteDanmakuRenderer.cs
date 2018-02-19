@@ -7,6 +7,8 @@ namespace DanmakU {
 
 internal sealed class SpriteDanmakuRenderer : DanmakuRenderer {
 
+  static int MainTexPropertyId = Shader.PropertyToID("_MainTex");
+
   Sprite sprite;
   public Sprite Sprite {
     get { return sprite; }
@@ -32,7 +34,7 @@ internal sealed class SpriteDanmakuRenderer : DanmakuRenderer {
 
   protected override void PrepareMaterial(Material material) {
     if (Sprite == null) return;
-    material.SetTexture("_MainTex", Sprite.texture);
+    material.SetTexture(MainTexPropertyId, Sprite.texture);
   }
 
 }
