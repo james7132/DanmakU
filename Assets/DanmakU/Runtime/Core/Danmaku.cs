@@ -16,7 +16,7 @@ namespace DanmakU {
 /// As the internal data of the backing DanmakuPool may be moved around after an update, the 
 /// internal index of Danmaku may not point to the same logical bullet from update to update.
 /// As a result, holding long term stores of Danmaku is ill-advised. Likewise editing Danmaku outside
-/// of the scope from which they are read from the pool (i.e. <see cref="Danmaku.Get"> or via enumeration)
+/// of the scope from which they are read from the pool (i.e. <see cref="Danmaku.Get"/> or via enumeration)
 /// is equally ill-advised and may lead to undefined behavior.
 /// </remarks>
 public struct Danmaku {
@@ -61,7 +61,7 @@ public struct Danmaku {
   /// Gets or sets the speed of the Danmaku.
   /// </summary>
   /// <remarks>
-  /// Units are in units per second. Movement direction is based on <see cref="Rotation">.
+  /// Units are in units per second. Movement direction is based on <see cref="Rotation"/>.
   /// Can be negative.
   /// </remarks>
   public float Speed {
