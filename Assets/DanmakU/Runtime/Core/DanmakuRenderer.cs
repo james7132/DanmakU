@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -51,7 +52,7 @@ internal abstract class DanmakuRenderer : IDisposable {
     Object.DestroyImmediate(renderMaterial);
   }
 
-  internal void Render(List<DanmakuSet> sets, int layer) {
+  internal unsafe void Render(List<DanmakuSet> sets, int layer) {
     var mesh = Mesh;
     int batchIndex = 0;
     foreach (var set in sets) {
@@ -64,18 +65,16 @@ internal abstract class DanmakuRenderer : IDisposable {
       int poolIndex = 0;
       while (poolIndex < pool.ActiveCount) {
         var count = Mathf.Min(kBatchSize - batchIndex, pool.ActiveCount - poolIndex);
-        if (count == kBatchSize) {
-          new NativeSlice<Vector4>(poolColors, poolIndex, count).CopyTo(colorCache);
-          new NativeSlice<Matrix4x4>(poolTransforms, poolIndex, count).CopyTo(transformCache);
-          batchIndex = 0;
-          poolIndex += count;
-        } else {
-          // This is only because CopyTo requires the array and slice to be the same size.
-          for (; poolIndex < pool.ActiveCount && batchIndex < kBatchSize; batchIndex++, poolIndex++) {
-            colorCache[batchIndex] = poolColors[poolIndex];
-            transformCache[batchIndex] = poolTransforms[poolIndex];
-          }
+        fixed (void* colors = colorCache) {
+          var srcPtr = ((Vector4*)poolColors.GetUnsafeReadOnlyPtr()) + poolIndex;
+          UnsafeUtility.MemCpy(colors, srcPtr, sizeof(Vector4) * count);
         }
+        fixed (void* transforms = transformCache) {
+          var srcPtr = ((Matrix4x4*)poolTransforms.GetUnsafeReadOnlyPtr()) + poolIndex;
+          UnsafeUtility.MemCpy(transforms, srcPtr, sizeof(Matrix4x4) * count);
+        }
+        batchIndex += count;
+        poolIndex += count;
         batchIndex %= kBatchSize;
         if (batchIndex == 0) RenderBatch(mesh, kBatchSize, layer);
       }
