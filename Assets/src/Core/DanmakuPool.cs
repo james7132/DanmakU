@@ -10,10 +10,12 @@ namespace DanmakU {
 
 public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
-  const int kBatchSize = 32;
+  public const int kBatchSize = 32;
+  const int kGrowthFactor = 2;
 
   int activeCount;
   public int ActiveCount => activeCount;
+  public int Capacity { get; private set; }
 
   public float ColliderRadius;
 
@@ -37,6 +39,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   public DanmakuPool(int poolSize) {
     activeCount = 0;
+    Capacity = poolSize;
     Deactivated = new Stack<int>(poolSize);
 
     InitialStates = new NativeArray<DanmakuState>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
@@ -56,11 +59,13 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     CollisionMasks = new NativeArray<int>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
   }
 
-  public JobHandle Update(JobHandle dependency = default(JobHandle)) {
+  internal void FlushDestroyed() {
     while (Deactivated.Count > 0) {
       DestroyInternal(Deactivated.Pop());
     }
+  }
 
+  internal JobHandle Update(JobHandle dependency = default(JobHandle)) {
     if (ActiveCount <= 0) return dependency;
     new NativeSlice<Vector2>(OldPositions, 0, activeCount).CopyFrom(
       new NativeSlice<Vector2>(Positions, 0, activeCount));
@@ -88,6 +93,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// Creates a new Danmaku from the pool.
   /// </summary>
   public Danmaku Get(DanamkuConfig config) {
+    CheckCapacity(1);
     var state = config.CreateState();
     InitialStates[activeCount] = state;
     Times[activeCount] = 0f;
@@ -102,6 +108,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// <param name="danmaku">an array of danmaku to write the values to.</param>
   /// <param name="count">the number of danmaku to create. Must be less than or equal to the length of of danmaku.</param>
   public void Get(Danmaku[] danmaku, int count) {
+    CheckCapacity(count);
     for (var i = 0; i < count; i++) {
       Times[activeCount + i] = 0f;
       danmaku[i] = new Danmaku(this, activeCount + i);
@@ -113,6 +120,35 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// Destroys all danmaku in the pool.
   /// </summary>
   public void Clear() => activeCount = 0;
+
+  void CheckCapacity(int count) {
+    if (activeCount + count > Capacity) {
+      Resize();
+    }
+  }
+
+  void Resize() {
+    Debug.LogWarning("A DanmakuPool is being resized due to inadequate capacity. This is expensive. Consider a higher starting pool size.");
+    Capacity *= kGrowthFactor;
+    Resize(ref InitialStates);
+    Resize(ref Times);
+    Resize(ref Positions);
+    Resize(ref Rotations);
+    Resize(ref Speeds);
+    Resize(ref AngularSpeeds);
+    Resize(ref Colors);
+    Resize(ref Transforms);
+    Resize(ref OldPositions);
+    Resize(ref CollisionMasks);
+  }
+
+  static void Resize<T>(ref NativeArray<T> array) where T : struct {
+    var newArray = new NativeArray<T>(array.Length * kGrowthFactor, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+    var oldArray = array;
+    new NativeSlice<T>(newArray, 0, array.Length).CopyFrom(array);
+    array = newArray;
+    oldArray.Dispose();
+  }
 
   public void Dispose() {
     InitialStates.Dispose();
