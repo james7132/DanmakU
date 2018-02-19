@@ -42,14 +42,15 @@ public class DanmakuManager : MonoBehaviour {
   /// </summary>
   void Update() {
     WaitForUpdateComplete();
-    var size = Bounds.extents;
+    var bounds = Bounds;
+    var size = bounds.extents;
     size.z = float.MaxValue;
-    Bounds.extents = size;
+    bounds.extents = size;
     foreach (var group in RendererGroups.Values) {
       foreach (var set in group.Sets) {
         var pool = set.Pool;
         foreach (var danmaku in pool) {
-          if (!Bounds.Contains(danmaku.Position)) {
+          if (!bounds.Contains(danmaku.Position)) {
             danmaku.Destroy();
             continue;
           }
