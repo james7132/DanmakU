@@ -10,8 +10,8 @@ public abstract class DanmakuBehaviour : MonoBehaviour {
 
   protected DanmakuSet CreateSet(DanmakuPrefab prefab) {
     var set = DanmakuManager.Instance.CreateDanmakuSet(prefab.GetRendererConfig());
-    // TODO(james7132): Add fetching modifier components here;
     (OwnedDanmakuSets ?? (OwnedDanmakuSets = new List<DanmakuSet>())).Add(set);
+    set.AddModifiers(prefab.GetModifiers());
     return set;
   }
 
@@ -20,7 +20,11 @@ public abstract class DanmakuBehaviour : MonoBehaviour {
   /// </summary>
   void OnDestroy() {
     if (OwnedDanmakuSets == null) return;
+    var manager = DanmakuManager.Instance;
     foreach (var danmakuSet in OwnedDanmakuSets) {
+      if (manager != null) {
+        manager.DestroyDanmakuSet(danmakuSet);
+      }
       danmakuSet.Dispose();
     }
   }

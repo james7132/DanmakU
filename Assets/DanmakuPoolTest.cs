@@ -10,16 +10,14 @@ public class DanmakuPoolTest : DanmakuBehaviour {
 
   public int PoolSize;
   public DanmakuPrefab prefab;
-  public DanmakuRenderer Renderer;
   public DanamkuConfig State;
   public Ring Ring;
   public Circle Circle;
   IFireable fireable;
   float timer;
-  RaycastHit2D[] raycastCache;
 
 	void Start () {
-    fireable = Ring.Of(Circle) .Of(CreateSet(prefab));
+    fireable = Ring.Of(Circle).Of(CreateSet(prefab));
 	}
 
   /// <summary>

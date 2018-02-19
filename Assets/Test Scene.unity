@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PoolSize: 150000
-  prefab: {fileID: 0}
+  prefab: {fileID: 2040105326}
   State:
     Position: {x: 0, y: 0}
     Rotation:
@@ -155,13 +155,13 @@ MonoBehaviour:
       Min: 20
       Max: 20
     AngularVelocity:
-      Min: 0.19625
-      Max: 0.19625
-    Color: {r: 1, g: 0, b: 0, a: 1}
+      Min: 20
+      Max: 20
+    Color: {r: 0.006026864, g: 1, b: 0, a: 1}
   Ring:
     Count:
-      Min: 5
-      Max: 5
+      Min: 50
+      Max: 50
     Radius:
       Min: 3
       Max: 3
@@ -259,7 +259,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1481724627}
   - component: {fileID: 1481724628}
-  - component: {fileID: 1481724629}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -316,23 +315,6 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &1481724629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1481724626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4a613ed6868c7143bb742a67f636440, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 0
-  Material: {fileID: 0}
-  Mesh: {fileID: 0}
-  Sprite: {fileID: 0}
-  ColliderRadius: 1
-  ColliderOffset: {x: 0, y: 0}
 --- !u!1 &2040105325
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,6 +324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2040105327}
   - component: {fileID: 2040105326}
+  - component: {fileID: 2040105328}
   m_Layer: 0
   m_Name: DanmakuPrefab
   m_TagString: Untagged
@@ -364,7 +347,7 @@ MonoBehaviour:
   Material: {fileID: 2100000, guid: d8aebcd1c9b56cf429888cb2ab9c2c28, type: 2}
   Mesh: {fileID: 0}
   Sprite: {fileID: 21300000, guid: 4cddd60e11667c848a99d851ee8b4e89, type: 3}
-  ColliderRadius: 1
+  ColliderRadius: 2
   ColliderOffset: {x: 0, y: 0}
 --- !u!4 &2040105327
 Transform:
@@ -373,9 +356,21 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2040105325}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.3, y: -0.006, z: -10}
+  m_LocalPosition: {x: 2.17, y: -0.006, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2040105328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2040105325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aea72aa749207d448ff891e059cb44c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Acceleration: -5

@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace DanmakU {
 
-public abstract class DanmakuRenderer : IDisposable {
+internal abstract class DanmakuRenderer : IDisposable {
 
   const int kBatchSize = 1023;
 
