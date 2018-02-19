@@ -155,8 +155,8 @@ MonoBehaviour:
       Min: 20
       Max: 20
     AngularVelocity:
-      Min: 20
-      Max: 20
+      Min: 0
+      Max: 0
     Color: {r: 0.006026864, g: 1, b: 0, a: 1}
   Ring:
     Count:
@@ -373,4 +373,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aea72aa749207d448ff891e059cb44c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Acceleration: -5
+  Acceleration: -2.2
