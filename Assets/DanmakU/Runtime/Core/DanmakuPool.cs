@@ -18,15 +18,22 @@ namespace DanmakU {
 /// to the pool.
 /// </para>
 /// <para>
+/// As more Danmaku are created from the pool, the amount of unused capacity will shrink. 
+/// If more bullets are requested than there is <see cref="Capacity"/>, the pool will be resized. 
+/// This can be an expensive operation, especially on already large pools. Ensuring bullets are 
+/// timely destroyed and returned to the pool can remedy this.
+/// </para>
+/// </remarks>
+/// <example>
 /// Implemented as a Structure of Arrays, DanmakuPools see two main modes of use: as a backing store of 
 /// NativeArrays for Unity Jobs, and as an enumerable container for the managed bullets. The internal backing
 /// arrays are exposed as fields to use in Unity Jobs:
-/// <example>
+/// <code>
 /// using Unity.Jobs;
 /// 
 /// public struct CustomMoveDanmaku : IJobParallelFor {
 ///   public Vector2 Movement;
-///   public NativeArray<Vector2> Positions;
+///   public NativeArray&lt;Vector2&gt; Positions;
 /// 
 ///   public void Execute(int index) {
 ///     Positions[index] += Movement;
@@ -39,23 +46,25 @@ namespace DanmakU {
 ///     Positions = pool.Positions
 ///   }.Schedule();
 /// }
+/// </code>
 /// </example>
-/// </para>
-/// <para>
-/// The pool implements <see cref="System.Collections.Generic.IEnumerable{Danmaku}"/> and can be used
-/// in `foreach` loops to iterate over all of the bullets in the pool. This does not generate any garbage
-/// when used directly with the pool as the enumerator returned is a mutable struct enumerator.
 /// <example>
+/// The pool implements `IEnumerable&lt;Danmaku&gt; and can be used in `foreach` loops to iterate over 
+/// all of the bullets in the pool. This does not generate any garbage when used directly with the pool as 
+/// the enumerator returned is a mutable struct enumerator.
+/// <code>
 /// void ProcessPool(DanmakuPool pool) {
 ///   foreach (Danmaku danmaku in pool) {
 ///     // Move every bullet to the right.
 ///     danmaku.Position += Vector2.right;
 ///   }
 /// }
+/// </code>
 /// </example>
+/// <example>
 /// This also makes it compatible with LINQ queries. However this is discouraged as the need to box
 /// the enumerator as an enumerable generates garbage.
-/// <example>
+/// <code>
 /// using System.Linq;
 /// 
 /// void ProcessPool(DanmakuPool pool) {
@@ -66,21 +75,14 @@ namespace DanmakU {
 ///     bullet.Destroy(); 
 ///   }
 /// }
+/// </code>
 /// </example>
-/// </para>
-/// <para>
-/// As more Danmaku are created from the pool, the amount of unused capacity will shrink. 
-/// If more bullets are requested than there is <see cref="Capacity"/>, the pool will be resized. 
-/// This can be an expensive operation, especially on already large pools. Ensuring bullets are 
-/// timely destroyed and returned to the pool can remedy this.
-/// </para>
-/// </remarks>
 public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   /// <summary>
   /// The recommended batch size for processing Danmaku in parallelizable jobs.
-  /// <seealso cref="Unity.Jobs.IJobParallelFor"/>
   /// </summary>
+  /// <seealso cref="Unity.Jobs.IJobParallelFor"/>
   public const int kBatchSize = 32;
   const int kGrowthFactor = 2;
 
@@ -106,35 +108,35 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   /// <summary>
   /// The array of all world positions of <see cref="DanmakU.Danmaku"/> in the pool.
-  /// <seealso cref="DanmakU.Danmaku.Position"/>
   /// </summary>
+  /// <seealso cref="DanmakU.Danmaku.Position"/>
   public NativeArray<Vector2> Positions;
 
   /// <summary>
   /// The array of all rotations of <see cref="DanmakU.Danmaku"/> in the pool.
-  /// <seealso cref="DanmakU.Danmaku.Rotation"/>
   /// </summary>
+  /// <seealso cref="DanmakU.Danmaku.Rotation"/>
   public NativeArray<float> Rotations;
 
   /// <summary>
   /// The array of all speeds of <see cref="DanmakU.Danmaku"/> in the pool.
-  /// <seealso cref="DanmakU.Danmaku.Speed"/>
   /// </summary>
+  /// <seealso cref="DanmakU.Danmaku.Speed"/>
   public NativeArray<float> Speeds;
 
   /// <summary>
   /// The array of all angular speeds of <see cref="DanmakU.Danmaku"/> in the pool.
-  /// <seealso cref="DanmakU.Danmaku.AngularSpeed"/>
   /// </summary>
+  /// <seealso cref="DanmakU.Danmaku.AngularSpeed"/>
   public NativeArray<float> AngularSpeeds;
 
   /// <summary>
   /// The array of all angular speeds of <see cref="DanmakU.Danmaku"/> in the pool.
-  /// <seealso cref="DanmakU.Danmaku.AngularSpeed"/>
   /// </summary>
   /// <remarks>
   /// For performance reasons, the RGBA colors are stored as Vector4s.
   /// </remarks>
+  /// <seealso cref="DanmakU.Danmaku.AngularSpeed"/>
   public NativeArray<Vector4> Colors;
 
   internal NativeArray<Matrix4x4> Transforms;
@@ -147,20 +149,14 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     activeCount = 0;
     Capacity = poolSize;
     Deactivated = new Stack<int>(poolSize);
-
     InitialStates = new NativeArray<DanmakuState>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     Times = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-    
     Positions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     Rotations = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-
     Speeds = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     AngularSpeeds = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-
     Colors = new NativeArray<Vector4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-
     Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-
     OldPositions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     CollisionMasks = new NativeArray<int>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
   }
@@ -264,17 +260,12 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   public void Dispose() {
     InitialStates.Dispose();
     Times.Dispose();
-
     Positions.Dispose();
     Rotations.Dispose();
-
     Speeds.Dispose();
     AngularSpeeds.Dispose();
-
     Colors.Dispose();
-
     Transforms.Dispose();
-
     OldPositions.Dispose();
     CollisionMasks.Dispose();
   }
