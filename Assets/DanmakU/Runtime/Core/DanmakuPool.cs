@@ -8,27 +8,133 @@ using System.Runtime.CompilerServices;
 
 namespace DanmakU {
 
+/// <summary>
+/// A pool of <see cref="DanmakU.Danmaku"/>.
+/// </summary>
+/// <remarks>
+/// <para>
+/// DanmakuPools manage the lifetimes and data of all of the the bullets they own. Creation of a bullet
+/// requires calling <see cref="Get"/> and calling <see cref="DanmakU.Danmaku.Destroy"/> returns its data
+/// to the pool.
+/// </para>
+/// <para>
+/// Implemented as a Structure of Arrays, DanmakuPools see two main modes of use: as a backing store of 
+/// NativeArrays for Unity Jobs, and as an enumerable container for the managed bullets. The internal backing
+/// arrays are exposed as fields to use in Unity Jobs:
+/// <example>
+/// using Unity.Jobs;
+/// 
+/// public struct CustomMoveDanmaku : IJobParallelFor {
+///   public Vector2 Movement;
+///   public NativeArray<Vector2> Positions;
+/// 
+///   public void Execute(int index) {
+///     Positions[index] += Movement;
+///   }
+/// }  
+/// 
+/// void ProcessDanmakU(DanmakuPool pool) {
+///   new CustomMoveDanmaku {
+///     Movement = Vector2.up,
+///     Positions = pool.Positions
+///   }.Schedule();
+/// }
+/// </example>
+/// </para>
+/// <para>
+/// The pool implements <see cref="System.Collections.Generic.IEnumerable{Danmaku}"/> and can be used
+/// in `foreach` loops to iterate over all of the bullets in the pool. This does not generate any garbage
+/// when used directly with the pool as the enumerator returned is a mutable struct enumerator.
+/// <example>
+/// void ProcessPool(DanmakuPool pool) {
+///   foreach (Danmaku danmaku in pool) {
+///     // Move every bullet to the right.
+///     danmaku.Position += Vector2.right;
+///   }
+/// }
+/// </example>
+/// This also makes it compatible with LINQ queries. However this is discouraged as the need to box
+/// the enumerator as an enumerable generates garbage.
+/// <example>
+/// using System.Linq;
+/// 
+/// void ProcessPool(DanmakuPool pool) {
+///   // Get all of the bullets older than 5 seconds
+///   var oldDanmaku = pool.Where(danmaku => danmaku.Time > 5f);
+///   // Destroy them
+///   foreach (var bullet in oldDanmaku) {
+///     bullet.Destroy(); 
+///   }
+/// }
+/// </example>
+/// </para>
+/// <para>
+/// As more Danmaku are created from the pool, the amount of unused capacity will shrink. 
+/// If more bullets are requested than there is <see cref="Capacity"/>, the pool will be resized. 
+/// This can be an expensive operation, especially on already large pools. Ensuring bullets are 
+/// timely destroyed and returned to the pool can remedy this.
+/// </para>
+/// </remarks>
 public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
+  /// <summary>
+  /// The recommended batch size for processing Danmaku in parallelizable jobs.
+  /// <seealso cref="Unity.Jobs.IJobParallelFor"/>
+  /// </summary>
   public const int kBatchSize = 32;
   const int kGrowthFactor = 2;
 
   int activeCount;
+  
+  /// <summary>
+  /// Gets the total count of active bullets currently managed by the pool.
+  /// </summary>
   public int ActiveCount => activeCount;
+
+  /// <summary>
+  /// Gets the total capacity of the pool. Strictly greater than or equal to <see cref="ActiveCount"/>.
+  /// </summary>
   public int Capacity { get; private set; }
 
+  /// <summary>
+  /// The radius of the collider used to calculate collisions with the bullets in the pool.
+  /// </summary>
   public float ColliderRadius;
 
   internal NativeArray<float> Times;
+  internal NativeArray<DanmakuState> InitialStates;
 
-  public NativeArray<DanmakuState> InitialStates;
-
+  /// <summary>
+  /// The array of all world positions of <see cref="DanmakU.Danmaku"/> in the pool.
+  /// <seealso cref="DanmakU.Danmaku.Position"/>
+  /// </summary>
   public NativeArray<Vector2> Positions;
+
+  /// <summary>
+  /// The array of all rotations of <see cref="DanmakU.Danmaku"/> in the pool.
+  /// <seealso cref="DanmakU.Danmaku.Rotation"/>
+  /// </summary>
   public NativeArray<float> Rotations;
 
+  /// <summary>
+  /// The array of all speeds of <see cref="DanmakU.Danmaku"/> in the pool.
+  /// <seealso cref="DanmakU.Danmaku.Speed"/>
+  /// </summary>
   public NativeArray<float> Speeds;
+
+  /// <summary>
+  /// The array of all angular speeds of <see cref="DanmakU.Danmaku"/> in the pool.
+  /// <seealso cref="DanmakU.Danmaku.AngularSpeed"/>
+  /// </summary>
   public NativeArray<float> AngularSpeeds;
 
+  /// <summary>
+  /// The array of all angular speeds of <see cref="DanmakU.Danmaku"/> in the pool.
+  /// <seealso cref="DanmakU.Danmaku.AngularSpeed"/>
+  /// </summary>
+  /// <remarks>
+  /// For performance reasons, the RGBA colors are stored as Vector4s.
+  /// </remarks>
   public NativeArray<Vector4> Colors;
 
   internal NativeArray<Matrix4x4> Transforms;
@@ -37,7 +143,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   readonly Stack<int> Deactivated;
 
-  public DanmakuPool(int poolSize) {
+  internal DanmakuPool(int poolSize) {
     activeCount = 0;
     Capacity = poolSize;
     Deactivated = new Stack<int>(poolSize);
@@ -150,6 +256,11 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     oldArray.Dispose();
   }
 
+  /// <summary>
+  /// Disposes of the DanmakuPool. This destroys all of the bullets in the pool and
+  /// makes any operation on the pool invalid. Best used only when the pool is no longer
+  /// in use.
+  /// </summary>  
   public void Dispose() {
     InitialStates.Dispose();
     Times.Dispose();
@@ -168,8 +279,11 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     CollisionMasks.Dispose();
   }
 
+  /// <inheritdoc/>
   public DanmakuEnumerator GetEnumerator() => new DanmakuEnumerator(this, 0, ActiveCount);
+  /// <inheritdoc/>
   IEnumerator<Danmaku> IEnumerable<Danmaku>.GetEnumerator() => GetEnumerator();
+  /// <inheritdoc/>
   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
   internal void Destroy(Danmaku deactivate) => Deactivated.Push(deactivate.Id);
@@ -187,6 +301,9 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   
 }
 
+/// <summary>
+/// An enumerator of <see cref="DanmakU.Danmaku"/>
+/// </summary>
 public struct DanmakuEnumerator : IEnumerator<Danmaku> {
 
   readonly DanmakuPool pool;
@@ -194,6 +311,7 @@ public struct DanmakuEnumerator : IEnumerator<Danmaku> {
   readonly int end;
   int index;
 
+  /// <inheritdoc/>
   public Danmaku Current => new Danmaku(pool, index);
   object IEnumerator.Current => Current;
 
@@ -204,6 +322,7 @@ public struct DanmakuEnumerator : IEnumerator<Danmaku> {
     index = -1;
   }
 
+  /// <inheritdoc/>
   public bool MoveNext() {
     if (index < 0) {
       index = start;
@@ -213,7 +332,10 @@ public struct DanmakuEnumerator : IEnumerator<Danmaku> {
     return index < end;
   }
 
+  /// <inheritdoc/>
   public void Reset() => index = -1;
+
+  /// <inheritdoc/>
   public void Dispose() {}
 
 }
