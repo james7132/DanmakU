@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace DanmakU {
-
+  
 public interface IFireable {
   void Fire(DanamkuConfig state);
 }

@@ -10,17 +10,17 @@ namespace DanmakU {
 /// <remarks>
 /// A given DanmakuBehaviour manages the lifetime of any of it's created <see cref="DanmakU.DanmakuSet"/>s.
 /// Sets created with <see cref="CreateSet"/> will automatically be disposed of when the component is
-/// destroyed. This means any bullets fired by these sets will be destroyed when 
+/// destroyed. This means any bullets fired by these sets will be destroyed when the component is destroyed.
 /// </remarks>
 public abstract class DanmakuBehaviour : MonoBehaviour {
 
   List<DanmakuSet> OwnedDanmakuSets;
 
   /// <summary>
-  /// Create a <see cref="DanmakU.DanmakuSet"/> from a
+  /// Create a <see cref="DanmakU.DanmakuSet"/> from a prefab.
   /// </summary>
-  /// <param name="prefab"></param>
-  /// <returns></returns>
+  /// <param name="prefab">the base prefab to create a set from.</param>
+  /// <returns>the created DanmakuSet.</returns>
   protected DanmakuSet CreateSet(DanmakuPrefab prefab) {
     var pool = new DanmakuPool(prefab.DefaultPoolSize);
     var set = DanmakuManager.Instance.CreateDanmakuSet(prefab.GetRendererConfig(), pool);

@@ -8,12 +8,28 @@ using UnityEngine.Assertions;
 
 namespace DanmakU {
 
+/// <summary>
+/// The singleton manager of all Danmaku-related activities.
+/// </summary>
+/// <remarks>
+/// The singleton is responsible for managing the updating, rendering, collisions, and pooling of
+/// all active Danmaku. Destroying the manager will shutdown all of the aformentioned processes and
+/// globally destroy all actiive danmaku.
+/// </remarks>
 [DisallowMultipleComponent]
 public class DanmakuManager : MonoBehaviour {
 
-  public static DanmakuManager Instance;
   static RaycastHit2D[] raycastCache = new RaycastHit2D[256];
 
+  /// <summary>
+  /// Gets the singleton instance of the manager. Null if there is no active 
+  /// manger.
+  /// </summary>
+  public static DanmakuManager Instance { get; private set; }
+
+  /// <summary>
+  /// The global bounds that all bullets are bound to.
+  /// </summary>
   public Bounds Bounds = new Bounds(Vector3.zero, Vector3.one * 200);
 
   Dictionary<DanmakuRendererConfig, RendererGroup> RendererGroups;
@@ -189,7 +205,6 @@ public class DanmakuManager : MonoBehaviour {
     }
 
   }
-
 
 }
 

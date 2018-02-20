@@ -3,19 +3,19 @@ using UnityEngine;
 
 namespace DanmakU.Fireables {
 
-    public class RandomColor : Fireable {
+public class RandomColor : Fireable {
 
-        readonly Gradient _source;
+  readonly Gradient _source;
 
-        public RandomColor(Gradient source) {
-            _source = source;
-        }
+  public RandomColor(Gradient source) {
+    _source = source;
+  }
 
-        public override void Fire(DanamkuConfig state) {
-            state.Color = _source.Evaluate(Random.value);
-            Subfire(state);
-        }
+  public override void Fire(DanamkuConfig state) {
+    state.Color = _source.Evaluate(Random.value);
+    Subfire(state);
+  }
 
-    }
+}
 
 }

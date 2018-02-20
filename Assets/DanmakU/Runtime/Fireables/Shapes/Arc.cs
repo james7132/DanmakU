@@ -26,7 +26,7 @@ public class Arc : Fireable {
     var currentState = state;
     for (int i = 0; i < count; i++) {
       var angle = start + i * (arcLength / count);
-      state.Position = state.Position + (radius * RotationUtil.ToUnitVector(angle));
+      state.Position = state.Position + (radius * RotationUtiliity.ToUnitVector(angle));
       state.Rotation = angle;
       Subfire(currentState);
     }

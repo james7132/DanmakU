@@ -15,7 +15,7 @@ public struct MoveDanmaku : IJobParallelFor {
 
   public void Execute(int index) {
     var rotation = Rotations[index] + AngularSpeeds[index] * DeltaTime;
-    var direction = RotationUtil.ToUnitVector(rotation);
+    var direction = RotationUtiliity.ToUnitVector(rotation);
     var position = Positions[index] + Speeds[index] * direction * DeltaTime;
 
     var transform = new Matrix4x4();

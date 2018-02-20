@@ -21,7 +21,14 @@ namespace DanmakU {
 /// </remarks>
 public struct Danmaku {
 
+  /// <summary>
+  /// The ID of the Danmaku. Guarenteed to be unique within the pool.
+  /// </summary>
   public readonly int Id;
+
+  /// <summary>
+  /// The backing pool of the Danmaku.
+  /// </summary>
   public readonly DanmakuPool Pool;
 
   internal Danmaku(DanmakuPool pool, int index) {
@@ -120,6 +127,24 @@ public struct Danmaku {
     return danmaku;
   }
 
+  /// <summary>
+  /// Gets the Danmaku's current state.
+  /// </summary>
+  /// <returns></returns>
+  public DanmakuState GetState() {
+    return new DanmakuState {
+      Position = Position,
+      Rotation = Rotation,
+      Speed = Speed,
+      AngularSpeed = AngularSpeed,
+      Color = Color
+    };
+  }
+
+  /// <summary>
+  /// Applies a state to the Danmaku.
+  /// </summary>
+  /// <param name="state">the state to be applied.</param>
   public void ApplyState(DanmakuState state) {
     Position = state.Position;
     Rotation = state.Rotation;
