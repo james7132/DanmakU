@@ -1,7 +1,10 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public static class RotationUtil {
+/// <summary>
+/// A set of lower-precision functions for assisting in working with Danmaku rotations.
+/// </summary>
+public static class RotationUtiliity {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Vector2 ToUnitVector(float rotation) {

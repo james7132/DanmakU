@@ -23,7 +23,7 @@ public class Ring : Fireable {
     var currentState = state;
     for (int i = 0; i < count; i++) {
       var angle = rotation + i * (Mathf.PI * 2 / count);
-      currentState.Position = state.Position + (radius * RotationUtil.ToUnitVector(angle));
+      currentState.Position = state.Position + (radius * RotationUtiliity.ToUnitVector(angle));
       currentState.Rotation = angle;
       Subfire(currentState);
     }

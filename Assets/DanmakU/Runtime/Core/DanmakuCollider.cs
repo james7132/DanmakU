@@ -5,6 +5,9 @@ using UnityEngine.Assertions;
 
 namespace DanmakU {
 
+/// <summary>
+/// A MonoBehaviour for handling collisions with Danmaku.
+/// </summary>
 public class DanmakuCollider : MonoBehaviour {
 
   struct ColliderData {
@@ -26,9 +29,9 @@ public class DanmakuCollider : MonoBehaviour {
     }
   }
 
-  public static int ColliderCount => Colliders.Count;
+  internal static int ColliderCount => Colliders.Count;
 
-  public static void RebuildSpatialHashes() {
+  internal static void RebuildSpatialHashes() {
     for (var i = 0; i < Data.Length; i++) {
       Data[i].Clear();
     }
