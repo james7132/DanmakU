@@ -9,7 +9,8 @@ public abstract class DanmakuBehaviour : MonoBehaviour {
   List<DanmakuSet> OwnedDanmakuSets;
 
   protected DanmakuSet CreateSet(DanmakuPrefab prefab) {
-    var set = DanmakuManager.Instance.CreateDanmakuSet(prefab.GetRendererConfig());
+    var pool = new DanmakuPool(prefab.DefaultPoolSize);
+    var set = DanmakuManager.Instance.CreateDanmakuSet(prefab.GetRendererConfig(), pool);
     (OwnedDanmakuSets ?? (OwnedDanmakuSets = new List<DanmakuSet>())).Add(set);
     set.AddModifiers(prefab.GetModifiers());
     return set;
