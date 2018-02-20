@@ -2,9 +2,9 @@
 using Unity.Collections;
 using UnityEngine;
 
-namespace DanmakU {
+namespace DanmakU.Modifiers {
 
-[AddComponentMenu("DanmakU/Modifiers/Acceleration")]
+[AddComponentMenu("DanmakU/Modifiers/Danmaku Acceleration")]
 public class DanmakuAcceleration : MonoBehaviour, IDanmakuModifier {
 
   public float Acceleration;
