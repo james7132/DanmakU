@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Unity.Jobs;
 using UnityEngine.Assertions;
@@ -87,6 +88,20 @@ public class DanmakuManager : MonoBehaviour {
   void OnDrawGizmos() {
     Gizmos.color = Color.cyan;
     Gizmos.DrawWireCube(Bounds.center, Bounds.size);
+  }
+
+  /// <summary>
+  /// Gets all <see cref="DanmakU.DanmakuSet"/>s associated with a prefab.
+  /// </summary>
+  /// <param name="prefab">the original prefab.</param>
+  /// <returns>an enumeration of all associated sets.</returns>
+  public IEnumerable<DanmakuSet> GetAllSets(DanmakuPrefab prefab) {
+    var config = prefab.GetRendererConfig();
+    RendererGroup group;
+    if (RendererGroups.TryGetValue(config, out group)) {
+      return group.Sets;
+    }
+    return Enumerable.Empty<DanmakuSet>();
   }
 
   void RenderBullets(Camera camera) {
