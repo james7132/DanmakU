@@ -99,6 +99,16 @@ public struct Range {
   }
 
   /// <summary>
+  /// Gets whether the range is close to a single value and approximately the same
+  /// as a given floating point value.
+  /// </summary>
+  /// <param name="value">the target value to check against.</param>
+  /// <returns>true if the entire range is approximately the target value, false otherwise.</returns>
+  public bool Approximately(float value) {
+    return Mathf.Approximately(Size, 0f) && Mathf.Approximately(Center, value);
+  }
+
+  /// <summary>
   /// Clamps a value to the limits of the range.
   /// </summary>
   /// <param name="value">the value to clamp.</param>
@@ -109,7 +119,7 @@ public struct Range {
   /// Uniformily samples a value from the region.
   /// </summary>
   /// <returns>the randomly sampled value.</returns>
-  public float GetValue() => Random.Range(Min, Max);
+  public float GetValue() => RandomUtility.Range(Min, Max);
 
   public static implicit operator Range(float val) => new Range(val);
 
