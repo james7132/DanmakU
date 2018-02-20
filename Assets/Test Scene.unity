@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 872241323}
   - component: {fileID: 872241322}
   - component: {fileID: 872241321}
-  - component: {fileID: 872241326}
+  - component: {fileID: 872241320}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -133,6 +133,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &872241320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 872241319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a272f5044ed028646b4b872bf5a0d83f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 100, y: 100, z: 100}
+  DefaultPoolSize: 1000
 --- !u!114 &872241321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,29 +164,29 @@ MonoBehaviour:
   State:
     Position: {x: 0, y: 0}
     Rotation:
-      Min: 0
-      Max: 0
+      _min: 0
+      _max: 0
     Speed:
-      Min: 20
-      Max: 20
+      _min: 15
+      _max: 15
     AngularVelocity:
-      Min: 20
-      Max: 20
+      _min: 0
+      _max: 0
     Color: {r: 0.006026864, g: 1, b: 0, a: 1}
   Ring:
     Count:
-      Min: 50
-      Max: 50
+      _min: 40
+      _max: 40
     Radius:
-      Min: 3
-      Max: 3
+      _min: 0
+      _max: 0
   Circle:
     _count:
-      Min: 1
-      Max: 1
+      _min: 2
+      _max: 2
     _radius:
-      Min: 0
-      Max: 0
+      _min: 0
+      _max: 0
 --- !u!81 &872241322
 AudioListener:
   m_ObjectHideFlags: 0
@@ -235,21 +250,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &872241326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 872241319}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a272f5044ed028646b4b872bf5a0d83f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Bounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 100, y: 100, z: 2}
-  DefaultPoolSize: 1000
 --- !u!1 &1481724626
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,4 +373,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aea72aa749207d448ff891e059cb44c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Acceleration: -5
+  Acceleration: -2.2
