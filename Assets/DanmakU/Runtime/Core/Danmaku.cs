@@ -100,6 +100,26 @@ public struct Danmaku {
   /// </remarks>
   public void Destroy() => Pool.Destroy(this);
 
+  /// <summary>
+  /// Replaces the current
+  /// </summary>
+  /// <remarks>
+  /// This destroys the original bullet, rendering it unusable.
+  /// </remarks>
+  /// <param name="set">the prototype </param>
+  /// <returns></returns>
+  public Danmaku Replace(DanmakuSet set) {
+    var danmaku = set.Fire(new DanamkuConfig {
+      Position = Position,
+      Rotation = Rotation,
+      Speed = Speed,
+      AngularSpeed = AngularSpeed,
+      Color = Color
+    });
+    Destroy();
+    return danmaku;
+  }
+
   public void ApplyState(DanmakuState state) {
     Position = state.Position;
     Rotation = state.Rotation;
