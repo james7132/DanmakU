@@ -1,11 +1,11 @@
 - name: Getting Started
   items:
   - name: Installation
-    href: getting_started/installing.md
+    href: getting_started/installation.md
   - name: Firing Your First Bullet
     href: getting_started/firing_your_first_bullet.md
   - name: Handling Collisions
-    href: collisions.md
+    href: getting_started/collisions.md
 - name: "Fireables"
   items:
   - name: Intro to Fireables
