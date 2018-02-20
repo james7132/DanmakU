@@ -14,7 +14,6 @@ public class DanmakuManager : MonoBehaviour {
   static RaycastHit2D[] raycastCache = new RaycastHit2D[256];
 
   public Bounds Bounds = new Bounds(Vector3.zero, Vector3.one * 200);
-  public int DefaultPoolSize = 1000;
 
   Dictionary<DanmakuRendererConfig, RendererGroup> RendererGroups;
   List<DanmakuRendererConfig> EmptyGroups;
@@ -97,8 +96,7 @@ public class DanmakuManager : MonoBehaviour {
     }
   }
 
-  internal DanmakuSet CreateDanmakuSet(DanmakuRendererConfig config) {
-    var pool = new DanmakuPool(DefaultPoolSize);
+  internal DanmakuSet CreateDanmakuSet(DanmakuRendererConfig config, DanmakuPool pool) {
     var set = new DanmakuSet(pool);
     var group = GetOrCreateRendererGroup(config);
     group.AddSet(set);
