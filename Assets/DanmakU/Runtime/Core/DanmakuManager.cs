@@ -7,12 +7,13 @@ using UnityEngine.Assertions;
 
 namespace DanmakU {
 
+[DisallowMultipleComponent]
 public class DanmakuManager : MonoBehaviour {
 
   public static DanmakuManager Instance;
   static RaycastHit2D[] raycastCache = new RaycastHit2D[256];
 
-  public Bounds Bounds;
+  public Bounds Bounds = new Bounds(Vector3.zero, Vector3.one * 200);
   public int DefaultPoolSize = 1000;
 
   Dictionary<DanmakuRendererConfig, RendererGroup> RendererGroups;
