@@ -1,0 +1,24 @@
+- name: Getting Started
+  items:
+  - name: Installation
+    href: getting_started/installing.md
+  - name: Firing Your First Bullet
+    href: getting_started/firing_your_first_bullet.md
+  - name: Handling Collisions
+    href: collisions.md
+- name: "Fireables"
+  items:
+  - name: Intro to Fireables
+    href: fireables/intro.md
+  - name: Writing your own Fireable
+    href: fireables/custom.md
+- name: "Modifiers"
+  items:
+  - name: Intro to Modifiers
+    href: modifiers/intro.md
+  - name: Writing your own Modifier
+    href: modifiers/custom.md
+- name: Advanced
+  items:
+  - name: Custom Shaders
+    href: shaders.md
