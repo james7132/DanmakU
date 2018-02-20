@@ -4,10 +4,23 @@ using UnityEngine;
 
 namespace DanmakU {
 
+/// <summary>
+/// A base MonoBehaviour class for writing scripts that work with Danmaku.
+/// </summary>
+/// <remarks>
+/// A given DanmakuBehaviour manages the lifetime of any of it's created <see cref="DanmakU.DanmakuSet"/>s.
+/// Sets created with <see cref="CreateSet"/> will automatically be disposed of when the component is
+/// destroyed. This means any bullets fired by these sets will be destroyed when 
+/// </remarks>
 public abstract class DanmakuBehaviour : MonoBehaviour {
 
   List<DanmakuSet> OwnedDanmakuSets;
 
+  /// <summary>
+  /// Create a <see cref="DanmakU.DanmakuSet"/> from a
+  /// </summary>
+  /// <param name="prefab"></param>
+  /// <returns></returns>
   protected DanmakuSet CreateSet(DanmakuPrefab prefab) {
     var pool = new DanmakuPool(prefab.DefaultPoolSize);
     var set = DanmakuManager.Instance.CreateDanmakuSet(prefab.GetRendererConfig(), pool);
