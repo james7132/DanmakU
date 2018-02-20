@@ -7,7 +7,7 @@ using Unity.Jobs;
 namespace DanmakU {
 
 /// <summary>
-/// A enmerable set of bullets that supports runtime modification of behaviors through
+/// A enumerable set of bullets that supports runtime modification of behaviors through
 /// zero or more <see cref="DanmakU.IDanmakuModifier"/>.
 /// </summary>
 /// <example>

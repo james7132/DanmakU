@@ -124,7 +124,7 @@ public struct Danmaku {
     Position = state.Position;
     Rotation = state.Rotation;
     Speed = state.Speed;
-    AngularSpeed = state.AngularVelocity;
+    AngularSpeed = state.AngularSpeed;
     Color = state.Color;
   }
 
