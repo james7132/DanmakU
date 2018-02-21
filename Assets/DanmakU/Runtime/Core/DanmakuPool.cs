@@ -86,12 +86,10 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   public const int kBatchSize = 32;
   const int kGrowthFactor = 2;
 
-  int activeCount;
-  
   /// <summary>
   /// Gets the total count of active bullets currently managed by the pool.
   /// </summary>
-  public int ActiveCount => activeCount;
+  public int ActiveCount => activeCountArray[0];
 
   /// <summary>
   /// Gets the total capacity of the pool. Strictly greater than or equal to <see cref="ActiveCount"/>.
@@ -139,16 +137,14 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// <seealso cref="DanmakU.Danmaku.AngularSpeed"/>
   public NativeArray<Vector4> Colors;
 
+  internal NativeArray<int> activeCountArray;
   internal NativeArray<Matrix4x4> Transforms;
   internal NativeArray<Vector2> OldPositions;
   internal NativeArray<int> CollisionMasks;
 
-  readonly Stack<int> Deactivated;
-
   internal DanmakuPool(int poolSize) {
-    activeCount = 0;
+    activeCountArray = new NativeArray<int>(1, Allocator.Persistent);
     Capacity = poolSize;
-    Deactivated = new Stack<int>(poolSize);
     InitialStates = new NativeArray<DanmakuState>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     Times = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     Positions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
@@ -161,33 +157,15 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     CollisionMasks = new NativeArray<int>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
   }
 
-  internal void FlushDestroyed() {
-    while (Deactivated.Count > 0) {
-      DestroyInternal(Deactivated.Pop());
-    }
-  }
-
   internal JobHandle Update(JobHandle dependency = default(JobHandle)) {
-    if (ActiveCount <= 0) return dependency;
-    new NativeSlice<Vector2>(OldPositions, 0, activeCount).CopyFrom(
-      new NativeSlice<Vector2>(Positions, 0, activeCount));
-    float dt = Time.deltaTime;
-    dependency = new MoveDanmaku {
-      DeltaTime = Time.deltaTime,
-      Positions = Positions,
-      Rotations = Rotations,
-      Times = Times,
-      Speeds = Speeds,
-      AngularSpeeds = AngularSpeeds,
-      Transforms = Transforms
-    }.Schedule(ActiveCount, kBatchSize, dependency);
+    var count = ActiveCount;
+    if (count <= 0) return dependency;
+    new NativeSlice<Vector2>(OldPositions, 0, count).CopyFrom(new NativeSlice<Vector2>(Positions, 0, count));
+    dependency = new MoveDanmaku(this).Schedule(count, kBatchSize, dependency);
     if (DanmakuCollider.ColliderCount > 0) {
-      dependency = new CollideDanamku {
-        Radius = ColliderRadius,
-        Positions = Positions,
-        Collisions = CollisionMasks
-      }.Schedule(ActiveCount, kBatchSize, dependency);
+      dependency = new CollideDanamku(this).Schedule(count, kBatchSize, dependency);
     }
+    dependency = new DestroyDanmaku(this).Schedule(dependency);
     return dependency;
   }
 
@@ -197,9 +175,9 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   public Danmaku Get(DanmakuConfig config) {
     CheckCapacity(1);
     var state = config.CreateState();
-    InitialStates[activeCount] = state;
-    Times[activeCount] = 0f;
-    var danmaku = new Danmaku(this, activeCount++);
+    InitialStates[ActiveCount] = state;
+    Times[ActiveCount] = 0f;
+    var danmaku = new Danmaku(this, activeCountArray[0]++);
     danmaku.ApplyState(state);
     return danmaku;
   } 
@@ -211,20 +189,21 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// <param name="count">the number of danmaku to create. Must be less than or equal to the length of of danmaku.</param>
   public void Get(Danmaku[] danmaku, int count) {
     CheckCapacity(count);
+    var activeCount = ActiveCount;
     for (var i = 0; i < count; i++) {
       Times[activeCount + i] = 0f;
       danmaku[i] = new Danmaku(this, activeCount + i);
     }
-    activeCount += count;
+    activeCountArray[0] += count;
   }
 
   /// <summary>
   /// Destroys all danmaku in the pool.
   /// </summary>
-  public void Clear() => activeCount = 0;
+  public void Clear() => activeCountArray[0] = 0;
 
   void CheckCapacity(int count) {
-    if (activeCount + count > Capacity) {
+    if (ActiveCount + count > Capacity) {
       Resize();
     }
   }
@@ -258,6 +237,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// in use.
   /// </summary>  
   public void Dispose() {
+    activeCountArray.Dispose();
     InitialStates.Dispose();
     Times.Dispose();
     Positions.Dispose();
@@ -277,19 +257,8 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// <inheritdoc/>
   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-  internal void Destroy(Danmaku deactivate) => Deactivated.Push(deactivate.Id);
+  internal void Destroy(Danmaku deactivate) => Times[deactivate.Id] = float.MinValue;
 
-  void DestroyInternal(int index) {
-    activeCount--;
-    InitialStates[index] = InitialStates[activeCount];
-    Times[index] = Times[activeCount];
-    Positions[index] = Positions[activeCount];
-    Rotations[index] = Rotations[activeCount];
-    Speeds[index] = Speeds[activeCount];
-    AngularSpeeds[index] = AngularSpeeds[activeCount];
-    Colors[index] = Colors[activeCount];
-  }
-  
 }
 
 /// <summary>
