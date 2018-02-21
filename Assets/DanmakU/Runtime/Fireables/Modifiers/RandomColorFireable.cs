@@ -11,7 +11,7 @@ public class RandomColor : Fireable {
     _source = source;
   }
 
-  public override void Fire(DanamkuConfig state) {
+  public override void Fire(DanmakuConfig state) {
     state.Color = _source.Evaluate(Random.value);
     Subfire(state);
   }

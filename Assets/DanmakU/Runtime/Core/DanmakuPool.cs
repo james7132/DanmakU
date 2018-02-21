@@ -194,7 +194,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// <summary>
   /// Creates a new Danmaku from the pool.
   /// </summary>
-  public Danmaku Get(DanamkuConfig config) {
+  public Danmaku Get(DanmakuConfig config) {
     CheckCapacity(1);
     var state = config.CreateState();
     InitialStates[activeCount] = state;

@@ -17,7 +17,7 @@ public class Arc : Fireable {
     Radius = radius;
   }
 
-  public override void Fire(DanamkuConfig state) {
+  public override void Fire(DanmakuConfig state) {
     float radius = Radius.GetValue();
     int count = Mathf.RoundToInt(Count.GetValue());
     float arcLength = ArcLength.GetValue();

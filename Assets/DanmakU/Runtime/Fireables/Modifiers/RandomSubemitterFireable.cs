@@ -11,7 +11,7 @@ internal class RandomSubemitterFireable : IFireable {
     Subemitters = new List<IFireable>(subemitters);
   }
 
-  public void Fire(DanamkuConfig state) {
+  public void Fire(DanmakuConfig state) {
     var subemitter = Subemitters[Mathf.FloorToInt(Random.value * Subemitters.Count)];
     if (subemitter != null)
       subemitter.Fire(state);

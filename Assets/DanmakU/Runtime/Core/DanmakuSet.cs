@@ -105,10 +105,10 @@ public class DanmakuSet : IEnumerable<Danmaku>, IFireable, IDisposable {
   /// </summary>
   /// <param name="config">the config for creating the bullet</param>
   /// <returns>the created bullet</returns>
-  public Danmaku Fire(DanamkuConfig config) => Pool.Get(config);
+  public Danmaku Fire(DanmakuConfig config) => Pool.Get(config);
 
   /// <inheritdoc/>
-  void IFireable.Fire(DanamkuConfig config) => Fire(config);
+  void IFireable.Fire(DanmakuConfig config) => Fire(config);
 
 }
 
