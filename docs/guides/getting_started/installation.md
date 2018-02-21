@@ -20,4 +20,4 @@ have Unity3D installed, it is suggested you install it using the following steps
 1. Import all assets.
 
 > [!NOTE]
-> <note Moving the DanmakU directory does not affect any of the package at all. Feel free to move it anywhere it is approriate.>
+> Moving the DanmakU directory does not affect any of the package at all. Feel free to move it anywhere it is approriate.

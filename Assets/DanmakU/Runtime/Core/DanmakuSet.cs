@@ -86,7 +86,6 @@ public class DanmakuSet : IEnumerable<Danmaku>, IFireable, IDisposable {
   public void ClearModifiers() => Modifiers.Clear();
 
   internal JobHandle Update(JobHandle dependency) {
-    Pool.FlushDestroyed();
     foreach (var modifier in Modifiers) {
       dependency = modifier.UpdateDannmaku(Pool, dependency);
     }

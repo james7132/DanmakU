@@ -2,8 +2,11 @@ using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine;
 
-public struct MoveDanmaku : IJobParallelFor {
+namespace DanmakU {
 
+internal struct MoveDanmaku : IJobParallelFor {
+
+  public Bounds Bounds;
   public float DeltaTime;
 
   public NativeArray<Vector2> Positions;
@@ -12,6 +15,17 @@ public struct MoveDanmaku : IJobParallelFor {
   [ReadOnly] public NativeArray<float> Speeds;
   [ReadOnly] public NativeArray<float> AngularSpeeds;
   [WriteOnly] public NativeArray<Matrix4x4> Transforms; 
+
+  public MoveDanmaku(DanmakuPool pool) {
+    Bounds = DanmakuManager.Instance.Bounds;
+    DeltaTime = Time.deltaTime;
+    Positions = pool.Positions;
+    Rotations = pool.Rotations;
+    Times = pool.Times;
+    Speeds = pool.Speeds;
+    AngularSpeeds = pool.AngularSpeeds;
+    Transforms = pool.Transforms;
+  }
 
   public void Execute(int index) {
     var rotation = Rotations[index] + AngularSpeeds[index] * DeltaTime;
@@ -28,10 +42,15 @@ public struct MoveDanmaku : IJobParallelFor {
     transform[0, 3] = position.x;
     transform[1, 3] = position.y;
 
-    Times[index] += DeltaTime;
+    if (Bounds.Contains(position)) {
+      Times[index] += DeltaTime;
+    } else {
+      Times[index] = float.MinValue;
+    }
     Positions[index] = position;
     Rotations[index] = rotation;
     Transforms[index] = transform;
   }
 
+}
 }

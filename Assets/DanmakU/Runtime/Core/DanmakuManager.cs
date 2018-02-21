@@ -61,14 +61,11 @@ public class DanmakuManager : MonoBehaviour {
   /// </summary>
   void Update() {
     UpdateHandle.Complete();
+    if (DanmakuCollider.ColliderCount <= 0) return;
     foreach (var group in RendererGroups.Values) {
       foreach (var set in group.Sets) {
         var pool = set.Pool;
         foreach (var danmaku in pool) {
-          if (!Bounds.Contains(danmaku.Position)) {
-            danmaku.Destroy();
-            continue;
-          }
           var layerMask = pool.CollisionMasks[danmaku.Id];
           if (layerMask == 0) continue; 
           var oldPosition = pool.OldPositions[danmaku.Id];
