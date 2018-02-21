@@ -10,7 +10,7 @@ namespace DanmakU {
 /// A value type that represents a range of floating point values.
 /// </summary>
 /// <example>
-/// Ranges are implicitly convertible to and from floats and support most basic 
+/// Ranges are implicitly convertible to and from floats and support most basic
 /// arithmetic with them.
 /// <code>
 /// Range r1 = 5f;                  // Converted to a range of [5, 5]
@@ -64,7 +64,7 @@ public struct Range {
   /// Creates a range based on an interval of values.
   /// </summary>
   /// <param name="a">one extrema of the range.</param>
-  /// <param name="b">one extrema of the range.</param>  
+  /// <param name="b">one extrema of the range.</param>
   /// <example>
   /// <code>
   /// new Range(0, 5)   // A range of [0, 5]
@@ -88,8 +88,8 @@ public struct Range {
   /// </summary>
   /// <remarks>
   /// Can be used to shrink the new range by providiing a negative size.
-  /// If the absolute value of <paramref cref="size"/> is larger than the 
-  /// <see cref="Size"/> of the Range, the range will 
+  /// If the absolute value of <paramref cref="size"/> is larger than the
+  /// <see cref="Size"/> of the Range, the range will
   /// </remarks>
   /// <param name="size">the size</param>
   /// <returns></returns>
@@ -125,8 +125,27 @@ public struct Range {
 
   public static Range operator +(Range lhs, Range rhs) => new Range(lhs.Min + rhs.Min, lhs.Max + rhs.Max);
   public static Range operator -(Range lhs, Range rhs) => new Range(lhs.Min - rhs.Min, lhs.Max - rhs.Max);
-  public static Range operator *(Range lhs, float rhs) => new Range(lhs.Min * rhs, lhs.Max * rhs);
-  public static Range operator /(Range lhs, float rhs) => new Range(lhs.Min / rhs, lhs.Max / rhs);
+  public static unsafe Range operator *(Range lhs, Range rhs) {
+    float* values = stackalloc float[4];
+    values[0] = lhs.Min * rhs.Min;
+    values[1] = lhs.Max * rhs.Min;
+    values[2] = lhs.Min * rhs.Max;
+    values[3] = lhs.Max * rhs.Max;
+    float min = float.MaxValue, max = float.MinValue;
+    for (var i = 0; i < 4; i++) {
+      min = Math.Min(min, values[i]);
+      max = Math.Max(max, values[i]);
+    }
+    return new Range { _min = min, _max = max };
+  }
+  public static Range operator /(Range lhs, Range rhs) => lhs * (1f / rhs);
+  public static Range operator *(Range lhs, float rhs) => new Range { _min = lhs._min * rhs, _max = lhs._max * rhs };
+  public static Range operator /(Range lhs, float rhs) => new Range { _min = lhs._min / rhs, _max = lhs._max / rhs };
+  public static Range operator /(float lhs, Range rhs)  {
+    rhs._min = rhs._min == 0f ? float.NegativeInfinity : lhs / rhs._min;
+    rhs._max = rhs._max == 0f ? float.PositiveInfinity : lhs / rhs._max;
+    return rhs;
+  }
 
 }
 
