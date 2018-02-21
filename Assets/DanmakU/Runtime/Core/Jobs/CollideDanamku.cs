@@ -14,7 +14,7 @@ internal struct CollideDanamku : IJobParallelFor {
   [WriteOnly] public NativeArray<int> Collisions;
 
   public void Execute(int index) {
-    var danmakuBounds = new Bounds(Positions[index], new Vector2(Radius, Radius));
+    var danmakuBounds = new Bounds2D(Positions[index], new Vector2(Radius, Radius));
     Collisions[index] = DanmakuCollider.TestCollisions(danmakuBounds);
   }
 

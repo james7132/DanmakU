@@ -17,6 +17,7 @@ namespace DanmakU {
 /// globally destroy all actiive danmaku.
 /// </remarks>
 [DisallowMultipleComponent]
+[AddComponentMenu("DanmakU/Danmaku Manager")]
 public class DanmakuManager : MonoBehaviour {
 
   static RaycastHit2D[] raycastCache = new RaycastHit2D[256];
@@ -30,7 +31,7 @@ public class DanmakuManager : MonoBehaviour {
   /// <summary>
   /// The global bounds that all bullets are bound to.
   /// </summary>
-  public Bounds Bounds = new Bounds(Vector3.zero, Vector3.one * 200);
+  public Bounds2D Bounds = new Bounds2D(Vector2.zero, Vector2.one * 200);
 
   Dictionary<DanmakuRendererConfig, RendererGroup> RendererGroups;
   List<DanmakuRendererConfig> EmptyGroups;
@@ -60,15 +61,11 @@ public class DanmakuManager : MonoBehaviour {
   /// </summary>
   void Update() {
     UpdateHandle.Complete();
-    var bounds = Bounds;
-    var size = bounds.extents;
-    size.z = float.MaxValue;
-    bounds.extents = size;
     foreach (var group in RendererGroups.Values) {
       foreach (var set in group.Sets) {
         var pool = set.Pool;
         foreach (var danmaku in pool) {
-          if (!bounds.Contains(danmaku.Position)) {
+          if (!Bounds.Contains(danmaku.Position)) {
             danmaku.Destroy();
             continue;
           }
@@ -103,7 +100,7 @@ public class DanmakuManager : MonoBehaviour {
   /// </summary>
   void OnDrawGizmos() {
     Gizmos.color = Color.cyan;
-    Gizmos.DrawWireCube(Bounds.center, Bounds.size);
+    Gizmos.DrawWireCube(Bounds.Center, Bounds.Size);
   }
 
   /// <summary>
