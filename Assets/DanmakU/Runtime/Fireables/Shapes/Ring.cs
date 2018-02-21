@@ -16,7 +16,7 @@ public class Ring : Fireable {
     Radius = radius;
   }
 
-  public override void Fire(DanamkuConfig state) {
+  public override void Fire(DanmakuConfig state) {
     float radius = Radius.GetValue();
     int count = Mathf.RoundToInt(Count.GetValue());
     var rotation = state.Rotation.GetValue();

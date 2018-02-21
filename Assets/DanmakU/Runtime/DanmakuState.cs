@@ -7,7 +7,7 @@ namespace DanmakU {
 /// A config for creating <see cref="DanmakU.DanmakuState"/>.
 /// </summary>
 [Serializable]
-public struct DanamkuConfig {
+public struct DanmakuConfig {
 
   public Vector2 Position;
   public Range Rotation;

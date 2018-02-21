@@ -10,7 +10,7 @@ public class DanmakuPoolTest : DanmakuBehaviour {
 
   public int PoolSize;
   public DanmakuPrefab prefab;
-  public DanamkuConfig State;
+  public DanmakuConfig State;
   public Ring Ring;
   public Circle Circle;
   IFireable fireable;
