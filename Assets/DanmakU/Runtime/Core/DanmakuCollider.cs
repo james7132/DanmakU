@@ -11,21 +11,21 @@ namespace DanmakU {
 public class DanmakuCollider : MonoBehaviour {
 
   struct ColliderData {
-    public Bounds Bounds;
+    public Bounds2D Bounds;
     public int LayerMask;
   }
 
   static readonly List<DanmakuCollider> Colliders;
-  static readonly List<Bounds>[] Data;
-  static Bounds GlobalBounds;
+  static readonly List<Bounds2D>[] Data;
+  static Bounds2D GlobalBounds;
   static int GlobalLayerMask;
   static int HighestLayer;
 
   static DanmakuCollider() {
     Colliders = new List<DanmakuCollider>();
-    Data = new List<Bounds>[sizeof(int) * 8];
+    Data = new List<Bounds2D>[sizeof(int) * 8];
     for (var i = 0; i < Data.Length; i++) {
-      Data[i] = new List<Bounds>();
+      Data[i] = new List<Bounds2D>();
     }
   }
 
@@ -52,9 +52,6 @@ public class DanmakuCollider : MonoBehaviour {
         }
       }
     }
-    var center = GlobalBounds.center;
-    center.z = 0;
-    GlobalBounds.center = center;
   }
 
   Collider2D[] colliders;
@@ -85,7 +82,7 @@ public class DanmakuCollider : MonoBehaviour {
     data = BuildData(); 
   }
 
-  internal static int TestCollisions(Bounds bounds)  {
+  internal static int TestCollisions(Bounds2D bounds)  {
     if (!GlobalBounds.Intersects(bounds)) return 0;
     int collisions = 0;
     for (var i = 0; i < HighestLayer; i++) {
@@ -102,7 +99,7 @@ public class DanmakuCollider : MonoBehaviour {
   }
 
   ColliderData BuildData() {
-    Bounds? bounds = null;
+    Bounds2D? bounds = null;
     foreach (var collider in colliders) {
       if (collider != null && collider.enabled && collider.gameObject.activeInHierarchy) {
         if (bounds == null) {
@@ -112,10 +109,7 @@ public class DanmakuCollider : MonoBehaviour {
         }
       }
     }
-    var fullBounds = bounds ?? new Bounds(transform.position, Vector3.zero);
-    var extents = fullBounds.extents;
-    extents.z = float.MaxValue;
-    fullBounds.extents = extents;
+    var fullBounds = bounds ?? new Bounds2D(transform.position, Vector3.zero);
     return new ColliderData {
       Bounds = fullBounds,
       LayerMask = 1 << gameObject.layer

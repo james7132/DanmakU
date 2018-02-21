@@ -64,7 +64,7 @@ internal abstract class DanmakuRenderer : IDisposable {
 
       int poolIndex = 0;
       while (poolIndex < pool.ActiveCount) {
-        var count = Mathf.Min(kBatchSize - batchIndex, pool.ActiveCount - poolIndex);
+        var count = Math.Min(kBatchSize - batchIndex, pool.ActiveCount - poolIndex);
         fixed (void* colors = colorCache) {
           var srcPtr = ((Vector4*)poolColors.GetUnsafeReadOnlyPtr()) + poolIndex;
           UnsafeUtility.MemCpy(colors, srcPtr, sizeof(Vector4) * count);

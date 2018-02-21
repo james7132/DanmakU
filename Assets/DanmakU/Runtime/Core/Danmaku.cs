@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Unity.Collections;
 using UnityEngine;
 
@@ -47,8 +48,8 @@ public struct Danmaku {
   /// Gets or sets the world position of the Danmaku.
   /// </summary>
   public Vector2 Position {
-    get { return Pool.Positions[Id]; }
-    set { Pool.Positions[Id] = value; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.Positions[Id]; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.Positions[Id] = value; }
   }
 
   /// <summary>
@@ -60,8 +61,8 @@ public struct Danmaku {
   /// the Danmaku is moving in.
   /// </remarks>
   public float Rotation {
-    get { return Pool.Rotations[Id]; }
-    set { Pool.Rotations[Id] = value; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.Rotations[Id]; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.Rotations[Id] = value; }
   }
 
   /// <summary>
@@ -72,8 +73,8 @@ public struct Danmaku {
   /// Can be negative.
   /// </remarks>
   public float Speed {
-    get { return Pool.Speeds[Id]; }
-    set { Pool.Speeds[Id] = value; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.Speeds[Id]; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.Speeds[Id] = value; }
   }
 
   /// <summary>
@@ -83,16 +84,16 @@ public struct Danmaku {
   /// Units are in radians per second. Can be negative.
   /// </remarks>
   public float AngularSpeed {
-    get { return Pool.AngularSpeeds[Id]; }
-    set { Pool.AngularSpeeds[Id] = value; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.AngularSpeeds[Id]; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.AngularSpeeds[Id] = value; }
   }
 
   /// <summary>
   /// Gets or sets the Danmaku's rendering color.
   /// </summary>
   public Color Color {
-    get { return Pool.Colors[Id]; }
-    set { Pool.Colors[Id] = value; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.Colors[Id]; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.Colors[Id] = value; }
   }
 
   /// <summary>
@@ -116,7 +117,7 @@ public struct Danmaku {
   /// <param name="set">the prototype </param>
   /// <returns></returns>
   public Danmaku Replace(DanmakuSet set) {
-    var danmaku = set.Fire(new DanamkuConfig {
+    var danmaku = set.Fire(new DanmakuConfig {
       Position = Position,
       Rotation = Rotation,
       Speed = Speed,
