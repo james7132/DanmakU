@@ -139,6 +139,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
 
   internal NativeArray<int> activeCountArray;
   internal NativeArray<Matrix4x4> Transforms;
+  internal NativeArray<Vector2> Directions;
   internal NativeArray<Vector2> OldPositions;
   internal NativeArray<int> CollisionMasks;
 
@@ -154,6 +155,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Colors = new NativeArray<Vector4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     OldPositions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+    Directions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     CollisionMasks = new NativeArray<int>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
   }
 
@@ -161,12 +163,16 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     var count = ActiveCount;
     if (count <= 0) return dependency;
     new NativeSlice<Vector2>(OldPositions, 0, count).CopyFrom(new NativeSlice<Vector2>(Positions, 0, count));
-    dependency = new MoveDanmaku(this).Schedule(count, kBatchSize, dependency);
+    var rotate = new RotateDanmaku(this).Schedule(count, kBatchSize, dependency);
+    var move = new MoveDanmaku(this).Schedule(count, kBatchSize, rotate);
+    var boundsCheck = new BoundsCheckDanmaku(this).Schedule(count, kBatchSize, move);
+    var transforms = new ComputeDanmakuTranforms(this).Schedule(count, kBatchSize, move);
+    dependency = JobHandle.CombineDependencies(boundsCheck, transforms);
     if (DanmakuCollider.ColliderCount > 0) {
-      dependency = new CollideDanamku(this).Schedule(count, kBatchSize, dependency);
+      var collide = new CollideDanamku(this).Schedule(count, kBatchSize, move);
+      dependency = JobHandle.CombineDependencies(dependency, collide);
     }
-    dependency = new DestroyDanmaku(this).Schedule(dependency);
-    return dependency;
+    return new DestroyDanmaku(this).Schedule(dependency);
   }
 
   /// <summary>
@@ -219,6 +225,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Resize(ref AngularSpeeds);
     Resize(ref Colors);
     Resize(ref Transforms);
+    Resize(ref Directions);
     Resize(ref OldPositions);
     Resize(ref CollisionMasks);
   }
@@ -246,6 +253,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     AngularSpeeds.Dispose();
     Colors.Dispose();
     Transforms.Dispose();
+    Directions.Dispose();
     OldPositions.Dispose();
     CollisionMasks.Dispose();
   }
