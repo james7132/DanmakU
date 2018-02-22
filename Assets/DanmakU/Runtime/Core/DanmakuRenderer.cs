@@ -5,9 +5,6 @@ using UnityEngine.Rendering;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Object = UnityEngine.Object;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace DanmakU {
 
@@ -59,19 +56,17 @@ internal abstract class DanmakuRenderer : IDisposable {
       var pool = set.Pool;
       if (pool == null || pool.ActiveCount <= 0) return;
 
-      var poolColors = pool.Colors;
-      var poolTransforms = pool.Transforms;
+      var srcColors = (Vector4*)pool.Colors.GetUnsafeReadOnlyPtr();
+      var srcTransforms = (Matrix4x4*)pool.Transforms.GetUnsafeReadOnlyPtr();
 
       int poolIndex = 0;
       while (poolIndex < pool.ActiveCount) {
         var count = Math.Min(kBatchSize - batchIndex, pool.ActiveCount - poolIndex);
-        fixed (void* colors = colorCache) {
-          var srcPtr = ((Vector4*)poolColors.GetUnsafeReadOnlyPtr()) + poolIndex;
-          UnsafeUtility.MemCpy(colors, srcPtr, sizeof(Vector4) * count);
+        fixed (Vector4* colors = colorCache) {
+          UnsafeUtility.MemCpy(colors + batchIndex, srcColors + poolIndex, sizeof(Vector4) * count);
         }
-        fixed (void* transforms = transformCache) {
-          var srcPtr = ((Matrix4x4*)poolTransforms.GetUnsafeReadOnlyPtr()) + poolIndex;
-          UnsafeUtility.MemCpy(transforms, srcPtr, sizeof(Matrix4x4) * count);
+        fixed (Matrix4x4* transforms = transformCache) {
+          UnsafeUtility.MemCpy(transforms + batchIndex, srcTransforms + poolIndex, sizeof(Matrix4x4) * count);
         }
         batchIndex += count;
         poolIndex += count;
