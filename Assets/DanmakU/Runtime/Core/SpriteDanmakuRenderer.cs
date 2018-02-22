@@ -23,8 +23,7 @@ internal sealed class SpriteDanmakuRenderer : DanmakuRenderer {
     }
   }
 
-  public SpriteDanmakuRenderer(Material material, Sprite sprite) : base(material) {
-    Mesh = new Mesh();
+  public SpriteDanmakuRenderer(Material material, Sprite sprite) : base(material, new Mesh()) {
     Sprite = sprite;
   }
 

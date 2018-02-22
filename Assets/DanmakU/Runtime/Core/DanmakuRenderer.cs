@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace DanmakU {
 
-internal abstract class DanmakuRenderer : IDisposable {
+internal class DanmakuRenderer : IDisposable {
 
   const int kBatchSize = 1023;
 
@@ -18,7 +18,7 @@ internal abstract class DanmakuRenderer : IDisposable {
 
   public Color Color { get; set; } = Color.white;
 
-  public virtual Mesh Mesh { get; set; }
+  public readonly Mesh Mesh;
 
   Material sharedMaterial;
   protected Material renderMaterial;
@@ -37,9 +37,10 @@ internal abstract class DanmakuRenderer : IDisposable {
 
   readonly MaterialPropertyBlock propertyBlock;
 
-  protected DanmakuRenderer(Material material) {
+  public DanmakuRenderer(Material material, Mesh mesh) {
     propertyBlock = new MaterialPropertyBlock();
     Material = material;
+    Mesh = mesh;
   }
 
   protected virtual void PrepareMaterial(Material material) {}

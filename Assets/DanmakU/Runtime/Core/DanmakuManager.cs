@@ -157,7 +157,7 @@ public class DanmakuManager : MonoBehaviour {
     if (config.Sprite != null) {
       renderer = new SpriteDanmakuRenderer(config.Material, config.Sprite);
     } else if (config.Mesh != null) {
-      renderer = new MeshDanmakuRenderer(config.Material, config.Mesh);
+      renderer = new DanmakuRenderer(config.Material, config.Mesh);
     } else {
       throw new Exception("Attempted to create a DanmakuSet without valid renderer.");
     }
@@ -167,7 +167,7 @@ public class DanmakuManager : MonoBehaviour {
   class RendererGroup : IDisposable {
 
     public readonly DanmakuRenderer Renderer;
-    public List<DanmakuSet> Sets;
+    public readonly List<DanmakuSet> Sets;
 
     public int Count => Sets.Count;
     
@@ -183,8 +183,8 @@ public class DanmakuManager : MonoBehaviour {
 
     public JobHandle StartUpdate() {
       var update = default(JobHandle);
-      for (var i = 0; i < Sets.Count; i++) {
-        update = JobHandle.CombineDependencies(update, Sets[i].Update(default(JobHandle)));
+      foreach (var set in Sets) {
+        update = JobHandle.CombineDependencies(update, set.Update(default(JobHandle)));
       }
       return update;
     }
@@ -192,6 +192,7 @@ public class DanmakuManager : MonoBehaviour {
     public void Render(int layer) => Renderer.Render(Sets, layer);
 
     public void Dispose() {
+      Renderer.Dispose();
       Sets.Clear();
       foreach (var set in Sets) {
         set.Dispose();
