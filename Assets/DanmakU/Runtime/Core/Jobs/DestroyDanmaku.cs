@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Jobs;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace DanmakU {
 
@@ -29,10 +30,11 @@ internal struct DestroyDanmaku : IJob {
     Colors = pool.Colors;
   }
 
-  public void Execute() {
-    var activeCount = ActiveCountArray[0];
+  public unsafe void Execute() {
+    var activeCount = Mathf.Max(0, ActiveCountArray[0]);
+    var timePtr = (float*)Times.GetUnsafeReadOnlyPtr();
     for (var i = 0; i < activeCount; i++) {
-      if (Times[i] > 0) continue;
+      if (*(timePtr++) >= 0) continue;
       activeCount--;
       InitialStates[i] = InitialStates[activeCount];
       Times[i] = Times[activeCount];

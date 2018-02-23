@@ -8,7 +8,7 @@ namespace DanmakU.Fireables {
 [Serializable]
 public class Circle : Fireable {
 
-  public Range Count;
+  public Range Count = 1;
   public Range Radius;
 
   public Circle(Range count, Range radius) {

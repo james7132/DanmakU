@@ -19,13 +19,31 @@ public class DanmakuAcceleration : MonoBehaviour, IDanmakuModifier {
   public JobHandle UpdateDannmaku(DanmakuPool pool, JobHandle dependency = default(JobHandle)) {
     var acceleration = Acceleration * Time.deltaTime;
     if (acceleration.Approximately(0f)) return dependency;
-    return new ApplyAcceleration {
-      Acceleration = acceleration,
-      Speeds = pool.Speeds
-    }.Schedule(pool.ActiveCount, DanmakuPool.kBatchSize, dependency);
+    if (Mathf.Approximately(acceleration.Size, 0f)) {
+      return new ApplyFixedAcceleration {
+        Acceleration = acceleration.Center,
+        Speeds = pool.Speeds
+      }.Schedule(pool.ActiveCount, DanmakuPool.kBatchSize, dependency);
+    } else {
+      return new ApplyRandomAcceleration {
+        Acceleration = acceleration.Center,
+        Speeds = pool.Speeds
+      }.Schedule(pool.ActiveCount, DanmakuPool.kBatchSize, dependency);
+    }
   }
 
-  struct ApplyAcceleration : IJobParallelFor {
+  struct ApplyFixedAcceleration : IJobParallelFor {
+
+    public float Acceleration;
+    public NativeArray<float> Speeds;
+    
+    public void Execute(int index) {
+      Speeds[index] += Acceleration;
+    }
+
+  }
+
+  struct ApplyRandomAcceleration : IJobParallelFor {
 
     public Range Acceleration;
     public NativeArray<float> Speeds;
