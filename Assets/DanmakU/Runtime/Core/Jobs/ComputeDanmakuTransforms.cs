@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Unity.Jobs;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace DanmakU {
 
@@ -16,21 +17,28 @@ internal struct ComputeDanmakuTranforms : IJobParallelFor {
     Transforms = pool.Transforms;
   }
 
-  public void Execute(int index) {
+  public unsafe void Execute(int index) {
     var position = Positions[index];
     var direction = Directions[index];
 
-    var transform = new Matrix4x4();
-    transform[0, 0] = direction.x;
-    transform[0, 1] = -direction.y;
-    transform[1, 0] = direction.y;
-    transform[1, 1] = direction.x;
-    transform[2, 2] = 1.0f;
-    transform[3, 3] = 1;
-    transform[0, 3] = position.x;
-    transform[1, 3] = position.y;
+    var floatPtr = (float*)((Matrix4x4*)Transforms.GetUnsafePtr() + index);
 
-    Transforms[index] = transform;
+    *floatPtr++ = direction.x;    // 0, 0
+    *floatPtr++ = direction.y;    // 0, 1
+    *floatPtr++ = 0f;             // 0, 2
+    *floatPtr++ = 0f;             // 0, 3
+    *floatPtr++ = -direction.y;   // 1, 0
+    *floatPtr++ = direction.x;    // 1, 1
+    *floatPtr++ = 0f;             // 1, 2
+    *floatPtr++ = 0f;             // 1, 3
+    *floatPtr++ = 0f;             // 2, 0
+    *floatPtr++ = 0f;             // 2, 1
+    *floatPtr++ = 1f;             // 2, 2
+    *floatPtr++ = 0f;             // 2, 3
+    *floatPtr++ = position.x;     // 3, 0
+    *floatPtr++ = position.y;     // 3, 1
+    *floatPtr++ = 0f;             // 3, 2
+    *floatPtr = 1f;               // 3, 3
   }
 
 }

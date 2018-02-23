@@ -6,8 +6,8 @@ using UnityEditor;
 namespace DanmakU {
 
 [CanEditMultipleObjects]
-[CustomPropertyDrawer(typeof(Range))]
-internal class RangeDrawer : PropertyDrawer {
+[CustomPropertyDrawer(typeof(RadiansAttribute))]
+internal class RadiansEditor : PropertyDrawer {
 
   const float buttonSize = 30f;
 
@@ -19,16 +19,35 @@ internal class RangeDrawer : PropertyDrawer {
 
     _propertyType = _propertyType ?? (_propertyType = new Dictionary<string, bool>());
 
-    bool isRange;
-    if (!_propertyType.TryGetValue(property.propertyPath, out isRange)) {
-        isRange = !Mathf.Approximately(min.floatValue, max.floatValue);
-        _propertyType.Add(property.propertyPath, isRange);
+    switch (property.propertyType) {
+      case SerializedPropertyType.Float:
+        var degVal = property.floatValue * Mathf.Rad2Deg;
+        EditorGUI.showMixedValue = property.hasMultipleDifferentValues;
+        degVal = EditorGUI.FloatField(position, label, degVal);
+        EditorGUI.showMixedValue = false;
+        if (property.hasMultipleDifferentValues) {
+          property.floatValue = degVal * Mathf.Deg2Rad;
+        }
+        break;
+      default: 
+        if (min != null && max != null) {
+          bool isRange;
+          if (!_propertyType.TryGetValue(property.propertyPath, out isRange)) {
+            isRange = !Mathf.Approximately(min.floatValue, max.floatValue);
+            _propertyType.Add(property.propertyPath, isRange);
+          }
+          var values = new[] { min.floatValue * Mathf.Rad2Deg, max.floatValue * Mathf.Rad2Deg };
+          _propertyType[property.propertyPath] = DrawRangeEditor(position, property, label, isRange, values);
+          if (!min.hasMultipleDifferentValues) min.floatValue = values[0] * Mathf.Deg2Rad;
+          if (!max.hasMultipleDifferentValues) max.floatValue = values[1] * Mathf.Deg2Rad;
+        } else {
+          EditorGUI.PropertyField(position, property, label);
+        }
+        break;
     }
-
-    _propertyType[property.propertyPath] = DrawRangeEditor(position, property, label, isRange);
   }
 
-  static bool DrawRangeEditor(Rect position, SerializedProperty property, GUIContent label, bool isRange) {
+  static bool DrawRangeEditor(Rect position, SerializedProperty property, GUIContent label, bool isRange, float[] values) {
     var fieldPosition = position;
     var buttonPosition = position;
     fieldPosition.width -= buttonSize;
@@ -38,43 +57,36 @@ internal class RangeDrawer : PropertyDrawer {
     var min = property.FindPropertyRelative("_min");
     var max = property.FindPropertyRelative("_max");
 
-    EditorGUI.showMixedValue = property.hasMultipleDifferentValues;
     EditorGUI.BeginProperty(position, label, property);
     if (isRange) {
         MultiFloatField(fieldPosition, label, 
                         new[] { new GUIContent("-"), new GUIContent("+")},
-                        new[] { min, max });
+                        new[] { min.hasMultipleDifferentValues, max.hasMultipleDifferentValues },
+                        values);
     } else {
-      var multiEditing = min.hasMultipleDifferentValues || max.hasMultipleDifferentValues;
-      EditorGUI.showMixedValue = multiEditing;
-      var value = EditorGUI.FloatField(fieldPosition, label ,min.floatValue);
-      if (!min.hasMultipleDifferentValues) {
-        min.floatValue = value;
-        max.floatValue = value;
-      }
+      EditorGUI.showMixedValue = min.hasMultipleDifferentValues || max.hasMultipleDifferentValues;
+      values[0] = values[1] = EditorGUI.FloatField(fieldPosition, label, values[0]);
+      EditorGUI.showMixedValue = false;
     }
-    EditorGUI.showMixedValue = false;
     if (GUI.Button(buttonPosition, isRange ? "\u2194" : "\u2022")) {
-        isRange = !isRange;
-        if (!isRange) {
-            var average = (min.floatValue + max.floatValue) / 2;
-            min.floatValue = average;
-            max.floatValue = average;
-        }
+      isRange = !isRange;
+      if (!isRange) {
+        values[0] = values[1] = (values[0] + values[1]) / 2;
+      }
     }
     EditorGUI.EndProperty();
     return isRange;
   }
 
-  static void MultiFloatField(Rect position, GUIContent label, GUIContent[] subLabels, SerializedProperty[] properties) {
+  static void MultiFloatField(Rect position, GUIContent label, GUIContent[] subLabels, bool[] mixed, float[] values) {
     int controlId = GUIUtility.GetControlID("foldout".GetHashCode(), FocusType.Passive, position);
     position = MultiFieldPrefixLabel(position, controlId, label, subLabels.Length);
     position.height = 16f;
-    MultiFloatField(position, subLabels, properties);
+    MultiFloatField(position, subLabels, mixed, values);
   }
 
-  static void MultiFloatField(Rect position, GUIContent[] subLabels, SerializedProperty[] properties) {
-    int length = properties.Length;
+  static void MultiFloatField(Rect position, GUIContent[] subLabels, bool[] mixed, float[] values) {
+    int length = values.Length;
     float num = (position.width - (float) (length - 1) * 2f) / (float) length;
     Rect position1 = new Rect(position);
     position1.width = num;
@@ -82,8 +94,10 @@ internal class RangeDrawer : PropertyDrawer {
     int indentLevel = EditorGUI.indentLevel;
     EditorGUIUtility.labelWidth = 13f;
     EditorGUI.indentLevel = 0;
-    for (int index = 0; index < properties.Length; ++index) {
-      EditorGUI.PropertyField(position1, properties[index], subLabels[index], false);
+    for (int index = 0; index < values.Length; ++index) {
+      EditorGUI.showMixedValue = mixed[index];
+      values[index] = EditorGUI.FloatField(position1, subLabels[index], values[index]);
+      EditorGUI.showMixedValue = false;
       position1.x += num + 2f;
     }
     EditorGUIUtility.labelWidth = labelWidth1;
@@ -126,4 +140,3 @@ internal class RangeDrawer : PropertyDrawer {
 }
 
 }
-

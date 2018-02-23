@@ -163,8 +163,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     var count = ActiveCount;
     if (count <= 0) return dependency;
     new NativeSlice<Vector2>(OldPositions, 0, count).CopyFrom(new NativeSlice<Vector2>(Positions, 0, count));
-    var rotate = new RotateDanmaku(this).Schedule(count, kBatchSize, dependency);
-    var move = new MoveDanmaku(this).Schedule(count, kBatchSize, rotate);
+    var move = new MoveDanmaku(this).Schedule(count, kBatchSize, dependency);
     var boundsCheck = new BoundsCheckDanmaku(this).Schedule(count, kBatchSize, move);
     var transforms = new ComputeDanmakuTranforms(this).Schedule(count, kBatchSize, move);
     dependency = JobHandle.CombineDependencies(boundsCheck, transforms);

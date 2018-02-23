@@ -10,9 +10,9 @@ namespace DanmakU {
 public struct DanmakuConfig {
 
   public Vector2 Position;
-  public Range Rotation;
+  [Radians] public Range Rotation;
   public Range Speed;
-  public Range AngularSpeed;
+  [Radians] public Range AngularSpeed;
   public Color Color;
 
   /// <summary>
@@ -37,9 +37,9 @@ public struct DanmakuConfig {
 [Serializable]
 public struct DanmakuState {
   public Vector2 Position;
-  public float Rotation;
+  [Radians] public float Rotation;
   public float Speed;
-  public float AngularSpeed;
+  [Radians] public float AngularSpeed;
   public Color Color;
 }
 

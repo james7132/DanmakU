@@ -88,25 +88,6 @@ internal class DanmakuRenderer : IDisposable {
       layer: layer);
   }
 
-  // internal void Render(Camera camera) {
-  //   var mesh = GetMesh();
-  //   var propertyBlock = GetMaterialPropertyBlock();
-  //   PrepareMaterial(GetRenderMaterial());
-  //   if (mesh == null || renderMaterial == null) return;
-  // #if UNITY_EDITOR
-  //     if (!EditorApplication.isPlaying && this != null) {
-  //       colorCache[0] = Color;
-  //       transformCache[0] = transform.worldToLocalMatrix;
-  //       propertyBlock.SetVectorArray("_Color", colorCache);
-  //       Graphics.DrawMeshInstanced(mesh, 0, renderMaterial, transformCache, 
-  //           count: 1,
-  //           properties: propertyBlock,
-  //           castShadows: ShadowCastingMode.Off,
-  //           receiveShadows: false,
-  //           layer: gameObject.layer);
-  //       return;
-  //     }
-  // #endif
 }
 
 }

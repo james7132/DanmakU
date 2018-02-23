@@ -8,7 +8,7 @@ namespace DanmakU.Fireables {
 [Serializable]
 public class Ring : Fireable {
 
-  public Range Count;
+  public Range Count = 1;
   public Range Radius;
 
   public Ring(Range count, Range radius) {
