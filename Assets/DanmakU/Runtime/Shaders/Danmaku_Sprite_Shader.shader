@@ -31,17 +31,19 @@ Shader "Sprites/Danmaku" {
         #pragma multi_compile_instancing
         #pragma multi_compile _ PIXELSNAP_ON
         #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
+        #pragma instancing_options procedural:setup
 
         #include "UnityCG.cginc"
-
-        UNITY_INSTANCING_BUFFER_START(Props)
-            UNITY_DEFINE_INSTANCED_PROP(fixed4, _Color)
-            UNITY_DEFINE_INSTANCED_PROP(fixed2, _Flip)
-        UNITY_INSTANCING_BUFFER_END(Props)
 
         CBUFFER_START(UnityPerDrawSprite)
             float _EnableExternalAlpha;
         CBUFFER_END
+
+        #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
+          StructuredBuffer<float2> positionBuffer;
+          StructuredBuffer<float> rotationBuffer;
+          StructuredBuffer<float4> colorBuffer;
+        #endif
 
         struct appdata_t
         {
@@ -59,6 +61,26 @@ Shader "Sprites/Danmaku" {
             UNITY_VERTEX_OUTPUT_STEREO
         };
 
+        void setup() {
+        #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
+          float2 position = positionBuffer[unity_InstanceID];
+          float rotation = rotationBuffer[unity_InstanceID];
+          float cosR = cos(rotation);
+          float sinR = sin(rotation);
+
+          unity_ObjectToWorld = float4x4(
+            cosR, -sinR, 0, position.x,
+            sinR,  cosR, 0, position.y,
+               0,     0, 1,          0,
+               0,     0, 0,          1
+          );
+
+          unity_WorldToObject = unity_ObjectToWorld;
+          unity_WorldToObject._14_24_34 *= -1;
+          unity_WorldToObject._11_22_33 = 1.0f / unity_WorldToObject._11_22_33;
+        #endif
+        }
+
         v2f SpriteVert(appdata_t IN)
         {
             v2f OUT;
@@ -66,13 +88,13 @@ Shader "Sprites/Danmaku" {
             UNITY_SETUP_INSTANCE_ID (IN);
             UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
-        #ifdef UNITY_INSTANCING_ENABLED
-            IN.vertex.xy *= UNITY_ACCESS_INSTANCED_PROP(Props, _Flip);
-        #endif
-
             OUT.vertex = UnityObjectToClipPos(IN.vertex);
             OUT.texcoord = IN.texcoord;
-            OUT.color = IN.color * UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
+        #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
+            OUT.color = IN.color * colorBuffer[unity_InstanceID];
+        #else
+            OUT.color = IN.color;
+        #endif
 
             #ifdef PIXELSNAP_ON
             OUT.vertex = UnityPixelSnap (OUT.vertex);

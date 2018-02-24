@@ -16,4 +16,4 @@ Check out the [documentation](https://jamessliu.com/DanmakU) or join the [Discor
 ### Requirements and Caveats
 
  * Unity 2018.1 or newer.
- * Support for [GPU Instancing](https://docs.unity3d.com/Manual/GPUInstancing.html). All shaders used to render bullets must have GPU Instancing enabled.
+ * Support for [Procedural GPU Instancing](https://docs.unity3d.com/Manual/GPUInstancing.html). All shaders used to render bullets must have GPU Instancing enabled. Requires Shader Model 4.5 or newer.

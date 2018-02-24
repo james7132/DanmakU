@@ -54,6 +54,7 @@ public class DanmakuManager : MonoBehaviour {
     foreach (var group in RendererGroups.Values) {
       group.Dispose();
     }
+    ComputeBufferPool.DisposeShared();
   }
 
   /// <summary>
@@ -189,7 +190,10 @@ public class DanmakuManager : MonoBehaviour {
       return update;
     }
 
-    public void Render(int layer) => Renderer.Render(Sets, layer);
+    public void Render(int layer) {
+      Renderer.FlushBuffers();
+      Renderer.Render(Sets, layer);
+    }
 
     public void Dispose() {
       Renderer.Dispose();
