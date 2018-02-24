@@ -1,5 +1,6 @@
 ﻿using Unity.Jobs;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace DanmakU.Modifiers {
@@ -21,9 +22,10 @@ public class DanmakuAcceleration : MonoBehaviour, IDanmakuModifier {
     if (acceleration.Approximately(0f)) return dependency;
     if (Mathf.Approximately(acceleration.Size, 0f)) {
       return new ApplyFixedAcceleration {
+        Count = pool.ActiveCount,
         Acceleration = acceleration.Center,
         Speeds = pool.Speeds
-      }.Schedule(pool.ActiveCount, DanmakuPool.kBatchSize, dependency);
+      }.Schedule();
     } else {
       return new ApplyRandomAcceleration {
         Acceleration = acceleration.Center,
@@ -32,11 +34,20 @@ public class DanmakuAcceleration : MonoBehaviour, IDanmakuModifier {
     }
   }
 
-  struct ApplyFixedAcceleration : IJobParallelFor {
+  struct ApplyFixedAcceleration : IJob, IJobParallelFor {
 
+    public int Count;
     public float Acceleration;
     public NativeArray<float> Speeds;
     
+    public unsafe void Execute() {
+      var ptr = (float*)(Speeds.GetUnsafePtr());
+      var end = ptr + Count;
+      while (ptr < end) {
+        *ptr++ += Acceleration;
+      }
+    }
+
     public void Execute(int index) {
       Speeds[index] += Acceleration;
     }

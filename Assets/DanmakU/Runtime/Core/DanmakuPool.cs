@@ -83,7 +83,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// The recommended batch size for processing Danmaku in parallelizable jobs.
   /// </summary>
   /// <seealso cref="Unity.Jobs.IJobParallelFor"/>
-  public const int kBatchSize = 32;
+  public const int kBatchSize = 1;
   const int kGrowthFactor = 2;
 
   /// <summary>
@@ -138,8 +138,6 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   public NativeArray<Vector4> Colors;
 
   internal NativeArray<int> activeCountArray;
-  internal NativeArray<Matrix4x4> Transforms;
-  internal NativeArray<Vector2> Directions;
   internal NativeArray<Vector2> OldPositions;
   internal NativeArray<int> CollisionMasks;
 
@@ -153,9 +151,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Speeds = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     AngularSpeeds = new NativeArray<float>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     Colors = new NativeArray<Vector4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-    Transforms = new NativeArray<Matrix4x4>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     OldPositions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-    Directions = new NativeArray<Vector2>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
     CollisionMasks = new NativeArray<int>(poolSize, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
   }
 
@@ -164,9 +160,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     if (count <= 0) return dependency;
     new NativeSlice<Vector2>(OldPositions, 0, count).CopyFrom(new NativeSlice<Vector2>(Positions, 0, count));
     var move = new MoveDanmaku(this).Schedule(count, kBatchSize, dependency);
-    var boundsCheck = new BoundsCheckDanmaku(this).Schedule(count, kBatchSize, move);
-    var transforms = new ComputeDanmakuTranforms(this).Schedule(count, kBatchSize, move);
-    dependency = JobHandle.CombineDependencies(boundsCheck, transforms);
+    dependency = new BoundsCheckDanmaku(this).Schedule(count, kBatchSize, move);
     if (DanmakuCollider.ColliderCount > 0) {
       var collide = new CollideDanamku(this).Schedule(count, kBatchSize, move);
       dependency = JobHandle.CombineDependencies(dependency, collide);
@@ -223,8 +217,6 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Resize(ref Speeds);
     Resize(ref AngularSpeeds);
     Resize(ref Colors);
-    Resize(ref Transforms);
-    Resize(ref Directions);
     Resize(ref OldPositions);
     Resize(ref CollisionMasks);
   }
@@ -251,8 +243,6 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     Speeds.Dispose();
     AngularSpeeds.Dispose();
     Colors.Dispose();
-    Transforms.Dispose();
-    Directions.Dispose();
     OldPositions.Dispose();
     CollisionMasks.Dispose();
   }

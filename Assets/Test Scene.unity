@@ -294,8 +294,8 @@ MonoBehaviour:
   FrameRate: 0
   Arc:
     Count:
-      _min: 20
-      _max: 20
+      _min: 500
+      _max: 500
     ArcLength:
       _min: 6.2831855
       _max: 6.2831855
@@ -491,7 +491,7 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: 4cddd60e11667c848a99d851ee8b4e89, type: 3}
   ColliderRadius: 2
   ColliderOffset: {x: 0, y: 0}
-  DefaultPoolSize: 1000
+  DefaultPoolSize: 128000
 --- !u!4 &2040105327
 Transform:
   m_ObjectHideFlags: 0
