@@ -66,6 +66,11 @@ public struct Danmaku {
   }
 
   /// <summary>
+  /// Gets the direction the Danmaku is facing. Guarenteed to be a unit vector.
+  /// </summary>
+  public Vector2 Direction => GetDirection(Pool.Rotations[Id]);
+
+  /// <summary>
   /// Gets or sets the speed of the Danmaku.
   /// </summary>
   /// <remarks>
@@ -152,6 +157,15 @@ public struct Danmaku {
     Speed = state.Speed;
     AngularSpeed = state.AngularSpeed;
     Color = state.Color;
+  }
+
+  /// <summary>
+  /// Convert a Danmaku rotation into a unit vector.
+  /// </summary>
+  /// <param name="rotation">the rotation of the Danmaku.</param>
+  /// <returns>the unit vector representing the way the bullet is facing.</returns>
+  public static Vector2 GetDirection(float rotation) {
+    return new Vector2(Mathf.Cos(rotation), Mathf.Sin(rotation));
   }
 
   public static bool operator ==(Danmaku lhs, Danmaku rhs) {
