@@ -8,20 +8,20 @@ namespace DanmakU {
 
 internal struct CollideDanamku : IJobParallelFor {
 
-  public float Radius;
-
-  [ReadOnly] public NativeArray<Vector2> Positions;
-  [WriteOnly] public NativeArray<int> Collisions;
+  Bounds2D Bounds;
+  [ReadOnly] NativeArray<Vector2> Positions;
+  [WriteOnly] NativeArray<int> Collisions;
 
   public CollideDanamku(DanmakuPool pool) {
-    Radius = pool.ColliderRadius;
+    var radius = pool.ColliderRadius;
+    Bounds = new Bounds2D(Vector2.zero, new Vector2(radius, radius));
     Positions = pool.Positions;
     Collisions = pool.CollisionMasks;
   }
 
   public void Execute(int index) {
-    var danmakuBounds = new Bounds2D(Positions[index], new Vector2(Radius, Radius));
-    Collisions[index] = DanmakuCollider.TestCollisions(danmakuBounds);
+    Bounds.Center = Positions[index];
+    Collisions[index] = DanmakuCollider.TestCollisions(Bounds);
   }
 
 }

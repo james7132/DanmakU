@@ -83,7 +83,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// The recommended batch size for processing Danmaku in parallelizable jobs.
   /// </summary>
   /// <seealso cref="Unity.Jobs.IJobParallelFor"/>
-  public const int kBatchSize = 1;
+  public const int kBatchSize = 1024;
   const int kGrowthFactor = 2;
 
   /// <summary>
@@ -161,11 +161,11 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     new NativeSlice<Vector2>(OldPositions, 0, count).CopyFrom(new NativeSlice<Vector2>(Positions, 0, count));
     var move = new MoveDanmaku(this).Schedule(count, kBatchSize, dependency);
     dependency = new BoundsCheckDanmaku(this).Schedule(count, kBatchSize, move);
+    dependency = new DestroyDanmaku(this).Schedule(dependency);
     if (DanmakuCollider.ColliderCount > 0) {
-      var collide = new CollideDanamku(this).Schedule(count, kBatchSize, move);
-      dependency = JobHandle.CombineDependencies(dependency, collide);
+      dependency = new CollideDanamku(this).Schedule(count, kBatchSize, dependency);
     }
-    return new DestroyDanmaku(this).Schedule(dependency);
+    return dependency;
   }
 
   /// <summary>
