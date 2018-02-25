@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace DanmakU {
 
@@ -15,7 +15,9 @@ public class DanmakuCollider : MonoBehaviour {
     public int LayerMask;
   }
 
+  static RaycastHit2D[] raycastCache = new RaycastHit2D[256];
   static readonly List<DanmakuCollider> Colliders;
+  static readonly MultiMap<Collider2D, DanmakuCollider> ColliderMap;
   static readonly List<Bounds2D>[] Data;
   static Bounds2D GlobalBounds;
   static int GlobalLayerMask;
@@ -23,6 +25,7 @@ public class DanmakuCollider : MonoBehaviour {
 
   static DanmakuCollider() {
     Colliders = new List<DanmakuCollider>();
+    ColliderMap = new MultiMap<Collider2D, DanmakuCollider>();
     Data = new List<Bounds2D>[sizeof(int) * 8];
     for (var i = 0; i < Data.Length; i++) {
       Data[i] = new List<Bounds2D>();
@@ -54,8 +57,11 @@ public class DanmakuCollider : MonoBehaviour {
     }
   }
 
+  MutableDanmakuCollisionList collidedDanmaku;
   Collider2D[] colliders;
   ColliderData data;
+
+  public event Action<DanmakuCollisionList> OnDanmakuCollision;
 
   /// <summary>
   /// Awake is called when the script instance is being loaded.
@@ -63,6 +69,19 @@ public class DanmakuCollider : MonoBehaviour {
   void Awake() {
     colliders = GetComponents<Collider2D>();
     data = BuildData();
+    collidedDanmaku = new MutableDanmakuCollisionList();
+    foreach (var collider in colliders) {
+      ColliderMap.Add(collider, this);
+    }
+  }
+
+  /// <summary>
+  /// This function is called when the MonoBehaviour will be destroyed.
+  /// </summary>
+  void OnDestroy() {
+    foreach (var collider in colliders) {
+      ColliderMap.RemoveElement(collider, this);
+    }
   }
 
   /// <summary>
@@ -80,6 +99,49 @@ public class DanmakuCollider : MonoBehaviour {
   /// </summary>
   void FixedUpdate()  {
     data = BuildData(); 
+  }
+
+  internal static unsafe void TestPoolCollisions(DanmakuPool pool) {
+    var layersPtr = (int*)(pool.CollisionMasks.GetUnsafePtr());
+    var count = pool.ActiveCount;
+    for (var i = 0; i < count; i++) {
+      if (*layersPtr++ == 0) continue;
+      var layerMask = pool.CollisionMasks[i];
+      var oldPosition = pool.OldPositions[i];
+      var direction = pool.Positions[i] - oldPosition;
+      var distance = direction.magnitude;
+      var hits = Physics2D.CircleCastNonAlloc(oldPosition, pool.ColliderRadius, direction, raycastCache, distance, layerMask);
+      if (hits <= 0) continue;
+      var danmaku = new Danmaku(pool, i);
+      for (var j = 0; j < hits; j++) {
+        var collider = raycastCache[j].collider;
+        List<DanmakuCollider> danmakuColliders;
+        if (!ColliderMap.TryGetValue(collider, out danmakuColliders)) continue;
+        var collision = new DanmakuCollision {
+          Danmaku = danmaku,
+          RaycastHit = raycastCache[j]
+        };
+        foreach (var dCollider in danmakuColliders) {
+          if (dCollider != null && dCollider.isActiveAndEnabled) {
+            dCollider.AddDanmaku(collision);
+          }
+        }
+      }
+    }
+  }
+
+  internal static void FlushAll() {
+    foreach (var collider in Colliders) {
+      collider.Flush();
+    }
+  }
+
+  internal void AddDanmaku(DanmakuCollision danmaku) => collidedDanmaku.Add(danmaku);
+  internal void Flush() {
+    if (collidedDanmaku.Count > 0 && OnDanmakuCollision != null) {
+      OnDanmakuCollision(collidedDanmaku.AsReadOnly());
+    }
+    collidedDanmaku.Clear();
   }
 
   internal static int TestCollisions(Bounds2D bounds)  {

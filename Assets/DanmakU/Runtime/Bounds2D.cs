@@ -113,8 +113,8 @@ public struct Bounds2D {
   /// <returns>true if there is an intersection between bounds, false otherwise.</returns>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public bool Intersects(Bounds2D bounds) {
-    return (Math.Abs(Center.x - bounds.Center.x) * 2 < Extents.x + bounds.Extents.x) &&
-           (Math.Abs(Center.y - bounds.Center.y) * 2 < Extents.y + bounds.Extents.y);
+    return (Math.Abs(Center.x - bounds.Center.x) < Extents.x + bounds.Size.x) &&
+           (Math.Abs(Center.y - bounds.Center.y) < Extents.y + bounds.Extents.y);
   }
 
   /// <summary>
@@ -129,7 +129,7 @@ public struct Bounds2D {
   }
 
   public static implicit operator Bounds2D(Bounds bounds) {
-    return new Bounds2D(bounds.center, bounds.extents);
+    return new Bounds2D(bounds.center, bounds.size);
   }
 
   public static implicit operator Bounds(Bounds2D bounds) {

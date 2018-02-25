@@ -154,6 +154,21 @@ public struct Danmaku {
     Color = state.Color;
   }
 
+  public static bool operator ==(Danmaku lhs, Danmaku rhs) {
+    return lhs.Id == rhs.Id && lhs.Pool == rhs.Pool;
+  }
+
+  public static bool operator !=(Danmaku lhs, Danmaku rhs) {
+    return lhs.Id != rhs.Id || lhs.Pool != rhs.Pool;
+  }
+
+  public override bool Equals(object obj) {
+    if (!(obj is Danmaku)) return false;
+    return ((Danmaku)obj) == this;
+  }
+
+  public override int GetHashCode() => 31 * Pool.GetHashCode() + Id;
+
 }
 
 }
