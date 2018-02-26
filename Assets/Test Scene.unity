@@ -294,8 +294,8 @@ MonoBehaviour:
   FrameRate: 0
   Arc:
     Count:
-      _min: 500
-      _max: 500
+      _min: 5
+      _max: 5
     ArcLength:
       _min: 6.2831855
       _max: 6.2831855

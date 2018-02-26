@@ -22,10 +22,9 @@ public class DanmakuAcceleration : MonoBehaviour, IDanmakuModifier {
     if (acceleration.Approximately(0f)) return dependency;
     if (Mathf.Approximately(acceleration.Size, 0f)) {
       return new ApplyFixedAcceleration {
-        Count = pool.ActiveCount,
         Acceleration = acceleration.Center,
         Speeds = pool.Speeds
-      }.Schedule();
+      }.ScheduleBatch(pool.ActiveCount, DanmakuPool.kBatchSize, dependency);
     } else {
       return new ApplyRandomAcceleration {
         Acceleration = acceleration.Center,
@@ -34,22 +33,17 @@ public class DanmakuAcceleration : MonoBehaviour, IDanmakuModifier {
     }
   }
 
-  struct ApplyFixedAcceleration : IJob, IJobParallelFor {
+  struct ApplyFixedAcceleration : IJobBatchedFor {
 
-    public int Count;
     public float Acceleration;
     public NativeArray<float> Speeds;
     
-    public unsafe void Execute() {
+    public unsafe void Execute(int start, int end) {
       var ptr = (float*)(Speeds.GetUnsafePtr());
-      var end = ptr + Count;
-      while (ptr < end) {
+      var pEnd = ptr + (end - start);
+      while (ptr < pEnd) {
         *ptr++ += Acceleration;
       }
-    }
-
-    public void Execute(int index) {
-      Speeds[index] += Acceleration;
     }
 
   }
