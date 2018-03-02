@@ -36,6 +36,9 @@
         ]
       }
     ],
+    "sitemap": {
+      "baseUrl": "https://jamessliu.com/DanmakU/"
+    },
     "overwrite": [
       {
         "files": [
@@ -48,7 +51,7 @@
       }
     ],
     "globalMetadata": {
-      "_appTitle": "DanmakU",      
+      "_appTitle": "DanmakU",
       "_appFooter": "&#0169; 2018 James Liu",
       "_enableSearch": "true",
       "_disableContribution": "false",
