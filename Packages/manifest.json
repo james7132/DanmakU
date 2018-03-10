@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "com.unity.standardevents": "exclude",
+    "com.unity.purchasing": "exclude",
+    "com.unity.analytics": "exclude",
+    "com.unity.ads": "exclude",
+    "com.unity.package-manager-ui": "1.8.2"
+  }
+}
