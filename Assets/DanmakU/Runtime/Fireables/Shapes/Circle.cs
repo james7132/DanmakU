@@ -20,10 +20,11 @@ public class Circle : Fireable {
     float radius = Radius.GetValue();
     int count = Mathf.RoundToInt(Count.GetValue());
     var rotation = state.Rotation.GetValue();
+    var origin = state.Position;
+    state.Rotation = rotation;
     for (int i = 0; i < count; i++) {
       var angle = rotation + i * (Mathf.PI * 2 / count);
-      state.Position = state.Position + (radius * RotationUtiliity.ToUnitVector(angle));
-      state.Rotation = rotation;
+      state.Position = origin + (radius * RotationUtiliity.ToUnitVector(angle));
       Subfire(state);
     }
   }
