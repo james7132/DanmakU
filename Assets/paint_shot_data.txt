@@ -1,0 +1,20 @@
+# Paint Shot Data
+#
+# Bullet is fired into position of "*".
+# Need to align length of string of all line.
+# Please fill in "-" to blank.
+#
+# Lines beginning with "#" are ignored as comments.
+#
+------*------
+-----*-*-----
+*************
+-*-*-----*-*-
+--*-------*--
+-*-*-----*-*-
+*************
+-----*-*-----
+------*------
+#
+# END
+#
