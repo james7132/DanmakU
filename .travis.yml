@@ -14,6 +14,7 @@ script:
   - ls docfx.console.2.31.0/tools
   - mono docfx.console.2.31.0/tools/docfx.exe docs/docfx.json
   - echo "" > docs/_site/.nojekyll
+  - echo "danmaku.jamessliu.com" > docs/_site/CNAME
 
 deploy:
   provider: pages
