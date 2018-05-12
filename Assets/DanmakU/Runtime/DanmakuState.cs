@@ -22,7 +22,6 @@ public struct DanmakuConfig {
   public DanmakuState CreateState() {
     return new DanmakuState {
       Position = Position,
-      OldPosition = Position,
       Rotation = Rotation.GetValue(),
       Speed = Speed.GetValue(),
       AngularSpeed = AngularSpeed.GetValue(),
@@ -38,7 +37,6 @@ public struct DanmakuConfig {
 [Serializable]
 public struct DanmakuState {
   public Vector2 Position;
-  public Vector2 OldPosition;
   [Radians] public float Rotation;
   public float Speed;
   [Radians] public float AngularSpeed;
