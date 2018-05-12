@@ -52,10 +52,11 @@ public struct Danmaku {
     [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.Positions[Id] = value; }
   }
   /// <summary>
-  /// Sets the world position of the Danmaku during the previous frame. (Internal only setter.)
+  /// Gets or sets the world position of the Danmaku during the previous frame.
   /// </summary>
-  public Vector2 OldPosition {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] private set { Pool.OldPositions[Id] = value; }
+  internal Vector2 OldPosition {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.OldPositions[Id]; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.OldPositions[Id] = value; }
   }
 
   /// <summary>
