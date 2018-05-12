@@ -60,6 +60,7 @@ public class DanmakuPrefab : MonoBehaviour {
   [Header("Collision")]
   [SerializeField] internal float ColliderRadius = 1f;
   [SerializeField] internal Vector2 ColliderOffset;
+  [SerializeField] internal LayerMask CollidesWith;
   [Header("Pooling")]
   [SerializeField] internal int DefaultPoolSize = 1000;
 

@@ -106,11 +106,11 @@ public class DanmakuCollider : MonoBehaviour {
     var count = pool.ActiveCount;
     for (var i = 0; i < count; i++) {
       if (*layersPtr++ == 0) continue;
-      var layerMask = pool.CollisionMasks[i];
+      var layerMask = pool.CollisionMasks[i]; // TODO: Implement per Danmaku collision?
       var oldPosition = pool.OldPositions[i];
       var direction = pool.Positions[i] - oldPosition;
       var distance = direction.magnitude;
-      var hits = Physics2D.CircleCastNonAlloc(oldPosition, pool.ColliderRadius, direction, raycastCache, distance, layerMask);
+      var hits = Physics2D.CircleCastNonAlloc(oldPosition, pool.ColliderRadius, direction, raycastCache, distance, pool.CollidesWith);
       if (hits <= 0) continue;
       var danmaku = new Danmaku(pool, i);
       for (var j = 0; j < hits; j++) {

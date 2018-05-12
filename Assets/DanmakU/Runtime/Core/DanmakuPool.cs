@@ -101,6 +101,11 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// </summary>
   public float ColliderRadius;
 
+  /// <summary>
+  /// Which layers the Danmaku created from this pool collide with.
+  /// </summary>
+  public LayerMask CollidesWith { get; set; }
+
   internal NativeArray<float> Times;
   internal NativeArray<DanmakuState> InitialStates;
 
