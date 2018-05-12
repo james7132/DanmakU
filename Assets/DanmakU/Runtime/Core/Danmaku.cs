@@ -51,6 +51,13 @@ public struct Danmaku {
     [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.Positions[Id]; }
     [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.Positions[Id] = value; }
   }
+  /// <summary>
+  /// Gets or sets the world position of the Danmaku during the previous frame.
+  /// </summary>
+  public Vector2 OldPosition {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.OldPositions[Id]; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private set { Pool.OldPositions[Id] = value; }
+  }
 
   /// <summary>
   /// Gets or sets the rotation of the Danmaku.
@@ -140,6 +147,7 @@ public struct Danmaku {
   public DanmakuState GetState() {
     return new DanmakuState {
       Position = Position,
+      OldPosition = OldPosition,
       Rotation = Rotation,
       Speed = Speed,
       AngularSpeed = AngularSpeed,
@@ -153,6 +161,7 @@ public struct Danmaku {
   /// <param name="state">the state to be applied.</param>
   public void ApplyState(DanmakuState state) {
     Position = state.Position;
+    OldPosition = state.OldPosition;
     Rotation = state.Rotation;
     Speed = state.Speed;
     AngularSpeed = state.AngularSpeed;
