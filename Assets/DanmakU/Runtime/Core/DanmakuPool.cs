@@ -192,6 +192,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     for (var i = 0; i < count; i++) {
       Times[activeCount + i] = 0f;
       danmaku[i] = new Danmaku(this, activeCount + i);
+      OldPositions[danmaku[i].Id] = danmaku[i].Position;
     }
     activeCountArray[0] += count;
   }
