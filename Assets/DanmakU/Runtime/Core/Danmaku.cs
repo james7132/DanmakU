@@ -102,6 +102,14 @@ public struct Danmaku {
   }
 
   /// <summary>
+  /// Gets or sets the Danmaku's collision mask (which layers this Danmaku can collide with.)
+  /// </summary>
+  public int CollisionMask {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Pool.CollisionMasks[Id]; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Pool.CollisionMasks[Id] = value; }
+  }
+
+  /// <summary>
   /// Destroys the danmaku object.
   /// </summary>
   /// <remarks>
@@ -127,7 +135,8 @@ public struct Danmaku {
       Rotation = Rotation,
       Speed = Speed,
       AngularSpeed = AngularSpeed,
-      Color = Color
+      Color = Color,
+      CollisionMask = CollisionMask
     });
     Destroy();
     return danmaku;
@@ -143,7 +152,8 @@ public struct Danmaku {
       Rotation = Rotation,
       Speed = Speed,
       AngularSpeed = AngularSpeed,
-      Color = Color
+      Color = Color,
+      CollisionMask = CollisionMask
     };
   }
 
@@ -157,6 +167,7 @@ public struct Danmaku {
     Speed = state.Speed;
     AngularSpeed = state.AngularSpeed;
     Color = state.Color;
+    CollisionMask = state.CollisionMask;
   }
 
   /// <summary>

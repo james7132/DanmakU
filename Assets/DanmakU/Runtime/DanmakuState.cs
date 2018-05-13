@@ -14,6 +14,7 @@ public struct DanmakuConfig {
   public Range Speed;
   [Radians] public Range AngularSpeed;
   public Color Color;
+  public int CollisionMask;
 
   /// <summary>
   /// Creates an state based on the config.
@@ -25,7 +26,8 @@ public struct DanmakuConfig {
       Rotation = Rotation.GetValue(),
       Speed = Speed.GetValue(),
       AngularSpeed = AngularSpeed.GetValue(),
-      Color = Color
+      Color = Color,
+      CollisionMask = CollisionMask
     };
   }
 
@@ -41,6 +43,7 @@ public struct DanmakuState {
   public float Speed;
   [Radians] public float AngularSpeed;
   public Color Color;
+  public int CollisionMask;
 }
 
 }

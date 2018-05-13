@@ -106,11 +106,11 @@ public class DanmakuCollider : MonoBehaviour {
     var count = pool.ActiveCount;
     for (var i = 0; i < count; i++) {
       if (*layersPtr++ == 0) continue;
-      var layerMask = pool.CollisionMasks[i]; // TODO: Implement per Danmaku collision?
+      var layerMask = pool.CollisionMasks[i];
       var oldPosition = pool.OldPositions[i];
       var direction = pool.Positions[i] - oldPosition;
       var distance = direction.magnitude;
-      var hits = Physics2D.CircleCastNonAlloc(oldPosition, pool.ColliderRadius, direction, raycastCache, distance, pool.CollidesWith);
+      var hits = Physics2D.CircleCastNonAlloc(oldPosition, pool.ColliderRadius, direction, raycastCache, distance, layerMask);
       if (hits <= 0) continue;
       var danmaku = new Danmaku(pool, i);
       for (var j = 0; j < hits; j++) {
@@ -142,22 +142,6 @@ public class DanmakuCollider : MonoBehaviour {
       OnDanmakuCollision(collidedDanmaku.AsReadOnly());
     }
     collidedDanmaku.Clear();
-  }
-
-  internal static int TestCollisions(Bounds2D bounds)  {
-    if (!GlobalBounds.Intersects(bounds)) return 0;
-    int collisions = 0;
-    for (var i = 0; i < HighestLayer; i++) {
-      var mask = 1 << i;
-      if ((GlobalLayerMask & mask) == 0) continue;
-      var layerColliders = Data[i];
-      for (var j = 0; j < layerColliders.Count; j++) {
-        if (!layerColliders[j].Intersects(bounds)) continue;
-        collisions |= mask;
-        break;
-      }
-    }
-    return collisions;
   }
 
   ColliderData BuildData() {

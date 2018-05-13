@@ -101,11 +101,6 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// </summary>
   public float ColliderRadius;
 
-  /// <summary>
-  /// Which layers the Danmaku created from this pool collide with.
-  /// </summary>
-  public LayerMask CollidesWith { get; set; }
-
   internal NativeArray<float> Times;
   internal NativeArray<DanmakuState> InitialStates;
 
@@ -167,9 +162,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
     var move = new MoveDanmaku(this).ScheduleBatch(count, kBatchSize, dependency);
     dependency = new BoundsCheckDanmaku(this).ScheduleBatch(count, kBatchSize, move);
     dependency = new DestroyDanmaku(this).Schedule(dependency);
-    if (DanmakuCollider.ColliderCount > 0) {
-      dependency = new CollideDanamku(this).Schedule(count, kBatchSize, dependency);
-    }
+
     return dependency;
   }
 

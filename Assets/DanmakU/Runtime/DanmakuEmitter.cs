@@ -52,7 +52,8 @@ public class DanmakuEmitter : DanmakuBehaviour {
         Rotation = transform.rotation.eulerAngles.z * Mathf.Deg2Rad,
         Speed = Speed,
         AngularSpeed = AngularSpeed,
-        Color = Color
+        Color = Color,
+        CollisionMask = Physics2D.GetLayerCollisionMask(DanmakuType.gameObject.layer)
       };
       fireable.Fire(config);
       timer = 1f / FireRate.GetValue();
