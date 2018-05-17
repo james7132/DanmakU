@@ -17,12 +17,12 @@ continually firing.
 1. Select `File -> New Scene` to create a new scene
 
 1. Create an empty game object in the scene. Click `Add Component` and add a 
-@Danmaku.DanmakuManager component to the scene.
+@DanmakU.DanmakuManager component to the scene.
 
    Name it `Danmaku Manager` (the name isn't actually important, but it helps 
    disambiguate it in the scene.)
 
-   The @Danmaku.DanmakuManager manages the danmaku (bullets) in your scene, and 
+   The @DanmakU.DanmakuManager manages the danmaku (bullets) in your scene, and 
    it controls the bounds for danmaku..
    
    Keep everything default for now. Later, you can use the Center and Extents 
@@ -33,11 +33,11 @@ continually firing.
    without one.** 
 
 1. Add another empty game object to the scene. This time, add a
-@Danmaku.DanmakuPrefab component to the object.
+@DanmakU.DanmakuPrefab component to the object.
 
    Name it `Danmaku Prefab`. This object will be the template we use for our bullets.
 
-   @Danmaku.DanmakuPrefab defines a bullet type for your game. It contains a 
+   @DanmakU.DanmakuPrefab defines a bullet type for your game. It contains a 
    reference to the shader, sprite (or mesh), and collision information for
    that bullet type. 
 
@@ -48,12 +48,12 @@ continually firing.
 `Default Sprite Danmaku`. Drag this to the `Rendering->Shader` property for the
 `Danmaku Prefab` game object. Leave all the other fields their default values.
 
-1. Add a third empty game object. Add a @Danmaku.DanmakuEmitter component to it.
+1. Add a third empty game object. Add a @DanmakU.DanmakuEmitter component to it.
 
    Name it `Danmaku Emitter`. Make sure it is positioned at (0, 0, 0), as bullets
    will be emitted from it.
 
-   The @Danmaku.DanmakuEmitter class is a simple bullet emitter meant to be a 
+   The @DanmakU.DanmakuEmitter class is a simple bullet emitter meant to be a 
    jumping off point for your own emitter types. It shows how you can compose 
    many behaviors together to create different patterns.
 
