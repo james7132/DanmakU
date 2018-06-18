@@ -99,8 +99,6 @@ namespace DanmakU
 
         public int TeamNo { get; set; }
 
-        public int Damage { get; set; }
-
         /// <summary>
         /// The radius of the collider used to calculate collisions with the bullets in the pool.
         /// </summary>
