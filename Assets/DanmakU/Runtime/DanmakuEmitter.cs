@@ -58,11 +58,11 @@ namespace DanmakU
             isFiring = true;
         }
 
-		private void OnEnable()
-		{
+        private void OnEnable()
+        {
             timer = 0f;
-		}
-
+        }
+        
 		/// <summary>
 		/// Update is called every frame, if the MonoBehaviour is enabled.
 		/// </summary>
