@@ -21,18 +21,12 @@ namespace DanmakU
         public bool isFiring { get; set; }
 
         //Editor OK   **WARNING** Do not access directly; use GetTeamNo and SetTeamNo
-        public int TeamNo;
-
-        public int GetTeamNo()
+        public int TeamNo
         {
-            return TeamNo;
+            get { return TeamNo;} 
+            set { if (value != TeamNo) set.Pool.TeamNo = TeamNo = value; }
         }
-
-        public void SetTeamNo(int newTeam)
-        {
-            if (newTeam != TeamNo)
-                set.Pool.TeamNo = TeamNo = newTeam;
-        }
+        
 
         float timer;
 
