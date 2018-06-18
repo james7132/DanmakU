@@ -5,88 +5,86 @@ using UnityEngine;
 
 namespace DanmakU
 {
-
-  [AddComponentMenu("DanmakU/Danmaku Emitter")]
-  public class DanmakuEmitter : DanmakuBehaviour
-  {
-
-    public DanmakuPrefab DanmakuType;
-
-    public Range Speed = 5f;
-    public Range AngularSpeed;
-    public Color Color = Color.white;
-    public Range FireRate = 5;
-    public float FrameRate;
-    public Arc Arc;
-    public Line Line;
-    public DanmakuSet set { get; private set; }
-    public bool isFiring { get; set; }
-
-    //Editor OK   **WARNING** Do not access directly; use GetTeamNo and SetTeamNo
-    public int TeamNo;
-
-    public int GetTeamNo()
+    [AddComponentMenu("DanmakU/Danmaku Emitter")]
+    public class DanmakuEmitter : DanmakuBehaviour
     {
-      return TeamNo;
-    }
+        public DanmakuPrefab DanmakuType;
 
-    public void SetTeamNo(int newTeam)
-    {
-      if (newTeam != TeamNo)
-        set.Pool.TeamNo = TeamNo = newTeam;
-    }
+        public Range Speed = 5f;
+        public Range AngularSpeed;
+        public Color Color = Color.white;
+        public Range FireRate = 5;
+        public float FrameRate;
+        public Arc Arc;
+        public Line Line;
+        public DanmakuSet set { get; private set; }
+        public bool isFiring { get; set; }
 
-    float timer;
+        //Editor OK   **WARNING** Do not access directly; use GetTeamNo and SetTeamNo
+        public int TeamNo;
 
-    DanmakuConfig config;
-    IFireable fireable;
-
-    /// <summary>
-    /// Start is called on the frame when a script is enabled just before
-    /// any of the Update methods is called the first time.
-    /// </summary>
-    void Start()
-    {
-      if (DanmakuType == null)
-      {
-        Debug.LogWarning($"Emitter doesn't have a valid DanmakuPrefab", this);
-        return;
-      }
-
-      set = CreateSet(DanmakuType);
-      set.Pool.TeamNo = TeamNo;
-      set.AddModifiers(GetComponents<IDanmakuModifier>());
-      fireable = Arc.Of(Line).Of(set);
-      isFiring = true;
-    }
-
-    /// <summary>
-    /// Update is called every frame, if the MonoBehaviour is enabled.
-    /// </summary>
-    void Update()
-    {
-      if (fireable == null) return;
-      var deltaTime = Time.deltaTime;
-      if (FrameRate > 0)
-      {
-        deltaTime = 1f / FrameRate;
-      }
-
-      timer -= deltaTime;
-      if (!isFiring) return;
-      if (timer < 0)
-      {
-        config = new DanmakuConfig
+        public int GetTeamNo()
         {
-          Position = transform.position,
-          Rotation = transform.rotation.eulerAngles.z * Mathf.Deg2Rad,
-          Speed = Speed,
-          AngularSpeed = AngularSpeed,
-          Color = Color
-        };
-        fireable.Fire(config);
-        timer = 1f / FireRate.GetValue();
-      }
+            return TeamNo;
+        }
+
+        public void SetTeamNo(int newTeam)
+        {
+            if (newTeam != TeamNo)
+                set.Pool.TeamNo = TeamNo = newTeam;
+        }
+
+        float timer;
+
+        DanmakuConfig config;
+        IFireable fireable;
+
+        /// <summary>
+        /// Start is called on the frame when a script is enabled just before
+        /// any of the Update methods is called the first time.
+        /// </summary>
+        void Start()
+        {
+            if (DanmakuType == null)
+            {
+                Debug.LogWarning($"Emitter doesn't have a valid DanmakuPrefab", this);
+                return;
+            }
+
+            set = CreateSet(DanmakuType);
+            set.Pool.TeamNo = TeamNo;
+            set.AddModifiers(GetComponents<IDanmakuModifier>());
+            fireable = Arc.Of(Line).Of(set);
+            isFiring = true;
+        }
+
+        /// <summary>
+        /// Update is called every frame, if the MonoBehaviour is enabled.
+        /// </summary>
+        void Update()
+        {
+            if (fireable == null) return;
+            var deltaTime = Time.deltaTime;
+            if (FrameRate > 0)
+            {
+                deltaTime = 1f / FrameRate;
+            }
+
+            timer -= deltaTime;
+            if (!isFiring) return;
+            if (timer < 0)
+            {
+                config = new DanmakuConfig
+                {
+                    Position = transform.position,
+                    Rotation = transform.rotation.eulerAngles.z * Mathf.Deg2Rad,
+                    Speed = Speed,
+                    AngularSpeed = AngularSpeed,
+                    Color = Color
+                };
+                fireable.Fire(config);
+                timer = 1f / FireRate.GetValue();
+            }
+        }
     }
-  }
 }
