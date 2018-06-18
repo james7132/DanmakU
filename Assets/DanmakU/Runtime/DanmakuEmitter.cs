@@ -18,15 +18,15 @@ public class DanmakuEmitter : DanmakuBehaviour {
   public Arc Arc;
   public Line Line;
 
-  float timer;
-  DanmakuConfig config;
-  IFireable fireable;
+  protected float timer;
+  protected DanmakuConfig config;
+  protected IFireable fireable;
 
   /// <summary>
   /// Start is called on the frame when a script is enabled just before
   /// any of the Update methods is called the first time.
   /// </summary>
-  void Start() {
+  protected void Start() {
     if (DanmakuType == null) {
       Debug.LogWarning($"Emitter doesn't have a valid DanmakuPrefab", this);
       return;
