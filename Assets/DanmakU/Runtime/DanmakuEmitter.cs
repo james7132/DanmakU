@@ -20,7 +20,6 @@ namespace DanmakU
         public DanmakuSet set { get; private set; }
         public bool isFiring { get; set; }
 
-        //Editor OK   **WARNING** Do not access directly; use GetTeamNo and SetTeamNo
         public int TeamNo
         {
             get { return TeamNo;} 
