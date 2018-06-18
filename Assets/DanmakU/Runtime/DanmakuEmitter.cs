@@ -58,10 +58,15 @@ namespace DanmakU
             isFiring = true;
         }
 
-        /// <summary>
-        /// Update is called every frame, if the MonoBehaviour is enabled.
-        /// </summary>
-        void Update()
+		private void OnEnable()
+		{
+            timer = 0f;
+		}
+
+		/// <summary>
+		/// Update is called every frame, if the MonoBehaviour is enabled.
+		/// </summary>
+		void Update()
         {
             if (fireable == null) return;
             var deltaTime = Time.deltaTime;
@@ -87,4 +92,6 @@ namespace DanmakU
             }
         }
     }
+
+
 }
