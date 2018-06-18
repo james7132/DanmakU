@@ -83,7 +83,7 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// The recommended batch size for processing Danmaku in parallelizable jobs.
   /// </summary>
   /// <seealso cref="Unity.Jobs.IJobParallelFor"/>
-  public const int kBatchSize = 128;
+  public const int kBatchSize = 1024;
   const int kGrowthFactor = 2;
 
   /// <summary>
@@ -95,6 +95,10 @@ public class DanmakuPool : IEnumerable<Danmaku>, IDisposable {
   /// Gets the total capacity of the pool. Strictly greater than or equal to <see cref="ActiveCount"/>.
   /// </summary>
   public int Capacity { get; private set; }
+
+    public int TeamNo { get; set; }
+
+    public int Damage { get; set; }
 
   /// <summary>
   /// The radius of the collider used to calculate collisions with the bullets in the pool.

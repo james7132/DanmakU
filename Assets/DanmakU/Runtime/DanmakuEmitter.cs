@@ -17,8 +17,33 @@ public class DanmakuEmitter : DanmakuBehaviour {
   public float FrameRate;
   public Arc Arc;
   public Line Line;
+  public DanmakuSet set { get; private set; }
+  public int Damage = 10;
+  
 
+ // private bool _isFiring;
+  public bool isFiring { get; set; }
+
+    //Editor OK   **WARNING** Do not access directly; use GetTeamNo and SetTeamNo
+    public int TeamNo;
+    public int GetTeamNo()
+    {
+      return TeamNo;
+    }
+    public void SetTeamNo(int newTeam)
+    {
+      if (newTeam != TeamNo)
+        set.Pool.TeamNo = TeamNo = newTeam;
+    }
+    
+  /*{
+      get { return _isFiring; }
+      set { timer = 0; _isFiring = value; }
+  }*/
+  
+            
   float timer;
+
   DanmakuConfig config;
   IFireable fireable;
 
@@ -31,9 +56,11 @@ public class DanmakuEmitter : DanmakuBehaviour {
       Debug.LogWarning($"Emitter doesn't have a valid DanmakuPrefab", this);
       return;
     }
-    var set = CreateSet(DanmakuType);
+    set = CreateSet(DanmakuType);
+    set.Pool.TeamNo = TeamNo;
     set.AddModifiers(GetComponents<IDanmakuModifier>());
     fireable = Arc.Of(Line).Of(set);
+    isFiring = true;
   }
 
   /// <summary>
@@ -46,6 +73,7 @@ public class DanmakuEmitter : DanmakuBehaviour {
       deltaTime = 1f / FrameRate;
     }
     timer -= deltaTime;
+    if (!isFiring) return;
     if (timer < 0) {
       config = new DanmakuConfig {
         Position = transform.position,
