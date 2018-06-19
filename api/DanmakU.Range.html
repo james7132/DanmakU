@@ -1,0 +1,845 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Struct Range
+   | DanmakU </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Struct Range
+   | DanmakU ">
+    <meta name="generator" content="docfx 2.31.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DanmakU.Range">
+  
+  
+  <h1 id="DanmakU_Range" data-uid="DanmakU.Range" class="text-break">Struct Range
+  </h1>
+  <div class="markdown level0 summary"><p>A value type that represents a range of floating point values.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.ValueType.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.ValueType.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.ValueType.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DanmakU.html">DanmakU</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="DanmakU_Range_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Serializable]
+public struct Range</code></pre>
+  </div>
+  <h5 id="DanmakU_Range_examples"><strong>Examples</strong></h5>
+  <p>Ranges are implicitly convertible to and from floats and support most basic
+arithmetic with them.</p>
+<pre><code>Range r1 = 5f;                  // Converted to a range of [5, 5]
+Range r2 = r1.Expanded(5);      // Expanded range to [0, 10]
+Range r3 = r2 + 4;              // Shifted range to [4, 14]
+Range r4 = r3 - 9;              // Shifted range to [-5, 5]
+Range r5 = r4 * 20;             // Multiplied range to [-100, 100]
+Range r6 = r5 / 10;             // Divided range to [-10, 10]</code></pre>
+
+  <h3 id="constructors">Constructors
+  </h3>
+  <a id="DanmakU_Range__ctor_" data-uid="DanmakU.Range.#ctor*"></a>
+  <h4 id="DanmakU_Range__ctor_System_Single_" data-uid="DanmakU.Range.#ctor(System.Single)">Range(Single)</h4>
+  <div class="markdown level1 summary"><p>Creates a range scoped to the value of only one value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Range(float val)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">val</span></td>
+        <td><p>the center value of the range</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="DanmakU_Range__ctor_System_Single__examples">Examples</h5>
+  <pre><code>new Range(0)         // A range of [0, 0]
+new Range(5)         // A range of [5, 5]
+new Range(1000, 100) // A range of [100, 100]</code></pre>
+
+  <a id="DanmakU_Range__ctor_" data-uid="DanmakU.Range.#ctor*"></a>
+  <h4 id="DanmakU_Range__ctor_System_Single_System_Single_" data-uid="DanmakU.Range.#ctor(System.Single,System.Single)">Range(Single, Single)</h4>
+  <div class="markdown level1 summary"><p>Creates a range based on an interval of values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Range(float a, float b)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">a</span></td>
+        <td><p>one extrema of the range.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">b</span></td>
+        <td><p>one extrema of the range.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="DanmakU_Range__ctor_System_Single_System_Single__examples">Examples</h5>
+  <pre><code>new Range(0, 5)   // A range of [0, 5]
+new Range(5, 0)   // Another way to express [0, 5]
+new Range(5, 100) // A range of [5, 100]
+new Range(100, 5) // Another way to express of [5, 100]</code></pre>
+
+  <h3 id="properties">Properties
+  </h3>
+  <a id="DanmakU_Range_Center_" data-uid="DanmakU.Range.Center*"></a>
+  <h4 id="DanmakU_Range_Center" data-uid="DanmakU.Range.Center">Center</h4>
+  <div class="markdown level1 summary"><p>Gets the midpoint value of the range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Center { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_Max_" data-uid="DanmakU.Range.Max*"></a>
+  <h4 id="DanmakU_Range_Max" data-uid="DanmakU.Range.Max">Max</h4>
+  <div class="markdown level1 summary"><p>Gets the largest value in the range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Max { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_Min_" data-uid="DanmakU.Range.Min*"></a>
+  <h4 id="DanmakU_Range_Min" data-uid="DanmakU.Range.Min">Min</h4>
+  <div class="markdown level1 summary"><p>Gets the smallest value in the range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Min { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_Size_" data-uid="DanmakU.Range.Size*"></a>
+  <h4 id="DanmakU_Range_Size" data-uid="DanmakU.Range.Size">Size</h4>
+  <div class="markdown level1 summary"><p>Gets the size of the range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Size { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="DanmakU_Range_Approximately_" data-uid="DanmakU.Range.Approximately*"></a>
+  <h4 id="DanmakU_Range_Approximately_System_Single_" data-uid="DanmakU.Range.Approximately(System.Single)">Approximately(Single)</h4>
+  <div class="markdown level1 summary"><p>Gets whether the range is close to a single value and approximately the same
+as a given floating point value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Approximately(float value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>the target value to check against.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>true if the entire range is approximately the target value, false otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_Clamp_" data-uid="DanmakU.Range.Clamp*"></a>
+  <h4 id="DanmakU_Range_Clamp_System_Single_" data-uid="DanmakU.Range.Clamp(System.Single)">Clamp(Single)</h4>
+  <div class="markdown level1 summary"><p>Clamps a value to the limits of the range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Clamp(float value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>the value to clamp.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><p>the clamped value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_Expanded_" data-uid="DanmakU.Range.Expanded*"></a>
+  <h4 id="DanmakU_Range_Expanded_System_Single_" data-uid="DanmakU.Range.Expanded(System.Single)">Expanded(Single)</h4>
+  <div class="markdown level1 summary"><p>Creates a new Range expanded from the current range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Range Expanded(float size)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">size</span></td>
+        <td><p>the size</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="DanmakU_Range_Expanded_System_Single__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Can be used to shrink the new range by providiing a negative size.
+If the absolute value of  is larger than the
+<a class="xref" href="DanmakU.Range.html#DanmakU_Range_Size">Size</a> of the Range, the range will</p>
+</div>
+  <a id="DanmakU_Range_GetValue_" data-uid="DanmakU.Range.GetValue*"></a>
+  <h4 id="DanmakU_Range_GetValue" data-uid="DanmakU.Range.GetValue">GetValue()</h4>
+  <div class="markdown level1 summary"><p>Uniformily samples a value from the region.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float GetValue()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><p>the randomly sampled value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+  </h3>
+  <a id="DanmakU_Range_op_Addition_" data-uid="DanmakU.Range.op_Addition*"></a>
+  <h4 id="DanmakU_Range_op_Addition_DanmakU_Range_DanmakU_Range_" data-uid="DanmakU.Range.op_Addition(DanmakU.Range,DanmakU.Range)">Addition(Range, Range)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Range operator +(Range lhs, Range rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_op_Division_" data-uid="DanmakU.Range.op_Division*"></a>
+  <h4 id="DanmakU_Range_op_Division_DanmakU_Range_DanmakU_Range_" data-uid="DanmakU.Range.op_Division(DanmakU.Range,DanmakU.Range)">Division(Range, Range)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Range operator /(Range lhs, Range rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_op_Division_" data-uid="DanmakU.Range.op_Division*"></a>
+  <h4 id="DanmakU_Range_op_Division_DanmakU_Range_System_Single_" data-uid="DanmakU.Range.op_Division(DanmakU.Range,System.Single)">Division(Range, Single)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Range operator /(Range lhs, float rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_op_Division_" data-uid="DanmakU.Range.op_Division*"></a>
+  <h4 id="DanmakU_Range_op_Division_System_Single_DanmakU_Range_" data-uid="DanmakU.Range.op_Division(System.Single,DanmakU.Range)">Division(Single, Range)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Range operator /(float lhs, Range rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_op_Implicit_" data-uid="DanmakU.Range.op_Implicit*"></a>
+  <h4 id="DanmakU_Range_op_Implicit_System_Single__DanmakU_Range" data-uid="DanmakU.Range.op_Implicit(System.Single)~DanmakU.Range">Implicit(Single to Range)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Range(float val)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">val</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_op_Multiply_" data-uid="DanmakU.Range.op_Multiply*"></a>
+  <h4 id="DanmakU_Range_op_Multiply_DanmakU_Range_DanmakU_Range_" data-uid="DanmakU.Range.op_Multiply(DanmakU.Range,DanmakU.Range)">Multiply(Range, Range)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Range operator *(Range lhs, Range rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_op_Multiply_" data-uid="DanmakU.Range.op_Multiply*"></a>
+  <h4 id="DanmakU_Range_op_Multiply_DanmakU_Range_System_Single_" data-uid="DanmakU.Range.op_Multiply(DanmakU.Range,System.Single)">Multiply(Range, Single)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Range operator *(Range lhs, float rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Range_op_Subtraction_" data-uid="DanmakU.Range.op_Subtraction*"></a>
+  <h4 id="DanmakU_Range_op_Subtraction_DanmakU_Range_DanmakU_Range_" data-uid="DanmakU.Range.op_Subtraction(DanmakU.Range,DanmakU.Range)">Subtraction(Range, Range)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Range operator -(Range lhs, Range rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Range.html">Range</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &#0169; 2018 James Liu
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

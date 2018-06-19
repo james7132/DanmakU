@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Custom Fireables | DanmakU </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Custom Fireables | DanmakU ">
+    <meta name="generator" content="docfx 2.31.0.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="subclassing-fireable">Subclassing Fireable</h1>
+
+<p>The simplest way to fully integrate into the Fireables API is to create a
+subclass of <a class="xref" href="../../api/DanmakU.Fireables.Fireable.html">Fireable</a>. The only required function that one is</p>
+<p>Each Fireable instance contains a reference to its immediate child. As each
+Fireable can thus have a hierarchy of descendants below it. Every call of <code>Fire</code>
+thus traverses this hierarchy, with each parent Fireable calling <code>Fire</code> on it&#39;s
+child zero or more times.</p>
+<p>An important protected method is <code>Subfire</code> which checks if the Fireable has a
+child or not, and then triggers a fire on it if and only if it is present.</p>
+<p>The usual process is to take the DanmakuConfig provided as an argument to <code>Fire</code>
+and change it to based on some parameters of the Fireable, then use the modified
+config to fire the child. For example, if we wanted to make a line of bullets
+that fire from the same location, but has</p>
+<pre><code class="lang-csharp">public class CustomLine : Fireable {
+
+  public int Count;
+  public float DeltaSpeed;
+
+  public void Fire(DanmakuConfig config) {
+    for (var i = 0; i &lt; Count; i++) {
+      config.Speed += DeltaSpeed;
+      Subfire(config);
+    }
+  }
+
+}
+</code></pre><p>It is important to remember that <a class="xref" href="../../api/DanmakU.DanmakuConfig.html">DanmakuConfig</a> is a struct and thus
+uses value semantics. Modifying a config in a call to <code>Fire</code> will not modify the
+original.</p>
+<h1 id="implementing-ifireable">Implementing IFireable</h1>
+<p>An alternative is to directly implement <a class="xref" href="../../api/DanmakU.IFireable.html">IFireable</a>. Most of the previous
+comments hold true for the same; however, there is no support for further
+composition as IFireable does not expose a method or property for managing
+children. This is generally advised if and only if you are making an alternative
+IFireable that doesn&#39;t create traditional <a class="xref" href="../../api/DanmakU.Danmaku.html">Danmaku</a> via DanmakuSet and
+instead want to output some other custom bullet type.</p>
+<h1 id="supporting-editor-serialization">Supporting Editor Serialization</h1>
+<p>To support editing Fireables in the Unity Editor, the Fireable implementation
+must be serializable. For the most part, this involves adding the <code>Serializable</code>
+attribute to the type:</p>
+<pre><code class="lang-csharp">using System; // Required as the attribute is in the System namespace
+
+[Serializable]
+public class CustomLine : Fireable {
+  ...
+}
+</code></pre><p>To make sure that the types and config you are serializing are valid, please
+refer to the <a href="https://docs.unity3d.com/Manual/script-Serialization.html">Unity Manual</a>.</p>
+<h1 id="adding-randomization">Adding Randomization</h1>
+<p>Adding randomization to a Fireable is simple by using the <a class="xref" href="../../api/DanmakU.Range.html">Range</a> struct.
+Ranges are a serializable value that can represent either a single floating
+point value, or a interval on the real number line. Ranges support uniformly
+sampling a value from within the range via <a class="xref" href="../../api/DanmakU.Range.html#DanmakU_Range_GetValue">GetValue()</a>, each call to
+GetValue will return a random number from the range. If the range represents a
+single value, GetValue will always return that value.  DanmakuConfig is
+built upon Ranges so a Fireable may be passed a randomized configuration.</p>
+<p>Depending on how you sample values, the behaviour of randomization may change.
+Let&#39;s add randomization to CustomLine to demonstrate this:</p>
+<pre><code class="lang-csharp">public class CustomLine : Fireable {
+
+  public int Count;
+  public Range DeltaSpeed;
+
+  public void Fire(DanmakuConfig config) {
+    for (var i = 0; i &lt; Count; i++) {
+      config.Speed += DeltaSpeed.GetValue();
+      Subfire(config);
+    }
+  }
+
+}
+</code></pre><p>In this example, we are randomly sampling a new DeltaSpeed each step of the
+generation. This will indeed create a line, but the difference in velocity may
+not be uniform from one bullet to the next within a single line. If this is
+undesirable, we need to sample DeltaSpeed only once for the entire line:</p>
+<pre><code class="lang-csharp">public class CustomLine : Fireable {
+
+  public int Count;
+  public Range DeltaSpeed;
+
+  public void Fire(DanmakuConfig config) {
+    var deltaSpeed = DeltaSpeed.GetValue();
+    for (var i = 0; i &lt; Count; i++) {
+      config.Speed += deltaSpeed;
+      Subfire(config);
+    }
+  }
+
+}
+</code></pre><p>But what if we want to randomize the number of bullets within the line as well?
+We can change Count to be a Range too! However, Range.GetValue returns a float,
+not a integer! We can use Unity&#39;s math functions to remedy this.
+<code>Mathf.FloorToInt</code>, <code>Mathf.RoundToInt</code>, and <code>Mathf.CeilToInt</code> can help us
+discretize the results we get from GetValue:</p>
+<pre><code class="lang-csharp">public class CustomLine : Fireable {
+
+  public Range Count;
+  public Range DeltaSpeed;
+
+  public void Fire(DanmakuConfig config) {
+    var deltaSpeed = DeltaSpeed.GetValue();
+    for (var i = 0; i &lt; Mathf.FloorToInt(Count.GetValue()); i++) {
+      config.Speed += deltaSpeed;
+      Subfire(config);
+    }
+  }
+
+}
+</code></pre><p>We now are able to make randomized lines of bullets now! But, we have a bug
+here: Count&#39;s value is being resampled every iteration of the for loop: the
+number of bullets we are expecting is not stable within a single fire. To remedy
+this, we again move the sampling out of the loop and sample only once per
+context where it&#39;s valid, this case being once per Fire:</p>
+<pre><code class="lang-csharp">public class CustomLine : Fireable {
+
+  public Range Count;
+  public Range DeltaSpeed;
+
+  public void Fire(DanmakuConfig config) {
+    var count = &lt; Mathf.FloorToInt(Count.GetValue());
+    var deltaSpeed = DeltaSpeed.GetValue();
+    for (var i = 0; i &lt; count; i++) {
+      config.Speed += deltaSpeed;
+      Subfire(config);
+    }
+  }
+
+}
+</code></pre><h2 id="interval-arithmetic">Interval Arithmetic</h2>
+<p><a class="xref" href="../../api/DanmakU.Range.html">Range</a> is built upon interval arithmetic, a subset of computations that
+focus on intervals of real numbers. For more information, see the <a href="https://en.wikipedia.org/wiki/Interval_arithmetic">Wikipedia article</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &#0169; 2018 James Liu
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

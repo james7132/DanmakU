@@ -1,0 +1,719 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Struct Danmaku
+   | DanmakU </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Struct Danmaku
+   | DanmakU ">
+    <meta name="generator" content="docfx 2.31.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DanmakU.Danmaku">
+  
+  
+  <h1 id="DanmakU_Danmaku" data-uid="DanmakU.Danmaku" class="text-break">Struct Danmaku
+  </h1>
+  <div class="markdown level0 summary"><p>A single bullet.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.ValueType.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DanmakU.html">DanmakU</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="DanmakU_Danmaku_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public struct Danmaku</code></pre>
+  </div>
+  <h5 id="DanmakU_Danmaku_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Internally implemented as a index and a reference to the pool that owns the Danmaku.
+Does not actually hold any of the information about the Danmaku: the type is implemented
+as a value-type struct (to avoid garbage allocation), but the semantics for editing any 
+property is akin to that of a reference type. All the actual data is stored in the backing
+DanmakuPool.</p>
+<p>As the internal data of the backing DanmakuPool may be moved around after an update, the 
+internal index of Danmaku may not point to the same logical bullet from update to update.
+As a result, holding long term stores of Danmaku is ill-advised. Likewise editing Danmaku outside
+of the scope from which they are read from the pool (i.e. <see cref="!:Danmaku.Get"></see> or via enumeration)
+is equally ill-advised and may lead to undefined behavior.</p>
+</div>
+  <h3 id="fields">Fields
+  </h3>
+  <h4 id="DanmakU_Danmaku_Id" data-uid="DanmakU.Danmaku.Id">Id</h4>
+  <div class="markdown level1 summary"><p>The ID of the Danmaku. Guarenteed to be unique within the pool.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly int Id</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="DanmakU_Danmaku_Pool" data-uid="DanmakU.Danmaku.Pool">Pool</h4>
+  <div class="markdown level1 summary"><p>The backing pool of the Danmaku.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly DanmakuPool Pool</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuPool.html">DanmakuPool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <a id="DanmakU_Danmaku_AngularSpeed_" data-uid="DanmakU.Danmaku.AngularSpeed*"></a>
+  <h4 id="DanmakU_Danmaku_AngularSpeed" data-uid="DanmakU.Danmaku.AngularSpeed">AngularSpeed</h4>
+  <div class="markdown level1 summary"><p>Gets or sets the speed of the Danmaku.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float AngularSpeed { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="DanmakU_Danmaku_AngularSpeed_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Units are in radians per second. Can be negative.</p>
+</div>
+  <a id="DanmakU_Danmaku_Color_" data-uid="DanmakU.Danmaku.Color*"></a>
+  <h4 id="DanmakU_Danmaku_Color" data-uid="DanmakU.Danmaku.Color">Color</h4>
+  <div class="markdown level1 summary"><p>Gets or sets the Danmaku&apos;s rendering color.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Color Color { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Color</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Danmaku_Direction_" data-uid="DanmakU.Danmaku.Direction*"></a>
+  <h4 id="DanmakU_Danmaku_Direction" data-uid="DanmakU.Danmaku.Direction">Direction</h4>
+  <div class="markdown level1 summary"><p>Gets the direction the Danmaku is facing. Guarenteed to be a unit vector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 Direction { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Danmaku_InitialState_" data-uid="DanmakU.Danmaku.InitialState*"></a>
+  <h4 id="DanmakU_Danmaku_InitialState" data-uid="DanmakU.Danmaku.InitialState">InitialState</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DanmakuState InitialState { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuState.html">DanmakuState</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Danmaku_Position_" data-uid="DanmakU.Danmaku.Position*"></a>
+  <h4 id="DanmakU_Danmaku_Position" data-uid="DanmakU.Danmaku.Position">Position</h4>
+  <div class="markdown level1 summary"><p>Gets or sets the world position of the Danmaku.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 Position { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Danmaku_Rotation_" data-uid="DanmakU.Danmaku.Rotation*"></a>
+  <h4 id="DanmakU_Danmaku_Rotation" data-uid="DanmakU.Danmaku.Rotation">Rotation</h4>
+  <div class="markdown level1 summary"><p>Gets or sets the rotation of the Danmaku.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Rotation { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="DanmakU_Danmaku_Rotation_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Units are in radians. 0 points directly right. Pi points directly left.
+Controls both the graphical rotation as well as the direction of motion
+the Danmaku is moving in.</p>
+</div>
+  <a id="DanmakU_Danmaku_Speed_" data-uid="DanmakU.Danmaku.Speed*"></a>
+  <h4 id="DanmakU_Danmaku_Speed" data-uid="DanmakU.Danmaku.Speed">Speed</h4>
+  <div class="markdown level1 summary"><p>Gets or sets the speed of the Danmaku.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Speed { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="DanmakU_Danmaku_Speed_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Units are in units per second. Movement direction is based on <a class="xref" href="DanmakU.Danmaku.html#DanmakU_Danmaku_Rotation">Rotation</a>.
+Can be negative.</p>
+</div>
+  <a id="DanmakU_Danmaku_Time_" data-uid="DanmakU.Danmaku.Time*"></a>
+  <h4 id="DanmakU_Danmaku_Time" data-uid="DanmakU.Danmaku.Time">Time</h4>
+  <div class="markdown level1 summary"><p>Gets the number of seconds since the Danmaku was created.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Time { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="DanmakU_Danmaku_ApplyState_" data-uid="DanmakU.Danmaku.ApplyState*"></a>
+  <h4 id="DanmakU_Danmaku_ApplyState_DanmakU_DanmakuState_" data-uid="DanmakU.Danmaku.ApplyState(DanmakU.DanmakuState)">ApplyState(DanmakuState)</h4>
+  <div class="markdown level1 summary"><p>Applies a state to the Danmaku.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ApplyState(DanmakuState state)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuState.html">DanmakuState</a></td>
+        <td><span class="parametername">state</span></td>
+        <td><p>the state to be applied.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Danmaku_Destroy_" data-uid="DanmakU.Danmaku.Destroy*"></a>
+  <h4 id="DanmakU_Danmaku_Destroy" data-uid="DanmakU.Danmaku.Destroy">Destroy()</h4>
+  <div class="markdown level1 summary"><p>Destroys the danmaku object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Destroy()</code></pre>
+  </div>
+  <h5 id="DanmakU_Danmaku_Destroy_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Calling this funciton simply queues the Danmaku for destruction. It will be
+recycled back into it&apos;s pool on the pool&apos;s next update cycle.</p>
+<p>Destroying the same danmaku more than once or attempting to edit an already
+destroyed Danmaku will likely result in undefined behavior.</p>
+</div>
+  <a id="DanmakU_Danmaku_Equals_" data-uid="DanmakU.Danmaku.Equals*"></a>
+  <h4 id="DanmakU_Danmaku_Equals_System_Object_" data-uid="DanmakU.Danmaku.Equals(System.Object)">Equals(Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">obj</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.ValueType.Equals(System.Object)</span></div>
+  <a id="DanmakU_Danmaku_GetDirection_" data-uid="DanmakU.Danmaku.GetDirection*"></a>
+  <h4 id="DanmakU_Danmaku_GetDirection_System_Single_" data-uid="DanmakU.Danmaku.GetDirection(System.Single)">GetDirection(Single)</h4>
+  <div class="markdown level1 summary"><p>Convert a Danmaku rotation into a unit vector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Vector2 GetDirection(float rotation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">rotation</span></td>
+        <td><p>the rotation of the Danmaku.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><p>the unit vector representing the way the bullet is facing.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Danmaku_GetHashCode_" data-uid="DanmakU.Danmaku.GetHashCode*"></a>
+  <h4 id="DanmakU_Danmaku_GetHashCode" data-uid="DanmakU.Danmaku.GetHashCode">GetHashCode()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.ValueType.GetHashCode()</span></div>
+  <a id="DanmakU_Danmaku_GetState_" data-uid="DanmakU.Danmaku.GetState*"></a>
+  <h4 id="DanmakU_Danmaku_GetState" data-uid="DanmakU.Danmaku.GetState">GetState()</h4>
+  <div class="markdown level1 summary"><p>Gets the Danmaku&apos;s current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DanmakuState GetState()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuState.html">DanmakuState</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Danmaku_Replace_" data-uid="DanmakU.Danmaku.Replace*"></a>
+  <h4 id="DanmakU_Danmaku_Replace_DanmakU_DanmakuSet_" data-uid="DanmakU.Danmaku.Replace(DanmakU.DanmakuSet)">Replace(DanmakuSet)</h4>
+  <div class="markdown level1 summary"><p>Replaces the current</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Danmaku Replace(DanmakuSet set)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuSet.html">DanmakuSet</a></td>
+        <td><span class="parametername">set</span></td>
+        <td><p>the prototype </p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Danmaku.html">Danmaku</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="DanmakU_Danmaku_Replace_DanmakU_DanmakuSet__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This destroys the original bullet, rendering it unusable.</p>
+</div>
+  <h3 id="operators">Operators
+  </h3>
+  <a id="DanmakU_Danmaku_op_Equality_" data-uid="DanmakU.Danmaku.op_Equality*"></a>
+  <h4 id="DanmakU_Danmaku_op_Equality_DanmakU_Danmaku_DanmakU_Danmaku_" data-uid="DanmakU.Danmaku.op_Equality(DanmakU.Danmaku,DanmakU.Danmaku)">Equality(Danmaku, Danmaku)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(Danmaku lhs, Danmaku rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Danmaku.html">Danmaku</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Danmaku.html">Danmaku</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Danmaku_op_Inequality_" data-uid="DanmakU.Danmaku.op_Inequality*"></a>
+  <h4 id="DanmakU_Danmaku_op_Inequality_DanmakU_Danmaku_DanmakU_Danmaku_" data-uid="DanmakU.Danmaku.op_Inequality(DanmakU.Danmaku,DanmakU.Danmaku)">Inequality(Danmaku, Danmaku)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(Danmaku lhs, Danmaku rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Danmaku.html">Danmaku</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Danmaku.html">Danmaku</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &#0169; 2018 James Liu
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

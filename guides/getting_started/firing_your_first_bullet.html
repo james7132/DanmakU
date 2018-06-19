@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating the Danmaku Manager singleton | DanmakU </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating the Danmaku Manager singleton | DanmakU ">
+    <meta name="generator" content="docfx 2.31.0.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-the-danmaku-manager-singleton">Creating the Danmaku Manager singleton</h1>
+
+<div class="IMPORTANT"><h5>Important</h5><p>It is discouraged to call <code>DontDestoryOnLoad</code> on the Danmaku Manager
+component to allow it to survive a scene load. If you must keep it across scene
+loads, remember to release the data it owns periodically.</p>
+</div>
+<p>The power of <strong>DanmakU</strong> comes from the scripting together <a class="xref" href="../../api/DanmakU.Fireables.html">DanmakU.Fireables</a> 
+and <a class="xref" href="../../api/DanmakU.Modifiers.html">DanmakU.Modifiers</a> to create complex patterns. Included in the package is 
+a simple emitter that is intended to be a jumping off point for more complex
+behaviors. This guide walks you through setting up a scene with an emitter 
+continually firing.</p>
+<h2 id="your-first-bullet">Your First Bullet</h2>
+<ol>
+<li><p>Make sure you have completed the installation instructions. </p>
+</li>
+<li><p>Select <code>File -&gt; New Scene</code> to create a new scene</p>
+</li>
+<li><p>Create an empty game object in the scene. Click <code>Add Component</code> and add a 
+<a class="xref" href="../../api/DanmakU.DanmakuManager.html">DanmakuManager</a> component to the scene.</p>
+<p>Name it <code>Danmaku Manager</code> (the name isn&#39;t actually important, but it helps 
+disambiguate it in the scene.)</p>
+<p>The <a class="xref" href="../../api/DanmakU.DanmakuManager.html">DanmakuManager</a> manages the danmaku (bullets) in your scene, and 
+it controls the bounds for danmaku..</p>
+<p>Keep everything default for now. Later, you can use the Center and Extents 
+properties to change the size of the area where bullets will automatically
+despawn. </p>
+<p>Your scene must have a DanmakuManager object. <strong>DanmakU will fail to run 
+without one.</strong> </p>
+</li>
+<li><p>Add another empty game object to the scene. This time, add a
+<a class="xref" href="../../api/DanmakU.DanmakuPrefab.html">DanmakuPrefab</a> component to the object.</p>
+<p>Name it <code>Danmaku Prefab</code>. This object will be the template we use for our bullets.</p>
+<p><a class="xref" href="../../api/DanmakU.DanmakuPrefab.html">DanmakuPrefab</a> defines a bullet type for your game. It contains a 
+reference to the shader, sprite (or mesh), and collision information for
+that bullet type. </p>
+</li>
+<li><p>Included with the project is a sprite called <code>Big1</code>. Drag it onto the 
+<code>Rendering-&gt;Sprite</code> field of <code>Danmaku Prefab</code></p>
+</li>
+<li><p>In the <code>Danmaku\Runtime\Shaders</code> folder there is a file called 
+<code>Default Sprite Danmaku</code>. Drag this to the <code>Rendering-&gt;Shader</code> property for the
+<code>Danmaku Prefab</code> game object. Leave all the other fields their default values.</p>
+</li>
+<li><p>Add a third empty game object. Add a <a class="xref" href="../../api/DanmakU.DanmakuEmitter.html">DanmakuEmitter</a> component to it.</p>
+<p>Name it <code>Danmaku Emitter</code>. Make sure it is positioned at (0, 0, 0), as bullets
+will be emitted from it.</p>
+<p>The <a class="xref" href="../../api/DanmakU.DanmakuEmitter.html">DanmakuEmitter</a> class is a simple bullet emitter meant to be a 
+jumping off point for your own emitter types. It shows how you can compose 
+many behaviors together to create different patterns.</p>
+</li>
+<li><p>Drag <code>Danmaku Prefab</code> on the <code>Danmaku Type</code> field of <code>Danmaku Emitter</code>.</p>
+</li>
+<li><p>Expand <code>Arc</code>, if it is not already, and change <code>Arc-&gt;Count</code> to 1.</p>
+</li>
+<li><p>Press play. You should see a steady stream of bullets being fired to the right.</p>
+</li>
+<li><p>Stop the game and change <code>Fire Rate</code> to 1, <code>Arc-&gt;Count</code> to 3, 
+<code>Arc-Length</code> to 30, <code>Line-&gt;Count</code> to 3, and <code>Line-&gt;Delta Speed</code> to 2.</p>
+</li>
+<li><p>Continue playing with the properties of <code>Danmaku Emitter</code>, including the 
+position and rotation of the gameobject. </p>
+</li>
+</ol>
+<div class="NOTE"><h5>Note</h5><p>You may need to adjust your Main Camera settings, and the import settings for the Big1 image to get the bullets to be the correct size.</p>
+</div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &#0169; 2018 James Liu
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

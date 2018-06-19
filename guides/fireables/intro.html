@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Fireables | DanmakU </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Fireables | DanmakU ">
+    <meta name="generator" content="docfx 2.31.0.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+<p>90% of the scripting work in creating a bullet hell game is creating the initial conditions for bullets. The <strong>Fireables API</strong>
+attempts to attempts to create decrease the amount of boilerplate code needed to create more complex patterns, and
+encouranging reuse through composable firing patterns.</p>
+<p>It should be noted that Fireables are meant to create bullet patterns that fire at the same time. Firing a Fireable 
+immediately creates any bullets that might have come out of it. There is no way to introduce a wait time between fires.
+This is by design. Creating time sequenced patterns is usually done by altering the parameters to Fireables over time.</p>
+<h1 id="the-ifireable-interface">The IFireable Interface</h1>
+<p>The IFireable interface exposes only one function: <code>Fire(DanmakuConfig)</code>, during which it uses the provided 
+DanmakuConfig to fire <em>something</em>, what that <em>something</em> is up to the implementation of the Fireable.</p>
+<h2 id="danmakuconfig">DanmakuConfig</h2>
+<p>@DanmakU.DannmakuConfig is a simple data struct that contains information about how to fire a Fireable.</p>
+<p>Many of it&#39;s fields are <a class="xref" href="../../api/DanmakU.Range.html">Range</a> which represents a either a single value, or range of values that are valid. 
+When firing bullets, each Range field is evaluated, sampling a random value from that range. This allows bullet pattern 
+designers to add randomization to the pattern without changing the code.</p>
+<h1 id="creating-bullets-with-fireables">Creating Bullets with Fireables</h1>
+<p>The type <a class="xref" href="../../api/DanmakU.DanmakuSet.html">DanmakuSet</a> implements the IFireable interface and can be used as a standalone Fireable. In the original
+Getting Started tutorial, you were already using the Fireables API!</p>
+<p>Let&#39;s take a look at another Fireable: the <code>Ring</code>. The Ring fireabe creates a full circle of bullets based on a few 
+parameters:</p>
+<pre><code>IFireable ring = new Ring(5, 2);
+ring.Fire(...);
+</code></pre><p>However, the above code does not fire any bullets! By themselves most Fireables do not create any bullets, but are rather
+templates to create more complex patterns with other fireables. For this we must compose the Ring with the DanmakuSet we created:</p>
+<pre><code>IFireable bullets = CreateSet(danmakuPrefab);
+IFireable ring = new Ring(5, 2).Of(bullets);
+ring.Fire(...);
+</code></pre><p>Now we finally get a set of bullets coming out! In the next section, we will explain exactly how this composition works.</p>
+<h1 id="composing-fireables">Composing Fireables</h1>
+<p>The most powerful feature behind Fireables are the fact that they are geometrically composable. This is done through
+the <code>Of</code> extension method which composes two fireables together:</p>
+<pre><code>IFireable ring = new Ring(5, 2);
+IFireable circles = new Circle(3, 3);
+IFireable ringOfCircles = ring.Of(circles);
+</code></pre><p>When a Fireable is created in the form of <code>f = x.Of(y)</code>, calling <code>f.Fire(...)</code> will replace every normal bullet fire in <code>x</code>
+with a complete fire of <code>y</code>.</p>
+<p>As the return of the <code>Of</code> call is a Fireable, <code>Of</code> calls can also be chained to create higher order compositions. This
+continues the composition order <code>x.Of(y).Of(z)...</code> creates a Fireable that is composed of instances of <code>x</code> replaced by
+<code>y</code>, which are in turn replaced by instances of <code>z</code>, and so on. For example:</p>
+<pre><code>IFireable higherOrderFireable = ring.Of(circles).Of(lines).Of(bullets);
+</code></pre><h1 id="configuring-fireables-in-the-editor">Configuring Fireables in the Editor</h1>
+<p>All of the built-n Fireables support being serialized as fields in Unity objects.</p>
+<pre><code>public class CustomBulletPattern : DanmakuBehaviour {
+  public DanmakuPrefab Prefaab;
+  // Serialize the fireables as a part of the behaviour
+  public Ring Ring;
+  public Circle Circles;
+  IFireable fireable;
+
+  void Start() {
+    fireable = Ring.Of(Circles).Of(CreateSet(Prefab));
+  }
+
+  void Update() {
+    fireable.Fire(new DanmakuConfig());
+  }
+}
+</code></pre><p>This enables two important integrations with the Unity Engine: Inspector Editability and Animation. By doing this, developers
+can edit the pattern at runtime, and also support animating the bullet pattern using Unity&#39;s animation system.</p>
+<h1 id="appendix-built-in-fireables">Appendix: Built-In Fireables</h1>
+<h2 id="ring">Ring</h2>
+<p>TODO(james7132): Document</p>
+<h2 id="circle">Circle</h2>
+<p>TODO(james7132): Document</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &#0169; 2018 James Liu
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,791 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Struct Bounds2D
+   | DanmakU </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Struct Bounds2D
+   | DanmakU ">
+    <meta name="generator" content="docfx 2.31.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DanmakU.Bounds2D">
+  
+  
+  <h1 id="DanmakU_Bounds2D" data-uid="DanmakU.Bounds2D" class="text-break">Struct Bounds2D
+  </h1>
+  <div class="markdown level0 summary"><p>Represents a 2D axis aligned bounding box.</p>
+<p>An axis-aligned bounding box, or AABB for short, is a box aligned with coordinate axes and fully 
+enclosing some object. Because the box is never rotated with respect to the axes, it can be defined 
+by just its <a class="xref" href="DanmakU.Bounds2D.html#DanmakU_Bounds2D_Center">Center</a> and <a class="xref" href="DanmakU.Bounds2D.html#DanmakU_Bounds2D_Extents">Extents</a>, or alternatively by <a class="xref" href="DanmakU.Bounds2D.html#DanmakU_Bounds2D_Min">Min</a> 
+and <a class="xref" href="DanmakU.Bounds2D.html#DanmakU_Bounds2D_Max">Max</a> points.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DanmakU.html">DanmakU</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="DanmakU_Bounds2D_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Serializable]
+public struct Bounds2D</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <a id="DanmakU_Bounds2D__ctor_" data-uid="DanmakU.Bounds2D.#ctor*"></a>
+  <h4 id="DanmakU_Bounds2D__ctor_Vector2_Vector2_" data-uid="DanmakU.Bounds2D.#ctor(Vector2,Vector2)">Bounds2D(Vector2, Vector2)</h4>
+  <div class="markdown level1 summary"><p>Creates a new Bounds2D.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Bounds2D(Vector2 center, Vector2 size)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">center</span></td>
+        <td><p>The location of the origin of the Bounds2D.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">size</span></td>
+        <td><p>The dimensions of the Bounds2D.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  <h4 id="DanmakU_Bounds2D_Center" data-uid="DanmakU.Bounds2D.Center">Center</h4>
+  <div class="markdown level1 summary"><p>The center of the bounding box.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 Center</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h4 id="DanmakU_Bounds2D_Extents" data-uid="DanmakU.Bounds2D.Extents">Extents</h4>
+  <div class="markdown level1 summary"><p>The extents of the Bounding Box. This is always half of the size of the Bounds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 Extents</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <a id="DanmakU_Bounds2D_Max_" data-uid="DanmakU.Bounds2D.Max*"></a>
+  <h4 id="DanmakU_Bounds2D_Max" data-uid="DanmakU.Bounds2D.Max">Max</h4>
+  <div class="markdown level1 summary"><p>The maximal point of the box. This is always equal to Center+Extents.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 Max { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_Min_" data-uid="DanmakU.Bounds2D.Min*"></a>
+  <h4 id="DanmakU_Bounds2D_Min" data-uid="DanmakU.Bounds2D.Min">Min</h4>
+  <div class="markdown level1 summary"><p>The minimal point of the box. This is always equal to Center-Extents.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 Min { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_Size_" data-uid="DanmakU.Bounds2D.Size*"></a>
+  <h4 id="DanmakU_Bounds2D_Size" data-uid="DanmakU.Bounds2D.Size">Size</h4>
+  <div class="markdown level1 summary"><p>The total size of the box. This is always twice as large as the Extents.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector2 Size { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="DanmakU_Bounds2D_Contains_" data-uid="DanmakU.Bounds2D.Contains*"></a>
+  <h4 id="DanmakU_Bounds2D_Contains_Vector2_" data-uid="DanmakU.Bounds2D.Contains(Vector2)">Contains(Vector2)</h4>
+  <div class="markdown level1 summary"><p>Is  contained in the bounding box?</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Contains(Vector2 point)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">point</span></td>
+        <td><p>the point to test.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>true if  is inside the bounding box, false otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="DanmakU_Bounds2D_Contains_Vector2__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If any component of <a class="xref" href="DanmakU.Bounds2D.html#DanmakU_Bounds2D_Extents">Extents</a> is negative, this will always return false.</p>
+</div>
+  <a id="DanmakU_Bounds2D_Encapsulate_" data-uid="DanmakU.Bounds2D.Encapsulate*"></a>
+  <h4 id="DanmakU_Bounds2D_Encapsulate_DanmakU_Bounds2D_" data-uid="DanmakU.Bounds2D.Encapsulate(DanmakU.Bounds2D)">Encapsulate(Bounds2D)</h4>
+  <div class="markdown level1 summary"><p>Grow the bounds to encapsulate the bounds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Encapsulate(Bounds2D bounds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Bounds2D.html">Bounds2D</a></td>
+        <td><span class="parametername">bounds</span></td>
+        <td><p>the new bounds to encapsulate.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_Encapsulate_" data-uid="DanmakU.Bounds2D.Encapsulate*"></a>
+  <h4 id="DanmakU_Bounds2D_Encapsulate_Vector2_" data-uid="DanmakU.Bounds2D.Encapsulate(Vector2)">Encapsulate(Vector2)</h4>
+  <div class="markdown level1 summary"><p>Grows the Bounds to include the .</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Encapsulate(Vector2 point)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">point</span></td>
+        <td><p>the target point to expand to include.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_Equals_" data-uid="DanmakU.Bounds2D.Equals*"></a>
+  <h4 id="DanmakU_Bounds2D_Equals_System_Object_" data-uid="DanmakU.Bounds2D.Equals(System.Object)">Equals(Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">other</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.ValueType.Equals(System.Object)</span></div>
+  <a id="DanmakU_Bounds2D_Expand_" data-uid="DanmakU.Bounds2D.Expand*"></a>
+  <h4 id="DanmakU_Bounds2D_Expand_System_Single_" data-uid="DanmakU.Bounds2D.Expand(System.Single)">Expand(Single)</h4>
+  <div class="markdown level1 summary"><p>Expand the bounds by increasing its <a class="xref" href="DanmakU.Bounds2D.html#DanmakU_Bounds2D_Size">Size</a> by  along each side.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Expand(float amount)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">amount</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_Expand_" data-uid="DanmakU.Bounds2D.Expand*"></a>
+  <h4 id="DanmakU_Bounds2D_Expand_Vector2_" data-uid="DanmakU.Bounds2D.Expand(Vector2)">Expand(Vector2)</h4>
+  <div class="markdown level1 summary"><p>Expand the bounds by increasing its <a class="xref" href="DanmakU.Bounds2D.html#DanmakU_Bounds2D_Size">Size</a> by  along each side.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Expand(Vector2 amount)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">amount</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_GetHashCode_" data-uid="DanmakU.Bounds2D.GetHashCode*"></a>
+  <h4 id="DanmakU_Bounds2D_GetHashCode" data-uid="DanmakU.Bounds2D.GetHashCode">GetHashCode()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.ValueType.GetHashCode()</span></div>
+  <a id="DanmakU_Bounds2D_Intersects_" data-uid="DanmakU.Bounds2D.Intersects*"></a>
+  <h4 id="DanmakU_Bounds2D_Intersects_DanmakU_Bounds2D_" data-uid="DanmakU.Bounds2D.Intersects(DanmakU.Bounds2D)">Intersects(Bounds2D)</h4>
+  <div class="markdown level1 summary"><p>Does another bounding box intersect with this bounding box?</p>
+<p>Check if the bounding box comes into contact with another bounding box. </p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Intersects(Bounds2D bounds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Bounds2D.html">Bounds2D</a></td>
+        <td><span class="parametername">bounds</span></td>
+        <td><p>the bounds to check against.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>true if there is an intersection between bounds, false otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_SetMinMax_" data-uid="DanmakU.Bounds2D.SetMinMax*"></a>
+  <h4 id="DanmakU_Bounds2D_SetMinMax_Vector2_Vector2_" data-uid="DanmakU.Bounds2D.SetMinMax(Vector2,Vector2)">SetMinMax(Vector2, Vector2)</h4>
+  <div class="markdown level1 summary"><p>Sets the bounds to the min and max value of the box.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetMinMax(Vector2 min, Vector2 max)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">min</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">max</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_ToString_" data-uid="DanmakU.Bounds2D.ToString*"></a>
+  <h4 id="DanmakU_Bounds2D_ToString" data-uid="DanmakU.Bounds2D.ToString">ToString()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">System.ValueType.ToString()</span></div>
+  <h3 id="operators">Operators
+  </h3>
+  <a id="DanmakU_Bounds2D_op_Equality_" data-uid="DanmakU.Bounds2D.op_Equality*"></a>
+  <h4 id="DanmakU_Bounds2D_op_Equality_DanmakU_Bounds2D_DanmakU_Bounds2D_" data-uid="DanmakU.Bounds2D.op_Equality(DanmakU.Bounds2D,DanmakU.Bounds2D)">Equality(Bounds2D, Bounds2D)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(Bounds2D lhs, Bounds2D rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Bounds2D.html">Bounds2D</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Bounds2D.html">Bounds2D</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_op_Implicit_" data-uid="DanmakU.Bounds2D.op_Implicit*"></a>
+  <h4 id="DanmakU_Bounds2D_op_Implicit_Bounds__DanmakU_Bounds2D" data-uid="DanmakU.Bounds2D.op_Implicit(Bounds)~DanmakU.Bounds2D">Implicit(Bounds to Bounds2D)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Bounds2D(Bounds bounds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Bounds</span></td>
+        <td><span class="parametername">bounds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Bounds2D.html">Bounds2D</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_op_Implicit_" data-uid="DanmakU.Bounds2D.op_Implicit*"></a>
+  <h4 id="DanmakU_Bounds2D_op_Implicit_DanmakU_Bounds2D__Bounds" data-uid="DanmakU.Bounds2D.op_Implicit(DanmakU.Bounds2D)~Bounds">Implicit(Bounds2D to Bounds)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Bounds(Bounds2D bounds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Bounds2D.html">Bounds2D</a></td>
+        <td><span class="parametername">bounds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Bounds</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_Bounds2D_op_Inequality_" data-uid="DanmakU.Bounds2D.op_Inequality*"></a>
+  <h4 id="DanmakU_Bounds2D_op_Inequality_DanmakU_Bounds2D_DanmakU_Bounds2D_" data-uid="DanmakU.Bounds2D.op_Inequality(DanmakU.Bounds2D,DanmakU.Bounds2D)">Inequality(Bounds2D, Bounds2D)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(Bounds2D lhs, Bounds2D rhs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Bounds2D.html">Bounds2D</a></td>
+        <td><span class="parametername">lhs</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DanmakU.Bounds2D.html">Bounds2D</a></td>
+        <td><span class="parametername">rhs</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &#0169; 2018 James Liu
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

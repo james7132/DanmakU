@@ -1,0 +1,540 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class DanmakuSet
+   | DanmakU </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class DanmakuSet
+   | DanmakU ">
+    <meta name="generator" content="docfx 2.31.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DanmakU.DanmakuSet">
+  
+  
+  <h1 id="DanmakU_DanmakuSet" data-uid="DanmakU.DanmakuSet" class="text-break">Class DanmakuSet
+  </h1>
+  <div class="markdown level0 summary"><p>A enumerable set of bullets that supports runtime modification of behaviors through
+zero or more <a class="xref" href="DanmakU.IDanmakuModifier.html">IDanmakuModifier</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">DanmakuSet</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="DanmakU.Danmaku.html">Danmaku</a>&gt;</div>
+    <div><span class="xref">System.Collections.IEnumerable</span></div>
+    <div><a class="xref" href="DanmakU.IFireable.html">IFireable</a></div>
+    <div><span class="xref">System.IDisposable</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DanmakU.html">DanmakU</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="DanmakU_DanmakuSet_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class DanmakuSet : IEnumerable&lt;Danmaku&gt;, IEnumerable, IFireable, IDisposable</code></pre>
+  </div>
+  <h5 id="DanmakU_DanmakuSet_examples"><strong>Examples</strong></h5>
+  <p>Many of the methods of DanmakuSet follow a fluent API for changing the modifiers on the set.
+Multiple commands can be chained one after another in a fluent manner.</p>
+<pre><code>DanmakuSet danmakuSet;
+IDanmakuModifier customModifier1 = new CustomModifier1();
+danmakuSet.AddModifier(customModifer1)          // Add the first modifier
+          .AddModifier(new CustomModifier2())   // Add the second modifier inline
+          .RemoveModifier(customModifer1);      // Remove the first modifier</code></pre>
+
+  <h3 id="fields">Fields
+  </h3>
+  <h4 id="DanmakU_DanmakuSet_Pool" data-uid="DanmakU.DanmakuSet.Pool">Pool</h4>
+  <div class="markdown level1 summary"><p>The underlying pool of bullets.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly DanmakuPool Pool</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuPool.html">DanmakuPool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <a id="DanmakU_DanmakuSet_AddModifier_" data-uid="DanmakU.DanmakuSet.AddModifier*"></a>
+  <h4 id="DanmakU_DanmakuSet_AddModifier_DanmakU_IDanmakuModifier_" data-uid="DanmakU.DanmakuSet.AddModifier(DanmakU.IDanmakuModifier)">AddModifier(IDanmakuModifier)</h4>
+  <div class="markdown level1 summary"><p>Adds a modifier to the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DanmakuSet AddModifier(IDanmakuModifier modifier)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.IDanmakuModifier.html">IDanmakuModifier</a></td>
+        <td><span class="parametername">modifier</span></td>
+        <td><p>the modifier to add</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuSet.html">DanmakuSet</a></td>
+        <td><p>the original set with the modifier added.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_DanmakuSet_AddModifiers_" data-uid="DanmakU.DanmakuSet.AddModifiers*"></a>
+  <h4 id="DanmakU_DanmakuSet_AddModifiers_System_Collections_Generic_IEnumerable_DanmakU_IDanmakuModifier__" data-uid="DanmakU.DanmakuSet.AddModifiers(System.Collections.Generic.IEnumerable{DanmakU.IDanmakuModifier})">AddModifiers(IEnumerable&lt;IDanmakuModifier&gt;)</h4>
+  <div class="markdown level1 summary"><p>Adds a set of modifiers to the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DanmakuSet AddModifiers(IEnumerable&lt;IDanmakuModifier&gt; modifiers)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="DanmakU.IDanmakuModifier.html">IDanmakuModifier</a>&gt;</td>
+        <td><span class="parametername">modifiers</span></td>
+        <td><p>the range of modifiers to add to the set.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuSet.html">DanmakuSet</a></td>
+        <td><p>the original set with the modifiers added.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_DanmakuSet_ClearModifiers_" data-uid="DanmakU.DanmakuSet.ClearModifiers*"></a>
+  <h4 id="DanmakU_DanmakuSet_ClearModifiers" data-uid="DanmakU.DanmakuSet.ClearModifiers">ClearModifiers()</h4>
+  <div class="markdown level1 summary"><p>Clears all modifiers from the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ClearModifiers()</code></pre>
+  </div>
+  <a id="DanmakU_DanmakuSet_Contains_" data-uid="DanmakU.DanmakuSet.Contains*"></a>
+  <h4 id="DanmakU_DanmakuSet_Contains_DanmakU_Danmaku_" data-uid="DanmakU.DanmakuSet.Contains(DanmakU.Danmaku)">Contains(Danmaku)</h4>
+  <div class="markdown level1 summary"><p>Checks if a <a class="xref" href="DanmakU.Danmaku.html">Danmaku</a> is contained within the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Contains(Danmaku danmaku)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Danmaku.html">Danmaku</a></td>
+        <td><span class="parametername">danmaku</span></td>
+        <td><p>the bullet to check the membership of.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>true if the bullet belongs to the set, false otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_DanmakuSet_Dispose_" data-uid="DanmakU.DanmakuSet.Dispose*"></a>
+  <h4 id="DanmakU_DanmakuSet_Dispose" data-uid="DanmakU.DanmakuSet.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"><p>Disposes of the set. This destroys all of the bullets in the set and disposes of
+the underlying pool backing the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+  <a id="DanmakU_DanmakuSet_Fire_" data-uid="DanmakU.DanmakuSet.Fire*"></a>
+  <h4 id="DanmakU_DanmakuSet_Fire_DanmakU_DanmakuConfig_" data-uid="DanmakU.DanmakuSet.Fire(DanmakU.DanmakuConfig)">Fire(DanmakuConfig)</h4>
+  <div class="markdown level1 summary"><p>Creates and fires a single bullet based on a given config.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Danmaku Fire(DanmakuConfig config)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuConfig.html">DanmakuConfig</a></td>
+        <td><span class="parametername">config</span></td>
+        <td><p>the config for creating the bullet</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.Danmaku.html">Danmaku</a></td>
+        <td><p>the created bullet</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_DanmakuSet_GetEnumerator_" data-uid="DanmakU.DanmakuSet.GetEnumerator*"></a>
+  <h4 id="DanmakU_DanmakuSet_GetEnumerator" data-uid="DanmakU.DanmakuSet.GetEnumerator">GetEnumerator()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DanmakuEnumerator GetEnumerator()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuEnumerator.html">DanmakuEnumerator</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_DanmakuSet_RemoveModifier_" data-uid="DanmakU.DanmakuSet.RemoveModifier*"></a>
+  <h4 id="DanmakU_DanmakuSet_RemoveModifier_DanmakU_IDanmakuModifier_" data-uid="DanmakU.DanmakuSet.RemoveModifier(DanmakU.IDanmakuModifier)">RemoveModifier(IDanmakuModifier)</h4>
+  <div class="markdown level1 summary"><p>Removes a modifier from the set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DanmakuSet RemoveModifier(IDanmakuModifier modifier)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.IDanmakuModifier.html">IDanmakuModifier</a></td>
+        <td><span class="parametername">modifier</span></td>
+        <td><p>the modifier to remove from the set.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuSet.html">DanmakuSet</a></td>
+        <td><p>the original set with the modifiers removed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="eii">Explicit Interface Implementations
+  </h3>
+  <a id="DanmakU_DanmakuSet_DanmakU_IFireable_Fire_" data-uid="DanmakU.DanmakuSet.DanmakU#IFireable#Fire*"></a>
+  <h4 id="DanmakU_DanmakuSet_DanmakU_IFireable_Fire_DanmakU_DanmakuConfig_" data-uid="DanmakU.DanmakuSet.DanmakU#IFireable#Fire(DanmakU.DanmakuConfig)">IFireable.Fire(DanmakuConfig)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void IFireable.Fire(DanmakuConfig config)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DanmakU.DanmakuConfig.html">DanmakuConfig</a></td>
+        <td><span class="parametername">config</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_DanmakuSet_System_Collections_Generic_IEnumerable_DanmakU_Danmaku__GetEnumerator_" data-uid="DanmakU.DanmakuSet.System#Collections#Generic#IEnumerable{DanmakU#Danmaku}#GetEnumerator*"></a>
+  <h4 id="DanmakU_DanmakuSet_System_Collections_Generic_IEnumerable_DanmakU_Danmaku__GetEnumerator" data-uid="DanmakU.DanmakuSet.System#Collections#Generic#IEnumerable{DanmakU#Danmaku}#GetEnumerator">IEnumerable&lt;Danmaku&gt;.GetEnumerator()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator&lt;Danmaku&gt; IEnumerable&lt;Danmaku&gt;.GetEnumerator()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerator</span>&lt;<a class="xref" href="DanmakU.Danmaku.html">Danmaku</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="DanmakU_DanmakuSet_System_Collections_IEnumerable_GetEnumerator_" data-uid="DanmakU.DanmakuSet.System#Collections#IEnumerable#GetEnumerator*"></a>
+  <h4 id="DanmakU_DanmakuSet_System_Collections_IEnumerable_GetEnumerator" data-uid="DanmakU.DanmakuSet.System#Collections#IEnumerable#GetEnumerator">IEnumerable.GetEnumerator()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator IEnumerable.GetEnumerator()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.IEnumerator</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.Collections.Generic.IEnumerable&lt;T&gt;</span>
+  </div>
+  <div>
+      <span class="xref">System.Collections.IEnumerable</span>
+  </div>
+  <div>
+      <a class="xref" href="DanmakU.IFireable.html">IFireable</a>
+  </div>
+  <div>
+      <span class="xref">System.IDisposable</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &#0169; 2018 James Liu
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

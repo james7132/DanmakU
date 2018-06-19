@@ -1,0 +1,588 @@
+{
+  "sitemap": {
+    "baseUrl": "https://jamessliu.com/DanmakU/"
+  },
+  "homepages": [],
+  "source_base_path": "/home/travis/build/james7132/DanmakU/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Bounds2D.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Bounds2D.html",
+          "hash": "7QQ0In19JTZksVL1aleX0A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Danmaku.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Danmaku.html",
+          "hash": "hE0RiCn5HjjOU1yD1pj8nQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuBehaviour.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuBehaviour.html",
+          "hash": "6RIaIyrz77/6DHKLwack1g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuCollider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuCollider.html",
+          "hash": "hzswh9Rr5zMSnKMmeTBI6A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuCollision.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuCollision.html",
+          "hash": "tOXGpDYPg7wprqVgq64a1w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuCollisionList.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuCollisionList.Enumerator.html",
+          "hash": "fI21XC2yWXYY+BkQPkcQTA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuCollisionList.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuCollisionList.html",
+          "hash": "YVyMiGCobXlpAB/ncf8BrQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuConfig.html",
+          "hash": "Q61xfYnBOg/MUw6JZGhLbg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuEmitter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuEmitter.html",
+          "hash": "N4u4+7J5Xqou0W0bLbVsWg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuEnumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuEnumerator.html",
+          "hash": "ajkNoQ8nit8qwVIbeLYwgQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuManager.html",
+          "hash": "AV9YtBRrHh6kHEov5TfMlA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuPool.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuPool.html",
+          "hash": "3iMNvz1hzAytcB4fJnDQjA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuPrefab.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuPrefab.html",
+          "hash": "ukbUPX3J6R/a2OnKfOGrZw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuSet.html",
+          "hash": "kpuEwybVTHGjYjidcVl7hQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DanmakuState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DanmakuState.html",
+          "hash": "9DqPEdXiBudKQI+cIEfLZg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.DestroyDanmakuCollider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.DestroyDanmakuCollider.html",
+          "hash": "fB+szIPQslq6ELD3MXpJzg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.Arc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.Arc.html",
+          "hash": "7tJXZdNNNQZDVRHIrtFwaw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.Circle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.Circle.html",
+          "hash": "3GhoNy3wRZAbBZz+LXJT/A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.Fireable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.Fireable.html",
+          "hash": "klSJ06soaz/T3YNgZIw2mg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.FireableExtensions.FireAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.FireableExtensions.FireAction.html",
+          "hash": "wOj+4QamAIMWgczG5VtS4A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.FireableExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.FireableExtensions.html",
+          "hash": "qhsAHV4qEvlx33FDZPZE/Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.Line.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.Line.html",
+          "hash": "+fetACe0XeNo1uWsA2bAPw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.RandomColor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.RandomColor.html",
+          "hash": "7DWNUDHKVEPZXOnbMS1/yw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.Ring.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.Ring.html",
+          "hash": "epl0m9WxpaUU14toIGBa/g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Fireables.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Fireables.html",
+          "hash": "2ozCYOB0LtAfuWDvZBMAlg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.IDanmakuModifier.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.IDanmakuModifier.html",
+          "hash": "ERTcMqKksdlVz63HJGuXhQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.IFireable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.IFireable.html",
+          "hash": "d2E0yjRngZ5xkejtvQ3qmg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Modifiers.DanmakuAcceleration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Modifiers.DanmakuAcceleration.html",
+          "hash": "hMvQCfbpUa+j7YdE/t37Sg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Modifiers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Modifiers.html",
+          "hash": "mHpryAARlJ7vzWu5L/Gqdw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.RadiansAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.RadiansAttribute.html",
+          "hash": "yjO0y3NEdmiewygTd7KyVw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.Range.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.Range.html",
+          "hash": "ixAWTRkjACeIeZMAeBHrYQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DanmakU.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DanmakU.html",
+          "hash": "V3aG5mi2v9h9DwZGtFga7g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "jUIqicjB3Sz65XFajfN2Hw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "7bjuO8HgoGCkyM8wjShPJw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/fireables/custom.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/fireables/custom.html",
+          "hash": "fxWIQVnUgUxzLpY+UQw9OQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/fireables/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/fireables/intro.html",
+          "hash": "BSr1y6kpK5Gh8JOwaA4f+g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/getting_started/collisions.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/getting_started/collisions.html",
+          "hash": "0kaFxlEfWncgu3O7yGnWVw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/getting_started/firing_your_first_bullet.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/getting_started/firing_your_first_bullet.html",
+          "hash": "P98yJDJ78dkAIt3nptfMMg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/getting_started/installation.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/getting_started/installation.html",
+          "hash": "NvTtk01yIGudTfHRtXnlEw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/modifiers/custom.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/modifiers/custom.html",
+          "hash": "0kaFxlEfWncgu3O7yGnWVw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/modifiers/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/modifiers/intro.html",
+          "hash": "1wGqnknV4PdwaG0FpxAXAA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/shaders.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/shaders.html",
+          "hash": "QTrOilc4VlgWg8+SnnYidw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "guides/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "guides/toc.html",
+          "hash": "/yM0vo8WeW8jKOBiizA1gQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "bbCfqN4xD7gLNWvbflrAfw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "9ux4Z6LPnNfj33/kJazivw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build"
+      },
+      "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
+        "incrementalPhase": "postProcessing"
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

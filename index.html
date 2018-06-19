@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>DanmakU Documentation | DanmakU </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="DanmakU Documentation | DanmakU ">
+    <meta name="generator" content="docfx 2.31.0.0">
+    
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/docfx.vendor.css">
+    <link rel="stylesheet" href="styles/docfx.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <meta property="docfx:navrel" content="toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="danmaku-documentation">DanmakU Documentation</h1>
+
+<p><strong>DanmakU</strong> is a high performance engine for simulating and rendering bullet-like objects for the
+Unity3D engine.</p>
+<p>If this is your first time using DanmakU, you should refer to the Intro for tutorials. More experienced users might 
+refer to the API Documentation for a breakdown of the individuals objects in the library.</p>
+<p>For more realtime support, it is suggested to join the <a href="https://discordapp.com/invite/e9G43m2">DanmakU Discord Server</a>.</p>
+<h2 id="why-another-bullet-hell-engine">Why another bullet hell engine?</h2>
+<p>There are quite a few bullet hell engines out there, including a few Unity Asset Store Packages:</p>
+<ul>
+<li><a href="https://dmf.shrinemaiden.org/wiki/Main_Page">Touhou Danmakufu</a></li>
+<li><a href="http://www.asahi-net.or.jp/~cs8k-cyu/bulletml/index_e.html">BulletML</a></li>
+<li><a href="https://assetstore.unity.com/packages/tools/integration/uni-bullet-hell-19088">Uni Bullet Hell</a></li>
+<li><a href="https://assetstore.unity.com/packages/templates/systems/danmaku-engine-29855">Danmaku Engine</a></li>
+<li><a href="https://assetstore.unity.com/packages/tools/bulletml-for-unity-16206">BulletML for Unity</a></li>
+</ul>
+<p>The big question is why add to this already large list of working solutions? Many of these engines for 
+building bullet hell games fall short in dealing with the following observations:</p>
+<p><strong>In bullet hell games, there can be hundreds, if not thousands, of active entities simulating and
+rendering to the screen at any given time.</strong> This presents a twofold performance issue: processing
+a large number of objects eats up lots of CPU time, and traditionally rendering each bullet seperately
+can result in a very high number of GPU draw calls, bottlenecking the game on lower end hardware. DanmakU
+resolves these issues with a triangle of performance optimizations:</p>
+<ul>
+<li><strong>Full Multithreaded Simulation</strong> - The entire simulation system is built to fully utilize all of
+the CPU cores on the machine. </li>
+<li><a href="https://android-developers.googleblog.com/2015/07/game-performance-data-oriented.html"><strong>Data Oriented Programming</strong></a> - 
+CPU cache misses rapidly degrade computational performance. By keeping all bullet data tightly packed in 
+contiguous memory, we minimize the number of cache misses, keeping the CPU as busy as possible.</li>
+<li><a href="https://docs.unity3d.com/Manual/GPUInstancing.html"><strong>GPU Instancing</strong></a> - Unity3D supports rendering large batches of 
+similar objects in one call to the GPU. DanmakU makes only one draw call to the GPU for every 1023 bullets on the screen, 
+keeping the GPU as active as possible while minimizing CPU overhead.</li>
+</ul>
+<p>With the rise of higher framerate machines and monitors, the amount of time in between each update tick of a
+game shrinks with each coming year. Minimizing the performance impact of managing and rendering bullets opens much
+more headroom for developers to expand upon their games in more meaningful ways. DanmakU has been viciously optimized
+to minimize the update latency, even at very high bullet counts.</p>
+<p><strong>99.9% of bullets are &quot;fire and forget&quot;</strong>. Processing and tracking bullets should be focused on 
+and optimized for applying broad attributes and rules that hold true throughout a bullets&#39;s lifetime.
+The remaining 0.1% are relative few in number and can controlled through much more specialized routines.
+DanmakU&#39;s core concept of <em>Danmaku Modifiers</em> focus on optimizing the general case and giving the performance
+headroom for the developer to further specialize for that last 0.1%.</p>
+<p><strong>Bullet patterns are geometrically composable</strong>. A major pain point of many other bullet hell engines is the
+sheer amount of work to get rather simple patterns. As a generalization, most provide primitive commands
+for creating a single bullet or perhaps a simple geometric shape. Composing more complex patterns requires 
+explicit scripting of the pattern with code or markup. With DanmakU&#39;s <em>Fireables API</em>, firing a 
+ring of bullets, circle of bullets, line of bullets, or even a ring of circles of bullets should be as simple
+as firing a single bullet.</p>
+<p><strong>Allocating garbage on every update can result in massive lag spikes that ruin the game&#39;s experience.</strong> 
+Many bullet hell engines were designed to be object-oriented (i.e. a bullet is an object), or focus on using
+coroutines as the main form of scripting (i.e. Touhou Danmakufu). Allocating these objects and contexts on the 
+heap can be quite expensive.</p>
+<p><strong>Higher quality games are developed faster when the iteration time to implement and test changes is shorter.</strong>
+This has been a keystone behind Unity for the past decade, but has generally been slow in adoption in 
+bullet hell engines. Many require either long recompilation times, editing some text file (like BulletML), or require 
+parsing text scripts using a built binary (i.e. Touhou Danmakufu). Many DanmakU elements are serializable and support
+being edited in the Unity Editor while the game is running for realtime feedback on the bullet designs created.</p>
+<p>Finally, DanmakU is and always will be fully open source, unlike all of the aforementioned solutions. You are free
+to use and extend DanmakU for any project, whether that be a commercial game or a hobbyist fan project.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &#0169; 2018 James Liu
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>
