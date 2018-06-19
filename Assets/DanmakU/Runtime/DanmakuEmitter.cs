@@ -20,10 +20,15 @@ namespace DanmakU
         public DanmakuSet set { get; private set; }
         public bool isFiring { get; set; }
 
-        public int TeamNo
+        public int TeamNo;
+        public int GetTeamNo()
         {
-            get { return TeamNo;} 
-            set { if (value != TeamNo) set.Pool.TeamNo = TeamNo = value; }
+            return TeamNo;
+        }
+
+        public void SetTeamNo(int value)
+        {
+            if (value != TeamNo) set.Pool.TeamNo = TeamNo = value;
         }
         
         float timer;
