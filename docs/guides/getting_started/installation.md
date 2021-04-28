@@ -19,7 +19,7 @@ installed, it is suggested you install it using the following steps:
    (Edit > Project Settings > Player)
 1. Go to the [Github Releases](https://github.com/james7132/DanmakU/releases).
 1. Download the latest release's \*.unitypackage.
-1. In Unity, load the package (Assets > Import Package > Custom Pacakge).
+1. In Unity, load the package (Assets > Import Package > Custom Package).
 1. Import all assets.
 
 > [!NOTE]
